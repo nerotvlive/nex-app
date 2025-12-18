@@ -55,11 +55,11 @@ public class JavaUtilities {
 
             AzulJavaBuildInfo buildInfo;
             if(OperatingSystem.getType().equals(OperatingSystem.Type.Windows)) {
-                buildInfo = downloader.getBuildInfo(new RequestedJavaInfo(version, AzulJavaType.JRE, AzulJavaOS.WINDOWS, arch));
+                buildInfo = downloader.getBuildInfo(new RequestedJavaInfo(version, AzulJavaType.JDK, AzulJavaOS.WINDOWS, arch));
             } else if(OperatingSystem.getType().equals(OperatingSystem.Type.macOS)) {
-                buildInfo = downloader.getBuildInfo(new RequestedJavaInfo(version, AzulJavaType.JRE, AzulJavaOS.MACOS, arch));
+                buildInfo = downloader.getBuildInfo(new RequestedJavaInfo(version, AzulJavaType.JDK, AzulJavaOS.MACOS, arch));
             } else {
-                buildInfo = downloader.getBuildInfo(new RequestedJavaInfo(version, AzulJavaType.JRE, AzulJavaOS.LINUX, arch));
+                buildInfo = downloader.getBuildInfo(new RequestedJavaInfo(version, AzulJavaType.JDK, AzulJavaOS.LINUX, arch));
             }
             Path javaPath = downloader.downloadAndInstall(buildInfo, tempFolder.toPath());
 
@@ -68,6 +68,7 @@ public class JavaUtilities {
                     case "8" -> path = NexusApplication.getInstance().getLocalSettings().getJava8Path();
                     case "17" -> path = NexusApplication.getInstance().getLocalSettings().getJava17Path();
                     case "21" -> path = NexusApplication.getInstance().getLocalSettings().getJava21Path();
+                    case "25" -> path = NexusApplication.getInstance().getLocalSettings().getJava25Path();
                 }
             }
 
@@ -91,7 +92,7 @@ public class JavaUtilities {
         try {
             NexusApplication.getLogger().log("Detected Minecraft version type " + type + "!");
             String javaHome = System.getProperty("java.home");
-            if (type.equals(MinecraftVersion.Type.LEGACY)) {
+            if (type.equals(MinecraftVersion.Type.VERY_OLD)) {
                 JavaUtil.setJavaCommand(null);
                 String java = NexusApplication.getInstance().getLocalSettings().getJava8Path();
                 if (!new File(java).exists()) {
@@ -99,7 +100,7 @@ public class JavaUtilities {
                     installJava("8", java);
                 }
                 javaHome = java;
-            } else if (type.equals(MinecraftVersion.Type.SEMI_NEW)) {
+            } else if (type.equals(MinecraftVersion.Type.OLD)) {
                 JavaUtil.setJavaCommand(null);
                 String java = NexusApplication.getInstance().getLocalSettings().getJava17Path();
                 if (!new File(java).exists()) {
@@ -107,7 +108,7 @@ public class JavaUtilities {
                     installJava("17", java);
                 }
                 javaHome = java;
-            } else if (type.equals(MinecraftVersion.Type.NEW)) {
+            } else if (type.equals(MinecraftVersion.Type.SEMI_NEW)) {
                 JavaUtil.setJavaCommand(null);
                 String java = NexusApplication.getInstance().getLocalSettings().getJava21Path();
                 if (!new File(java).exists()) {
@@ -115,15 +116,23 @@ public class JavaUtilities {
                     installJava("21", java);
                 }
                 javaHome = java;
+            } else if (type.equals(MinecraftVersion.Type.NEW)) {
+                JavaUtil.setJavaCommand(null);
+                String java = NexusApplication.getInstance().getLocalSettings().getJava25Path();
+                if (!new File(java).exists()) {
+                    NexusApplication.getLogger().log("Couldn't find compatible Java Runtime Environment! Starting download of Java 25...");
+                    installJava("25", java);
+                }
+                javaHome = java;
             }
-            javaHome = javaHome.replace("\\","/");
-            if(!javaHome.endsWith("/")) {
+            javaHome = javaHome.replace("\\", "/");
+            if (!javaHome.endsWith("/")) {
                 javaHome += "/";
             }
             System.setProperty("java.home", javaHome);
             NexusApplication.getLogger().log("Set Java Home to: " + javaHome);
         } catch (Exception e) {
-            NexusApplication.getLogger().err("Couldn't set java version: "+e.getMessage());
+            NexusApplication.getLogger().err("Couldn't set java version: " + e.getMessage());
         }
     }
 

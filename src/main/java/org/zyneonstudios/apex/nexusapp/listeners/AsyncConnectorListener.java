@@ -199,9 +199,13 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     }
 
                 } else if(s.equals("java")) {
+                    String p25 = NexusApplication.getInstance().getLocalSettings().getJava25Path();
                     String p21 = NexusApplication.getInstance().getLocalSettings().getJava21Path();
                     String p17 = NexusApplication.getInstance().getLocalSettings().getJava17Path();
                     String p8 = NexusApplication.getInstance().getLocalSettings().getJava8Path();
+                    if(!p25.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-25")) {
+                        frame.executeJavaScript("document.querySelector('.java-25-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
+                    }
                     if(!p21.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-21")) {
                         frame.executeJavaScript("document.querySelector('.java-21-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
@@ -211,7 +215,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     if(!p8.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-8")) {
                         frame.executeJavaScript("document.querySelector('.java-8-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
-                    frame.executeJavaScript("document.querySelector('.jre-21-path-value').innerText = '" + p21.replace("\\","/") + "';","document.querySelector('.jre-17-path-value').innerText = '" + p17.replace("\\","/") + "';","document.querySelector('.jre-8-path-value').innerText = '" + p8.replace("\\","/") + "';");
+                    frame.executeJavaScript("document.querySelector('.jre-25-path-value').innerText = '" + p25.replace("\\","/") + "';","document.querySelector('.jre-21-path-value').innerText = '" + p21.replace("\\","/") + "';","document.querySelector('.jre-17-path-value').innerText = '" + p17.replace("\\","/") + "';","document.querySelector('.jre-8-path-value').innerText = '" + p8.replace("\\","/") + "';");
 
                     if(JavaUtilities.getJavaVersion(p8)==null) {
                         frame.executeJavaScript("document.querySelector('.jre-8-installed').classList.add('d-none');");
@@ -271,6 +275,26 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                         frame.executeJavaScript("document.querySelector('.jre-21-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p21)+" is installed.';");
                         frame.executeJavaScript("document.querySelector('.jre-21-warning').classList.remove('d-none');");
                         frame.executeJavaScript("document.querySelector('.jre-21-install-button').innerText = 'Fix';");
+                    }
+
+                    if(JavaUtilities.getJavaVersion(p25)==null) {
+                        frame.executeJavaScript("document.querySelector('.jre-25-installed').classList.add('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-warning').classList.add('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.remove('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-warning').innerText = '';");
+                        frame.executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Install';");
+                    } else if(Objects.equals(JavaUtilities.getJavaVersion(p25), "25")) {
+                        frame.executeJavaScript("document.querySelector('.jre-25-installed').classList.remove('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Reinstall';");
+                        frame.executeJavaScript("document.querySelector('.jre-25-warning').classList.add('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.add('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-warning').innerText = '';");
+                    } else {
+                        frame.executeJavaScript("document.querySelector('.jre-25-installed').classList.add('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.add('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p25)+" is installed.';");
+                        frame.executeJavaScript("document.querySelector('.jre-25-warning').classList.remove('d-none');");
+                        frame.executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Fix';");
                     }
                 }
             } else if(s.startsWith("add.")) {
@@ -375,6 +399,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     case "8" -> {if(new File(NexusApplication.getInstance().getLocalSettings().getJava8Path()).exists()) { FileActions.deleteFolder(new File(NexusApplication.getInstance().getLocalSettings().getJava8Path())); }}
                     case "17" -> {if(new File(NexusApplication.getInstance().getLocalSettings().getJava17Path()).exists()) { FileActions.deleteFolder(new File(NexusApplication.getInstance().getLocalSettings().getJava17Path())); }}
                     case "21" -> {if(new File(NexusApplication.getInstance().getLocalSettings().getJava21Path()).exists()) { FileActions.deleteFolder(new File(NexusApplication.getInstance().getLocalSettings().getJava21Path())); }}
+                    case "25" -> {if(new File(NexusApplication.getInstance().getLocalSettings().getJava25Path()).exists()) { FileActions.deleteFolder(new File(NexusApplication.getInstance().getLocalSettings().getJava25Path())); }}
                 }
                 JavaUtilities.installJava(s,"default");
             } else if(s.startsWith("reset.")) {
@@ -425,6 +450,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                                 pathString += "/";
                             }
                             switch (s) {
+                                case "25" -> NexusApplication.getInstance().getLocalSettings().setJre25path(pathString);
                                 case "21" -> NexusApplication.getInstance().getLocalSettings().setJre21path(pathString);
                                 case "17" -> NexusApplication.getInstance().getLocalSettings().setJre17path(pathString);
                                 case "8" -> NexusApplication.getInstance().getLocalSettings().setJre8path(pathString);
@@ -443,6 +469,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                         if (Desktop.isDesktopSupported()) {
                             String path = null;
                             switch (s) {
+                                case "25" -> path = NexusApplication.getInstance().getLocalSettings().getJava25Path();
                                 case "21" -> path = NexusApplication.getInstance().getLocalSettings().getJava21Path();
                                 case "17" -> path = NexusApplication.getInstance().getLocalSettings().getJava17Path();
                                 case "8" -> path = NexusApplication.getInstance().getLocalSettings().getJava8Path();

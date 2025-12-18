@@ -133,6 +133,9 @@ public class NexusApplication {
         settings.ensure("settings.library.instance.last","");
         localSettings.setLastInstanceId(settings.getString("settings.library.instance.last"));
 
+        settings.ensure("settings.java.path25",workingDir+"/libs/jre-25");
+        localSettings.setJre25path(settings.getString("settings.java.path25"));
+
         settings.ensure("settings.java.path21",workingDir+"/libs/jre-21");
         localSettings.setJre21path(settings.getString("settings.java.path21"));
 

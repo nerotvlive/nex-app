@@ -296,6 +296,16 @@
                 </div>
                 <table class="table m-0">
                     <tbody>
+                    <!-- Java 25 path selection row -->
+                    <tr class="java-25-path-value">
+                        <td class="left" colspan="2">Java 25 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 25 version or the path where the NEXUS App should install Java 25."></i></td>
+                        <td class="center" onclick="console.log('[CONNECTOR] settings.open.javaPath.25');">
+                            <span class="jre-25-path-value path-value">${jre.25.path}</span>
+                        </td>
+                        <td class="right">
+                            <a class="d-none" onclick="console.log('[CONNECTOR] settings.reset.javaPath.25'); this.classList.add('d-none');"><i class="bi bi-arrow-clockwise" style="cursor: pointer"></i></a> <a onclick="console.log('[CONNECTOR] settings.select.javaPath.25')">Select path</a>
+                        </td>
+                    </tr>
                     <!-- Java 21 path selection row -->
                     <tr class="java-21-path-value">
                         <td class="left" colspan="2">Java 21 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 21 version or the path where the NEXUS App should install Java 21."></i></td>
@@ -335,6 +345,22 @@
                 </div>
                 <table class="table m-0">
                     <tbody>
+                    <!-- Java 25 installation button -->
+                    <tr class="java-25-installer">
+                        <td class="left" colspan="2">Install Java 25 <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="This action lets you (re)install Java 25 in the specified path."></i></td>
+                        <td>
+                            <div class="alert d-none alert-danger jre-25-notInstalled" role="alert">
+                                Java 25 is not installed!
+                            </div>
+                            <div class="alert alert-warning jre-25-warning" role="alert">Fetching...</div>
+                            <div class="alert d-none alert-success jre-25-installed" role="alert">
+                                Java 25 is installed!
+                            </div>
+                        </td>
+                        <td class="right">
+                            <a class="jre-25-install-button text-decoration-none" onclick="console.log('[CONNECTOR] settings.installJava.25'); this.innerText = 'Installing Java 25...';"></a>
+                        </td>
+                    </tr>
                     <!-- Java 21 installation button -->
                     <tr class="java-21-installer">
                         <td class="left" colspan="2">Install Java 21 <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="This action lets you (re)install Java 21 in the specified path."></i></td>

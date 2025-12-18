@@ -54,7 +54,7 @@
         <dependency>
             <groupId>live.nerotv</groupId>
             <artifactId>a-minecraft-launcher</artifactId>
-            <version>2025.12.4</version>
+            <version>2025.12.6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -12,6 +12,7 @@ public class ApplicationSettings {
     private boolean discoverSearchCurseForge = true;
     private boolean discoverSearchModrinth = true;
     private String lastInstanceId = "";
+    private String jre25path = "";
     private String jre21path = "";
     private String jre17path = "";
     private String jre8path = "";
@@ -63,6 +64,13 @@ public class ApplicationSettings {
         temporarySettings.remove(path);
     }
 
+    public String getJava25Path() {
+        if(jre25path==null) {
+            return NexusApplication.getInstance().getWorkingPath()+"/libs/jre-25";
+        }
+        return jre25path;
+    }
+
     public String getJava21Path() {
         if(jre21path==null) {
             return NexusApplication.getInstance().getWorkingPath()+"/libs/jre-21";
@@ -82,6 +90,11 @@ public class ApplicationSettings {
             return NexusApplication.getInstance().getWorkingPath()+"/libs/jre-8";
         }
         return jre8path;
+    }
+
+    public void setJre25path(String jre25path) {
+        this.jre25path = jre25path;
+        NexusApplication.getInstance().getSettings().set("settings.java.path25", jre25path);
     }
 
     public void setJre21path(String jre21path) {
