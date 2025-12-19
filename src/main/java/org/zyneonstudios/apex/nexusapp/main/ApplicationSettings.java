@@ -66,28 +66,28 @@ public class ApplicationSettings {
 
     public String getJava25Path() {
         if(jre25path==null) {
-            return NexusApplication.getInstance().getWorkingPath()+"/libs/jre-25";
+            return NexusApplication.getInstance().getWorkingPath()+"/libs/java-25";
         }
         return jre25path;
     }
 
     public String getJava21Path() {
         if(jre21path==null) {
-            return NexusApplication.getInstance().getWorkingPath()+"/libs/jre-21";
+            return NexusApplication.getInstance().getWorkingPath()+"/libs/java-21";
         }
         return jre21path;
     }
 
     public String getJava17Path() {
         if(jre17path==null) {
-            return NexusApplication.getInstance().getWorkingPath()+"/libs/jre-17";
+            return NexusApplication.getInstance().getWorkingPath()+"/libs/java-17";
         }
         return jre17path;
     }
 
     public String getJava8Path() {
         if(jre8path==null) {
-            return NexusApplication.getInstance().getWorkingPath()+"/libs/jre-8";
+            return NexusApplication.getInstance().getWorkingPath()+"/libs/java-8";
         }
         return jre8path;
     }

@@ -203,16 +203,16 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     String p21 = NexusApplication.getInstance().getLocalSettings().getJava21Path();
                     String p17 = NexusApplication.getInstance().getLocalSettings().getJava17Path();
                     String p8 = NexusApplication.getInstance().getLocalSettings().getJava8Path();
-                    if(!p25.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-25")) {
+                    if(!p25.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/java-25")) {
                         frame.executeJavaScript("document.querySelector('.java-25-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
-                    if(!p21.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-21")) {
+                    if(!p21.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/java-21")) {
                         frame.executeJavaScript("document.querySelector('.java-21-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
-                    if(!p17.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-17")) {
+                    if(!p17.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/java-17")) {
                         frame.executeJavaScript("document.querySelector('.java-17-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
-                    if(!p8.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-8")) {
+                    if(!p8.equals(NexusApplication.getInstance().getWorkingPath()+"/libs/java-8")) {
                         frame.executeJavaScript("document.querySelector('.java-8-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
                     frame.executeJavaScript("document.querySelector('.jre-25-path-value').innerText = '" + p25.replace("\\","/") + "';","document.querySelector('.jre-21-path-value').innerText = '" + p21.replace("\\","/") + "';","document.querySelector('.jre-17-path-value').innerText = '" + p17.replace("\\","/") + "';","document.querySelector('.jre-8-path-value').innerText = '" + p8.replace("\\","/") + "';");
@@ -407,9 +407,10 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 if(s.startsWith("javaPath.")) {
                     s = s.replaceFirst("javaPath.","");
                     switch (s) {
-                        case "21" -> NexusApplication.getInstance().getLocalSettings().setJre21path(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-21");
-                        case "17" -> NexusApplication.getInstance().getLocalSettings().setJre17path(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-17");
-                        case "8" -> NexusApplication.getInstance().getLocalSettings().setJre8path(NexusApplication.getInstance().getWorkingPath()+"/libs/jre-8");
+                        case "25" -> NexusApplication.getInstance().getLocalSettings().setJre25path(NexusApplication.getInstance().getWorkingPath()+"/libs/java-25");
+                        case "21" -> NexusApplication.getInstance().getLocalSettings().setJre21path(NexusApplication.getInstance().getWorkingPath()+"/libs/java-21");
+                        case "17" -> NexusApplication.getInstance().getLocalSettings().setJre17path(NexusApplication.getInstance().getWorkingPath()+"/libs/java-17");
+                        case "8" -> NexusApplication.getInstance().getLocalSettings().setJre8path(NexusApplication.getInstance().getWorkingPath()+"/libs/java-8");
                     }
                     resolveMessage("settings.init.java");
                 } else if(s.equals("instancePath")) {

@@ -133,16 +133,16 @@ public class NexusApplication {
         settings.ensure("settings.library.instance.last","");
         localSettings.setLastInstanceId(settings.getString("settings.library.instance.last"));
 
-        settings.ensure("settings.java.path25",workingDir+"/libs/jre-25");
+        settings.ensure("settings.java.path25",workingDir+"/libs/java-25");
         localSettings.setJre25path(settings.getString("settings.java.path25"));
 
-        settings.ensure("settings.java.path21",workingDir+"/libs/jre-21");
+        settings.ensure("settings.java.path21",workingDir+"/libs/java-21");
         localSettings.setJre21path(settings.getString("settings.java.path21"));
 
-        settings.ensure("settings.java.path17",workingDir+"/libs/jre-17");
+        settings.ensure("settings.java.path17",workingDir+"/libs/java-17");
         localSettings.setJre17path(settings.getString("settings.java.path17"));
 
-        settings.ensure("settings.java.path8",workingDir+"/libs/jre-8");
+        settings.ensure("settings.java.path8",workingDir+"/libs/java-8");
         localSettings.setJre8path(settings.getString("settings.java.path8"));
 
         boolean rpc = true;
