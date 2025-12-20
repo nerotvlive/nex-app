@@ -780,10 +780,13 @@ function disableSubMenuGroup(id) {
 }
 
 function toggleSubMenuGroup(id) {
-    if (document.getElementById(id)?.classList.contains('show')) {
+    console.log(id)
+    if (document.getElementById(id).classList.contains('show')) {
         disableSubMenuGroup(id);
+        localStorage.setItem("submenu-group_"+id, "disable");
     } else {
         enableSubMenuGroup(id);
+        localStorage.setItem("submenu-group_"+id, "enable");
     }
 }
 

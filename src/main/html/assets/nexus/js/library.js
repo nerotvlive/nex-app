@@ -66,6 +66,14 @@ function addInstanceGroup(id,name,colorName) {
             }
             template.parentElement.insertBefore(group, template);
         }
+        const id_ = id+"-collapse";
+        if(localStorage.getItem("submenu-group_"+id_)) {
+            if(localStorage.getItem("submenu-group_"+id_) === "enable") {
+                enableSubMenuGroup(id_);
+            }
+        }
+    } else {
+        document.getElementById(id).classList.remove("d-none");
     }
 }
 

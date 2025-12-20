@@ -574,18 +574,18 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     String tagId = "";
                     String color = "nex-secondary";
                     if(!i.getTags().isEmpty()) {
-                        if(i.getTags().contains("essentialplus")) {
+                        if(i.getTags().contains("essentialplus")||i.getTags().contains("vulkanplus")) {
                             tag = "Essential+";
                             tagId = "essentialplus";
                             color = "nex-primary";
-                        } else if(i.getId().toLowerCase().contains("modrinth")||i.getTags().contains("modrinth")) {
-                            tag = "Modrinth";
-                            tagId = "modrinth";
-                            color = "nex-green";
                         } else {
                             tag = i.getTags().getFirst();
                             tagId = tag.toLowerCase();
                         }
+                    } else if(i.getId().toLowerCase().contains("modrinth")) {
+                        tag = "Modrinth";
+                        tagId = "modrinth";
+                        color = "nex-green";
                     } else {
                         tag = "Uncategorized";
                         tagId = tag.toLowerCase();
