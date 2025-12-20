@@ -580,6 +580,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                             color = "nex-primary";
                         } else {
                             tag = i.getTags().getFirst();
+                            tag = tag.substring(0, 1).toUpperCase() + tag.substring(1);
                             tagId = tag.toLowerCase();
                         }
                     } else if(i.getId().toLowerCase().contains("modrinth")) {
