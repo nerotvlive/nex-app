@@ -879,6 +879,10 @@ body {
                     background-color: color-mix(in srgb, var(--nex-yellow-darker), transparent 75%);
                 }
 
+                .submenu-group.nex-secondary {
+                    background-color: var(--nex-brighter);
+                }
+
 
                 ul {
                     margin: 0;

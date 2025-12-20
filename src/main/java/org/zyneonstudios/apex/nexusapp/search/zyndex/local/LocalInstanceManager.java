@@ -72,8 +72,27 @@ public class LocalInstanceManager {
         } else {
             throw new RuntimeException("The specified instance path is not a directory: " + instancePath.getAbsolutePath());
         }
+
+        // Sortiere die Map nach dem Instanznamen (case-insensitive) und bewahre die Reihenfolge in einer LinkedHashMap
+        instances = instances.entrySet()
+                .stream()
+                .sorted((e1, e2) -> {
+                    String n1 = e1.getValue().getInstance() != null && e1.getValue().getInstance().getName() != null
+                            ? e1.getValue().getInstance().getName() : "";
+                    String n2 = e2.getValue().getInstance() != null && e2.getValue().getInstance().getName() != null
+                            ? e2.getValue().getInstance().getName() : "";
+                    return n1.compareToIgnoreCase(n2);
+                })
+                .collect(java.util.stream.Collectors.toMap(
+                        java.util.Map.Entry::getKey,
+                        java.util.Map.Entry::getValue,
+                        (a, b) -> a,
+                        java.util.LinkedHashMap::new
+                ));
+
         System.gc();
     }
+
 
     /**
      * Retrieves the instances managed by this LocalInstanceManager.

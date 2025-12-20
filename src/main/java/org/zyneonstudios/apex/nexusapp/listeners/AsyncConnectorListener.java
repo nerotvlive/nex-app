@@ -570,11 +570,34 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 String showId = null;
                 for(LocalInstance lI:NexusApplication.getInstance().getInstanceManager().getInstances().values()) {
                     Zynstance i = lI.getInstance();
+                    String tag = "";
+                    String tagId = "";
+                    String color = "nex-secondary";
+                    if(!i.getTags().isEmpty()) {
+                        if(i.getTags().contains("essentialplus")) {
+                            tag = "Essential+";
+                            tagId = "essentialplus";
+                            color = "nex-primary";
+                        } else if(i.getId().toLowerCase().contains("modrinth")||i.getTags().contains("modrinth")) {
+                            tag = "Modrinth";
+                            tagId = "modrinth";
+                            color = "nex-green";
+                        } else {
+                            tag = i.getTags().getFirst();
+                            tagId = tag.toLowerCase();
+                        }
+                    } else {
+                        tag = "Uncategorized";
+                        tagId = tag.toLowerCase();
+                    }
                     String iconUrl = "";
                     if(i.getIconUrl()!=null) {
                         iconUrl = i.getIconUrl();
                     }
-                    frame.executeJavaScript("addInstance(\""+StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(i.getName())+"\",\""+StringUtility.encodeData(iconUrl)+"\",\"\");");
+                    if(!tagId.isEmpty()) {
+                        frame.executeJavaScript("addInstanceGroup(\"" + tagId + "\",\"" + tag + "\",\"" + color + "\");");
+                    }
+                    frame.executeJavaScript("addInstance(\""+StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(i.getName())+"\",\""+StringUtility.encodeData(iconUrl)+"\",\""+tagId+"\");");
                     if(showId == null) {
                         showId = lI.getPath();
                     }

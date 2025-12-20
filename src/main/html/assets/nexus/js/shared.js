@@ -654,7 +654,7 @@ function applyAccentColorToElement(e, c) {
  * @param {boolean} menu - Whether to enable the menu after loading the page.
  * @param {string} params - Additional parameters to pass to the page.
  */
-function loadPage(page, menu, params = "") {
+async function loadPage(page, menu, params = "") {
     const contentDiv = document.getElementById('content');
     if(params) {
         if (params.startsWith("?")) {
