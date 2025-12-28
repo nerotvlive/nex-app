@@ -74,6 +74,9 @@ public class JavaUtilities {
 
             if(!path.equals("default")) {
                 File dest = new File(path);
+                if(dest.exists()) {
+                    FileUtils.deleteDirectory(dest);
+                }
                 FileUtils.moveDirectory(javaPath.toFile(), dest);
                 fixPermissions(path);
             }
