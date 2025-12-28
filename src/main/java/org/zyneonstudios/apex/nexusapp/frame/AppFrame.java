@@ -528,4 +528,14 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
     public void setSmartBar(SmartBar smartBar) {
         this.smartBar = smartBar;
     }
+
+    public double getScaleFactor() {
+        int res = Toolkit.getDefaultToolkit().getScreenSize().height;
+        if(res>=2160) {
+            return res/1080.0;
+        } else if(res>=1440) {
+            return 1.0;
+        }
+        return 0.0;
+    }
 }

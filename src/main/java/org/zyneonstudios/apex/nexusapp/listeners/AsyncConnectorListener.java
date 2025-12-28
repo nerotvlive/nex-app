@@ -86,7 +86,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
 
             // Handle page loaded events.
         } else if (s.startsWith("event.page.loaded")) {
-            frame.getBrowser().setZoomLevel(Toolkit.getDefaultToolkit().getScreenSize().height/1080.0);
+            frame.getBrowser().setZoomLevel(frame.getScaleFactor());
             for (PageLoadedEvent event : NexusApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
                 event.setUrl(frame.getBrowser().getURL());
                 event.execute();
