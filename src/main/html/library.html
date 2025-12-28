@@ -121,10 +121,10 @@
                     <i class="bi bi-cup-hot"></i>
                     <span>Java settings</span>
                 </button>
-                <button type="button" class="hook-button btn btn-nex-secondary flex-grow-1" onclick="showSettingsPane('Hook');">
+                <!--button type="button" class="hook-button btn btn-nex-secondary flex-grow-1" onclick="showSettingsPane('Hook');">
                     <i class="bi bi-code"></i>
                     <span>Hook settings</span>
-                </button>
+                </button-->
                 <div class="settings-menu-actions">
                     <button type="button" class="deletion-button btn btn-nex-red flex-grow-1 bottom" onclick="showSettingsPane('Deletion');">
                         <i class="bi bi-trash"></i>
@@ -329,4 +329,4 @@
         </div>
     </div>
 </div>
-<button onclick="loadScript('assets/nexus/js/library.js', onload);  setTimeout(()=>{ loadFolderButtonHoverEvent(); addInstanceGroup('uncategorized','Uncategorized','nex-secondary'); addInstanceGroup('essentialplus','Essential+','nex-primary'); document.getElementById('essentialplus').classList.add('d-none'); if(localStorage.getItem('submenu-group_uncategorized-collapse') === null) { enableSubMenuGroup('uncategorized-collapse') } initLibrary(); }, 100);" class="onload d-none">On page load</button>
+<button onclick="loadScript('assets/nexus/js/library.js', onload);  setTimeout(()=>{ loadFolderButtonHoverEvent(); addInstanceGroup('uncategorized','Uncategorized','nex-secondary'); addInstanceGroup('essentialplus','Essential+','nex-primary'); document.getElementById('essentialplus').classList.add('d-none'); document.getElementById('uncategorized').classList.add('d-none'); if(localStorage.getItem('submenu-group_uncategorized-collapse') === null) { enableSubMenuGroup('uncategorized-collapse') } initLibrary(); }, 100);" class="onload d-none">On page load</button>

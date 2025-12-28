@@ -2,6 +2,7 @@ package org.zyneonstudios.apex.nexusapp.launchprocess;
 
 import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
 import live.nerotv.aminecraftlauncher.launcher.MinecraftLauncher;
+import org.zyneonstudios.apex.nexusapp.Main;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.search.zyndex.local.LocalInstance;
 
@@ -67,7 +68,7 @@ public class GameHooks {
     }
 
     private static void runCommand(String cmd) {
-        try {
+        /*try {
             Process process;
             String fullCommand;
             if (OperatingSystem.getType().equals(OperatingSystem.Type.Windows)) {
@@ -78,6 +79,7 @@ public class GameHooks {
             process = Runtime.getRuntime().exec(fullCommand);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
+        }*/
+        Main.getLogger().err("External command execution is disabled for security reasons: " + cmd);
     }
 }

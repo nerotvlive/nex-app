@@ -35,28 +35,6 @@
                 <hr>
                 <button onclick="this.parentElement.remove();" class="btn btn-nex-red">Hide</button>
             </div>
-            <div id="dev-mode-warning" class="alert alert-dismissible alert-info shadow d-none w-100" style="opacity: 1" role="alert">
-                <strong>DEV MODE ACTIVE! </strong><br>
-                You have enabled the development mode of the NEXUS app. This gives the program access to some extended functions, such as more entries in the menu bar, and the updater is disabled.<br>
-                <hr>
-                <button onclick="this.parentElement.remove();" class="btn btn-nex-blue" style="opacity: 0.8">Hide</button>
-            </div>
-        </div>
-        <div class="alert alert-success shadow" role="alert">
-            <h5 class="m-0 p-0 mb-2">Development progress for stable/full release: 60%</h5>
-            <div class="progress flex-grow-1" role="progressbar" aria-label="Example 20px high" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
-                <div class="progress-bar bg-success" style="width: 60%"></div>
-            </div>
-        </div>
-        <div class="d-flex flex-column flex-xl-row gap-xl-3">
-            <div class="alert alert-warning shadow w-100" role="alert">
-                <strong>BETA BUILD! </strong><br>NEXUS App <span id="nappv"></span><br>
-                Expect issues and incomplete or missing features! If you want to contribute visit our GitHub repository and if you find bugs please report them - also on GitHub or Discord.
-                <hr>
-                <a href="https://github.com/nerotvlive/nexus-app" target="_blank" type="button" class="btn btn-warning">GitHub</a>
-                <a href="https://discord.gg/hbHDrqUjJ8" target="_blank" type="button" class="btn btn-outline-warning">Discord</a>
-                <button onclick="this.parentElement.remove();" class="btn btn-outline-light" style="opacity: 0.8">Hide</button>
-            </div>
             <div class="alert alert-warning shadow w-100" role="alert">
                 <h5 class="m-0 p-0 mb-2">We are looking for developers!</h5>
                 Currently, the NEXUS app effectively has only one developer. This person works on it as a hobby and is entirely self-taught, so we are looking for support, as it is not possible to develop the app in a clear and easily expandable way over a large scope.</p>
@@ -64,6 +42,28 @@
                 <a href="https://discord.gg/hbHDrqUjJ8" target="_blank" type="button" class="btn btn-warning">Discord</a>
                 <a href="https://github.com/nerotvlive/nexus-app" target="_blank" type="button" class="btn btn-outline-warning">GitHub</a>
                 <button onclick="this.parentElement.remove();" class="btn btn-outline-light" style="opacity: 0.8">Hide</button>
+            </div>
+        </div>
+        <div class="alert alert-success shadow" role="alert">
+            <h5 class="m-0 p-0 mb-2">Development progress for stable/full release: 75%</h5>
+            <div class="progress flex-grow-1" role="progressbar" aria-label="Example 20px high" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="height: 20px">
+                <div class="progress-bar bg-success" style="width: 75%"></div>
+            </div>
+        </div>
+        <div class="d-flex flex-column flex-xl-row gap-xl-3">
+            <div class="alert alert-warning shadow w-100 d-none" role="alert">
+                <strong>BETA BUILD! </strong><br>NEXUS App <span id="nappv"></span><br>
+                Expect issues and incomplete or missing features! If you want to contribute visit our GitHub repository and if you find bugs please report them - also on GitHub or Discord.
+                <hr>
+                <a href="https://github.com/nerotvlive/nexus-app" target="_blank" type="button" class="btn btn-warning">GitHub</a>
+                <a href="https://discord.gg/hbHDrqUjJ8" target="_blank" type="button" class="btn btn-outline-warning">Discord</a>
+                <button onclick="this.parentElement.remove();" class="btn btn-outline-light" style="opacity: 0.8">Hide</button>
+            </div>
+            <div id="dev-mode-warning" class="alert alert-dismissible alert-info shadow d-none w-100" style="opacity: 1" role="alert">
+                <strong>DEV MODE ACTIVE! </strong><br>
+                You have enabled the development mode of the NEXUS app. This gives the program access to some extended functions, such as more entries in the menu bar, and the updater is disabled.<br>
+                <hr>
+                <button onclick="this.parentElement.remove();" class="btn btn-nex-blue" style="opacity: 0.8">Hide</button>
             </div>
         </div>
         <div class="d-flex gap-3">
@@ -74,7 +74,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="shadow" data-bs-toggle="collapse" data-bs-target="#changelog-2026.1-beta.8" aria-expanded="true" aria-controls="changelog-2026.1-beta.8">
-                                Changelog 2026.1-beta.8 <span class="badge text-bg-dark">2025/12/--</span>
+                                Changelog 3.0.0-pre.1 <span class="badge text-bg-dark">2026/01/01</span>
                                 <i class="bi bi-caret-down"></i>
                             </button>
                         </h2>
@@ -82,6 +82,9 @@
                             <div class="accordion-body">
                                 <strong>Added features</strong><br>
                                 <ul>
+                                    <li>
+                                        Added automatic instance grouping in the library.
+                                    </li>
                                     <li>
                                         Added support for the new Minecraft versioning system (26.1+).
                                     </li>
@@ -92,10 +95,24 @@
                                         Instance based settings which override global settings. (E.g. Java version, RAM allocation, etc.)
                                     </li>
                                 </ul>
-                                <hr><strong>Change features</strong><br>
+                                <hr>
+                                <strong>Change features</strong><br>
                                 <ul>
                                     <li>
+                                        Changed the version naming scheme from "2026.1-beta.X" to "3.0.0-pre.X" to better reflect the development status and simplify future versioning.
+                                    </li>
+                                    <li>
                                         Force disabled CurseForge in CombinedSearch until install functionality is added to its implementation.
+                                    </li>
+                                </ul>
+                                <hr>
+                                <strong>Removed features</strong><br>
+                                <ul>
+                                    <li>
+                                        Removed system command support from Game Hooks.
+                                    </li>
+                                    <li>
+                                        Removed Game Hooks for now. Will be re-added in a future update.
                                     </li>
                                 </ul>
                                 <hr>

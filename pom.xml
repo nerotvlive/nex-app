@@ -6,13 +6,13 @@
 
     <groupId>org.zyneonstudios.apex</groupId>
     <artifactId>nexus-app</artifactId>
-    <version>2026.1-beta.8</version>
+    <version>3.0.0-pre.1</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.name>Reformatio</nexus.name>
-        <nexus.type>unstable</nexus.type>
+        <nexus.type>stable</nexus.type>
     </properties>
 
     <repositories>
@@ -21,30 +21,45 @@
             <url>https://maven.nrfy.net/releases</url>
         </repository>
         <repository>
-            <id>nerofy-snapshots</id>
-            <url>https://maven.nrfy.net/snapshots</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com</url>
-            <name>jcenter-bintray</name>
         </repository>
     </repositories>
 
     <dependencies>
+        <!-- MAVEN CENTRAL REPOSITORY -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.5.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.starxg</groupId>
+            <artifactId>java-keytar</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.flowarg</groupId>
+            <artifactId>azuljavadownloader</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <!-- to fix dependency security issues -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.20.0</version>
+        </dependency>
+
+        <!-- NEROFY PUBLIC REPOSITORY -->
+        <dependency>
+            <groupId>live.nerotv</groupId>
+            <artifactId>a-minecraft-launcher</artifactId>
+            <version>2025.12.6</version>
+        </dependency>
         <dependency>
             <groupId>com.zyneonstudios.nexus</groupId>
             <artifactId>base-desktop</artifactId>
             <version>2025.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zyneonstudios.apex</groupId>
-            <artifactId>mojang-auth</artifactId>
-            <version>2025.12</version>
         </dependency>
         <dependency>
             <groupId>com.zyneonstudios.nexus</groupId>
@@ -52,20 +67,12 @@
             <version>2025.9</version>
         </dependency>
         <dependency>
-            <groupId>live.nerotv</groupId>
-            <artifactId>a-minecraft-launcher</artifactId>
-            <version>2025.12.6</version>
+            <groupId>org.zyneonstudios.apex</groupId>
+            <artifactId>mojang-auth</artifactId>
+            <version>2025.12</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.5.8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.starxg</groupId>
-            <artifactId>java-keytar</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+
+        <!-- JITPACK.IO REPOSITORY -->
         <dependency>
             <groupId>com.github.steos</groupId>
             <artifactId>jnafilechooser</artifactId>
@@ -75,11 +82,6 @@
             <groupId>com.github.MinnDevelopment</groupId>
             <artifactId>java-discord-rpc</artifactId>
             <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>fr.flowarg</groupId>
-            <artifactId>azuljavadownloader</artifactId>
-            <version>1.0.2</version>
         </dependency>
     </dependencies>
 
@@ -101,31 +103,18 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.zyneonstudios.apex.nexusapp.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.14.1</version>
                 <configuration>
-                    <source>21</source>
-                    <release>21</release>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.source}</target>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -147,13 +136,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.4.0</version>
                 <configuration>
                     <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
                         <nonFilteredFileExtension>zip</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
