@@ -1,5 +1,0 @@
-{
-  "name": "${nexus.name}",
-  "version": "${project.version}",
-  "type": "${nexus.type}"
-}
