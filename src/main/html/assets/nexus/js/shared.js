@@ -942,3 +942,7 @@ function startScrolling(element) {
 function stopScrolling() {
     clearInterval(scrollInterval);
 }
+
+function capitalizeFirstLetter(val) {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}

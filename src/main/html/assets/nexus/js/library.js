@@ -1,5 +1,4 @@
 function addInstance(id,name,icon,group) {
-
     id = decodeURIComponent(id);
     name = decodeURIComponent(name);
     icon = decodeURIComponent(icon);
@@ -148,6 +147,8 @@ function showInstance(id,name,version,summary,description,tagsString) {
             document.getElementById("library-tags").innerHTML += "<span class='badge bg-modrinth'>Modrinth</span>";
         } else if(tag.startsWith("curseforge")) {
             document.getElementById("library-tags").innerHTML += "<span class='badge bg-curseforge'>CurseForge</span>";
+        } else if(tag.startsWith("essential+")||tag.startsWith("essentialplus")) {
+            document.getElementById("library-tags").innerHTML += "<span class='badge bg-white text-black'>Essential+</span>";
         } else if(tag.startsWith("fabric-")) {
             document.getElementById("library-tags").innerHTML += "<span class='badge bg-info text-black'>Fabric " + tag.replaceAll("fabric-", "") + "</span>";
         } else if(tag.startsWith("forge-")) {
@@ -157,7 +158,7 @@ function showInstance(id,name,version,summary,description,tagsString) {
         } else if(tag.startsWith("quilt-")) {
             document.getElementById("library-tags").innerHTML += "<span class='badge bg-info text-black'>Quilt " + tag.replaceAll("quilt-", "") + "</span>";
         } else if(!tag.startsWith("modloader-")&&!tag.startsWith("modloder-")) {
-            document.getElementById("library-tags").innerHTML += "<span class='badge bg-white text-black'>"+tag+"</span>";
+            document.getElementById("library-tags").innerHTML += "<span class='badge bg-white text-black'>"+capitalizeFirstLetter(tag)+"</span>";
         }
     }
 

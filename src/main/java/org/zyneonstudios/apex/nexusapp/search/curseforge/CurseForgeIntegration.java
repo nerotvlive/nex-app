@@ -111,7 +111,6 @@ public class CurseForgeIntegration {
 
                         CurseForgeResource resource = new CurseForgeResource(pId);
                         CurseForgeResourceVersion file = new CurseForgeResourceVersion(pId, fId);
-                        System.out.println(file.getDownloadUrl());
 
                         String path = "mods/";
                         if (resource.getClassId() == 5) {
