@@ -231,7 +231,7 @@ function setBorderRadius(number) {
  */
 function setUIScale(number,disableDev) {
     // Clamp the border radius value between 0 and 2
-    number = Math.max(0, Math.min(2, number));
+    number = Math.max(-2, Math.min(2, number));
 
     uiScale = number;
     setStorageItem("settings.appearance.uiScale", number);

@@ -530,14 +530,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
     }
 
     public double getScaleFactor() {
-        int res = Toolkit.getDefaultToolkit().getScreenSize().height;
-        double factor = 0.0;
-        if(res>=2160) {
-            factor = res/1080.0;
-        } else if(res>=1440) {
-            factor = 1.0;
-        }
-        return factor*NexusApplication.getInstance().getLocalSettings().getUiScaleFactor();
+        return NexusApplication.getInstance().getLocalSettings().getUiScale();
     }
 
     public void rescale() {

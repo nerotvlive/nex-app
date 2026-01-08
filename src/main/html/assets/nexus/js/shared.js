@@ -130,7 +130,7 @@ let borderRadius = 1.0;
  * The current ui scale value.
  * @type {number}
  */
-let uiScale = 1.0;
+let uiScale = 0.0;
 let debounceTimer;
 
 /**

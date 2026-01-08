@@ -514,7 +514,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     NexusApplication.getInstance().getLocalSettings().setDefaultMinecraftFullscreen(bool);
                 } else if(s.startsWith("uiScale.")) {
                     double uiScale = Double.parseDouble(s.replace("uiScale.", ""));
-                    NexusApplication.getInstance().getLocalSettings().setUiScaleFactor(uiScale);
+                    NexusApplication.getInstance().getLocalSettings().setUiScale(uiScale);
                     frame.rescale();
                 }
             }
