@@ -26,7 +26,7 @@ public class CurseForgeFacetsBuilder {
         return this;
     }
 
-    public CurseForgeFacetsBuilder withCategoryIds(int[] categoryIds) {
+    public CurseForgeFacetsBuilder withCategoryIds(int... categoryIds) {
         this.categoryIds = categoryIds;
         return this;
     }

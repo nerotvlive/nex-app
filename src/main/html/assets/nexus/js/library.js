@@ -144,6 +144,10 @@ function showInstance(id,name,version,summary,description,tagsString) {
         let tag = tags[i];
         if(tag.startsWith("minecraft-")) {
             document.getElementById("library-tags").innerHTML += "<span class='badge bg-black'>Minecraft " + tag.replaceAll("minecraft-", "") + "</span>";
+        } else if(tag.startsWith("modrinth")) {
+            document.getElementById("library-tags").innerHTML += "<span class='badge bg-modrinth'>Modrinth</span>";
+        } else if(tag.startsWith("curseforge")) {
+            document.getElementById("library-tags").innerHTML += "<span class='badge bg-curseforge'>CurseForge</span>";
         } else if(tag.startsWith("fabric-")) {
             document.getElementById("library-tags").innerHTML += "<span class='badge bg-info text-black'>Fabric " + tag.replaceAll("fabric-", "") + "</span>";
         } else if(tag.startsWith("forge-")) {

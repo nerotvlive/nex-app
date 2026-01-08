@@ -1,6 +1,7 @@
 package org.zyneonstudios.apex.nexusapp.main;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.starxg.keytar.Keytar;
 import org.zyneonstudios.apex.nexusapp.Main;
@@ -53,6 +54,9 @@ public class NexusApplication {
     private static final Logger log = LoggerFactory.getLogger(NexusApplication.class);
     private ReadableZyndex NEX = null;
     private final LocalInstanceManager instanceManager;
+
+    private final Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson fastGson = new GsonBuilder().create();
 
     //Authentication
     private static AuthInfos authInfos = null;
@@ -236,7 +240,7 @@ public class NexusApplication {
         if(!getLogger().isDebugging()) {
             try {
                 String data = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("nexus.json").readAllBytes());
-                JsonObject nexus = new Gson().fromJson(data, JsonObject.class);
+                JsonObject nexus = fastGson.fromJson(data, JsonObject.class);
                 version = nexus.get("version").getAsString();
             } catch (Exception e) {
                 getLogger().err("Couldn't fetch version from nexus.json: " + e.getMessage());
@@ -663,5 +667,13 @@ public class NexusApplication {
 
     public NexusConsoleHandler getConsoleHandler() {
         return consoleHandler;
+    }
+
+    public Gson getFastGson() {
+        return fastGson;
+    }
+
+    public Gson getPrettyGson() {
+        return prettyGson;
     }
 }

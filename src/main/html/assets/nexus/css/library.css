@@ -246,6 +246,18 @@
         }
     }
 
+    #library-tags {
+        .badge.bg-modrinth {
+            background: #1bd96a;
+            color: black;
+        }
+
+        .badge.bg-curseforge {
+            background: #1f1f1f;
+            color: #f16436;
+        }
+    }
+
     #library-title {
         span {
             white-space: nowrap;

@@ -20,8 +20,10 @@ import org.zyneonstudios.apex.nexusapp.frame.AppFrame;
 import org.zyneonstudios.apex.nexusapp.launchprocess.GameHooks;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.search.CombinedSearch;
+import org.zyneonstudios.apex.nexusapp.search.curseforge.CurseForgeIntegration;
+import org.zyneonstudios.apex.nexusapp.search.curseforge.resource.CurseForgeResource;
 import org.zyneonstudios.apex.nexusapp.search.modrinth.ModrinthIntegration;
-import org.zyneonstudios.apex.nexusapp.search.modrinth.ModrinthResource;
+import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResource;
 import org.zyneonstudios.apex.nexusapp.search.modrinth.search.facets.categories.ModrinthCategory;
 import org.zyneonstudios.apex.nexusapp.search.zyndex.ZyndexIntegration;
 import org.zyneonstudios.apex.nexusapp.search.zyndex.local.LocalInstance;
@@ -560,6 +562,8 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     ModrinthIntegration.installModpack(new File(NexusApplication.getInstance().getLocalSettings().getDefaultMinecraftPath()), project.getId(), version);
                 }
                 case "curseforge" -> {
+                    CurseForgeResource project = new CurseForgeResource(Integer.parseInt(id));
+                    CurseForgeIntegration.installModpack(new File(NexusApplication.getInstance().getLocalSettings().getDefaultMinecraftPath()), project.getId(), project.getMainFileId());
                 }
             }
 
@@ -592,6 +596,10 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                         tag = "Modrinth";
                         tagId = "modrinth";
                         color = "nex-green";
+                    } else if(i.getId().toLowerCase().contains("curseforge")) {
+                        tag = "Curseforge";
+                        tagId = "curseforge";
+                        color = "nex-orange";
                     } else {
                         tag = "Uncategorized";
                         tagId = tag.toLowerCase();

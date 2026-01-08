@@ -1,9 +1,9 @@
 package org.zyneonstudios.apex.nexusapp.modules;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -11,7 +11,10 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.jar.JarFile;
 
 /**
@@ -86,7 +89,7 @@ public class ModuleLoader {
             try (JarFile jarFile = new JarFile(moduleJar.getAbsolutePath())) {
                 InputStream is = jarFile.getInputStream(jarFile.getJarEntry("nexus-module.json"));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                JsonObject jsonObject = new Gson().fromJson(reader, JsonObject.class);
+                JsonObject jsonObject = NexusApplication.getInstance().getFastGson().fromJson(reader, JsonObject.class);
                 JsonArray array = jsonObject.getAsJsonArray("modules");
                 mainPath = array.get(0).getAsJsonObject().get("main").getAsString();
                 id = array.get(0).getAsJsonObject().get("id").getAsString();

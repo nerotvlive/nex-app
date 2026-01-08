@@ -1,4 +1,4 @@
-package org.zyneonstudios.apex.nexusapp.search.modrinth;
+package org.zyneonstudios.apex.nexusapp.search.modrinth.resource;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

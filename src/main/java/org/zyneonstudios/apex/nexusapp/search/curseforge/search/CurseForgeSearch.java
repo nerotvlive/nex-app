@@ -1,7 +1,5 @@
 package org.zyneonstudios.apex.nexusapp.search.curseforge.search;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.search.curseforge.CurseForgeIntegration;
@@ -103,8 +101,7 @@ public class CurseForgeSearch {
                 }
                 searchRequest = search;
             }
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            return gson.fromJson(CurseForgeIntegration.makeRequest(searchRequest), JsonObject.class);
+            return NexusApplication.getInstance().getFastGson().fromJson(CurseForgeIntegration.accessAPI(searchRequest), JsonObject.class);
         } catch (Exception e) {
             NexusApplication.getLogger().err("[Minecraft] Could not search through CurseForge: " + e.getMessage());
             return null;

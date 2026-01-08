@@ -1,10 +1,9 @@
 package org.zyneonstudios.apex.nexusapp.main;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 import org.zyneonstudios.apex.nexusapp.downloads.Download;
 import org.zyneonstudios.apex.nexusapp.downloads.DownloadManager;
-import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -171,7 +170,7 @@ public class NexusRunner {
         }
 
         try {
-            JsonObject json = new Gson().fromJson(GsonUtility.getFromURL("https://raw.githubusercontent.com/zyneonstudios/nexus-nex/main/application/index.json"), JsonObject.class).getAsJsonArray("versions").get(0).getAsJsonObject();
+            JsonObject json = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromURL("https://raw.githubusercontent.com/zyneonstudios/nexus-nex/main/application/index.json"), JsonObject.class).getAsJsonArray("versions").get(0).getAsJsonObject();
             checkVersion(json);
         } catch (Exception ignore) {
         }

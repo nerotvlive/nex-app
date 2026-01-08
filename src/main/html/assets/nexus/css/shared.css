@@ -936,6 +936,10 @@ body {
                     background-color: color-mix(in srgb, var(--nex-red-darker), transparent 75%);
                 }
 
+                .submenu-group.nex-orange {
+                    background-color: color-mix(in srgb, var(--bs-orange), transparent 75%);
+                }
+
                 .submenu-group.nex-yellow {
                     background-color: color-mix(in srgb, var(--nex-yellow-darker), transparent 75%);
                 }

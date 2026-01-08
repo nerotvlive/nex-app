@@ -1,10 +1,10 @@
-package org.zyneonstudios.apex.nexusapp.search.modrinth;
+package org.zyneonstudios.apex.nexusapp.search.curseforge;
 
 import org.zyneonstudios.apex.nexusapp.downloads.Download;
 import org.zyneonstudios.apex.nexusapp.downloads.DownloadManager;
 import org.zyneonstudios.apex.nexusapp.events.DownloadFinishEvent;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
-import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResource;
+import org.zyneonstudios.apex.nexusapp.search.curseforge.resource.CurseForgeResource;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class ModrinthDownload extends Download {
+public class CurseForgeDownload extends Download {
 
     private DownloadManager.DownloadState state = DownloadManager.DownloadState.WAITING;
     private String percentString = "0%";
@@ -28,8 +28,8 @@ public class ModrinthDownload extends Download {
     private DownloadFinishEvent event = null;
     private final Collection<Download> fileDownloads;
 
-    public ModrinthDownload(ModrinthResource project, Collection<Download> fileDownloads, Path basePath) throws MalformedURLException {
-        super(UUID.randomUUID(), project.getTitle(), new URL(project.getUrl()), basePath);
+    public CurseForgeDownload(CurseForgeResource project, Collection<Download> fileDownloads, Path basePath) throws MalformedURLException {
+        super(UUID.randomUUID(), project.getName(), new URL(project.getUrl()), basePath);
         this.fileDownloads = fileDownloads;
     }
 
@@ -45,9 +45,9 @@ public class ModrinthDownload extends Download {
             startTime = Instant.now();
 
             try {
-                double weight = 100.0/fileDownloads.size();
+                double weight = 100.0 / fileDownloads.size();
                 final int[] finished = {0};
-                for(Download download : fileDownloads) {
+                for (Download download : fileDownloads) {
                     download.setFinishEvent(new DownloadFinishEvent(download) {
                         @Override
                         public boolean onFinish() {
@@ -60,11 +60,11 @@ public class ModrinthDownload extends Download {
                             return false;
                         }
                     });
-                    CompletableFuture.runAsync(()->{
+                    CompletableFuture.runAsync(() -> {
                         download.start();
                     });
                 }
-                while (finished[0]<fileDownloads.size()) {
+                while (finished[0] < fileDownloads.size()) {
                     Thread.sleep(1000);
                 }
                 setPercent(100);
@@ -117,7 +117,6 @@ public class ModrinthDownload extends Download {
     public double getSpeedMbps() {
         return -1;
     }
-
 
 
     @Override

@@ -1,12 +1,11 @@
-package org.zyneonstudios.apex.nexusapp.search.modrinth;
+package org.zyneonstudios.apex.nexusapp.search.modrinth.resource;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.search.modrinth.search.facets.ModrinthEnvironmentType;
-import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class ModrinthResource {
 
     public ModrinthResource(String id_or_slug) {
         url = "https://api.modrinth.com/v2/project/" + id_or_slug;
-        json = new Gson().fromJson(GsonUtility.getFromURL(url), JsonObject.class);
+        json = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromURL(url), JsonObject.class);
         clientSide = ModrinthEnvironmentType.valueOf(json.get("client_side").getAsString());
         serverSide = ModrinthEnvironmentType.valueOf(json.get("server_side").getAsString());
 

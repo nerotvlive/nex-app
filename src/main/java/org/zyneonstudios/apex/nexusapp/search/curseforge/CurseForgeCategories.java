@@ -1,9 +1,9 @@
 package org.zyneonstudios.apex.nexusapp.search.curseforge;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ public class CurseForgeCategories {
     private static HashMap<String, Integer> categoryIds = new HashMap<>();
 
     public static void init() {
-        JsonArray data = new GsonBuilder().setPrettyPrinting().create().fromJson(CurseForgeIntegration.makeRequest("https://api.curseforge.com/v1/categories?gameId=432"), JsonObject.class).getAsJsonArray("data");
+        JsonArray data = NexusApplication.getInstance().getFastGson().fromJson(CurseForgeIntegration.accessAPI("https://api.curseforge.com/v1/categories?gameId=432"), JsonObject.class).getAsJsonArray("data");
         for (JsonElement jsonElement : data) {
             JsonObject category = jsonElement.getAsJsonObject();
             categorySlugs.put(category.get("id").getAsInt(), category.get("slug").getAsString());

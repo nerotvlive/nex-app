@@ -1,17 +1,17 @@
 package org.zyneonstudios.apex.nexusapp.search.modrinth;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.zyneonstudios.apex.nexusapp.downloads.Download;
-import org.zyneonstudios.apex.nexusapp.events.DownloadFinishEvent;
-import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import com.zyneonstudios.nexus.instance.ZynstanceBuilder;
 import com.zyneonstudios.nexus.utilities.file.FileActions;
 import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
 import org.apache.commons.io.FileUtils;
+import org.zyneonstudios.apex.nexusapp.downloads.Download;
+import org.zyneonstudios.apex.nexusapp.events.DownloadFinishEvent;
+import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
+import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +31,7 @@ public class ModrinthIntegration {
         ModrinthResource project = new ModrinthResource(projectId);
         installDir = getInstallDir(installDir,project.getSlug());
 
-        project.getTeamId();
+        String fantastico;
 
         String fileName = "modrinth-"+projectId+"-"+versionId+".mrpack";
         String downloadName = (NexusApplication.getInstance().getWorkingPath()+"/temp/"+fileName).replace("\\","/").replace("//","/");
@@ -92,7 +92,7 @@ public class ModrinthIntegration {
             File index = new File(modrinthPackPath+"/modrinth.index.json");
 
             if(index.exists()) {
-                JsonObject indexJson = new Gson().fromJson(GsonUtility.getFromFile(index), JsonObject.class);
+                JsonObject indexJson = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromFile(index), JsonObject.class);
                 if(indexJson.has("files")) {
                     final double[] progress = {0};
                     final int[] finished = {0};
@@ -149,7 +149,7 @@ public class ModrinthIntegration {
                                 instanceConverter.setTags(tags);
 
                                 ArrayList<String> authors = new ArrayList<>();
-                                JsonArray members = new Gson().fromJson(GsonUtility.getFromURL("https://api.modrinth.com/v2/project/"+projectId+"/members"), JsonArray.class);
+                                JsonArray members = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromURL("https://api.modrinth.com/v2/project/"+projectId+"/members"), JsonArray.class);
                                 for(JsonElement member : members) {
                                     authors.add(member.getAsJsonObject().get("user").getAsJsonObject().get("username").getAsString());
                                 }
