@@ -3,6 +3,7 @@
  */
 
 // --- Global Variables ---
+let instanceGrouping = true;
 
 /**
  * The currently active instance of the application.
@@ -247,6 +248,9 @@ function initAppearanceSettings() {
 
     // Load settings in panel setting from storage or use default
     settingsInMenu = getStorageItem("settings.appearance.settingsInPanel") === "true" || settingsInMenu;
+
+    // Load instance grouping value
+    instanceGrouping = getStorageItem("settings.instanceGrouping") === "true" || settingsInMenu;
 }
 initAppearanceSettings();
 

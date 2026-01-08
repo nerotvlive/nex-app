@@ -1,5 +1,3 @@
-document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<span class='text nexus-version'>"+version+"</span><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
-
 /**
  * Initializes the appearance settings values based on stored preferences.
  */
@@ -69,6 +67,7 @@ function initSettings() {
     }
     initArrayBoxes();
     console.log("[CONNECTOR] settings.init");
+    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<span class='text nexus-version'>"+version+"</span><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
 }
 
 function showSettingsCategory(category) {

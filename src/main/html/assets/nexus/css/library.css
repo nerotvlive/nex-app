@@ -214,6 +214,27 @@
         z-index: 10;
     }
 
+    .instancelist-header {
+        position: relative;
+
+        i {
+            position: absolute;
+            background: transparent;
+            top: 0;
+            right: 0;
+            margin: calc(0.25rem - 1px) 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--bs-border-radius-lg);
+            border: solid 1px transparent;
+        }
+
+        i:hover {
+            background: var(--nex-brighter-200);
+            cursor: pointer;
+            border: solid 1px var(--bs-border-color-translucent);
+        }
+    }
+
     #instance-view {
         div.glass {
             width: 20rem;

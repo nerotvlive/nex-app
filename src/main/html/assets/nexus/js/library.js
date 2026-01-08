@@ -4,6 +4,10 @@ function addInstance(id,name,icon,group) {
     icon = decodeURIComponent(icon);
     group = decodeURIComponent(group);
 
+    if(instanceGrouping === false) {
+        group = null;
+    }
+
     if(!document.getElementById(id)) {
         let list = document.getElementById("instance-list");
         if (group) {
@@ -43,31 +47,35 @@ function addInstance(id,name,icon,group) {
 }
 
 function addInstanceGroup(id,name,colorName) {
-    if(!document.getElementById(id)) {
+    if (!document.getElementById(id)) {
         let list = document.getElementById("instance-list");
         const template = list.querySelector(".instance-group-template");
-        if (template&&id&&name) {
+        if (template && id && name) {
             const group = template.cloneNode(true);
             group.id = id;
-            group.classList.remove("d-none");
+            if (instanceGrouping === true) {
+                group.classList.remove("d-none");
+            } else {
+                group.style.display = "none";
+            }
             group.classList.remove("instance-group-template");
-            group.querySelector(".collapse").id = id+"-collapse";
-            group.querySelector("a").id = id+"-collapse-button";
+            group.querySelector(".collapse").id = id + "-collapse";
+            group.querySelector("a").id = id + "-collapse-button";
             group.querySelector("a").onclick = function () {
-                toggleSubMenuGroup(id+"-collapse")
+                toggleSubMenuGroup(id + "-collapse")
             };
             group.querySelector("h6").innerText = name;
             group.querySelector("h6").onclick = function () {
-                toggleSubMenuGroup(id+"-collapse")
+                toggleSubMenuGroup(id + "-collapse")
             };
-            if(colorName) {
+            if (colorName) {
                 group.classList.add(colorName);
             }
             template.parentElement.insertBefore(group, template);
         }
-        const id_ = id+"-collapse";
-        if(localStorage.getItem("submenu-group_"+id_)) {
-            if(localStorage.getItem("submenu-group_"+id_) === "enable") {
+        const id_ = id + "-collapse";
+        if (localStorage.getItem("submenu-group_" + id_)) {
+            if (localStorage.getItem("submenu-group_" + id_) === "enable") {
                 enableSubMenuGroup(id_);
             }
         }
@@ -90,6 +98,15 @@ function loadFolderButtonHoverEvent() {
 function initLibrary() {
     console.log("[CONNECTOR] library.init");
     initArrayBoxes();
+
+    const toggle = document.querySelector(".instanceGroupingToggle");
+    if(instanceGrouping === true) {
+        toggle.classList.remove("bi-list-task");
+        toggle.classList.add("bi-view-list");
+    } else {
+        toggle.classList.remove("bi-view-list");
+        toggle.classList.add("bi-list-task");
+    }
 }
 
 function showInstance(id,name,version,summary,description,tagsString) {
@@ -226,4 +243,28 @@ document.getElementById("settings-pane").addEventListener("click", function (eve
     if (pane && !pane.contains(event.target)) {
         document.getElementById("settings-pane").classList.remove("show");
     }
-})
+});
+
+function toggleInstanceGrouping() {
+    if(instanceGrouping === true) {
+        enableInstanceGrouping(false);
+    } else {
+        enableInstanceGrouping(true);
+    }
+}
+
+function enableInstanceGrouping(bool) {
+    if(bool === true||bool === false) {
+        instanceGrouping = bool;
+        setStorageItem("settings.instanceGrouping", bool);
+        location.reload();
+        const toggle = document.querySelector(".instanceGroupingToggle");
+        if(bool === true) {
+            toggle.classList.remove("bi-list-task");
+            toggle.classList.add("bi-view-list");
+        } else {
+            toggle.classList.remove("bi-view-list");
+            toggle.classList.add("bi-list-task");
+        }
+    }
+}
