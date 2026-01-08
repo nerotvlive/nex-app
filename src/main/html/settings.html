@@ -178,7 +178,7 @@
                         </td>
                     </tr>
                     <!-- Border Radius Control Row -->
-                    <tr class="last">
+                    <tr>
                         <td class="left">Border radius <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you set the radius of the rounded edges. This determines how rounded the corners of the NEXUS App interface should be, with a value between 0 and 2 (1 by default)."></i></td>
                         <td>
                             <label>
@@ -190,6 +190,22 @@
                             <label>
                                 <!-- Range Slider for Border Radius -->
                                 <input type="range" class="range appearance-borderRadius form-range" min="0" value="0" max="2" step="0.01" oninput="setBorderRadius(parseFloat(this.value));">
+                            </label>
+                        </td>
+                    </tr>
+                    <!-- UI Scale Control Row -->
+                    <tr class="last">
+                        <td class="left">UI Scale Factor <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Allows you to set the factor of the UI scale multiplication from 0 to 2. Use this to fine tune the size of the application user interface elements."></i></td>
+                        <td>
+                            <label>
+                                <!-- Number Input for UI Scale -->
+                                <input class="number-display appearance-uiScaleDisplay" type="number" min="0" max="2" step="0.1" value="0" oninput="" onchange="debouncedSetUIScale(parseFloat(this.value));">
+                            </label>
+                        </td>
+                        <td class="right">
+                            <label>
+                                <!-- Range Slider for UI Scale -->
+                                <input type="range" class="range appearance-uiScale form-range" min="0" value="0" max="2" step="0.1" oninput="debouncedSetUIScale(parseFloat(this.value));">
                             </label>
                         </td>
                     </tr>

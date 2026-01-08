@@ -126,6 +126,13 @@ let accentColor = "var(--nex-purple)";
 let borderRadius = 1.0;
 
 /**
+ * The current ui scale value.
+ * @type {number}
+ */
+let uiScale = 1.0;
+let debounceTimer;
+
+/**
  * Indicates if the panel is floating.
  * @type {boolean}
  */
@@ -220,6 +227,11 @@ function initAppearanceSettings() {
     // Load border radius from storage or use default
     if(getStorageItem("settings.appearance.borderRadius")) {
         borderRadius = parseFloat(getStorageItem("settings.appearance.borderRadius"));
+    }
+
+    // Load ui scale from storage or use default
+    if(getStorageItem("settings.appearance.uiScale")) {
+        uiScale = parseFloat(getStorageItem("settings.appearance.uiScale"));
     }
 
     // Load panel floating setting from storage or use default
@@ -534,6 +546,7 @@ addEventListener("DOMContentLoaded", () => {
 
     updateTheme();
     setBorderRadius_dev(borderRadius);
+    setUIScale_dev(uiScale);
     setAccentColor_dev(accentColor);
 
     // Load a page if specified in the URL
@@ -589,8 +602,7 @@ addEventListener("DOMContentLoaded", () => {
 // --- Appearance Settings Helpers ---
 
 /**
- * Applies the border radius to the given element and its children.
- * @param {HTMLElement} e - The element to apply the border radius to.
+ * Applies the border radius.
  * @param {number} r - The border radius value.
  */
 function setBorderRadius_dev(r) {
@@ -601,6 +613,14 @@ function setBorderRadius_dev(r) {
         applyBorderRadiusToElement(e, r);
     });
     applyBorderRadiusToElement(root, r);
+}
+
+/**
+ * Applies the UI scale.
+ * @param {number} r - The uiScale value.
+ */
+function setUIScale_dev(r) {
+    console.log("[CONNECTOR] settings.set.uiScale."+r);
 }
 
 /**

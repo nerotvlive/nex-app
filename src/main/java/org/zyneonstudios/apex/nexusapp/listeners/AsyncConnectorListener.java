@@ -86,7 +86,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
 
             // Handle page loaded events.
         } else if (s.startsWith("event.page.loaded")) {
-            frame.getBrowser().setZoomLevel(frame.getScaleFactor());
+            frame.rescale();
             for (PageLoadedEvent event : NexusApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
                 event.setUrl(frame.getBrowser().getURL());
                 event.execute();
@@ -510,6 +510,10 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 } else if(s.startsWith("fullscreen.")) {
                     boolean bool = s.replace("fullscreen.", "").equals("true");
                     NexusApplication.getInstance().getLocalSettings().setDefaultMinecraftFullscreen(bool);
+                } else if(s.startsWith("uiScale.")) {
+                    double uiScale = Double.parseDouble(s.replace("uiScale.", ""));
+                    NexusApplication.getInstance().getLocalSettings().setUiScaleFactor(uiScale);
+                    frame.rescale();
                 }
             }
         } else if(s.equals("initAccountSettings")) {

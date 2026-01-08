@@ -121,6 +121,9 @@ public class NexusApplication {
         settings.ensure("settings.window.minimizeOnStart",true);
         localSettings.setMinimizeApp(settings.getBool("settings.window.minimizeOnStart"));
 
+        settings.ensure("settings.window.scaleFactor",1.0);
+        localSettings.setUiScaleFactor(settings.getDoub("settings.window.scaleFactor"));
+
         settings.ensure("settings.discover.search.nex.enabled", true);
         localSettings.setDiscoverSearchNEX(settings.getBool("settings.discover.search.nex.enabled"));
 

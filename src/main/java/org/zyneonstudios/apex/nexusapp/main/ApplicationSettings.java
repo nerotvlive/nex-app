@@ -7,6 +7,7 @@ public class ApplicationSettings {
 
     private final HashMap<String, Object> temporarySettings = new HashMap<>();
     private boolean minimizeApp = true;
+    private double uiScaleFactor = 1;
     private boolean nativeWindow = true;
     private boolean discoverSearchNEX = true;
     private boolean discoverSearchCurseForge = true;
@@ -116,9 +117,18 @@ public class ApplicationSettings {
         return minimizeApp;
     }
 
+    public double getUiScaleFactor() {
+        return uiScaleFactor;
+    }
+
     public void setMinimizeApp(boolean minimizeApp) {
         this.minimizeApp = minimizeApp;
         NexusApplication.getInstance().getSettings().set("settings.window.minimizeOnStart", minimizeApp);
+    }
+
+    public void setUiScaleFactor(double uiScaleFactor) {
+        this.uiScaleFactor = uiScaleFactor;
+        NexusApplication.getInstance().getSettings().set("settings.window.scaleFactor", uiScaleFactor);
     }
 
     public boolean useNativeWindow() {

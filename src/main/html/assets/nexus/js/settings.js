@@ -26,6 +26,10 @@ function initAppearanceValues() {
     document.querySelector(".appearance-borderRadiusDisplay").value = borderRadius;
     document.querySelector(".appearance-borderRadius").value = borderRadius;
 
+    // Set the ui scale display and range values
+    document.querySelector(".appearance-uiScaleDisplay").value = uiScale;
+    document.querySelector(".appearance-uiScale").value = uiScale;
+
     // Set the panel floating checkbox state
     document.querySelector(".appearance-panelFloating").checked = panelFloating;
 
@@ -220,6 +224,33 @@ function setBorderRadius(number) {
     document.querySelector(".appearance-borderRadiusDisplay").value = borderRadius;
     document.querySelector(".appearance-borderRadius").value = borderRadius;
     setBorderRadius_dev(number);
+}
+
+/**
+ * Sets the border radius and updates the stored preference.
+ * @param {number} number - The new border radius value.
+ */
+function setUIScale(number,disableDev) {
+    // Clamp the border radius value between 0 and 2
+    number = Math.max(0, Math.min(2, number));
+
+    uiScale = number;
+    setStorageItem("settings.appearance.uiScale", number);
+    document.querySelector(".appearance-uiScaleDisplay").value = uiScale;
+    document.querySelector(".appearance-uiScale").value = uiScale;
+    if(!disableDev) {
+        setUIScale_dev(number);
+    }
+}
+
+function debouncedSetUIScale(value) {
+    document.querySelector(".appearance-uiScaleDisplay").value = value;
+    document.querySelector(".appearance-uiScale").value = value;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        console.log("[CONNECTOR] settings.set.uiScale."+value);
+        setUIScale(parseFloat(value),true);
+    }, 500);
 }
 
 /**
