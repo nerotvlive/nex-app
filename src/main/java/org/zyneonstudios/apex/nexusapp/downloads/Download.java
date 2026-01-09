@@ -1,6 +1,7 @@
 package org.zyneonstudios.apex.nexusapp.downloads;
 
-import org.zyneonstudios.apex.nexusapp.events.DownloadFinishEvent;
+import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
+import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,7 +57,10 @@ public class Download {
     private double percent = 0;
 
     // The event to be triggered when the download is finished.
-    private DownloadFinishEvent event = null;
+    private DownloadEndEvent event = null;
+
+    // The event to be triggered when the download is failed.
+    private DownloadEndEvent failEvent = null;
 
     /**
      * Constructor for the Download.
@@ -102,12 +106,21 @@ public class Download {
     }
 
     /**
-     * Sets the DownloadFinishEvent to be triggered when the download is finished.
+     * Sets the DownloadEndEvent to be triggered when the download is finished.
      *
-     * @param event The DownloadFinishEvent to be triggered.
+     * @param event The DownloadEndEvent to be triggered.
      */
-    public void setFinishEvent(DownloadFinishEvent event) {
+    public void setFinishEvent(DownloadEndEvent event) {
         this.event = event;
+    }
+
+    /**
+     * Sets the DownloadEndEvent to be triggered when the download is failed.
+     *
+     * @param failEvent The DownloadEndEvent to be triggered.
+     */
+    public void setFailEvent(DownloadEndEvent failEvent) {
+        this.failEvent = failEvent;
     }
 
     /**
@@ -166,6 +179,7 @@ public class Download {
             }
         }
         // Set the state to failed if the download failed.
+        setFailed();
         state = DownloadManager.DownloadState.FAILED;
         if (event != null) {
             event.execute();
@@ -290,6 +304,22 @@ public class Download {
     }
 
     /**
+     * Gets the estimated remaining time for the download to complete.
+     * @param speed used to override the local calculated speed
+     *
+     * @return The estimated remaining time.
+     */
+    public Duration getEstimatedRemainingTime(double speed) {
+        if (speed == 0) {
+            return Duration.ZERO;
+        }
+
+        long remainingBytes = (long) ((100 - percent) / 100.0 * fileSize);
+        double remainingSeconds = remainingBytes / 1024.0 / 1024.0 / speed;
+        return Duration.ofSeconds((long) remainingSeconds);
+    }
+
+    /**
      * Gets the unique identifier of the download.
      *
      * @return The unique identifier of the download.
@@ -351,5 +381,19 @@ public class Download {
         percent = 100;
         percentString = "100%";
         state = DownloadManager.DownloadState.FINISHED;
+    }
+
+    /**
+     * Sets whether the download is finished.
+     */
+    private void setFailed() {
+        this.finished = true;
+        if (failEvent != null) {
+            failEvent.execute();
+        }
+        finishTime = Instant.now();
+        percent = -1;
+        percentString = "-1";
+        state = DownloadManager.DownloadState.FAILED;
     }
 }

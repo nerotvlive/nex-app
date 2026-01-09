@@ -1,6 +1,6 @@
 package org.zyneonstudios.apex.nexusapp.main;
 
-import org.zyneonstudios.apex.nexusapp.events.DownloadFinishEvent;
+import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
 import org.zyneonstudios.apex.nexusapp.events.PageLoadedEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,41 +8,41 @@ import java.util.List;
 /**
  * The {@code NexusEventHandler} class manages event listeners for the Nexus application.
  * It provides methods to add, remove, and retrieve listeners for different types of events,
- * such as {@link DownloadFinishEvent} and {@link PageLoadedEvent}.
+ * such as {@link DownloadEndEvent} and {@link PageLoadedEvent}.
  */
 public class NexusEventHandler {
 
     // Lists to store event listeners
-    private final List<DownloadFinishEvent> downloadFinishEvents = new ArrayList<>();
+    private final List<DownloadEndEvent> DownloadEndEvents = new ArrayList<>();
     private final List<PageLoadedEvent> pageLoadedEvents = new ArrayList<>();
 
     /**
-     * Gets the list of registered DownloadFinishEvent listeners.
+     * Gets the list of registered DownloadEndEvent listeners.
      *
-     * @return The list of DownloadFinishEvent listeners.
+     * @return The list of DownloadEndEvent listeners.
      */
-    public List<DownloadFinishEvent> getDownloadFinishEvents() {
-        return downloadFinishEvents;
+    public List<DownloadEndEvent> getDownloadEndEvents() {
+        return DownloadEndEvents;
     }
 
     /**
-     * Adds a DownloadFinishEvent listener to the list.
+     * Adds a DownloadEndEvent listener to the list.
      *
-     * @param event The DownloadFinishEvent listener to add.
+     * @param event The DownloadEndEvent listener to add.
      */
-    public void addDownloadFinishEvent(DownloadFinishEvent event) {
-        if (!downloadFinishEvents.contains(event)) {
-            downloadFinishEvents.add(event);
+    public void addDownloadEndEvent(DownloadEndEvent event) {
+        if (!DownloadEndEvents.contains(event)) {
+            DownloadEndEvents.add(event);
         }
     }
 
     /**
-     * Removes a DownloadFinishEvent listener from the list.
+     * Removes a DownloadEndEvent listener from the list.
      *
-     * @param event The DownloadFinishEvent listener to remove.
+     * @param event The DownloadEndEvent listener to remove.
      */
-    public void removeDownloadFinishEvent(DownloadFinishEvent event) {
-        downloadFinishEvents.remove(event);
+    public void removeDownloadEndEvent(DownloadEndEvent event) {
+        DownloadEndEvents.remove(event);
     }
 
     /**

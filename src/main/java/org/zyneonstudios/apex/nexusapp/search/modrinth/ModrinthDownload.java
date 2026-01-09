@@ -2,7 +2,7 @@ package org.zyneonstudios.apex.nexusapp.search.modrinth;
 
 import org.zyneonstudios.apex.nexusapp.downloads.Download;
 import org.zyneonstudios.apex.nexusapp.downloads.DownloadManager;
-import org.zyneonstudios.apex.nexusapp.events.DownloadFinishEvent;
+import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResource;
 
@@ -25,7 +25,7 @@ public class ModrinthDownload extends Download {
     private int fileSize = 0;
     private boolean finished = false;
     private double percent = 0;
-    private DownloadFinishEvent event = null;
+    private DownloadEndEvent event = null;
     private final Collection<Download> fileDownloads;
 
     public ModrinthDownload(ModrinthResource project, Collection<Download> fileDownloads, Path basePath) throws MalformedURLException {
@@ -34,7 +34,7 @@ public class ModrinthDownload extends Download {
     }
 
     @Override
-    public void setFinishEvent(DownloadFinishEvent event) {
+    public void setFinishEvent(DownloadEndEvent event) {
         this.event = event;
     }
 
@@ -48,7 +48,7 @@ public class ModrinthDownload extends Download {
                 double weight = 100.0/fileDownloads.size();
                 final int[] finished = {0};
                 for(Download download : fileDownloads) {
-                    download.setFinishEvent(new DownloadFinishEvent(download) {
+                    download.setFinishEvent(new DownloadEndEvent(download) {
                         @Override
                         public boolean onFinish() {
                             percent += weight;

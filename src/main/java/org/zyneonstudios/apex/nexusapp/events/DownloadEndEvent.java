@@ -6,11 +6,11 @@ import com.zyneonstudios.nexus.utilities.events.Event;
 import java.util.UUID;
 
 /**
- * The {@code DownloadFinishEvent} class is an abstract event that is triggered when a download
+ * The {@code DownloadEndEvent} class is an abstract event that is triggered when a download
  * process is completed. It provides information about the finished download and allows
  * modules to react to download completion events.
  */
-public abstract class DownloadFinishEvent implements Event {
+public abstract class DownloadEndEvent implements Event {
 
     // The unique identifier for this event instance.
     private final UUID uuid = UUID.randomUUID();
@@ -19,11 +19,11 @@ public abstract class DownloadFinishEvent implements Event {
     private final Download download;
 
     /**
-     * Constructor for the DownloadFinishEvent.
+     * Constructor for the DownloadEndEvent.
      *
      * @param download The download that has finished.
      */
-    public DownloadFinishEvent(Download download) {
+    public DownloadEndEvent(Download download) {
         this.download = download;
     }
 

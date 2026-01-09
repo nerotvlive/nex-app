@@ -1,69 +1,102 @@
 <link href="assets/nexus/css/downloads.css" rel="stylesheet">
 <div id="bg-div"></div>
-<div class="position-absolute z-n1 p-3 w-100 h-100 d-flex justify-content-center align-items-center" id="downloads-loader">
-    <strong id="downloads-loading">Loading downloads...</strong>
-</div>
 
-<div id="downloads" class="position-absolute w-100 h-100 p-0 m-0 overflow-auto">
-    <div id="running-downloads" class="p-0 m-0"></div>
-    <div id="waiting-downloads" class="p-0 m-0"></div>
-    <div id="failed-downloads" class="p-0 m-0"></div>
-    <div id="finished-downloads" class="p-0 m-0"></div>
+<div id="downloads" class="position-absolute d-flex w-100 h-100 p-0 m-0">
+    <div class="downloads-content">
 
-    <div class="card m-3 bg-dark-subtle shadow disabled download-card d-none" id="template-download-card">
-        <!-- Card Header: Displays the status message when no download is running -->
-        <div class="card-header">
-            <span><strong class="download-title">-</strong> (<span class="download-state">-</span>)</span>
+        <!--Loading downloads "running" card-->
+        <div id="downloads-loader-card" class="card download-card loading-download-card shadow m-3">
+            <div class="card-header">
+                <div class="d-flex" id="downloads-loader">
+                    <div class="spinner-border p-2 me-2" style="height: 1rem; width: 1rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <strong>Loading downloads...</strong>
+                </div>
+            </div>
+            <div class="card-body">
+                Checkout the combined search or discover to find new content!<br>
+                <button onclick="loadPage('search.html');" type="button" class="btn btn-nex-glass mt-2">
+                    <i class='bi bi-search'></i> Open Search
+                </button>
+                <button onclick="loadPage('discover.html');" type="button" class="btn btn-nex-glass mx-2 mt-2">
+                    <i class='bi bi-globe-europe-africa'></i> Open Discover
+                </button>
+            </div>
         </div>
-        <!-- Card Body: Contains download information and progress bar -->
-        <div class="card-body">
-            <!-- Download Information: Displays elapsed time, download size, and download speed -->
-            <p class="extended-download-info d-none">
-                <strong>Download ID: </strong><span class="download-id">-</span>
-                <br><strong>Download Path: </strong><span class="download-path">-</span>
-                <br><strong>Download URL: </strong><span class="download-url">-</span>
-            </p>
-            <div class="d-flex download-info">
-                <!-- Elapsed Time -->
-                <div class="w-100">
-                <span>
-                    <strong>Elapsed time</strong>
-                    <br><span class="download-elapsed-time">-</span>
-                </span>
+
+        <!--Real running download card-->
+        <div id="running-download-template" class="card d-none download-card running-download-card shadow m-3">
+            <div class="card-header">
+                <strong class="download-name"></strong>
+            </div>
+            <div class="card-body">
+                <div class="debug-info d-none">
+                    <h6><strong>Download ID: </strong><span class="downloadId"></span></h6>
+                    <h6><strong>Download URL: </strong><span class="downloadUrl"></span></h6>
+                    <h6><strong>Download path: </strong><span class="downloadPath"></span></h6>
                 </div>
-                <!-- Download Size -->
-                <div class="w-100">
-                <span>
-                    <strong>Download size</strong>
-                    <br><span class="download-size">-</span>
-                </span>
+                <div class="download-info d-flex justify-content-between align-items-center my-3">
+                    <h6 class="text-center">
+                        Elapsed time<br><span class="timeElapsed"></span>
+                    </h6>
+                    <h6 class="text-center">
+                        Download size<br><span class="downloadSize"></span>
+                    </h6>
+                    <h6 class="text-center">
+                        Download speed<br><span class="downloadSpeed"></span>
+                    </h6>
+                    <h6 class="text-center">
+                        Progress<br><span class="progressInfo"></span>
+                    </h6>
+                    <h6 class="d-none d-xl-block"></h6>
                 </div>
-                <!-- Download Speed -->
-                <div class="w-100">
-                <span>
-                    <strong>Download speed</strong>
-                    <br><span class="download-speed">-</span>
-                </span>
-                </div>
-                <!-- Download Speed -->
-                <div class="w-100">
-                <span>
-                    <strong>Progress</strong>
-                    <br><span class="download-progress">-</span>
-                </span>
+                <div class="download-progress my-3">
+                    <h6 class="">
+                        File size: <span class="fileSize"></span>
+                    </h6>
+                    <div class="progress shadow" role="progressbar">
+                        <div class="progress-bar" style="width: 10%"></div>
+                    </div>
+                    <h6 class="mt-1">
+                        Remaining time: <span class="timeRemaining"></span>
+                    </h6>
                 </div>
             </div>
-            <br>
-            <!-- File Size: Displays the total file size -->
-            <span><strong>File size</strong> <span class="download-file-size">-</span></span>
-            <!-- Progress Bar: Shows the download progress -->
-            <div class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-bar download-progress-bar" style="width: 0%;"></div>
+        </div>
+
+        <div class="waiting-downloads h-100 overflow-auto shadow">
+            <div id="waiting-download-template" class="card d-none download-card waiting-download-card shadow m-3">
+                <div class="card-header">
+                    <strong class="download-name"></strong>
+                </div>
+                <div class="card-body">
+                    <div class="debug-info d-none">
+                        <h6><strong>Download ID: </strong><span class="downloadId"></span></h6>
+                        <h6><strong>Download URL: </strong><span class="downloadUrl"></span></h6>
+                        <h6><strong>Download path: </strong><span class="downloadPath"></span></h6>
+                    </div>
+                    <h6><strong>Index: </strong><span class="downloadIndex"></span></h6>
+                    <h6><strong>Waiting...</strong></h6>
+                </div>
             </div>
-            <!-- Remaining Time: Displays the estimated remaining time -->
-            <span>
-            <strong>Remaining time:</strong> <span class="download-estimated-time">-</span>
-        </span>
+        </div>
+    </div>
+    <div class="downloads-sidecard d-lg-block d-none shadow p-3">
+        <h4><strong>Downloads</strong></h4>
+        <hr>
+        <h5><strong>Download speed</strong></h5>
+        <p class="m-0"><strong>Maximum: </strong><span id="max-speed">0 MB/s</span></p>
+        <p class="m-0"><strong>Average: </strong><span id="avg-speed">0 MB/s</span></p>
+        <hr>
+        <h5><strong>Download history</strong></h5>
+        <div class="history">
+            <div class="d-flex flex-column gap-2 download-history">
+                <div id="history-download-template" class="card d-none history-card d-flex shadow justify-content-between py-2 px-3">
+                    <strong class="downloadName"></strong>
+                    <i class="bi downloadSuccessIcon"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>

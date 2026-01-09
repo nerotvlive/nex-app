@@ -9,7 +9,7 @@ import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
 import org.apache.commons.io.FileUtils;
 import org.zyneonstudios.apex.nexusapp.downloads.Download;
-import org.zyneonstudios.apex.nexusapp.events.DownloadFinishEvent;
+import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResource;
 
@@ -116,7 +116,7 @@ public class ModrinthIntegration {
                         ModrinthDownload packDownload = new ModrinthDownload(project, fileDownloads, installDir.toPath());
                         NexusApplication.getInstance().getDownloadManager().addDownload(packDownload);
                         File finalInstallDir = installDir;
-                        packDownload.setFinishEvent(new DownloadFinishEvent(packDownload) {
+                        packDownload.setFinishEvent(new DownloadEndEvent(packDownload) {
                             @Override
                             public boolean onFinish() {
                                 String version = indexJson.get("versionId").getAsString();

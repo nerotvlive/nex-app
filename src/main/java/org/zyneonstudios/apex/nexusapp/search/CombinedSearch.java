@@ -93,27 +93,6 @@ public class CombinedSearch {
         }
 
         try {
-            List<JsonObject> nexJsonResults = new ArrayList<>();
-            for (int i = offset*hits; i < nexResults.size(); i++) {
-                ReadableZynstance instance = nexResults.get(i);
-                JsonObject result = new JsonObject();
-                result.addProperty("id", StringUtility.encodeData(instance.getId()));
-                result.addProperty("iconUrl", instance.getThumbnailUrl());
-                result.addProperty("name", StringUtility.encodeData(instance.getName()));
-                result.addProperty("downloads", "hidden");
-                result.addProperty("followers", "hidden");
-                JsonArray authors = new JsonArray();
-                for (String author : instance.getAuthors()) {
-                    authors.add(StringUtility.encodeData(author));
-                }
-                result.add("authors", authors);
-                result.addProperty("summary", StringUtility.encodeData(instance.getSummary()));
-                result.addProperty("url", "hidden");
-                result.addProperty("source", "NEX");
-                result.addProperty("connector", "install.minecraft.nex." + instance.getId());
-                nexJsonResults.add(result);
-            }
-
             List<JsonObject> curseForgeJsonResults = new ArrayList<>();
             if (curseForgeResults != null) {
                 for (JsonElement hit : curseForgeResults.getAsJsonArray("data")) {
@@ -160,16 +139,37 @@ public class CombinedSearch {
                 }
             }
 
-            int i = 0;
-            while (i < nexJsonResults.size() || i < modrinthJsonResults.size()) {
-                if (i < nexJsonResults.size()) {
-                    results.add(nexJsonResults.get(i));
+            List<JsonObject> nexJsonResults = new ArrayList<>();
+            for (int i = offset*hits; i < nexResults.size(); i++) {
+                ReadableZynstance instance = nexResults.get(i);
+                JsonObject result = new JsonObject();
+                result.addProperty("id", StringUtility.encodeData(instance.getId()));
+                result.addProperty("iconUrl", instance.getThumbnailUrl());
+                result.addProperty("name", StringUtility.encodeData(instance.getName()));
+                result.addProperty("downloads", "hidden");
+                result.addProperty("followers", "hidden");
+                JsonArray authors = new JsonArray();
+                for (String author : instance.getAuthors()) {
+                    authors.add(StringUtility.encodeData(author));
                 }
+                result.add("authors", authors);
+                result.addProperty("summary", StringUtility.encodeData(instance.getSummary()));
+                result.addProperty("url", "hidden");
+                result.addProperty("source", "NEX");
+                result.addProperty("connector", "install.minecraft.nex." + instance.getId());
+                nexJsonResults.add(result);
+            }
+
+            int i = 0;
+            while (i < curseForgeResults.size() || i < modrinthJsonResults.size() || i < nexJsonResults.size()) {
                 if (i < curseForgeJsonResults.size()) {
                     results.add(curseForgeJsonResults.get(i));
                 }
                 if (i < modrinthJsonResults.size()) {
                     results.add(modrinthJsonResults.get(i));
+                }
+                if (i < nexJsonResults.size()) {
+                    results.add(nexJsonResults.get(i));
                 }
                 i++;
             }

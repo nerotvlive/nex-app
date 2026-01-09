@@ -160,6 +160,27 @@
                         background: var(--nex-darker-300);
                     }
 
+                    select {
+                        border-radius: var(--bs-border-radius-lg);
+                        padding: 0.25rem 2rem 0.3rem 1rem;
+                        background-color: var(--nex-brighter-100);
+                        border: 1px solid var(--bs-border-color-translucent);
+
+                        option {
+                            background: var(--nex-bg);
+                            color: var(--nex-fg);
+                        }
+                    }
+
+                    select:hover {
+                        background-color: var(--nex-brighter-200);
+                        border: 1px solid var(--bs-border-color-translucent);
+                    }
+
+                    select:active {
+                        background-color: var(--nex-brighter-300);
+                    }
+
                     .memory-slider {
                         position: relative;
 

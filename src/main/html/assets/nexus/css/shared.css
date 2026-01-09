@@ -25,6 +25,18 @@
     --nex-darker-900: #000000;
     --nex-brighter-900: #ffffff;
 
+    --nex-success: #49bf49;
+    --nex-success-accent: color-mix(in srgb, var(--nex-success), white 25%);
+    --nex-success-dark: color-mix(in srgb, var(--nex-success), black 25%);
+    --nex-success-darker: color-mix(in srgb, var(--nex-success), black 50%);
+    --nex-success-transparent: #49bf4975;
+
+    --nex-error: #f43c3c;
+    --nex-error-accent: color-mix(in srgb, var(--nex-error), white 25%);
+    --nex-error-dark: color-mix(in srgb, var(--nex-error), black 25%);
+    --nex-error-darker: color-mix(in srgb, var(--nex-error), black 50%);
+    --nex-error-transparent: #f43c3c75;
+
     --nex-animation-speed-fast: 0.05s;
     --nex-animation-speed: 0.15s;
     --nex-animation-speed-slow: 0.25s;
@@ -171,6 +183,29 @@ menu .popover {
     background: var(--nex-primary-dark);
     border-color: var(--nex-primary);
     color: white;
+}
+
+.btn-nex-glass {
+    background: var(--nex-primary);
+    border-color: var(--nex-primary-accent);
+    color: white;
+}
+
+.btn-nex-glass {
+    padding: 0.25rem 1rem 0.3rem 1rem;
+    background: var(--nex-brighter-100);
+    border: 1px solid var(--bs-border-color-translucent);
+    transition: all 0.15s ease;
+}
+
+.btn-nex-glass:hover {
+    background: var(--nex-brighter-200);
+    border: 1px solid var(--bs-border-color-translucent);
+}
+
+.btn-nex-glass:active {
+    background: var(--nex-brighter-300) !important;
+    scale: 0.95;
 }
 
 .btn-nex-purple {

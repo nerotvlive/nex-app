@@ -5,7 +5,7 @@ import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 import org.zyneonstudios.apex.nexusapp.downloads.Download;
 import org.zyneonstudios.apex.nexusapp.downloads.DownloadManager;
 
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,6 +23,8 @@ public class NexusRunner {
     private final UUID runnerID = UUID.randomUUID();
 
     private UUID downloading = null;
+    private double maxSpeedMbps = 0;
+    private final int MAX_SAMPLES = 20;
 
     /**
      * Indicates whether the runner has been started.
@@ -105,6 +107,8 @@ public class NexusRunner {
 
             if (downloading != null) {
                 Download download = NexusApplication.getInstance().getDownloadManager().getDownloads().get(downloading);
+                double speed = download.getSpeedMbps();
+                addSample(download.getUuid(), speed);
                 if (download.isFinished()) {
                     downloading = null;
                 }
@@ -121,51 +125,33 @@ public class NexusRunner {
         if (NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=downloads")) {
             NexusApplication.getInstance().getDownloadManager().getDownloads().forEach((uuid, download) -> {
                 if (download.getState().equals(DownloadManager.DownloadState.WAITING)) {
-                    String title = "setDownload(\"" + download.getName().replace("\"", "''") + "\",";
-                    String state = "\"" + download.getState().toString().replace("\"", "''") + "\",";
-                    String elapsedTime = "\"0 seconds\",";
-                    String downloadSpeed = "\"0 mb/s\",";
-                    String remainingTime = "\"\",";
-                    String downloadSize = "\"\",";
-                    String fileSize = "\"0 mb\",";
-                    String path = "\"" + download.getPath().toString().replace("\\","/").replace("\"", "''") + "\",";
-                    String url = "\"" + download.getUrl().toString().replace("\\","/").replace("\"", "''") + "\",";
-                    String id = "\"" + download.getId().replace("\"", "''") + "\",";
-                    String progress = "\"" + download.getPercentString() + "\",";
-                    String percent = download.getPercent() + ");";
-                    String command = title + state + elapsedTime + downloadSpeed + remainingTime + downloadSize + fileSize + path + url + id + progress + percent;
-                    NexusApplication.getInstance().getApplicationFrame().executeJavaScript(command);
+                    String id = download.getUuid()+"";
+                    String name = download.getName();
+                    String url = download.getUrl().toString();
+                    String path = download.getPath().toString().replace("\\","/");
+                    NexusApplication.getInstance().getApplicationFrame().executeJavaScript("addWaitingDownload(\""+id+"\",\""+name+"\",\""+url+"\",\""+path+"\",'Discover')");
                 } else if (download.getState().equals(DownloadManager.DownloadState.RUNNING)) {
-                    String title = "setDownload(\"" + download.getName().replace("\"", "''") + "\",";
-                    String state = "\"" + download.getState().toString().replace("\"", "''") + "\",";
-                    String elapsedTime = "\"" + download.getElapsedTime().getSeconds() + " seconds\",";
-                    String downloadSpeed = "\"" + (int) download.getSpeedMbps() + " mb/s\",";
-                    String remainingTime = "\"" + download.getEstimatedRemainingTime().getSeconds() + " seconds\",";
-                    String downloadSize = "\"" + (download.getFileSize() / 1000) / 1000 + " mb\",";
-                    String fileSize = "\"" + (download.getLastBytesRead() / 1000) / 1000 + " mb\",";
-                    String path = "\"" + download.getPath().toString().replace("\\","/").replace("\"", "''") + "\",";
-                    String url = "\"" + download.getUrl().toString().replace("\\","/").replace("\"", "''") + "\",";
-                    String id = "\"" + download.getId().replace("\"", "''") + "\",";
-                    String progress = "\"" + (int)download.getPercent() + "%\",";
-                    String percent = download.getPercent() + ");";
-                    String command = title + state + elapsedTime + downloadSpeed + remainingTime + downloadSize + fileSize + path + url + id + progress + percent;
-                    NexusApplication.getInstance().getApplicationFrame().executeJavaScript(command);
+                    String id = download.getUuid()+"";
+                    String name = download.getName();
+                    String timeElapsed = download.getElapsedTime().getSeconds() + " seconds";
+                    String timeRemaining = download.getEstimatedRemainingTime().getSeconds() + " seconds";
+                    String sizeDownload = download.getFileSize()/1024/1024+" MB";
+                    String sizeFile = download.getLastBytesRead()/1024/1024+" MB";
+                    String progress = ((int)download.getPercent())+"";
+                    String speedMbps = download.getSpeedMbps()+" MB/s";
+                    String url = download.getUrl().toString();
+                    String path = download.getPath().toString().replace("\\","/");
+                    NexusApplication.getInstance().getApplicationFrame().executeJavaScript(
+                            "updateRunningDownload(\""+id+"\",\""+name+"\",\""+timeElapsed+"\",\""+timeRemaining+"\",\""+sizeDownload+"\",\""+sizeFile+"\",\""+progress+"\",\""+speedMbps+"\",\""+url+"\",\""+path+"\")"
+                    );
                 } else if (download.getState().equals(DownloadManager.DownloadState.FINISHED) || download.getState().equals(DownloadManager.DownloadState.FAILED)) {
-                    String title = "setDownload(\"" + download.getName().replace("\"", "''") + "\",";
-                    String state = "\"" + download.getState().toString().replace("\"", "''") + "\",";
-                    String elapsedTime = "\"" + download.getElapsedTime().getSeconds() + " seconds\",";
-                    String downloadSpeed = "\"0 mb/s\",";
-                    String remainingTime = "\"" + download.getEstimatedRemainingTime().getSeconds() + " seconds\",";
-                    String downloadSize = "\"" + (download.getFileSize() / 1000) / 1000 + " mb\",";
-                    String fileSize = downloadSize;
-                    String path = "\"" + download.getPath().toString().replace("\\","/").replace("\"", "''") + "\",";
-                    String url = "\"" + download.getUrl().toString().replace("\\","/").replace("\"", "''") + "\",";
-                    String id = "\"" + download.getId().replace("\"", "''") + "\",";
-                    String progress = "\"" + download.getPercentString() + "\",";
-                    String percent = download.getPercent() + ");";
-                    String command = title + state + elapsedTime + downloadSpeed + remainingTime + downloadSize + fileSize + path + url + id + progress + percent;
-                    NexusApplication.getInstance().getApplicationFrame().executeJavaScript(command);
+                    String id = download.getUuid()+"";
+                    String name = download.getName();
+                    boolean success = download.getState().equals(DownloadManager.DownloadState.FINISHED);
+                    NexusApplication.getInstance().getApplicationFrame().executeJavaScript("addHistoryDownload(\""+id+"-history\",\""+name+"\","+success+")");
                 }
+                NexusApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('max-speed').innerText = '"+maxSpeedMbps+" MB/s';");
+                NexusApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('avg-speed').innerText = '"+getGlobalAverage()+" MB/s';");
             });
         }
 
@@ -198,6 +184,33 @@ public class NexusRunner {
                 NexusApplication.getLogger().dbg("[RUNNER] Sending notification...");
                 //TODO: Application.getFrame().sendNotification("Update available!", "Version " + v + " has been released!", "<a onclick=\"callJavaMethod('button.exit');\" class='button'>Install</a><a onclick=\"callJavaMethod('button.online');\" class='button'>Dynamic update</a>", v, true);
             }
+        }
+    }
+
+    private final Map<UUID, Double> lastMeasurements =
+            Collections.synchronizedMap(new LinkedHashMap<UUID, Double>(MAX_SAMPLES, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<UUID, Double> eldest) {
+                    return size() > MAX_SAMPLES;
+                }
+            });
+
+    public void addSample(UUID downloadId, double speed) {
+        lastMeasurements.put(downloadId, speed);
+        if(speed>maxSpeedMbps) {
+            maxSpeedMbps = speed;
+        }
+    }
+
+    public double getGlobalAverage() {
+        synchronized (lastMeasurements) {
+            if (lastMeasurements.isEmpty()) return 0.0;
+
+            double avg = lastMeasurements.values().stream()
+                    .mapToDouble(Double::doubleValue)
+                    .average()
+                    .orElse(0.0);
+            return Math.round(avg * 100.0) / 100.0;
         }
     }
 }

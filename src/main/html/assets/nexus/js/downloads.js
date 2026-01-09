@@ -1,93 +1,120 @@
-function setDownload(title,state,elapsedTime,downloadSpeed,remainingTime,downloadSize,fileSize,path,url,id,progress,percent) {
-    const template = document.getElementById("template-download-card");
-    let download = template.cloneNode(true);
-    if(document.getElementById(id)) {
-        download = document.getElementById(id);
-    } else {
-        download.id = id;
-        if(state) {
-            if(state==="RUNNING") {
-                const doc = document.getElementById("running-downloads");
-                doc.parentNode.insertBefore(download,doc);
-            } else if(state==="WAITING") {
-                const doc = document.getElementById("waiting-downloads");
-                doc.parentNode.insertBefore(download,doc);
-            } else if(state==="FAILED") {
-                const doc = document.getElementById("failed-downloads");
-                doc.parentNode.insertBefore(download,doc);
-            } else if(state==="FINISHED") {
-                const doc = document.getElementById("finished-downloads");
-                doc.parentNode.insertBefore(download,doc);
-            } else {
-                template.parentNode.insertBefore(download,template);
+function setRunningDownload(id,name,timeElapsed,timeRemaining,sizeDownload,sizeFile,progress,speed,url,path) {
+    if(document.getElementById("running-download")) {
+        document.getElementById("running-download").remove();
+        document.getElementById("downloads-loader-card").classList.remove("d-none");
+    }
+
+    if(id && name && timeElapsed && timeRemaining && sizeDownload && sizeFile && progress && speed && url && path) {
+        if(document.getElementById(id)) {
+            document.getElementById(id).remove();
+        }
+        const template = document.getElementById("running-download-template");
+        const download = template.cloneNode(true);
+        download.id = "running-download";
+        download.classList.remove("d-none");
+        download.classList.add(id);
+        download.querySelector(".download-name").innerHTML = "<strong>"+name+"</strong>";
+        download.querySelector(".downloadId").innerText = id;
+        download.querySelector(".downloadUrl").innerText = url;
+        download.querySelector(".downloadPath").innerText = path;
+        download.querySelector(".timeElapsed").innerText = timeElapsed;
+        download.querySelector(".timeRemaining").innerText = timeRemaining;
+        download.querySelector(".downloadSize").innerText = sizeDownload;
+        download.querySelector(".fileSize").innerText = sizeFile;
+        download.querySelector(".progressInfo").innerText = progress+"%";
+        download.querySelector(".downloadSpeed").innerText = speed;
+        download.querySelector(".progress-bar").style.width = progress+"%";
+
+        if(getStorageItem("devtools")) {
+            if(getStorageItem("devtools") === "true") {
+                download.querySelector(".debug-info").classList.remove("d-none");
             }
-        } else {
-            template.parentNode.insertBefore(download,template);
+        }
+
+        template.parentNode.insertBefore(download, template);
+        document.getElementById("downloads-loader-card").classList.add("d-none");
+    }
+}
+
+function updateRunningDownload(id,name,timeElapsed,timeRemaining,sizeDownload,sizeFile,progress,speed,url,path) {
+    if(id && name && timeElapsed && timeRemaining && sizeDownload && sizeFile && progress && speed && url && path) {
+        if (document.getElementById("running-download")) {
+            const download = document.getElementById("running-download");
+            if (download.classList.contains(id)) {
+                download.querySelector(".timeElapsed").innerText = timeElapsed;
+                download.querySelector(".timeRemaining").innerText = timeRemaining;
+                download.querySelector(".fileSize").innerText = sizeFile;
+                download.querySelector(".progressInfo").innerText = progress+"%";
+                download.querySelector(".progress-bar").style.width = progress+"%";
+                download.querySelector(".downloadSpeed").innerText = speed;
+
+                if(getStorageItem("devtools")) {
+                    if(getStorageItem("devtools") === "true") {
+                        download.querySelector(".debug-info").classList.remove("d-none");
+                    }
+                }
+                return;
+            }
+        }
+        setRunningDownload(id, name, timeElapsed, timeRemaining, sizeDownload, sizeFile, progress, speed, url, path);
+    }
+}
+
+function addHistoryDownload(id,name,success) {
+    if(id && name) {
+        if(document.getElementById("running-download")) {
+            if(document.getElementById("running-download").classList.contains(id.replace("-history", ""))) {
+                document.getElementById("running-download").remove();
+                document.getElementById("downloads-loader-card").classList.remove("d-none");
+            }
+        }
+        if (!document.getElementById(id)) {
+            const template = document.getElementById("history-download-template");
+            const download = template.cloneNode(true);
+            download.id = id;
+            download.classList.remove("d-none");
+            download.querySelector(".downloadName").innerText = name;
+            if (success === true) {
+                download.classList.add("finished");
+                download.querySelector(".downloadSuccessIcon").classList.add("bi-check-lg");
+            } else if (success === false) {
+                download.classList.add("failed");
+                download.querySelector(".downloadSuccessIcon").classList.add("bi-x-lg");
+            }
+            template.parentNode.insertBefore(download, template);
         }
     }
-    download.classList.remove("d-none");
-    download.querySelector(".download-id").innerText = id;
+}
 
-    if(title) {
-        download.querySelector(".download-title").innerText = title;
-    }
-
-    if(state) {
-        download.querySelector(".download-state").innerText = state;
-    }
-
-    if(elapsedTime) {
-        download.querySelector(".download-elapsed-time").innerText = elapsedTime;
-    }
-
-    if(remainingTime) {
-        download.querySelector(".download-estimated-time").innerText = remainingTime;
-    }
-
-    if(downloadSize) {
-        download.querySelector(".download-size").innerText = downloadSize;
-    }
-
-    if(fileSize) {
-        download.querySelector(".download-file-size").innerText = fileSize;
-    }
-
-    if(path) {
-        download.querySelector(".download-path").innerText = path;
-    }
-
-    if(url) {
-        download.querySelector(".download-url").innerText = url;
-    }
-
-    if(progress) {
-        download.querySelector(".download-progress").innerText = progress;
-    }
-
-    if(percent) {
-        download.querySelector(".progress-bar").style.width = percent+"%";
-    }
-
-    if(downloadSpeed) {
-        download.querySelector(".download-speed").innerText = downloadSpeed;
-    }
-
-    document.getElementById("downloads-loading").style.display = "none";
-
-    if(getStorageItem("devtools")) {
-        if(getStorageItem("devtools") === "true") {
-            download.querySelector(".extended-download-info").classList.remove("d-none");
+function addWaitingDownload(id,name,url,path,index) {
+    if(id && name && url && path && index) {
+        if (!document.getElementById(id)) {
+            if (document.getElementById("running-download")) {
+                if (document.getElementById("running-download").classList.contains(id)) {
+                    document.getElementById("running-download").remove();
+                    document.getElementById("downloads-loader-card").classList.remove("d-none");
+                }
+            }
+            const template = document.getElementById("waiting-download-template");
+            const download = template.cloneNode(true);
+            download.id = id;
+            download.classList.remove("d-none");
+            download.querySelector(".download-name").innerText = name;
+            download.querySelector(".downloadId").innerText = id;
+            download.querySelector(".downloadUrl").innerText = url;
+            download.querySelector(".downloadPath").innerText = path;
+            download.querySelector(".downloadIndex").innerText = index;
+            if (getStorageItem("devtools")) {
+                if (getStorageItem("devtools") === "true") {
+                    download.querySelector(".debug-info").classList.remove("d-none");
+                }
+            }
+            template.parentNode.insertBefore(download, template);
         }
     }
 }
 
 function initDownloads() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get("reInit")!=null) {
-        if(urlParams.get("reInit")==="false") {
-            return;
-        }
-    }
     console.log("[CONNECTOR] downloads.init");
     initLoader();
 }
@@ -95,6 +122,8 @@ initDownloads();
 
 async function initLoader() {
     setTimeout(function (){
-        document.getElementById("downloads-loading").innerText = "There are no downloads. Check out the Discover page!";
+        if(document.getElementById("downloads-loader")) {
+            document.getElementById("downloads-loader").innerHTML = "<strong>No running download!</strong>";
+        }
     }, 2000);
 }

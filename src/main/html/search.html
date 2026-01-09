@@ -40,12 +40,6 @@
             <div class="glass" style="max-width: fit-content; width: fit-content; min-width: fit-content;">
                 <div class="p-0 m-0 category-container" id="search-source">
                     <strong>Search sources</strong><br>
-                    <div onclick="console.log('[CONNECTOR] discover.search.enable.nex.'+!this.querySelector('input').checked); this.querySelector('input').checked = !this.querySelector('input').checked;" class="form-check form-switch d-flex category-row nex">
-                        NEX (Official)
-                        <label>
-                            <input disabled class="form-check-input switch" type="checkbox" role="switch" checked>
-                        </label>
-                    </div>
                     <div onclick="console.log('[CONNECTOR] discover.search.enable.curseforge.'+!this.querySelector('input').checked); this.querySelector('input').checked = !this.querySelector('input').checked;" class="form-check form-switch d-flex category-row curseforge">
                         CurseForge
                         <label>
@@ -54,6 +48,12 @@
                     </div>
                     <div onclick="console.log('[CONNECTOR] discover.search.enable.modrinth.'+!this.querySelector('input').checked); this.querySelector('input').checked = !this.querySelector('input').checked;" class="form-check form-switch d-flex category-row modrinth">
                         Modrinth
+                        <label>
+                            <input disabled class="form-check-input switch" type="checkbox" role="switch" checked>
+                        </label>
+                    </div>
+                    <div onclick="console.log('[CONNECTOR] discover.search.enable.nex.'+!this.querySelector('input').checked); this.querySelector('input').checked = !this.querySelector('input').checked;" class="form-check form-switch d-flex category-row nex">
+                        NEX (Official)
                         <label>
                             <input disabled class="form-check-input switch" type="checkbox" role="switch" checked>
                         </label>
