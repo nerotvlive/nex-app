@@ -47,7 +47,7 @@
         .history {
             position: relative;
             height: calc(100% - 11rem);
-            padding-bottom: 1rem;
+            padding: 0 1rem 4rem 1rem;
             overflow: hidden;
             overflow-y: auto;
 
@@ -59,7 +59,7 @@
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    width: calc(100% - 1rem);
+                    width: calc(100% - 1.1rem);
                 }
 
                 i {
