@@ -8,6 +8,10 @@
     <artifactId>nexus-app-parent</artifactId>
     <version>3.0.0</version>
     <packaging>pom</packaging>
+    <modules>
+        <module>nexus-app</module>
+        <module>nexus-app-bootstrapper</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
