@@ -1,9 +1,7 @@
 package org.zyneonstudios.apex.nexusapp.search.zyndex.local;
 
-import org.zyneonstudios.apex.nexusapp.Main;
-import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
-import org.zyneonstudios.apex.nexusapp.utilities.ApplicationMigrator;
 import com.zyneonstudios.nexus.utilities.storage.JsonStorage;
+import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 
 import java.io.File;
 import java.util.HashMap;
@@ -38,19 +36,6 @@ public class LocalInstanceManager {
         if(!instancePath.exists()) {
             if(!instancePath.mkdirs()) {
                 throw new RuntimeException("Failed to create instances directory: " + instancePath.getAbsolutePath());
-            }
-        }
-        if(NexusApplication.getInstance().getWorkingPath().equals(Main.getDefaultPath())) {
-            if (ApplicationMigrator.getOldMinecraftInstances() != null) {
-                for (String oldInstance : ApplicationMigrator.getOldMinecraftInstances()) {
-                    File instanceFile = new File(oldInstance);
-                    if (instanceFile.exists()) {
-                        LocalInstance instance = new LocalInstance(instanceFile.getAbsolutePath());
-                        if (!instances.containsKey(instance.getPath())) {
-                            instances.put(instance.getPath(), instance);
-                        }
-                    }
-                }
             }
         }
         if(instancePath.isDirectory()) {

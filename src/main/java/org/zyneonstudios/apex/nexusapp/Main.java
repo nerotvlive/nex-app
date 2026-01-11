@@ -1,12 +1,11 @@
 package org.zyneonstudios.apex.nexusapp;
 
-import org.zyneonstudios.apex.nexusapp.frame.ZyneonSplash;
-import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
-import org.zyneonstudios.apex.nexusapp.utilities.ApplicationLogger;
-import org.zyneonstudios.apex.nexusapp.utilities.ApplicationMigrator;
 import com.zyneonstudios.nexus.desktop.NexusDesktop;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.zyneonstudios.apex.nexusapp.frame.ZyneonSplash;
+import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
+import org.zyneonstudios.apex.nexusapp.utilities.ApplicationLogger;
 
 import javax.swing.*;
 import java.nio.file.Files;
@@ -49,9 +48,6 @@ public class Main {
 
         // Resolve command-line arguments.
         resolveArguments(args);
-        if(path.equals(getDefaultPath())) {
-            ApplicationMigrator.migrateFolder();
-        }
 
         // Display the splash screen.
         ZyneonSplash splash = new ZyneonSplash();
