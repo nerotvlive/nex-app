@@ -2,7 +2,7 @@
 <div id="bg-div"></div>
 
 <div id="downloads" class="position-absolute d-flex w-100 h-100 p-0 m-0">
-    <div class="downloads-content">
+    <div class="downloads-content position-relative">
 
         <!--Loading downloads "running" card-->
         <div id="downloads-loader-card" class="card download-card loading-download-card shadow m-3">
@@ -32,9 +32,9 @@
             </div>
             <div class="card-body">
                 <div class="debug-info d-none">
-                    <h6><strong>Download ID: </strong><span class="downloadId"></span></h6>
-                    <h6><strong>Download URL: </strong><span class="downloadUrl"></span></h6>
-                    <h6><strong>Download path: </strong><span class="downloadPath"></span></h6>
+                    <h6><strong>Download ID: </strong><span class="downloadId user-select-all"></span></h6>
+                    <h6><strong>Download URL: </strong><span class="downloadUrl user-select-all"></span></h6>
+                    <h6><strong>Download path: </strong><span class="downloadPath user-select-all"></span></h6>
                 </div>
                 <div class="download-info d-flex justify-content-between align-items-center my-3">
                     <h6 class="text-center">
@@ -62,10 +62,30 @@
                         Remaining time: <span class="timeRemaining"></span>
                     </h6>
                 </div>
+                <button onclick="console.log('[CONNECTOR] download.pauseRunning');" type="button" class="btn btn-nex-glass">Skip (for now)</button>
+                <button onclick="console.log('[CONNECTOR] download.cancelRunning');" type="button" class="btn btn-nex-glass btn-nex-glass-red">Cancel</button>
             </div>
         </div>
 
+        <!--div style="width: calc(100vw - 22rem); -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%); mask-image: linear-gradient(to right, black 85%, transparent 100%);">
+            <div class="d-flex gap-3 px-3 pb-3" style="overflow-x: auto;">
+                <div class="card d-none" style="flex-shrink: 0;">
+                    <div class="card-header position-relative">
+                        <strong style="padding-right: 1.5rem;">Download title</strong>
+                        <div class="spinner-grow" style="scale: 0.75; color: gray; position: absolute; right: 0.25rem; top: 0.25rem;" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        Preparing download...
+                    </div>
+                </div>
+            </div>
+        </div-->
+
         <div class="waiting-downloads h-100 overflow-auto shadow">
+            <h6 class="px-3 pt-3">Paused downloads</h6>
+            <h6 class="px-3 pt-3">Waiting downloads</h6>
             <div id="waiting-download-template" class="card d-none download-card waiting-download-card shadow m-3">
                 <div class="card-header">
                     <strong class="download-name"></strong>

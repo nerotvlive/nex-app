@@ -1,10 +1,11 @@
 package org.zyneonstudios.apex.nexusapp.downloads;
 
 import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
-import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -61,6 +62,12 @@ public class Download {
 
     // The event to be triggered when the download is failed.
     private DownloadEndEvent failEvent = null;
+
+    // Flag to indicate if the download should be paused.
+    private volatile boolean paused = false;
+
+    // Flag to indicate if the download should be cancelled.
+    private volatile boolean cancelled = false;
 
     /**
      * Constructor for the Download.
@@ -124,67 +131,189 @@ public class Download {
     }
 
     /**
+     * Pauses the download.
+     */
+    public void pause() {
+        if (state == DownloadManager.DownloadState.RUNNING) {
+            paused = true;
+            state = DownloadManager.DownloadState.PAUSED;
+        }
+    }
+
+    /**
+     * Resumes the download if it was paused.
+     *
+     * @return True if the download resumed successfully, false otherwise.
+     */
+    public boolean resume() {
+        if (state == DownloadManager.DownloadState.PAUSED) {
+            state = DownloadManager.DownloadState.WAITING;
+            paused = false;
+            return start();
+        }
+        return false;
+    }
+
+    /**
+     * Cancels the download.
+     */
+    public void cancel() {
+        if (state == DownloadManager.DownloadState.RUNNING || state == DownloadManager.DownloadState.PAUSED || state == DownloadManager.DownloadState.WAITING) {
+            setFailed();
+            cancelled = true;
+            paused = false;
+            state = DownloadManager.DownloadState.CANCELLED;
+        }
+    }
+
+    /**
      * Starts the download process.
      *
      * @return True if the download started successfully, false otherwise.
      */
     public boolean start() {
-        // Check if the download is in the waiting state.
-        if (state == DownloadManager.DownloadState.WAITING) {
+        if (state == DownloadManager.DownloadState.WAITING || state == DownloadManager.DownloadState.PAUSED) {
             state = DownloadManager.DownloadState.RUNNING;
-            startTime = Instant.now();
-            Instant lastTimeCheck = startTime;
+            paused = false;
+            cancelled = false;
+            if (startTime == null) {
+                startTime = Instant.now();
+            }
 
-            try {
-                // Open a connection to the URL.
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                fileSize = connection.getContentLength();
-                int responseCode = connection.getResponseCode();
-                // Check if the response code is OK.
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream inputStream = connection.getInputStream();
-                    File outputFile = new File(path.toString());
-                    FileOutputStream outputStream = new FileOutputStream(outputFile);
-                    byte[] buffer = new byte[1024];
-                    int bytesRead;
-                    long totalBytesRead = 0;
-                    // Read the file in chunks.
-                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                        totalBytesRead += bytesRead;
-                        Instant now = Instant.now();
-                        Duration elapsedTime = Duration.between(lastTimeCheck, now);
-                        setPercent((totalBytesRead * 100.0) / fileSize);
-                        lastBytesRead = totalBytesRead;
-                        lastTimeCheck = now;
-                        outputStream.write(buffer, 0, bytesRead);
-                        // Update the percentage every second.
-                        if (elapsedTime.getSeconds() >= 1) {
+            int retryCount = 0;
+            int maxRetries = 5;
 
-                            totalBytesRead += bytesRead;
-                            setPercent((totalBytesRead * 100.0) / fileSize);
-                            String s = (int) percent + "%";
-                            if (!percentString.equals(s)) {
-                                percentString = s;
-                            }
-                        }
-                    }
-                    inputStream.close();
-                    outputStream.close();
-                    setFinished();
-                    return true;
+            while (state == DownloadManager.DownloadState.RUNNING) {
+                if (cancelled) {
+                    state = DownloadManager.DownloadState.CANCELLED;
+                    return false;
                 }
-            } catch (Exception e) {
-                // Log any errors that occur during the download.
-                NexusApplication.getLogger().err("Couldn't download \"" + url + "\" to \"" + path.toString() + "\": " + e.getMessage());
+                try {
+                    if (downloadInternal()) {
+                        return true;
+                    }
+
+                    if (paused) {
+                        return true;
+                    }
+                    if (cancelled) {
+                        state = DownloadManager.DownloadState.CANCELLED;
+                        return false;
+                    }
+                } catch (Exception e) {
+                    if (cancelled) {
+                        state = DownloadManager.DownloadState.CANCELLED;
+                        return false;
+                    }
+                    NexusApplication.getLogger().err("Download error for \"" + url + "\": " + e.getMessage() + ". Retrying...");
+                    retryCount++;
+                    if (retryCount > maxRetries) {
+                        break;
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ignored) {}
+                }
             }
         }
-        // Set the state to failed if the download failed.
-        setFailed();
-        state = DownloadManager.DownloadState.FAILED;
-        if (event != null) {
-            event.execute();
+
+        if (state == DownloadManager.DownloadState.CANCELLED) {
+            return false;
         }
-        return false;
+
+        if (state != DownloadManager.DownloadState.FINISHED && state != DownloadManager.DownloadState.PAUSED) {
+            setFailed();
+            state = DownloadManager.DownloadState.FAILED;
+            if (failEvent != null) {
+                failEvent.execute();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    private boolean downloadInternal() throws IOException {
+        File outputFile = new File(path.toString());
+        long existingFileSize = 0;
+        if (outputFile.exists()) {
+            existingFileSize = outputFile.length();
+        }
+
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        if (existingFileSize > 0) {
+            connection.setRequestProperty("Range", "bytes=" + existingFileSize + "-");
+        }
+
+        int responseCode = connection.getResponseCode();
+        boolean isResuming = responseCode == HttpURLConnection.HTTP_PARTIAL;
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            fileSize = connection.getContentLength();
+            existingFileSize = 0; // Overwrite
+        } else if (isResuming) {
+            String contentRange = connection.getHeaderField("Content-Range");
+            if (contentRange != null) {
+                int slashIndex = contentRange.lastIndexOf('/');
+                if (slashIndex != -1) {
+                    try {
+                        fileSize = Integer.parseInt(contentRange.substring(slashIndex + 1));
+                    } catch (NumberFormatException e) {
+                        fileSize = connection.getContentLength() + (int) existingFileSize;
+                    }
+                }
+            } else {
+                fileSize = connection.getContentLength() + (int) existingFileSize;
+            }
+        } else {
+            throw new IOException("Server returned response code: " + responseCode);
+        }
+
+        if (existingFileSize >= fileSize && fileSize > 0) {
+            setFinished();
+            return true;
+        }
+
+        InputStream inputStream = connection.getInputStream();
+        FileOutputStream outputStream = new FileOutputStream(outputFile, isResuming);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        long totalBytesRead = existingFileSize;
+        Instant lastTimeCheck = Instant.now();
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            if (cancelled) {
+                inputStream.close();
+                outputStream.close();
+                state = DownloadManager.DownloadState.CANCELLED;
+                return false;
+            }
+            if (paused) {
+                inputStream.close();
+                outputStream.close();
+                return false; // Signal to stop loop in start()
+            }
+
+            outputStream.write(buffer, 0, bytesRead);
+            totalBytesRead += bytesRead;
+
+            Instant now = Instant.now();
+            Duration elapsedTime = Duration.between(lastTimeCheck, now);
+
+            setPercent((totalBytesRead * 100.0) / fileSize);
+            lastBytesRead = totalBytesRead;
+
+            if (elapsedTime.getSeconds() >= 1) {
+                String s = (int) percent + "%";
+                if (!percentString.equals(s)) {
+                    percentString = s;
+                }
+                lastTimeCheck = now;
+            }
+        }
+        inputStream.close();
+        outputStream.close();
+        setFinished();
+        return true;
     }
 
     /**

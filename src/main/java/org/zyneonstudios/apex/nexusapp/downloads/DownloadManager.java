@@ -1,7 +1,7 @@
 package org.zyneonstudios.apex.nexusapp.downloads;
 
-import org.zyneonstudios.apex.nexusapp.main.NexusRunner;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
+import org.zyneonstudios.apex.nexusapp.main.NexusRunner;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -97,7 +97,9 @@ public class DownloadManager {
     public enum DownloadState {
         WAITING,
         RUNNING,
+        PAUSED,
         FINISHED,
-        FAILED
+        FAILED,
+        CANCELLED
     }
 }

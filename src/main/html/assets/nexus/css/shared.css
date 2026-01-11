@@ -25,17 +25,17 @@
     --nex-darker-900: #000000;
     --nex-brighter-900: #ffffff;
 
-    --nex-success: #49bf49;
-    --nex-success-accent: color-mix(in srgb, var(--nex-success), white 25%);
-    --nex-success-dark: color-mix(in srgb, var(--nex-success), black 25%);
-    --nex-success-darker: color-mix(in srgb, var(--nex-success), black 50%);
-    --nex-success-transparent: #49bf4975;
+    --nex-error: var(--nex-red);
+    --nex-error-accent: var(--nex-red-accent);
+    --nex-error-dark: var(--nex-red-dark);
+    --nex-error-darker: var(--nex-red-darker);
+    --nex-error-transparent: var(--nex-red-transparent);
 
-    --nex-error: #f43c3c;
-    --nex-error-accent: color-mix(in srgb, var(--nex-error), white 25%);
-    --nex-error-dark: color-mix(in srgb, var(--nex-error), black 25%);
-    --nex-error-darker: color-mix(in srgb, var(--nex-error), black 50%);
-    --nex-error-transparent: #f43c3c75;
+    --nex-success: var(--nex-green);
+    --nex-success-accent: var(--nex-green-accent);
+    --nex-success-dark: var(--nex-green-dark);
+    --nex-success-darker: var(--nex-green-darker);
+    --nex-success-transparent: var(--nex-green-transparent);
 
     --nex-animation-speed-fast: 0.05s;
     --nex-animation-speed: 0.15s;
@@ -51,15 +51,17 @@
     --nex-blue-dark: color-mix(in srgb, var(--nex-blue), black 25%);
     --nex-blue-darker: color-mix(in srgb, var(--nex-blue), black 50%);
 
-    --nex-green: var(--bs-green);
+    --nex-green: #49bf49;
     --nex-green-accent: color-mix(in srgb, var(--nex-green), white 25%);
     --nex-green-dark: color-mix(in srgb, var(--nex-green), black 25%);
     --nex-green-darker: color-mix(in srgb, var(--nex-green), black 50%);
+    --nex-green-transparent: #49bf4975;
 
-    --nex-red: var(--bs-red);
+    --nex-red: #f43c3c;
     --nex-red-accent: color-mix(in srgb, var(--nex-red), white 25%);
     --nex-red-dark: color-mix(in srgb, var(--nex-red), black 25%);
     --nex-red-darker: color-mix(in srgb, var(--nex-red), black 50%);
+    --nex-red-transparent: #f43c3c75;
 
     --nex-yellow: #cdc139;
     --nex-yellow-accent: color-mix(in srgb, var(--nex-yellow), white 25%);
@@ -206,6 +208,21 @@ menu .popover {
 .btn-nex-glass:active {
     background: var(--nex-brighter-300) !important;
     scale: 0.95;
+}
+
+.btn-nex-glass-red {
+    background: var(--nex-red-transparent);
+    border: 1px solid var(--bs-border-color-translucent);
+}
+
+.btn-nex-glass-red:hover {
+    background: var(--nex-red);
+    border: 1px solid var(--bs-border-color-translucent);
+}
+
+.btn-nex-glass-red:active {
+    background: var(--nex-red-accent) !important;
+    border: 1px solid var(--bs-border-color-translucent) !important;
 }
 
 .btn-nex-purple {

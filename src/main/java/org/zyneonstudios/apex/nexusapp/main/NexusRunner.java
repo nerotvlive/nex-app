@@ -109,7 +109,7 @@ public class NexusRunner {
                 Download download = NexusApplication.getInstance().getDownloadManager().getDownloads().get(downloading);
                 double speed = download.getSpeedMbps();
                 addSample(download.getUuid(), speed);
-                if (download.isFinished()) {
+                if (download.isFinished()||download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
                     downloading = null;
                 }
             } else {
@@ -117,6 +117,9 @@ public class NexusRunner {
                     if (download.getState().equals(DownloadManager.DownloadState.WAITING)) {
                         downloading = uuid;
                         download.start();
+                    } else if(download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
+                        downloading = uuid;
+                        download.resume();
                     }
                 });
             }
@@ -124,7 +127,7 @@ public class NexusRunner {
 
         if (NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=downloads")) {
             NexusApplication.getInstance().getDownloadManager().getDownloads().forEach((uuid, download) -> {
-                if (download.getState().equals(DownloadManager.DownloadState.WAITING)) {
+                if (download.getState().equals(DownloadManager.DownloadState.WAITING)||download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
                     String id = download.getUuid()+"";
                     String name = download.getName();
                     String url = download.getUrl().toString();
@@ -142,9 +145,9 @@ public class NexusRunner {
                     String url = download.getUrl().toString();
                     String path = download.getPath().toString().replace("\\","/");
                     NexusApplication.getInstance().getApplicationFrame().executeJavaScript(
-                            "updateRunningDownload(\""+id+"\",\""+name+"\",\""+timeElapsed+"\",\""+timeRemaining+"\",\""+sizeDownload+"\",\""+sizeFile+"\",\""+progress+"\",\""+speedMbps+"\",\""+url+"\",\""+path+"\")"
+                            "updateRunningDownload(\""+id+"\",\""+name+"\",\""+timeElapsed+"\",\""+timeRemaining+"\",\""+sizeDownload+"\",\""+sizeFile+"\",\""+progress+"\",\""+speedMbps+"\",\""+url+"\",\""+path+"\",\""+download.getState()+"\")"
                     );
-                } else if (download.getState().equals(DownloadManager.DownloadState.FINISHED) || download.getState().equals(DownloadManager.DownloadState.FAILED)) {
+                } else if (download.getState().equals(DownloadManager.DownloadState.FINISHED) || download.getState().equals(DownloadManager.DownloadState.FAILED) || download.getState().equals(DownloadManager.DownloadState.CANCELLED)) {
                     String id = download.getUuid()+"";
                     String name = download.getName();
                     boolean success = download.getState().equals(DownloadManager.DownloadState.FINISHED);
@@ -212,5 +215,9 @@ public class NexusRunner {
                     .orElse(0.0);
             return Math.round(avg * 100.0) / 100.0;
         }
+    }
+
+    public UUID getDownloadingId() {
+        return downloading;
     }
 }

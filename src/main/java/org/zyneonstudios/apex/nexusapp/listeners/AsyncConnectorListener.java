@@ -53,7 +53,11 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
     @Override
     protected void resolveMessage(String s) {
         NexusApplication.getLogger().deb("[CONNECTOR] Resolving "+s);
-        if (s.startsWith("event.theme.changed.")) {
+        if (s.equals("download.pauseRunning")) {
+            NexusApplication.getInstance().getDownloadManager().getDownloads().get(NexusApplication.getInstance().getRunner().getDownloadingId()).pause();
+        } else if (s.equals("download.cancelRunning")) {
+            NexusApplication.getInstance().getDownloadManager().getDownloads().get(NexusApplication.getInstance().getRunner().getDownloadingId()).cancel();
+        } else if (s.startsWith("event.theme.changed.")) {
             if (s.endsWith("dark")) {
                 frame.setTitleBackground(Color.black);
                 frame.setTitleForeground(Color.white);
