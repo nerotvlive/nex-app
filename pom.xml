@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.zyneonstudios.apex</groupId>
+    <artifactId>nexus-app-parent</artifactId>
+    <version>3.0.0</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>nerofy-releases</id>
+            <url>https://maven.nrfy.net/releases</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>nerofy-snapshots</id>
+            <name>Nerofy Network Maven repository</name>
+            <url>https://maven.nrfy.net/snapshots</url>
+        </repository>
+    </distributionManagement>
+</project>
