@@ -108,7 +108,7 @@ public class ModrinthIntegration {
                                 Download fileDownload = new Download(project.getTitle()+" "+file.get("path").getAsString(), new URL(url), filePath.toPath());
                                 fileDownloads.add(fileDownload);
                             } catch (Exception e) {
-                                NexusApplication.getLogger().err("Cannot download file \""+file.get("path").getAsString()+"\" for modrinth pack \""+project.getTitle()+"\": "+e.getMessage());
+                                NexusApplication.getLogger().err("Cannot download file \""+file.get("path").getAsString()+"\" for modrinth pack \""+project.getTitle()+"\": "+e.getMessage(),false);
                             }
                         }
                     }

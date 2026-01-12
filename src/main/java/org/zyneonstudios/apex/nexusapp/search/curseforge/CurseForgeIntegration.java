@@ -133,7 +133,7 @@ public class CurseForgeIntegration {
                             Download fileDownload = new Download(project.getName() + " " + path + file.getFileName(), new URI(url).toURL(), filePath.toPath());
                             fileDownloads.add(fileDownload);
                         } catch (Exception e) {
-                            NexusApplication.getLogger().err("Cannot download file \"" + path + file.getFileName() + "\" for modrinth pack \"" + project.getName() + "\": " + e.getMessage());
+                            NexusApplication.getLogger().err("Cannot download file \"" + path + file.getFileName() + "\" for modrinth pack \"" + project.getName() + "\": " + e.getMessage(),false);
                         }
 
                     }
