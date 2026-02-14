@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -391,13 +393,17 @@ public class NexusApplication {
 
 
     private static void end(int exitCode) {
-        getInstance().getWebSetup().getWebApp().dispose();
         try {
             if (getInstance().getWebSetup() != null && getInstance().getWebSetup().getWebApp() != null) {
                 getInstance().getWebSetup().getWebApp().dispose();
             }
         } catch (Exception ignore) {
         }
+        try {
+            CefApp.getInstance().dispose();
+        } catch (Exception ignore) {
+        }
+        forceKillJcefHelpers();
         try {
             if (getInstance().getModuleLoader() != null) {
                 getInstance().getModuleLoader().deactivateModules();
@@ -408,6 +414,56 @@ public class NexusApplication {
 
         FileActions.deleteFolder(new File((NexusApplication.getInstance().getWorkingPath()+"/temp/").replace("\\","/").replace("//","/")));
         System.exit(exitCode);
+    }
+
+    private static void forceKillJcefHelpers() {
+        try {
+            Stream<ProcessHandle> descendants = ProcessHandle.current().descendants();
+            descendants.filter(NexusApplication::isJcefHelperProcess)
+                    .forEach(NexusApplication::terminateProcess);
+        } catch (Exception e) {
+            getLogger().deb("Couldn't scan for jcef_helper processes: " + e.getMessage());
+        }
+    }
+
+    private static boolean isJcefHelperProcess(ProcessHandle handle) {
+        try {
+            Optional<String> command = handle.info().command();
+            Optional<String> commandLine = handle.info().commandLine();
+            String cmd = (command.orElse("") + " " + commandLine.orElse("")).toLowerCase();
+            return cmd.contains("jcef_helper") || cmd.contains("jcef-helper") || cmd.contains("jcef");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static void terminateProcess(ProcessHandle handle) {
+        try {
+            if (!handle.isAlive()) {
+                return;
+            }
+            handle.destroy();
+            if (waitForExit(handle, 1500)) {
+                return;
+            }
+            handle.destroyForcibly();
+            waitForExit(handle, 1500);
+        } catch (Exception e) {
+            getLogger().deb("Failed to terminate jcef_helper: " + e.getMessage());
+        }
+    }
+
+    private static boolean waitForExit(ProcessHandle handle, long timeoutMs) {
+        long end = System.currentTimeMillis() + timeoutMs;
+        while (handle.isAlive() && System.currentTimeMillis() < end) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+        return !handle.isAlive();
     }
 
 

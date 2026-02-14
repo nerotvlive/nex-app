@@ -29,36 +29,44 @@ import java.util.zip.ZipInputStream;
 
 public class CurseForgeIntegration {
 
+    private static final int BUFFER_SIZE = 8192;
+    private static final String API_KEY = "$2a$10$KasKOdKA23HXYEGVR5oml.T4cG.jFMZnLhpZLPH4sCMwiAkGd7BaK";
+
     public static void installModpack(File installDir, int projectId, int versionId) {
         CurseForgeResource project = new CurseForgeResource(projectId);
         CurseForgeResourceVersion version = new CurseForgeResourceVersion(projectId, versionId);
-        JsonObject data = version.getJson();
 
         String slug;
-        if (project.getSlug() != null && !project.getSlug().isEmpty() && !project.getSlug().isBlank()) {
+        if (!isBlank(project.getSlug())) {
             slug = project.getSlug();
         } else {
-            slug = project.getId() + "";
+            slug = String.valueOf(project.getId());
         }
         installDir = getInstallDir(installDir, slug);
 
         String versionName;
-        if (version.getDisplayName() != null && !version.getDisplayName().isEmpty() && !version.getDisplayName().isBlank()) {
+        if (!isBlank(version.getDisplayName())) {
             versionName = version.getDisplayName();
         } else {
-            versionName = versionId + "";
+            versionName = String.valueOf(versionId);
         }
 
-        String fileName = "curseforge-" + slug + "-" + versionName.replace(".zip","") + ".zip";
-        String downloadName = (NexusApplication.getInstance().getWorkingPath() + "/temp/" + fileName).replace("\\", "/").replace("//", "/");
-        File download = new File(downloadName);
+        String fileName = "curseforge-" + slug + "-" + versionName.replace(".zip", "") + ".zip";
+        File tempDir = new File(NexusApplication.getInstance().getWorkingPath(), "temp");
+        if (!tempDir.exists() && !tempDir.mkdirs()) {
+            throw new IllegalStateException("Failed to create temp dir: " + tempDir.getAbsolutePath());
+        }
+        File download = new File(tempDir, fileName);
         if (download.exists()) {
             if (!download.delete()) {
-                throw new RuntimeException("Failed to delete old download");
+                throw new IllegalStateException("Failed to delete old download: " + download.getAbsolutePath());
             }
         }
 
         try {
+            if (isBlank(version.getDownloadUrl())) {
+                throw new IllegalStateException("Missing download URL for CurseForge pack");
+            }
             Download metaDownload = new Download("CurseForge " + slug + "-" + versionName + " metadata", new URI(version.getDownloadUrl()).toURL(), download.toPath());
             NexusApplication.getInstance().getDownloadManager().addDownload(metaDownload);
             while (!metaDownload.isFinished()) {
@@ -70,7 +78,7 @@ public class CurseForgeIntegration {
         }
 
         if (!download.exists()) {
-            throw new NullPointerException("Downloaded file " + downloadName + " not found!");
+            throw new IllegalStateException("Downloaded file not found: " + download.getAbsolutePath());
         }
 
         String curseForgePackPath = installDir.getAbsolutePath();
@@ -79,16 +87,18 @@ public class CurseForgeIntegration {
             if (overrides.exists() && overrides.isDirectory()) {
                 if (overrides.listFiles() != null) {
                     for (File overrideFile : Objects.requireNonNull(overrides.listFiles())) {
-                        if (overrideFile.isDirectory()) {
-                            try {
-                                File destFile = new File(overrides.getParent() + "/" + overrideFile.getName());
-                                if (destFile.exists()) {
-                                    FileActions.deleteFolder(destFile);
-                                }
-                                FileUtils.moveDirectory(overrideFile, destFile);
-                            } catch (Exception e) {
-                                NexusApplication.getLogger().err(e.getMessage());
+                        try {
+                            File destFile = new File(overrides.getParent() + "/" + overrideFile.getName());
+                            if (destFile.exists()) {
+                                FileActions.deleteFolder(destFile);
                             }
+                            if (overrideFile.isDirectory()) {
+                                FileUtils.moveDirectory(overrideFile, destFile);
+                            } else {
+                                FileUtils.moveFile(overrideFile, destFile);
+                            }
+                        } catch (Exception e) {
+                            NexusApplication.getLogger().err(e.getMessage());
                         }
                     }
                 }
@@ -99,8 +109,6 @@ public class CurseForgeIntegration {
                 JsonObject indexJson = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromFile(index), JsonObject.class);
 
                 if (indexJson.has("files")) {
-                    final double[] progress = {0};
-                    final int[] finished = {0};
                     ArrayList<Download> fileDownloads = new ArrayList<>();
                     JsonArray files = indexJson.getAsJsonArray("files");
                     for (JsonElement file_ : files) {
@@ -133,7 +141,7 @@ public class CurseForgeIntegration {
                             Download fileDownload = new Download(project.getName() + " " + path + file.getFileName(), new URI(url).toURL(), filePath.toPath());
                             fileDownloads.add(fileDownload);
                         } catch (Exception e) {
-                            NexusApplication.getLogger().err("Cannot download file \"" + path + file.getFileName() + "\" for modrinth pack \"" + project.getName() + "\": " + e.getMessage(),false);
+                            NexusApplication.getLogger().err("Cannot download file \"" + path + file.getFileName() + "\" for curseforge pack \"" + project.getName() + "\": " + e.getMessage(), false);
                         }
 
                     }
@@ -152,26 +160,28 @@ public class CurseForgeIntegration {
                                 instanceConverter.setId("curseforge-" + slug);
                                 instanceConverter.setSummary(project.getSummary());
                                 instanceConverter.setDescription(project.getSummary());
-                                JsonObject dependencies = indexJson.get("minecraft").getAsJsonObject();
-                                instanceConverter.setMinecraftVersion(dependencies.get("version").getAsString());
+                                if (indexJson.has("minecraft")) {
+                                    JsonObject dependencies = indexJson.get("minecraft").getAsJsonObject();
+                                    if (dependencies.has("version")) {
+                                        instanceConverter.setMinecraftVersion(dependencies.get("version").getAsString());
+                                    }
 
-                                if(dependencies.has("modLoaders")) {
-                                    JsonArray modLoaders = dependencies.getAsJsonArray("modLoaders");
-                                    for(JsonElement loader_ : modLoaders) {
-                                        JsonObject loader = loader_.getAsJsonObject();
-                                        if(loader.has("primary")) {
-                                            if(loader.get("primary").getAsBoolean()) {
-                                                String[] mId = loader.get("id").getAsString().split("-",2);
-                                                if(mId[0].equalsIgnoreCase("fabric")) {
+                                    if (dependencies.has("modLoaders")) {
+                                        JsonArray modLoaders = dependencies.getAsJsonArray("modLoaders");
+                                        for (JsonElement loader_ : modLoaders) {
+                                            JsonObject loader = loader_.getAsJsonObject();
+                                            if (loader.has("primary") && loader.get("primary").getAsBoolean()) {
+                                                String[] mId = loader.get("id").getAsString().split("-", 2);
+                                                if (mId[0].equalsIgnoreCase("fabric")) {
                                                     instanceConverter.setMetaProperty("modloader", "fabric");
                                                     instanceConverter.setFabricVersion(mId[1]);
-                                                } else if(mId[0].equalsIgnoreCase("forge")) {
+                                                } else if (mId[0].equalsIgnoreCase("forge")) {
                                                     instanceConverter.setMetaProperty("modloader", "forge");
                                                     instanceConverter.setForgeVersion(mId[1]);
-                                                } else if(mId[0].equalsIgnoreCase("quilt")) {
+                                                } else if (mId[0].equalsIgnoreCase("quilt")) {
                                                     instanceConverter.setMetaProperty("modloader", "quilt");
                                                     instanceConverter.setQuiltVersion(mId[1]);
-                                                } else if(mId[0].equalsIgnoreCase("neoforge")) {
+                                                } else if (mId[0].equalsIgnoreCase("neoforge")) {
                                                     instanceConverter.setMetaProperty("modloader", "neoforge");
                                                     instanceConverter.setNeoForgeVersion(mId[1]);
                                                 }
@@ -184,26 +194,28 @@ public class CurseForgeIntegration {
                                 instanceConverter.setOriginUrl("local");
                                 ArrayList<String> tags = new ArrayList<>();
 
-                                for(JsonElement category:project.getCategories()) {
-                                    JsonObject cat = category.getAsJsonObject();
-                                    tags.add(cat.get("name").getAsString());
+                                if (project.getCategories() != null) {
+                                    for (JsonElement category : project.getCategories()) {
+                                        JsonObject cat = category.getAsJsonObject();
+                                        tags.add(cat.get("name").getAsString());
+                                    }
                                 }
 
                                 tags.add("curseforge");
                                 instanceConverter.setTags(tags);
                                 ArrayList<String> authors = new ArrayList<>();
 
-                                for(JsonElement author:project.getAuthors()) {
-                                    JsonObject auth = author.getAsJsonObject();
-                                    authors.add(auth.get("name").getAsString());
+                                if (project.getAuthors() != null) {
+                                    for (JsonElement author : project.getAuthors()) {
+                                        JsonObject auth = author.getAsJsonObject();
+                                        authors.add(auth.get("name").getAsString());
+                                    }
                                 }
 
                                 instanceConverter.setAuthors(authors);
 
-                                if(project.getLogo()!=null) {
-                                    if(project.getLogo().has("url")) {
-                                        instanceConverter.setIconUrl(project.getLogo().get("url").getAsString());
-                                    }
+                                if (project.getLogo() != null && project.getLogo().has("url")) {
+                                    instanceConverter.setIconUrl(project.getLogo().get("url").getAsString());
                                 }
 
                                 instanceConverter.create();
@@ -232,37 +244,39 @@ public class CurseForgeIntegration {
     private static boolean unzip(String fileZip, String destDirPath) {
         File destDir = new File(destDirPath);
         if (!destDir.exists()) {
-            NexusApplication.getLogger().deb("Created destination path: "+destDir.mkdirs());
+            NexusApplication.getLogger().deb("Created destination path: " + destDir.mkdirs());
         }
         try {
-            byte[] buffer = new byte[1024];
-            ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-            ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
-                String s = (destDir +"/"+ zipEntry.getName()).replace("\\","/").replace("//","/");
-                File newFile = new File(s);
-                if (zipEntry.isDirectory()) {
-                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                        throw new IOException("Failed to create directory " + newFile);
+            byte[] buffer = new byte[BUFFER_SIZE];
+            String destDirCanonical = destDir.getCanonicalPath() + File.separator;
+            try (ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip))) {
+                ZipEntry zipEntry = zis.getNextEntry();
+                while (zipEntry != null) {
+                    File newFile = new File(destDir, zipEntry.getName());
+                    String newFileCanonical = newFile.getCanonicalPath();
+                    if (!newFileCanonical.startsWith(destDirCanonical)) {
+                        throw new IOException("Blocked zip entry outside target dir: " + zipEntry.getName());
                     }
-                } else {
-                    File parent = newFile.getParentFile();
-                    if (!parent.isDirectory() && !parent.mkdirs()) {
-                        throw new IOException("Failed to create directory " + parent);
+                    if (zipEntry.isDirectory()) {
+                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                            throw new IOException("Failed to create directory " + newFile);
+                        }
+                    } else {
+                        File parent = newFile.getParentFile();
+                        if (!parent.isDirectory() && !parent.mkdirs()) {
+                            throw new IOException("Failed to create directory " + parent);
+                        }
+                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                            int len;
+                            while ((len = zis.read(buffer)) > 0) {
+                                fos.write(buffer, 0, len);
+                            }
+                        }
                     }
-
-                    FileOutputStream fos = new FileOutputStream(newFile);
-                    int len;
-                    while ((len = zis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
-                    }
-                    fos.close();
+                    zipEntry = zis.getNextEntry();
                 }
-                zipEntry = zis.getNextEntry();
+                zis.closeEntry();
             }
-
-            zis.closeEntry();
-            zis.close();
             return true;
         } catch (Exception e) {
             NexusApplication.getLogger().err(e.getMessage());
@@ -293,14 +307,24 @@ public class CurseForgeIntegration {
             connection.setInstanceFollowRedirects(true);
             connection.setUseCaches(false);
             connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("x-api-key", "$2a$10$KasKOdKA23HXYEGVR5oml.T4cG.jFMZnLhpZLPH4sCMwiAkGd7BaK");
-            return IOUtils.getContent(connection.getInputStream());
+            connection.setRequestProperty("x-api-key", API_KEY);
+            int status = connection.getResponseCode();
+            if (status >= 200 && status < 300) {
+                return IOUtils.getContent(connection.getInputStream());
+            }
+            String errorBody = connection.getErrorStream() != null ? IOUtils.getContent(connection.getErrorStream()) : "";
+            throw new IOException("CurseForge API request failed (" + status + "): " + errorBody);
         } catch (Exception e) {
+            NexusApplication.getLogger().err(e.getMessage());
             return null;
         } finally {
             if(connection != null) {
                 connection.disconnect();
             }
         }
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }

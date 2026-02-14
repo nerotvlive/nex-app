@@ -6,13 +6,17 @@
 
     <groupId>org.zyneonstudios.apex</groupId>
     <artifactId>nexus-app</artifactId>
-    <version>3.0.0-pre.10</version>
+    <version>3.0.0-pre.11</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.name>Reformatio</nexus.name>
         <nexus.type>stable</nexus.type>
+        <app.mainClass>org.zyneonstudios.apex.nexusapp.Main</app.mainClass>
+        <app.name>NEXUS App</app.name>
+        <app.vendor>Zyneon Studios</app.vendor>
+        <app.version.jpackage>3.0.0</app.version.jpackage>
     </properties>
 
     <repositories>
@@ -122,10 +126,11 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.zyneonstudios.apex.nexusapp.Main</mainClass>
+                                    <mainClass>${app.mainClass}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -145,5 +150,45 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>windows-exe</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.7.1</version>
+                        <executions>
+                            <execution>
+                                <id>jpackage</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                                <configuration>
+                                    <input>${project.build.directory}</input>
+                                    <destination>${project.build.directory}/jpackage</destination>
+                                    <name>${app.name}</name>
+                                    <appVersion>${app.version.jpackage}</appVersion>
+                                    <vendor>${app.vendor}</vendor>
+                                    <mainJar>${project.build.finalName}.jar</mainJar>
+                                    <mainClass>${app.mainClass}</mainClass>
+                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <type>APP_IMAGE</type>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

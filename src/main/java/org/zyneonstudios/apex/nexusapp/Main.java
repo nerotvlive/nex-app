@@ -1,6 +1,14 @@
 package org.zyneonstudios.apex.nexusapp;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.zyneonstudios.nexus.desktop.NexusDesktop;
+import com.zyneonstudios.nexus.utilities.file.FileGetter;
+import com.zyneonstudios.nexus.utilities.json.GsonUtility;
+import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
+import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.zyneonstudios.apex.nexusapp.frame.ZyneonSplash;
@@ -8,9 +16,21 @@ import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.utilities.ApplicationLogger;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The {@code Main} class is the primary entry point for the Nexus application.
@@ -23,12 +43,22 @@ public class Main {
 
     // Application Logger
     private static final ApplicationLogger logger = new ApplicationLogger("NEXUS");
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
     private static String[] args;
 
     // Application Configuration
     private static String path = getDefaultPath();
     private static String ui = null;
     private static int port = 8094;
+    private static final String INSTANCE_LOCK_FILE = ".nexus-app.instance";
+    private static final String INSTANCE_PING_OK = "OK";
+    private static final String INSTANCE_PING_HUNG = "HUNG";
+    private static final String INSTANCE_PING_STARTING = "STARTING";
+    private static final long EDT_PING_TIMEOUT_MS = 1000L;
+    private static final String instanceId = UUID.randomUUID().toString();
+    private static volatile boolean instanceOwner = false;
+    private static ServerSocket focusServer;
+    private static int focusPort = -1;
 
     /**
      * The main method, the entry point of the Nexus application.
@@ -37,6 +67,19 @@ public class Main {
      */
     public static void main(String[] args) {
         Main.args = args;
+
+        // Resolve command-line arguments.
+        resolveArguments(args);
+
+        // Enforce single-instance execution with hung detection and focus.
+        if (!ensureSingleInstance()) {
+            return;
+        }
+
+        // Display the splash screen.
+        ZyneonSplash splash = new ZyneonSplash();
+        splash.setVisible(true);
+
         // Initialize the Nexus desktop environment.
         NexusDesktop.init();
         logger.setName("NEXUS",true);
@@ -46,12 +89,9 @@ public class Main {
             logger.err(e.getMessage());
         }
 
-        // Resolve command-line arguments.
-        resolveArguments(args);
-
-        // Display the splash screen.
-        ZyneonSplash splash = new ZyneonSplash();
-        splash.setVisible(true);
+        if(!checkVersion()) {
+            System.exit(-1);
+        }
 
         // Create the main application instance.
         NexusApplication application = new NexusApplication(path, ui);
@@ -164,5 +204,356 @@ public class Main {
 
     public static ApplicationLogger getLogger() {
         return logger;
+    }
+
+    private static boolean ensureSingleInstance() {
+        Path lockPath = Paths.get(path, INSTANCE_LOCK_FILE);
+        try {
+            Files.createDirectories(Paths.get(path));
+        } catch (Exception e) {
+            logger.err("Couldn't create app directory: " + e.getMessage());
+        }
+
+        InstanceInfo existing = readInstanceInfo(lockPath);
+        if (existing != null) {
+            if (isProcessAlive(existing.pid)) {
+                InstancePing ping = pingInstance(existing.port);
+                if (ping == InstancePing.OK || ping == InstancePing.STARTING) {
+                    sendFocus(existing.port);
+                    showAlreadyRunningMessage();
+                    return false;
+                }
+                // Hung or unresponsive -> allow new instance
+                logger.log("Detected unresponsive instance, starting a new one.");
+            } else {
+                logger.log("Detected stale instance lock, starting a new one.");
+            }
+            deleteInstanceLock(lockPath, existing.id);
+        }
+
+        if (!startFocusServer()) {
+            logger.err("Couldn't start focus server.");
+            return true;
+        }
+
+        if (!writeInstanceInfo(lockPath)) {
+            closeFocusServer();
+            InstanceInfo latest = readInstanceInfo(lockPath);
+            if (latest != null) {
+                if (isProcessAlive(latest.pid)) {
+                    InstancePing ping = pingInstance(latest.port);
+                    if (ping == InstancePing.OK || ping == InstancePing.STARTING) {
+                        sendFocus(latest.port);
+                        showAlreadyRunningMessage();
+                        return false;
+                    }
+                }
+            }
+        }
+
+        instanceOwner = true;
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::releaseInstanceResources));
+        return true;
+    }
+
+    private static void showAlreadyRunningMessage() {
+        if(logger.isDebugging()) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Application is already running!",
+                    "NEXUS App",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+
+    private static boolean startFocusServer() {
+        try {
+            focusServer = new ServerSocket(0, 50, InetAddress.getByName("127.0.0.1"));
+            focusPort = focusServer.getLocalPort();
+            Thread serverThread = new Thread(Main::runFocusServer, "nexus-focus-server");
+            serverThread.setDaemon(true);
+            serverThread.start();
+            return true;
+        } catch (Exception e) {
+            logger.err("Failed to start focus server: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static void runFocusServer() {
+        while (focusServer != null && !focusServer.isClosed()) {
+            try (Socket socket = focusServer.accept()) {
+                socket.setSoTimeout(1000);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+                String command = reader.readLine();
+                if ("FOCUS".equalsIgnoreCase(command)) {
+                    focusApplication();
+                    writer.write(INSTANCE_PING_OK);
+                } else if ("PING".equalsIgnoreCase(command)) {
+                    writer.write(getInstanceStatus());
+                } else {
+                    writer.write(INSTANCE_PING_OK);
+                }
+                writer.newLine();
+                writer.flush();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    private static String getInstanceStatus() {
+        try {
+            if (org.zyneonstudios.apex.nexusapp.main.NexusApplication.getInstance() == null
+                    || !org.zyneonstudios.apex.nexusapp.main.NexusApplication.getInstance().isLaunched()) {
+                return INSTANCE_PING_STARTING;
+            }
+        } catch (Exception ignored) {
+        }
+        return isEdtResponsive(EDT_PING_TIMEOUT_MS) ? INSTANCE_PING_OK : INSTANCE_PING_HUNG;
+    }
+
+    private static boolean isEdtResponsive(long timeoutMs) {
+        AtomicBoolean ran = new AtomicBoolean(false);
+        try {
+            SwingUtilities.invokeLater(() -> ran.set(true));
+        } catch (Exception e) {
+            return false;
+        }
+        long end = System.currentTimeMillis() + timeoutMs;
+        while (!ran.get() && System.currentTimeMillis() < end) {
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+        return ran.get();
+    }
+
+    private static void focusApplication() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                var app = org.zyneonstudios.apex.nexusapp.main.NexusApplication.getInstance();
+                if (app == null || app.getApplicationFrame() == null) {
+                    return;
+                }
+                JFrame frame = app.getApplicationFrame().getAsJFrame();
+                if (frame == null) {
+                    return;
+                }
+                frame.setVisible(true);
+                frame.setState(Frame.NORMAL);
+                frame.toFront();
+                frame.requestFocus();
+            } catch (Exception ignored) {
+            }
+        });
+    }
+
+    private static boolean writeInstanceInfo(Path lockPath) {
+        Properties props = new Properties();
+        props.setProperty("pid", String.valueOf(ProcessHandle.current().pid()));
+        props.setProperty("port", String.valueOf(focusPort));
+        props.setProperty("id", instanceId);
+        props.setProperty("ts", String.valueOf(System.currentTimeMillis()));
+        try (BufferedWriter writer = Files.newBufferedWriter(
+                lockPath,
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE_NEW,
+                StandardOpenOption.WRITE
+        )) {
+            props.store(writer, "NEXUS App instance lock");
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private static InstanceInfo readInstanceInfo(Path lockPath) {
+        if (!Files.exists(lockPath)) {
+            return null;
+        }
+        Properties props = new Properties();
+        try (BufferedReader reader = Files.newBufferedReader(lockPath, StandardCharsets.UTF_8)) {
+            props.load(reader);
+            long pid = parseLong(props.getProperty("pid"), -1L);
+            int infoPort = (int) parseLong(props.getProperty("port"), -1L);
+            String id = props.getProperty("id");
+            long ts = parseLong(props.getProperty("ts"), 0L);
+            if (pid <= 0 || infoPort <= 0) {
+                return null;
+            }
+            return new InstanceInfo(pid, infoPort, id, ts);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static void deleteInstanceLock(Path lockPath, String id) {
+        if (!Files.exists(lockPath)) {
+            return;
+        }
+        if (id != null) {
+            InstanceInfo info = readInstanceInfo(lockPath);
+            if (info != null && !id.equals(info.id)) {
+                return;
+            }
+        }
+        try {
+            Files.deleteIfExists(lockPath);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static boolean isProcessAlive(long pid) {
+        try {
+            return ProcessHandle.of(pid).map(ProcessHandle::isAlive).orElse(false);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static InstancePing pingInstance(int infoPort) {
+        if (infoPort <= 0) {
+            return InstancePing.NO_RESPONSE;
+        }
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("127.0.0.1", infoPort), 400);
+            socket.setSoTimeout(400);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+            writer.write("PING");
+            writer.newLine();
+            writer.flush();
+            String response = reader.readLine();
+            if (INSTANCE_PING_OK.equalsIgnoreCase(response)) {
+                return InstancePing.OK;
+            }
+            if (INSTANCE_PING_HUNG.equalsIgnoreCase(response)) {
+                return InstancePing.HUNG;
+            }
+            if (INSTANCE_PING_STARTING.equalsIgnoreCase(response)) {
+                return InstancePing.STARTING;
+            }
+            return InstancePing.NO_RESPONSE;
+        } catch (Exception e) {
+            return InstancePing.NO_RESPONSE;
+        }
+    }
+
+    private static void sendFocus(int infoPort) {
+        if (infoPort <= 0) {
+            return;
+        }
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("127.0.0.1", infoPort), 400);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+            writer.write("FOCUS");
+            writer.newLine();
+            writer.flush();
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static long parseLong(String value, long fallback) {
+        if (value == null) {
+            return fallback;
+        }
+        try {
+            return Long.parseLong(value.trim());
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
+    }
+
+    private static void closeFocusServer() {
+        try {
+            if (focusServer != null) {
+                focusServer.close();
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void releaseInstanceResources() {
+        if (instanceOwner) {
+            deleteInstanceLock(Paths.get(path, INSTANCE_LOCK_FILE), instanceId);
+        }
+        closeFocusServer();
+    }
+
+    private enum InstancePing {
+        OK,
+        HUNG,
+        STARTING,
+        NO_RESPONSE
+    }
+
+    private record InstanceInfo(long pid, int port, String id, long ts) {
+    }
+
+    private static boolean checkVersion() {
+        if(OperatingSystem.getType() == OperatingSystem.Type.Windows) {
+            try {
+                JsonObject jsonMeta = GsonUtility.getObject("https://zyneonstudios.github.io/apex-metadata/nexus-app/win-files/win-metadata.json");
+                String latestVersion = jsonMeta.get("version").getAsString();
+
+                String data = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("nexus.json").readAllBytes());
+                JsonObject nexus = new Gson().fromJson(data, JsonObject.class);
+                String currentVersion = nexus.get("version").getAsString();
+
+                if(!latestVersion.equals(currentVersion)) {
+                    int update = JOptionPane.showConfirmDialog(
+                            null,
+                            "Do you want to update to the latest version?\n\nCurrent version: " + currentVersion+"\nLatest version: "+latestVersion,
+                            "NEXUS App update available!",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+
+                    if (update == JOptionPane.YES_OPTION) {
+                        File tempDir = new File(getDefaultPath()+"temp/");
+                        logger.deb("Created temp folder: "+tempDir.mkdirs());
+                        tempDir.deleteOnExit();
+
+                        JFrame frame = new JFrame("NEXUS App updater");
+                        frame.setLayout(new BorderLayout());
+                        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        frame.setSize(400, 100);
+                        frame.setLocationRelativeTo(null);
+                        frame.setResizable(false);
+
+                        JProgressBar indeterminator = new JProgressBar();
+                        indeterminator.setIndeterminate(true);
+                        indeterminator.setStringPainted(true);
+                        indeterminator.setString("Downloading NEXUS App v"+latestVersion+"...");
+                        indeterminator.setBorder(new EmptyBorder(10, 10, 10, 10));
+                        frame.add(indeterminator, BorderLayout.CENTER);
+
+                        frame.setVisible(true);
+
+                        File updater = FileGetter.downloadFile(jsonMeta.get("downloadUrl").getAsString(), getDefaultPath()+"temp/"+ StringGenerator.generateAlphanumericString(12)+"-NEXUS-App-"+latestVersion+"-setup.exe");
+                        if (updater != null && updater.exists()) {
+                            try {
+                                new ProcessBuilder("cmd", "/c", "start", "", updater.getAbsolutePath(), "/SILENT", "/MERGETASKS=runapp")
+                                        .directory(updater.getParentFile())
+                                        .start();
+                                System.exit(0);
+                            } catch (IOException e) {
+                                logger.err(e.getMessage());
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.err(e.getMessage());
+            }
+        }
+        return true;
     }
 }

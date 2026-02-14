@@ -19,7 +19,7 @@ public class ApplicationLogger extends NexusLogger {
     public void err(String errorMessage, boolean dialog) {
         super.err(errorMessage);
         if(dialog) {
-            JOptionPane.showMessageDialog(NexusApplication.getInstance().getApplicationFrame(), errorMessage,
+            JOptionPane.showMessageDialog(getParent(), errorMessage,
                     "NEXUS App (Error)", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -64,7 +64,15 @@ public class ApplicationLogger extends NexusLogger {
             output.append(s2).append("\n");
             err(s2,false);
         }
-        JOptionPane.showMessageDialog(NexusApplication.getInstance().getApplicationFrame(), output.toString(),
+        JOptionPane.showMessageDialog(getParent(), output.toString(),
                 "NEXUS App (Error)", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private JFrame getParent() {
+        JFrame parent = null;
+        try {
+            parent = NexusApplication.getInstance().getApplicationFrame();
+        } catch (Exception ignore) {}
+        return parent;
     }
 }
