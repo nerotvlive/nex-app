@@ -538,9 +538,12 @@ public class Main {
                         File updater = FileGetter.downloadFile(jsonMeta.get("downloadUrl").getAsString(), getDefaultPath()+"temp/"+ StringGenerator.generateAlphanumericString(12)+"-NEXUS-App-"+latestVersion+"-setup.exe");
                         if (updater != null && updater.exists()) {
                             try {
-                                new ProcessBuilder("cmd", "/c", "start", "", updater.getAbsolutePath(), "/SILENT", "/MERGETASKS=runapp")
-                                        .directory(updater.getParentFile())
-                                        .start();
+                                new ProcessBuilder(
+                                        updater.getAbsolutePath(),
+                                        "/SILENT",
+                                        "/SUPPRESSMSGBOXES",
+                                        "/MERGETASKS=runapp"
+                                ).directory(updater.getParentFile()).start();
                                 System.exit(0);
                             } catch (IOException e) {
                                 logger.err(e.getMessage());

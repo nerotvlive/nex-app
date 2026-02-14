@@ -6,7 +6,7 @@
 
     <groupId>org.zyneonstudios.apex</groupId>
     <artifactId>nexus-app</artifactId>
-    <version>3.0.0-pre.11</version>
+    <version>3.0.0-pre.13</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.5.9</version>
+            <version>3.5.10</version>
         </dependency>
         <dependency>
             <groupId>com.starxg</groupId>
