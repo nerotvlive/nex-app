@@ -4,6 +4,19 @@
     width: 100%;
     height: 100%;
 
+    #instance-view {
+
+        #launch-button {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            min-width: 18rem;
+            max-width: 18rem;
+            font-size: 1.2rem;
+            padding: 1rem 1rem;
+        }
+    }
+
     #settings-pane {
         z-index: -1;
         scale: 0;
@@ -256,38 +269,6 @@
         }
     }
 
-    #instance-view {
-        div.glass {
-            width: 20rem;
-            min-width: 20rem;
-            max-width: 20rem;
-
-            .card {
-                min-width: 19rem;
-                width: 19rem;
-                max-width: 19rem;
-
-                min-height: 8rem;
-                height: fit-content;
-                max-height: 12rem;
-
-                .card-header {
-                    max-height: fit-content;
-                }
-            }
-        }
-
-        #launch-button {
-            position: absolute;
-            bottom: 0.5rem;
-            right: 0.5rem;
-            z-index: 10;
-            height: 4rem;
-            font-size: 1.2rem;
-            font-weight: 750;
-        }
-    }
-
     #library-tags {
         .badge.bg-modrinth {
             background: #1bd96a;
@@ -420,15 +401,6 @@
         div {
             flex: 1 !important;
         }
-
-        div.glass {
-            width: fit-content !important;
-            max-width: fit-content !important;
-        }
-
-        .card.glass {
-            width: 100% !important;
-        }
     }
 
     .tab-pane {
@@ -444,6 +416,11 @@
             object-fit: contain;
         }
     }
+}
+
+#library.active {
+    transition: all var(--nex-animation-speed) ease;
+    opacity: 1 !important;
 }
 
 .instance-creator {
@@ -517,16 +494,6 @@
             text-shadow: none !important;
         }
 
-        #launch-button {
-            background: var(--nex-primary);
-            border: 1px solid var(--nex-primary-accent);
-        }
-
-        #launch-button:hover {
-            background: var(--nex-primary-accent);
-            border: 1px solid var(--nex-primary);
-        }
-
         #settings-pane {
             i {
                 color: black;
@@ -535,6 +502,7 @@
             .settings-menu {
                 button {
                     background: var(--nex-brighter-100);
+
                     i {
                         color: unset;
                     }

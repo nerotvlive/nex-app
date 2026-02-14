@@ -520,6 +520,10 @@ function openNotifications() {
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // --- DOMContentLoaded Event ---
 
 /**
@@ -535,13 +539,6 @@ addEventListener("DOMContentLoaded", () => {
         const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
         const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
     } catch (ignore) {}
-
-    if (renderEffects) {
-        const panel = document.querySelector(".menu-panel");
-        if (panel) {
-            panel.classList.add("glass");
-        }
-    }
 
     window.matchMedia('(prefers-color-scheme: dark)')
         .addEventListener('change', () => {

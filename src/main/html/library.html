@@ -1,15 +1,16 @@
 <link href="assets/nexus/css/library.css" rel="stylesheet">
 <div id="bg-div"></div>
-<div id="library" class="nex-flex w-100 h-100 p-0 m-0">
-    <div class="card submenu glass">
+<div id="library" class="nex-flex w-100 h-100 p-0 m-0 opacity-0">
+    <div class="card submenu">
         <div class="card-header">
             <strong>Library</strong>
         </div>
-        <label>
-            <select disabled>
-                <option>Minecraft: Java Edition</option>
-            </select>
-        </label>
+        <div>
+            <button onclick="showOverview();" id="overview-button" type="button" class="btn btn-nex-secondary flex-grow-1">
+                <i class="bi bi-house"></i>
+                <span>Home & Overview</span>
+            </button>
+        </div>
         <div class="d-flex">
             <button id="create-button" type="button" class="btn btn-nex-secondary flex-grow-1" data-bs-toggle="modal" data-bs-target="#addInstance">
                 <i class="bi bi-plus-lg"></i>
@@ -19,8 +20,8 @@
                 <i class="bi bi-arrow-clockwise m-0 p-0"></i>
             </button>
         </div>
-        <div class="card-header instancelist-header" style="border-top: 1px solid var(--bs-border-color-translucent);">
-            <strong>Instances</strong> <i onclick="toggleInstanceGrouping();" class="bi bi-list-task instanceGroupingToggle"></i>
+        <div class="card-header instancelist-header">
+            <strong>Instances</strong> <i onclick="toggleInstanceGrouping();" class="bi bi-list-task instanceGroupingToggle" style="transition: background-color 0.15s ease !important; border: 1px solid transparent !important;"></i>
         </div>
         <div id="instance-list" class="d-flex flex-column m-0 p-0">
             <button type="button" class="btn btn-nex-secondary d-none instance-list-template instance-button-comp" style="margin: 0 0.5rem; width: calc(100% - 1rem);">
@@ -43,7 +44,7 @@
             </div>
         </div>
     </div>
-    <div class="position-relative big-card w-100 m-2 card glass shadow overflow-hidden p-0 m-3">
+    <div class="position-relative big-card w-100 m-2 card shadow overflow-hidden p-0 m-3">
         <div class="title-menu card-header shadow p-1 w-100 d-flex flex-row border-bottom-0">
             <h4 class="m-0 w-100" style="padding: 0.5rem 0.5rem 0.75rem 0.75rem;" id="library-title"><img alt="" src=""><span>Library</span></h4>
             <div class="buttons w-100 d-flex flex-row align-self-center justify-content-end">
@@ -51,6 +52,10 @@
                 <a id="folder-button" class="folder shadow d-none"><i class="bi bi-folder2"></i></a>
                 <a id="library-settings-button" class="settings shadow d-none" onclick="console.log('[CONNECTOR] library.settings.'+activeInstance)"><i class="bi bi-gear"></i></a>
             </div>
+        </div>
+
+        <div class="nex-side-view p-3" id="overview">
+            Overview
         </div>
 
         <div class="nex-side-view p-3" style="display: none" id="instance-view">
@@ -81,8 +86,8 @@
                     <div class="tab-pane m-0 p-0 fade" id="tab-shaders-content" aria-labelledby="tab-shaders">${instance.shaders}</div>
                 </div>
             </div>
-            <div class="glass">
-                <div class="card glass w-100">
+            <div class="side">
+                <div class="card w-100 shadow">
                     <div class="card-header">
                         <strong>Overview</strong>
                     </div>
@@ -93,7 +98,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="card glass w-100">
+                <div class="card w-100 shadow">
                     <div class="card-header">
                         <strong>Tags</strong>
                     </div>
@@ -312,7 +317,7 @@
 </div>
 <div class="modal fade" id="addInstance" tabindex="-1" aria-labelledby="addInstanceLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content glass rounded-2">
+        <div class="modal-content rounded-2">
             <div class="modal-header" style="background: var(--nex-brighter-100);" id="addInstanceM-header">
                 <strong>Instance Creator (work in progress but working)</strong>
             </div>

@@ -131,25 +131,7 @@ function setRenderEffects(bool) {
     renderEffects = bool;
     setStorageItem("settings.appearance.renderEffects", bool);
     document.querySelector(".appearance-renderEffects").checked = renderEffects;
-
-    const panel = document.querySelector('.menu-panel');
-    const renderEffectsDisableStyle = "<style>:root,[data-bs-theme='light'],[data-bs-theme='dark'] * { box-shadow: none !important; text-shadow: none !important; --bs-box-shadow: none !important; }</style>";
-
-    if (!renderEffects) {
-        // Remove glass effect and add CSS to disable shadows
-        if (panel.classList.contains("glass")) {
-            panel.classList.remove("glass");
-        }
-        if (!document.head.innerHTML.includes(renderEffectsDisableStyle)) {
-            document.head.innerHTML += renderEffectsDisableStyle;
-        }
-    } else {
-        // Add glass effect and remove CSS to disable shadows
-        if (!panel.classList.contains("glass")) {
-            panel.classList.add("glass");
-        }
-        document.head.innerHTML = document.head.innerHTML.replaceAll(renderEffectsDisableStyle, "");
-    }
+    //TODO remove or make it work
 }
 
 /**

@@ -1,5 +1,4 @@
 :root,[data-bs-theme="light"],[data-bs-theme="dark"] {
-    --nex-submenu-bg: var(--nex-brighter);
     --nex-bg: black;
     --nex-fg: #d7d7d7;
     --nex-iv: white;
@@ -562,10 +561,6 @@ body {
                 }
             }
 
-            .card-header:hover {
-                background: var(--bs-dark-bg-subtle);
-            }
-
             .card-body {
                 width: 100%;
                 height: 4rem;
@@ -644,6 +639,10 @@ body {
                     }
                 }
             }
+        }
+
+        .menu-panel:hover {
+            background: var(--nex-brighter-200);
         }
 
         .menu-panel.active, .menu-panel.hover:hover {
@@ -769,42 +768,22 @@ body {
                     overflow: auto;
                 }
 
-                div.glass {
+                div.side {
                     width: fit-content;
                     max-width: 20rem;
                     background: #ffffff01;
                     border-left: 1px solid var(--bs-border-color-translucent);
+
+                    .card {
+                        margin-bottom: 0.5rem;
+                        background: var(--nex-darker);
+                    }
 
                     .badge {
                         text-shadow: none !important;
                         box-shadow: 0 0 0.4rem #00000050;
                         margin: 0.25rem 0.25rem 0.25rem 0;
                         border: 1px solid var(--bs-border-color-translucent);
-                    }
-
-                    .card {
-                        background: var(--nex-brighter-100);
-                        border: 1px solid var(--bs-border-color-translucent);
-                        max-height: 30%;
-                        padding: 0;
-                        margin-bottom: 0.75rem;
-
-                        .card-header {
-                            background: var(--nex-brighter) !important;
-                            color: var(--nex-fg);
-                            min-height: fit-content;
-                        }
-
-                        .card-body {
-                            padding: 0.5rem;
-                            margin: 0;
-                            overflow: auto;
-
-                            h4 {
-                                margin: 0;
-                                padding: 0;
-                            }
-                        }
                     }
                 }
             }
@@ -876,11 +855,6 @@ body {
                 overflow-y: auto;
                 gap: 0.4rem;
                 box-shadow: 0 0 0.5rem #00000075;
-                background: var(--nex-submenu-bg) !important;
-
-                .card-header:hover {
-                    background: var(--nex-brighter) !important;
-                }
 
                 button, select {
                     text-align: left;
@@ -1026,33 +1000,6 @@ body {
         }
     }
 
-    .glass {
-        background: #ffffff10;
-        backdrop-filter: blur(16px);
-
-        .card-header {
-            background: #ffffff10;
-        }
-
-        .card-header:hover {
-            background: #ffffff20 !important;
-        }
-    }
-
-    .glass.inlined {
-        background: none !important;
-        backdrop-filter: none !important;
-
-        * {
-            backdrop-filter: none !important;
-        }
-
-        .card-header:hover {
-            backdrop-filter: none !important;
-            background: none !important;
-        }
-    }
-
     .array-box {
         display: flex;
         flex-wrap: wrap;
@@ -1126,6 +1073,13 @@ body {
 .card {
     padding: 0;
     text-shadow: none;
+    background: var(--nex-brighter-100);
+    backdrop-filter: blur(16px);
+
+    .card-header, .card-body, .card-footer {
+        background: none;
+        border: none;
+    }
 }
 
 #context-menu {
@@ -1315,5 +1269,87 @@ body {
 
     .light-mode-warning {
         display: unset !important;
+    }
+}
+
+body.afoo {
+    animation: hue-rotate 1s infinite linear;
+    animation-play-state: paused;
+
+    * {
+        transition: all 0.1s ease !important;
+        rotate: 360deg;
+    }
+
+    img, i {
+        transition: all 0.1s ease !important;
+        animation: rotate-sometimes 5s infinite linear !important;
+    }
+
+    i {
+        border: none !important;
+    }
+}
+
+body.afoo:hover {
+    animation-play-state: running;
+}
+
+@keyframes hue-rotate {
+    0% {
+        filter: hue-rotate(0deg);
+        --bs-border-radius: 2rem;
+        --bs-border-radius-xl: 2rem;
+        --bs-border-radius-sm: 2rem;
+        --bs-border-radius-lg: 2rem;
+        --bs-border-radius-xxl: 2rem;
+        --nex-border-radius: 2rem;
+    }
+
+    50% {
+        filter: hue-rotate(180deg);
+        --bs-border-radius: 0rem;
+        --bs-border-radius-xl: 0rem;
+        --bs-border-radius-sm: 0rem;
+        --bs-border-radius-lg: 0rem;
+        --bs-border-radius-xxl: 0rem;
+        --nex-border-radius: 0rem;
+    }
+
+    100% {
+        filter: hue-rotate(360deg);
+        --bs-border-radius: 2rem;
+        --bs-border-radius-xl: 2rem;
+        --bs-border-radius-sm: 2rem;
+        --bs-border-radius-lg: 2rem;
+        --bs-border-radius-xxl: 2rem;
+        --nex-border-radius: 2rem;
+    }
+}
+
+@keyframes rotate-sometimes {
+    0% {
+        rotate: 0deg;
+        border: 1px solid transparent;
+    }
+
+    47% {
+        rotate: 0deg;
+        border: 1px solid white;
+    }
+
+    50% {
+        rotate: 180deg;
+        border: 1px solid transparent;
+    }
+
+    97% {
+        rotate: 180deg;
+        border: 1px solid white;
+    }
+
+    100% {
+        rotate: 0deg;
+        border: 1px solid transparent;
     }
 }

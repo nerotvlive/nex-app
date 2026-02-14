@@ -496,7 +496,7 @@ public class Main {
     }
 
     private static boolean checkVersion() {
-        if(OperatingSystem.getType() == OperatingSystem.Type.Windows) {
+        if(OperatingSystem.getType() == OperatingSystem.Type.Windows && !logger.isDebugging()) {
             try {
                 JsonObject jsonMeta = GsonUtility.getObject("https://zyneonstudios.github.io/apex-metadata/nexus-app/win-files/win-metadata.json");
                 String latestVersion = jsonMeta.get("version").getAsString();
@@ -535,7 +535,7 @@ public class Main {
 
                         frame.setVisible(true);
 
-                        File updater = FileGetter.downloadFile(jsonMeta.get("downloadUrl").getAsString(), getDefaultPath()+"temp/"+ StringGenerator.generateAlphanumericString(12)+"-NEXUS-App-"+latestVersion+"-setup.exe");
+                        File updater = FileGetter.downloadFile(jsonMeta.get("downloadUrl").getAsString(), getDefaultPath()+"temp/"+ StringGenerator.generateAlphanumericString(12) +"-NEXUS-App-"+latestVersion+"-setup.exe");
                         if (updater != null && updater.exists()) {
                             try {
                                 new ProcessBuilder(

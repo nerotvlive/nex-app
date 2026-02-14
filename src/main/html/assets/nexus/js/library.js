@@ -107,6 +107,27 @@ function initLibrary() {
         toggle.classList.remove("bi-view-list");
         toggle.classList.add("bi-list-task");
     }
+
+    sleep(10).then(() => {
+        document.getElementById("library").classList.add("active");
+    })
+
+}
+
+function showOverview() {
+    document.getElementById("instance-view").style.display = "none";
+    document.getElementById("overview").style.display = "flex";
+    if(activeInstance) {
+        if(document.getElementById(activeInstance)) {
+            document.getElementById(activeInstance).classList.remove("active");
+        }
+    }
+    activeInstance = null;
+    document.getElementById("overview-button").classList.add("active");
+    document.getElementById("library-title").querySelector("span").innerText = "Library Overview";
+    document.getElementById("library-title").querySelector("img").src = "";
+    document.getElementById("folder-button").classList.add("d-none");
+    document.getElementById("library-settings-button").classList.add("d-none");
 }
 
 function showInstance(id,name,version,summary,description,tagsString) {
@@ -133,6 +154,7 @@ function showInstance(id,name,version,summary,description,tagsString) {
     if(document.getElementById(activeInstance)) {
         document.getElementById(activeInstance).classList.add("active");
     }
+    document.getElementById("overview-button").classList.remove("active");
     document.getElementById("library-title").querySelector("span").innerText = name;
 
         if(document.getElementById(id)&&document.getElementById(id).querySelector("img")&&document.getElementById(id).querySelector("img").src) {
@@ -140,6 +162,7 @@ function showInstance(id,name,version,summary,description,tagsString) {
             document.getElementById("library-title").querySelector("span").classList.add("icon");
         }
 
+        document.getElementById("overview").style.display = "none";
     document.getElementById("instance-view").style.display = "flex";
     document.getElementById("launch-button").style.display = "";
     document.getElementById("instance-name").innerText = name;
