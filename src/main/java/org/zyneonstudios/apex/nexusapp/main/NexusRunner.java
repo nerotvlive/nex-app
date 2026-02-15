@@ -91,6 +91,7 @@ public class NexusRunner {
 
         if(c == 300) {
             c = 0;
+            checkVersion();
             System.gc();
         }
 
@@ -159,20 +160,15 @@ public class NexusRunner {
                 NexusApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('avg-speed').innerText = '"+getGlobalAverage()+" MB/s';");
             });
         }
-
-        try {
-            if(!Main.getLogger().isDebugging()) {
-                checkVersion();
-            }
-        } catch (Exception ignore) {
-        }
     }
 
     private void checkVersion() {
         u++;
-        if (u > 120) {
+        if (u > 11) {
             u = 0;
-            Main.checkVersion();
+            if(!Main.getLogger().isDebugging()) {
+                Main.checkVersion();
+            }
         }
     }
 
