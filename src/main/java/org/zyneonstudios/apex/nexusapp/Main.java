@@ -59,6 +59,7 @@ public class Main {
     private static volatile boolean instanceOwner = false;
     private static ServerSocket focusServer;
     private static int focusPort = -1;
+    private static String skippedUpdate = "0";
 
     /**
      * The main method, the entry point of the Nexus application.
@@ -493,6 +494,9 @@ public class Main {
             try {
                 JsonObject jsonMeta = GsonUtility.getObject("https://zyneonstudios.github.io/apex-metadata/nexus-app/win-files/win-metadata.json");
                 String latestVersion = jsonMeta.get("version").getAsString();
+                if(latestVersion.equals(skippedUpdate())) {
+                    return true;
+                }
 
                 String data = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("nexus.json").readAllBytes());
                 JsonObject nexus = new Gson().fromJson(data, JsonObject.class);
@@ -552,6 +556,8 @@ public class Main {
                             }
                             return false;
                         }
+                    } else {
+                        skippedUpdate = latestVersion;
                     }
                 }
             } catch (Exception e) {
@@ -559,5 +565,9 @@ public class Main {
             }
         }
         return true;
+    }
+
+    public static String skippedUpdate() {
+        return skippedUpdate;
     }
 }

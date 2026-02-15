@@ -82,16 +82,16 @@ public class NexusRunner {
      * The method that is executed periodically by the runner.
      * Currently, it does nothing but can be extended to perform specific tasks.
      */
-    int c = 0; int u = 0;
+    int c = 0; int u = 58;
     protected void run() {
         if (!started) {
             started = true;
             return;
         }
 
+        checkVersion();
         if(c == 300) {
             c = 0;
-            checkVersion();
             System.gc();
         }
 
@@ -164,9 +164,9 @@ public class NexusRunner {
 
     private void checkVersion() {
         u++;
-        if (u > 11) {
+        if (u > 59) {
             u = 0;
-            if(!Main.getLogger().isDebugging()&&NexusApplication.getInstance().getApplicationFrame().isVisible()) {
+            if(NexusApplication.getInstance().getApplicationFrame().isVisible()&&!Main.getLogger().isDebugging()) {
                 Main.checkVersion();
             }
         }
