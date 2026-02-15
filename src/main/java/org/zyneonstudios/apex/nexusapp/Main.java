@@ -14,6 +14,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.zyneonstudios.apex.nexusapp.frame.ZyneonSplash;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.utilities.ApplicationLogger;
+import org.zyneonstudios.apex.nexusapp.utilities.DiscordRichPresence;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -338,6 +339,15 @@ public class Main {
                 frame.setState(Frame.NORMAL);
                 frame.toFront();
                 frame.requestFocus();
+                boolean rpc = true;
+                if(NexusApplication.getInstance().getSettings().has("settings.discord.rpc")) {
+                    try {
+                        rpc = NexusApplication.getInstance().getSettings().getBool("settings.discord.rpc");
+                    } catch (Exception ignore) {}
+                }
+                if(rpc) {
+                    DiscordRichPresence.startRPC();
+                }
             } catch (Exception ignored) {
             }
         });

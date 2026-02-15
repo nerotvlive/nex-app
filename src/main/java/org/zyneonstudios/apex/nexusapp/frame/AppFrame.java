@@ -1,11 +1,13 @@
 package org.zyneonstudios.apex.nexusapp.frame;
 
+import org.zyneonstudios.apex.nexusapp.Main;
 import org.zyneonstudios.apex.nexusapp.listeners.AsyncConnectorListener;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import com.zyneonstudios.nexus.desktop.frame.nexus.NexusWebFrame;
 import com.zyneonstudios.nexus.desktop.frame.web.NexusWebSetup;
 import com.zyneonstudios.nexus.desktop.frame.web.WebFrame;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
+import org.zyneonstudios.apex.nexusapp.utilities.DiscordRichPresence;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -300,6 +302,11 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
                 setSize((int)(screenSize.getWidth()/1.5), (int)(screenSize.getHeight()/1.5));
                 setLocationRelativeTo(null);
                 executeJavaScript("reloadApp();");
+                try {
+                    DiscordRichPresence.stopRPC();
+                } catch (Exception e) {
+                    Main.getLogger().err("Failed to stop Discord Rich Presence: " + e.getMessage());
+                }
             }
         } else {
             dispose();
