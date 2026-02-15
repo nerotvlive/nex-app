@@ -166,7 +166,7 @@ public class NexusRunner {
         u++;
         if (u > 11) {
             u = 0;
-            if(!Main.getLogger().isDebugging()) {
+            if(!Main.getLogger().isDebugging()&&NexusApplication.getInstance().getApplicationFrame().isVisible()) {
                 Main.checkVersion();
             }
         }
