@@ -121,6 +121,9 @@ public class NexusApplication {
         setupWebEnvironment(workingDirFile);
         getLogger().log("Initializing application...");
 
+        settings.ensure("settings.behavior.keepRunning",true);
+        localSettings.setKeepRunning(settings.getBool("settings.behavior.keepRunning"));
+
         settings.ensure("settings.window.nativeDecorations", OperatingSystem.getType().equals(OperatingSystem.Type.Windows));
         localSettings.setUseNativeWindow(settings.getBool("settings.window.nativeDecorations"));
 

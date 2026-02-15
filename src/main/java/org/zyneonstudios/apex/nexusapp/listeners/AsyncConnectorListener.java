@@ -532,7 +532,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
             }
         } else if(s.equals("initAppearanceAndGeneralValues")) {
-            frame.executeJavaScript("document.querySelector('.general-appVersion').innerText=\""+NexusApplication.getInstance().getVersion()+"\"; document.querySelector('.appearance-nativeWindow').checked = "+NexusApplication.getInstance().getLocalSettings().useNativeWindow()+";","document.querySelector('.appearance-hideApp').checked = "+NexusApplication.getInstance().getLocalSettings().minimizeApp()+";");
+            frame.executeJavaScript("document.querySelector('.general-keepRunning').checked = "+NexusApplication.getInstance().getLocalSettings().keepRunning()+"; document.querySelector('.general-appVersion').innerText=\""+NexusApplication.getInstance().getVersion()+"\"; document.querySelector('.appearance-nativeWindow').checked = "+NexusApplication.getInstance().getLocalSettings().useNativeWindow()+";","document.querySelector('.appearance-hideApp').checked = "+NexusApplication.getInstance().getLocalSettings().minimizeApp()+";");
         } else if(s.equals("initDiscordRPC")) {
             boolean rpc = true;
             if(NexusApplication.getInstance().getSettings().has("settings.discord.rpc")) {
@@ -541,6 +541,8 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 } catch (Exception ignore) {}
             }
             frame.executeJavaScript("document.querySelector('.privacy-enableDiscordRPC').checked = "+rpc+";");
+        } else if(s.startsWith("keepRunning.")) {
+            NexusApplication.getInstance().getLocalSettings().setKeepRunning(s.replace("keepRunning.", "").equals("true"));
         } else if(s.startsWith("discordrpc.")) {
             if (s.replace("discordrpc.", "").equals("true")) {
                 DiscordRichPresence.startRPC();

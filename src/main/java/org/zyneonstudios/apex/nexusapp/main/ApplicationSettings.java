@@ -8,6 +8,7 @@ public class ApplicationSettings {
     private final HashMap<String, Object> temporarySettings = new HashMap<>();
     private boolean minimizeApp = true;
     private double uiScale = 0;
+    private boolean keepRunning = true;
     private boolean nativeWindow = true;
     private boolean discoverSearchNEX = true;
     private boolean discoverSearchCurseForge = true;
@@ -63,6 +64,15 @@ public class ApplicationSettings {
 
     public void removeTemporarySetting(String path) {
         temporarySettings.remove(path);
+    }
+
+    public boolean keepRunning() {
+        return keepRunning;
+    }
+
+    public void setKeepRunning(boolean keepRunning) {
+        this.keepRunning = keepRunning;
+        NexusApplication.getInstance().getSettings().set("settings.behavior.keepRunning", keepRunning);
     }
 
     public String getJava25Path() {

@@ -67,7 +67,7 @@
         </div>
         <div class="submenu-group">
             <!-- Reload action button -->
-            <button id="reload-button" type="button" class="btn btn-nex-secondary" onclick="location.reload();">
+            <button id="reload-button" type="button" class="btn btn-nex-secondary" onclick="reloadApp();">
                 <i class="bi bi-arrow-clockwise"></i>
                 <span>Reload application</span>
             </button>
@@ -133,12 +133,24 @@
                             </label>
                         </td>
                     </tr>
+                    <!-- App minimization on game start Toggle Row -->
                     <tr class="hide-app-switch">
                         <td class="left" colspan="2">Minimize application on game start <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Choose whether the application should minimize when the game starts. The app should automatically reappear when the game is closed."></i></td>
                         <td class="right">
                             <div class="form-switch">
                                 <label>
                                     <input class="form-check-input appearance-hideApp switch" type="checkbox" role="switch" onchange="console.log('[CONNECTOR] hideApp.'+this.checked);">
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Keep Running Toggle Row -->
+                    <tr class="keepRunning-switch">
+                        <td class="left" colspan="2">Hibernate application on close <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to enable the app to keep running when you close it to reduce startup time."></i></td>
+                        <td class="right">
+                            <div class="form-switch">
+                                <label>
+                                    <input class="form-check-input general-keepRunning switch" type="checkbox" onchange="console.log('[CONNECTOR] keepRunning.'+this.checked);" role="switch">
                                 </label>
                             </div>
                         </td>

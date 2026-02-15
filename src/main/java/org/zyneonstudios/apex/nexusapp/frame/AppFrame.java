@@ -48,6 +48,8 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
     /** A flag indicating whether a custom frame (title bar) is being used instead of the native one. */
     private final boolean customFrame;
 
+    private final String homeUrl;
+
     /**
      * Constructs the main application frame.
      *
@@ -62,6 +64,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
         initializeFrame(url, setup, decorated);
         setupMenus(url, setup, decorated);
         setupBrowserComponent();
+        homeUrl = url;
     }
 
     /**
@@ -287,9 +290,19 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
      * not a cloned window.
      */
     private void handleWindowClosing() {
+        setState(Frame.ICONIFIED);
+        setVisible(false);
         if (!getTitle().contains("-clone ")) {
-            setVisible(false);
-            //NexusApplication.stop(0);
+            if(!NexusApplication.getInstance().getLocalSettings().keepRunning()) {
+                NexusApplication.stop(0);
+            } else {
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                setSize((int)(screenSize.getWidth()/1.5), (int)(screenSize.getHeight()/1.5));
+                setLocationRelativeTo(null);
+                executeJavaScript("reloadApp();");
+            }
+        } else {
+            dispose();
         }
     }
     

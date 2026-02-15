@@ -66,19 +66,19 @@ public class Main {
      * @param args Command-line arguments passed to the application.
      */
     public static void main(String[] args) {
-        Main.args = args;
-
-        // Resolve command-line arguments.
-        resolveArguments(args);
-
-        // Enforce single-instance execution with hung detection and focus.
-        if (!ensureSingleInstance()) {
-            return;
-        }
-
         // Display the splash screen.
         ZyneonSplash splash = new ZyneonSplash();
         splash.setVisible(true);
+
+        // Enforce single-instance execution with hung detection and focus.
+        if (!ensureSingleInstance()) {
+            splash.dispose();
+            return;
+        }
+
+        // Resolve command-line arguments.
+        Main.args = args;
+        resolveArguments(args);
 
         // Initialize the Nexus desktop environment.
         NexusDesktop.init();

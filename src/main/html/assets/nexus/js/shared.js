@@ -183,6 +183,10 @@ if (localStorage.getItem("enabled") || app) {
     }
 }
 
+function reloadApp() {
+    location.href = location.protocol+"//"+location.host+"?page="+landing;
+}
+
 // --- Appearance Settings Initialization ---
 
 /**
