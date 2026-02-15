@@ -58,7 +58,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
     public AppFrame(NexusWebSetup setup, String url, boolean decorated) {
         super(setup.getWebClient(), url, decorated, NexusApplication.getInstance().getLocalSettings().useNativeWindow());
         this.customFrame = !NexusApplication.getInstance().getLocalSettings().useNativeWindow();
-
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         initializeFrame(url, setup, decorated);
         setupMenus(url, setup, decorated);
         setupBrowserComponent();
@@ -243,6 +243,10 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
         resetWindowLocation.addActionListener(e -> setLocationRelativeTo(null));
         frameMenu.add(resetWindowLocation);
 
+        JMenuItem hideWindow = new JMenuItem("Hide window");
+        hideWindow.addActionListener(e -> setVisible(false));
+        frameMenu.add(hideWindow);
+
         AtomicInteger clones = new AtomicInteger(1);
         JMenuItem cloneWindow = new JMenuItem("Clone window");
         cloneWindow.addActionListener(e -> cloneWindow(setup, decorated, clones));
@@ -284,7 +288,8 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
      */
     private void handleWindowClosing() {
         if (!getTitle().contains("-clone ")) {
-            NexusApplication.stop(0);
+            setVisible(false);
+            //NexusApplication.stop(0);
         }
     }
     

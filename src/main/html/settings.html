@@ -2,11 +2,16 @@
 <div id="bg-div"></div>
 <div id="settings" class="nex-flex w-100 h-100">
     <!-- Sidebar/Submenu for Settings Categories -->
-    <div class="card submenu">
+    <div class="card submenu opacity-0">
         <div class="card-header">
             <strong>Application settings</strong>
         </div>
         <div class="submenu-group">
+            <!-- Button for Appearance Settings -->
+            <button id="general-settings-button" onclick="showSettingsCategory('general-settings');" type="button" class="btn btn-nex-secondary">
+                <i class="bi bi-sliders"></i>
+                <span>General</span>
+            </button>
             <!-- Button for Appearance Settings -->
             <button id="appearance-settings-button" onclick="showSettingsCategory('appearance-settings');" type="button" class="btn btn-nex-secondary">
                 <i class="bi bi-brush"></i>
@@ -29,7 +34,7 @@
             </button>
             <button id="account-settings-button" onclick="showSettingsCategory('account-settings'); console.log('[CONNECTOR] initAccountSettings'); console.log('[CONNECTOR] initDiscordRPC');" type="button" class="btn btn-nex-secondary">
                 <i class="bi bi-person-circle"></i>
-                <span>Accounts & Privacy</span>
+                <span>Account management</span>
             </button>
             <!-- Button for Default Instance Settings -->
             <button id="default-instance-settings-button" onclick="showSettingsCategory('default-instance-settings'); console.log('[CONNECTOR] settings.init.defaultInstanceSettings');" type="button" class="btn btn-nex-secondary">
@@ -67,7 +72,7 @@
                 <span>Reload application</span>
             </button>
             <!-- Restart action button -->
-            <button id="restart-button" type="button" class="btn btn-nex-secondary" onclick="console.log('[CONNECTOR] restart')">
+            <button id="restart-button" type="button" class="d-none btn btn-nex-secondary" onclick="console.log('[CONNECTOR] restart')">
                 <i class="bi bi-arrow-repeat"></i>
                 <span>Restart application</span>
             </button>
@@ -80,19 +85,38 @@
     </div>
 
     <!-- Main Content Area for Settings -->
-    <div class="position-relative big-card w-100 m-2 card shadow overflow-hidden p-0">
+    <div class="position-relative big-card w-100 m-2 card shadow overflow-hidden p-0 opacity-0">
         <div class="title-menu card-header shadow p-1 w-100 d-flex flex-row border-bottom-0">
             <h4 class="m-0 w-100" style="padding: 0.5rem 0.5rem 0.75rem 0.75rem">Settings</h4>
             <div class="buttons w-100 d-flex flex-row align-self-center justify-content-end">
             </div>
         </div>
 
-        <!-- Appearance Settings Section -->
-        <div id="appearance-settings" class="settings-card overflow-auto flex-column gap-3">
-            <!-- General Appearance Settings Card -->
+        <div id="general-settings" class="settings-card overflow-auto flex-column gap-3">
             <div class="settings-section">
+                <div class="card shadow position-relative" style="margin-bottom: 1rem;">
+                    <div class="card-body overflow-hidden position-relative d-flex">
+                        <div class="d-flex flex-grow-1">
+                            <img alt="NEXUS App icon" class="general-appIcon" src="assets/nexus/img/app-128.png">
+                            <div class="d-flex flex-column" style="padding: 0 0 0 1rem;">
+                                <h4 class="p-0 m-0"><strong class="general-appName">NEXUS App</strong></h4>
+                                <span style="opacity: 0.9;" class="d-flex position-relative flex-lg-row gap-1">by <strong>Zyneon Apex</strong></span>
+                                <span style="opacity: 0.9;" class="d-flex position-relative flex-lg-row gap-1">Version: <strong class="general-appVersion">Web</strong></span>
+                                <div style="height: 100%; white-space: nowrap; display: flex; gap: 0.5rem; align-items: flex-end;">
+                                    <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/NEXUS-App','_blank');"><i class="bi bi-box-arrow-up-right"></i> Source Code</button>
+                                    <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nexus-app/blob/master/LICENSE.md','_blank');"><i class="bi bi-box-arrow-up-right"></i> License</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-column gap-2 position-absolute align-items-end d-none d-lg-flex" style="right: 1rem; top: 1rem;">
+                            <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nexus-app/blob/master/pom.xml','_blank');">Dependencies</button>
+                            <button type="button" class="btn btn-nex-glass" style="width: fit-content" onclick="window.open('https://nerotvlive.github.io/apex-website/nexus-app','_blank');"><i class="bi bi-globe-europe-africa m-0"></i></button>
+                            <button type="button" class="btn btn-nex-glass" style="width: fit-content" onclick="window.open('https://discord.gg/hbHDrqUjJ8','_blank');"><i class="bi bi-discord m-0"></i></button>
+                        </div>
+                    </div>
+                </div>
                 <div>
-                    <strong>General appearance settings</strong>
+                    <strong>General settings</strong>
                 </div>
                 <table class="table m-0">
                     <tbody>
@@ -109,6 +133,52 @@
                             </label>
                         </td>
                     </tr>
+                    <tr class="hide-app-switch">
+                        <td class="left" colspan="2">Minimize application on game start <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Choose whether the application should minimize when the game starts. The app should automatically reappear when the game is closed."></i></td>
+                        <td class="right">
+                            <div class="form-switch">
+                                <label>
+                                    <input class="form-check-input appearance-hideApp switch" type="checkbox" role="switch" onchange="console.log('[CONNECTOR] hideApp.'+this.checked);">
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Discord RPC Toggle Row -->
+                    <tr class="discord-rpc-switch">
+                        <td class="left" colspan="2">Enable Discord Rich Presence <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to use Discord Rich Presence to show your friends that you are using the NEXUS App."></i></td>
+                        <td class="right">
+                            <div class="form-switch">
+                                <label>
+                                    <input class="form-check-input privacy-enableDiscordRPC switch" type="checkbox" onchange="console.log('[CONNECTOR] discordrpc.'+this.checked);" role="switch">
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Telemetry Toggle Row -->
+                    <tr class="telemetry-switch disabled last">
+                        <td class="left" colspan="2">Enable telemetry <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="For now, telemetry is disabled by default and can't be enabled. Perhaps this option will be removed entirely after the beta anyway."></i></td>
+                        <td class="right">
+                            <div class="form-switch">
+                                <label>
+                                    <input disabled class="form-check-input privacy-enableTelemetry switch" type="checkbox" role="switch">
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Appearance Settings Section -->
+        <div id="appearance-settings" class="settings-card overflow-auto flex-column gap-3">
+            <!-- General Appearance Settings Card -->
+            <div class="settings-section">
+                <div>
+                    <strong>General appearance settings</strong>
+                </div>
+                <table class="table m-0">
+                    <tbody>
                     <!-- Theme Selection Row -->
                     <tr class="d-none">
                         <td class="left" colspan="2">Theme <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose the color scheme in which the NEXUS App should be displayed."></i></td>
@@ -274,16 +344,6 @@
                 </div>
                 <table class="table m-0">
                     <tbody>
-                    <tr class="hide-app-switch">
-                        <td class="left" colspan="2">Hide application on game start <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Choose whether the application should minimize when the game starts. The app should automatically reappear when the game is closed."></i></td>
-                        <td class="right">
-                            <div class="form-switch">
-                                <label>
-                                    <input class="form-check-input appearance-hideApp switch" type="checkbox" role="switch" onchange="console.log('[CONNECTOR] hideApp.'+this.checked);">
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
                     <tr class="native-window-switch last">
                         <td class="left" colspan="2">Use native window decorations (requires restart) <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Selects whether to use the operating system's native window display. Recommended for Windows: on, recommended for Linux: off."></i></td>
                         <td class="right">
@@ -445,9 +505,9 @@
                             <h4 class="p-0 m-0"><strong class="account-activeName">loading...</strong></h4>
                             <span style="opacity: 0.9;" class="d-flex position-relative flex-column flex-lg-row gap-1"><strong>UUID: </strong><span class="account-activeUUID uuid-value" onclick="copyUUID(this)" data-bs-toggle="popover" data-bs-trigger="manual" data-bs-content="UUID copied!">loading...</span></span>
                             <div style="height: 100%; white-space: nowrap; display: flex; gap: 0.5rem; align-items: flex-end;">
-                                <button type="button" class="btn btn-outline-light" onclick="window.open('https://www.minecraft.net/msaprofile/mygames/editprofile','_blank');">Change username</button>
-                                <button type="button" class="btn btn-outline-light" onclick="window.open('https://www.minecraft.net/msaprofile/mygames/editskin','_blank');">Change skin</button>
-                                <button type="button" class="btn btn-danger" onclick="console.log('[CONNECTOR] logout');">Logout</button>
+                                <button type="button" class="btn btn-nex-glass" onclick="window.open('https://www.minecraft.net/msaprofile/mygames/editprofile','_blank');"><i class="bi bi-box-arrow-up-right"></i> Change name</button>
+                                <button type="button" class="btn btn-nex-glass" onclick="window.open('https://www.minecraft.net/msaprofile/mygames/editskin','_blank');"><i class="bi bi-box-arrow-up-right"></i> Change skin</button>
+                                <button type="button" class="btn btn-nex-glass btn-nex-glass-red" onclick="console.log('[CONNECTOR] logout');">Logout</button>
                             </div>
                         </div>
                     </div>
@@ -478,39 +538,6 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-            <div id="privacy-settings" class="p-0 m-0">
-                <div class="settings-section">
-                    <div>
-                        <strong>User related privacy settings</strong>
-                    </div>
-                    <table class="table m-0">
-                        <tbody>
-                        <!-- Telemetry Toggle Row -->
-                        <tr class="telemetry-switch disabled">
-                            <td class="left" colspan="2">Enable telemetry <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="For now, telemetry is disabled by default and can't be enabled. Perhaps this option will be removed entirely after the beta anyway."></i></td>
-                            <td class="right">
-                                <div class="form-switch">
-                                    <label>
-                                        <input disabled class="form-check-input privacy-enableTelemetry switch" type="checkbox" role="switch">
-                                    </label>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Discord RPC Toggle Row -->
-                        <tr class="discord-rpc-switch last">
-                            <td class="left" colspan="2">Enable Discord Rich Presence <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to use Discord Rich Presence to show your friends that you are using the NEXUS App."></i></td>
-                            <td class="right">
-                                <div class="form-switch">
-                                    <label>
-                                        <input class="form-check-input privacy-enableDiscordRPC switch" type="checkbox" onchange="console.log('[CONNECTOR] discordrpc.'+this.checked);" role="switch">
-                                    </label>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
 

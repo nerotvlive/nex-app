@@ -1,11 +1,13 @@
 package org.zyneonstudios.apex.nexusapp.main;
 
-import com.google.gson.JsonObject;
-import com.zyneonstudios.nexus.utilities.json.GsonUtility;
+import org.zyneonstudios.apex.nexusapp.Main;
 import org.zyneonstudios.apex.nexusapp.downloads.Download;
 import org.zyneonstudios.apex.nexusapp.downloads.DownloadManager;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -80,7 +82,7 @@ public class NexusRunner {
      * The method that is executed periodically by the runner.
      * Currently, it does nothing but can be extended to perform specific tasks.
      */
-    int c = 0; int u = 119;
+    int c = 0; int u = 0;
     protected void run() {
         if (!started) {
             started = true;
@@ -159,34 +161,18 @@ public class NexusRunner {
         }
 
         try {
-            JsonObject json = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromURL("https://raw.githubusercontent.com/zyneonstudios/nexus-nex/main/application/index.json"), JsonObject.class).getAsJsonArray("versions").get(0).getAsJsonObject();
-            checkVersion(json);
+            if(!Main.getLogger().isDebugging()) {
+                checkVersion();
+            }
         } catch (Exception ignore) {
         }
     }
 
-    private boolean runUpdateCheck(JsonObject json) {
-        /*NexusApplication.getLogger().dbg("[RUNNER] Checking for Updates...");
-        NexusApplication.getLogger().dbg("[RUNNER] Parsed JSON Data...");
-        String v = json.get("info").getAsJsonObject().get("version").getAsString();
-        NexusApplication.getLogger().dbg("[RUNNER] Latest version: " + v + "...");
-        NexusApplication.getLogger().dbg("[RUNNER] Current version: " + NexusApplication.getInstance().getVersion() + "...");
-        if (!v.equals(NexusApplication.getInstance().getVersion())) {
-            NexusApplication.getLogger().dbg("[RUNNER] The application is not up to date!");
-            return true;
-        }*/
-
-        return false;
-    }
-
-    private void checkVersion(JsonObject json) {
+    private void checkVersion() {
         u++;
         if (u > 120) {
             u = 0;
-            if (runUpdateCheck(json)) {
-                NexusApplication.getLogger().dbg("[RUNNER] Sending notification...");
-                //TODO: Application.getFrame().sendNotification("Update available!", "Version " + v + " has been released!", "<a onclick=\"callJavaMethod('button.exit');\" class='button'>Install</a><a onclick=\"callJavaMethod('button.online');\" class='button'>Dynamic update</a>", v, true);
-            }
+            Main.checkVersion();
         }
     }
 

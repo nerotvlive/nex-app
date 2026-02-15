@@ -5,6 +5,13 @@
     }
 }
 
+#settings.active {
+    .big-card.opacity-0, .submenu.opacity-0 {
+        transition: all var(--nex-animation-speed) ease;
+        opacity: 1 !important;
+    }
+}
+
 .settings-card {
     display: none;
 }

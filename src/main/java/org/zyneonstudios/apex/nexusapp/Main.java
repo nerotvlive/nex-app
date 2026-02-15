@@ -89,8 +89,10 @@ public class Main {
             logger.err(e.getMessage());
         }
 
-        if(!checkVersion()) {
-            System.exit(-1);
+        if(!logger.isDebugging()) {
+            if (!checkVersion()) {
+                System.exit(-1);
+            }
         }
 
         // Create the main application instance.
@@ -220,7 +222,6 @@ public class Main {
                 InstancePing ping = pingInstance(existing.port);
                 if (ping == InstancePing.OK || ping == InstancePing.STARTING) {
                     sendFocus(existing.port);
-                    showAlreadyRunningMessage();
                     return false;
                 }
                 // Hung or unresponsive -> allow new instance
@@ -244,7 +245,6 @@ public class Main {
                     InstancePing ping = pingInstance(latest.port);
                     if (ping == InstancePing.OK || ping == InstancePing.STARTING) {
                         sendFocus(latest.port);
-                        showAlreadyRunningMessage();
                         return false;
                     }
                 }
@@ -254,17 +254,6 @@ public class Main {
         instanceOwner = true;
         Runtime.getRuntime().addShutdownHook(new Thread(Main::releaseInstanceResources));
         return true;
-    }
-
-    private static void showAlreadyRunningMessage() {
-        if(logger.isDebugging()) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Application is already running!",
-                    "NEXUS App",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-        }
     }
 
     private static boolean startFocusServer() {
@@ -305,8 +294,8 @@ public class Main {
 
     private static String getInstanceStatus() {
         try {
-            if (org.zyneonstudios.apex.nexusapp.main.NexusApplication.getInstance() == null
-                    || !org.zyneonstudios.apex.nexusapp.main.NexusApplication.getInstance().isLaunched()) {
+            if (NexusApplication.getInstance() == null
+                    || !NexusApplication.getInstance().isLaunched()) {
                 return INSTANCE_PING_STARTING;
             }
         } catch (Exception ignored) {
@@ -336,7 +325,7 @@ public class Main {
     private static void focusApplication() {
         SwingUtilities.invokeLater(() -> {
             try {
-                var app = org.zyneonstudios.apex.nexusapp.main.NexusApplication.getInstance();
+                var app = NexusApplication.getInstance();
                 if (app == null || app.getApplicationFrame() == null) {
                     return;
                 }
@@ -495,8 +484,12 @@ public class Main {
     private record InstanceInfo(long pid, int port, String id, long ts) {
     }
 
-    private static boolean checkVersion() {
-        if(OperatingSystem.getType() == OperatingSystem.Type.Windows && !logger.isDebugging()) {
+    public static boolean checkVersion() {
+        return checkVersionWin();
+    }
+
+    private static boolean checkVersionWin() {
+        if(OperatingSystem.getType() == OperatingSystem.Type.Windows) {
             try {
                 JsonObject jsonMeta = GsonUtility.getObject("https://zyneonstudios.github.io/apex-metadata/nexus-app/win-files/win-metadata.json");
                 String latestVersion = jsonMeta.get("version").getAsString();
@@ -505,9 +498,16 @@ public class Main {
                 JsonObject nexus = new Gson().fromJson(data, JsonObject.class);
                 String currentVersion = nexus.get("version").getAsString();
 
+                JFrame parent = null;
+                if(NexusApplication.getInstance() != null) {
+                    if(NexusApplication.getInstance().getApplicationFrame() != null) {
+                        parent = NexusApplication.getInstance().getApplicationFrame();
+                    }
+                }
+
                 if(!latestVersion.equals(currentVersion)) {
                     int update = JOptionPane.showConfirmDialog(
-                            null,
+                            parent,
                             "Do you want to update to the latest version?\n\nCurrent version: " + currentVersion+"\nLatest version: "+latestVersion,
                             "NEXUS App update available!",
                             JOptionPane.YES_NO_OPTION,
@@ -519,7 +519,8 @@ public class Main {
                         logger.deb("Created temp folder: "+tempDir.mkdirs());
                         tempDir.deleteOnExit();
 
-                        JFrame frame = new JFrame("NEXUS App updater");
+                        JDialog frame = new JDialog(parent);
+                        frame.setTitle("NEXUS App updater");
                         frame.setLayout(new BorderLayout());
                         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                         frame.setSize(400, 100);

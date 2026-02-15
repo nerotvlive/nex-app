@@ -1,7 +1,7 @@
 /**
  * Initializes the appearance settings values based on stored preferences.
  */
-function initAppearanceValues() {
+function initAppearanceAndGeneralValues() {
     // Set the landing page dropdown value
     document.querySelector(".appearance-landing").value = landing;
 
@@ -56,11 +56,12 @@ function initAppearanceValues() {
     } else {
         resetAccentColorButton.style.display = "none";
     }
-    console.log("[CONNECTOR] initAppearanceValues");
-} initAppearanceValues();
+    console.log("[CONNECTOR] initAppearanceAndGeneralValues");
+    console.log("[CONNECTOR] initDiscordRPC");
+} initAppearanceAndGeneralValues();
 
 function initSettings() {
-    showSettingsCategory("appearance-settings")
+    showSettingsCategory("general-settings")
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has("st")) {
         document.getElementById(urlParams.get("st")+"-button").click();
@@ -68,6 +69,10 @@ function initSettings() {
     initArrayBoxes();
     console.log("[CONNECTOR] settings.init");
     document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<span class='text nexus-version'>"+version+"</span><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
+
+    sleep(10).then(() => {
+        document.getElementById("settings").classList.add("active");
+    })
 }
 
 function showSettingsCategory(category) {

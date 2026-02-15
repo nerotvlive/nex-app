@@ -30,6 +30,7 @@ import org.zyneonstudios.apex.nexusapp.search.zyndex.local.LocalInstance;
 import org.zyneonstudios.apex.nexusapp.utilities.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -530,8 +531,8 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     frame.executeJavaScript("addAccountToAccountList('"+MicrosoftAuthenticator.getDecryptedAuthenticatedUsername(uuid)+"','"+uuid+"');");
                 }
             }
-        } else if(s.equals("initAppearanceValues")) {
-            frame.executeJavaScript("document.querySelector('.appearance-nativeWindow').checked = "+NexusApplication.getInstance().getLocalSettings().useNativeWindow()+";","document.querySelector('.appearance-hideApp').checked = "+NexusApplication.getInstance().getLocalSettings().minimizeApp()+";");
+        } else if(s.equals("initAppearanceAndGeneralValues")) {
+            frame.executeJavaScript("document.querySelector('.general-appVersion').innerText=\""+NexusApplication.getInstance().getVersion()+"\"; document.querySelector('.appearance-nativeWindow').checked = "+NexusApplication.getInstance().getLocalSettings().useNativeWindow()+";","document.querySelector('.appearance-hideApp').checked = "+NexusApplication.getInstance().getLocalSettings().minimizeApp()+";");
         } else if(s.equals("initDiscordRPC")) {
             boolean rpc = true;
             if(NexusApplication.getInstance().getSettings().has("settings.discord.rpc")) {
@@ -575,7 +576,25 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             boolean bool = s.replace("nativeWindow.", "").equals("true");
             NexusApplication.getInstance().getSettings().set("settings.window.nativeDecorations", bool);
             NexusApplication.getInstance().getLocalSettings().setUseNativeWindow(bool);
-            NexusApplication.restart();
+            JDialog dialog = new JDialog(frame);
+            dialog.setBackground(Color.black);
+            dialog.setLayout(new BorderLayout());
+            dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+            dialog.setTitle("Restart NEXUS App");
+            JLabel message = new JLabel("To apply the changes, please restart the application.");
+            message.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
+            dialog.add(message,BorderLayout.CENTER);
+            JPanel bottom = new JPanel(new BorderLayout());
+            JButton ok = new JButton("OK");
+            ok.addActionListener(e -> {
+                dialog.dispose();
+            });
+            bottom.add(ok,BorderLayout.EAST);
+            bottom.setBorder(BorderFactory.createEmptyBorder(0,0,10,10));
+            dialog.add(bottom,BorderLayout.SOUTH);
+            dialog.setSize(310, 125);
+            dialog.setLocationRelativeTo(frame);
+            dialog.setVisible(true);
         } else if(s.startsWith("library.")) {
             s = s.replace("library.", "");
             if(s.equals("init")) {
