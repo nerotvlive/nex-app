@@ -13,6 +13,10 @@ import com.zyneonstudios.verget.Verget;
 import com.zyneonstudios.verget.minecraft.MinecraftVerget;
 import jnafilechooser.api.JnaFileChooser;
 import live.nerotv.aminecraftlauncher.launcher.*;
+import net.querz.nbt.io.NBTUtil;
+import net.querz.nbt.io.NamedTag;
+import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.ListTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zyneonstudios.apex.nexusapp.events.PageLoadedEvent;
@@ -739,6 +743,13 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     button = "document.getElementById(\"launch-button\").innerHTML = \"<i class='bi bi-check-lg'></i> RUNNING\";";
                 }
                 frame.executeJavaScript(cmd,button);
+
+                resolvePackMods(lI.getPath()+"/mods","mods");
+                resolvePackMaps(lI.getPath()+"/saves");
+                resolvePackServers(lI.getPath()+"/servers.dat");
+                resolvePackMods(lI.getPath()+"/resourcepacks","resourcepacks");
+                resolvePackMods(lI.getPath()+"/shaderpacks","shaders");
+
                 NexusApplication.getInstance().getLocalSettings().setLastInstanceId(showId);
             } else if(s.startsWith("start.")) {
                 String id = s.replace("start.", "");
@@ -877,6 +888,74 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
             }
         }
+    }
+
+    private void resolvePackMods(String contentPath, String modType) {
+        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Project</th><th>Version</th><th class='last'>Actions</th></tr>");
+        File contents = new File(contentPath);
+        if (contents.exists() && contents.isDirectory()) {
+            for (File file : Objects.requireNonNull(contents.listFiles())) {
+                if(!file.getName().toLowerCase().endsWith(".txt")&&!file.isDirectory()) {
+                    String contentName = file.getName().replace(".zip", "").replace(".jar", "");
+                    String version = "Unknown";
+                    String path = modType.replace("shaders","shaderpacks")+"/"+file.getName();
+
+                    String two = version + "<br>" + path;
+
+                    String code = "<tr><td class='first'><label><input disabled type='checkbox'></label></td><td>" + contentName + "</td><td>" + two + "</td><td class='last'>-</td></tr>";
+                    com.append(code);
+                }
+            }
+        }
+        frame.executeJavaScript("document.getElementById(\"instance-"+modType+"\").innerHTML = \"<tbody>" + com + "</tbody>\"");
+    }
+
+    private void resolvePackServers(String contentPath) {
+        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Servername</th><th>IP/Hostname</th><th class='last'>Actions</th></tr>");
+        try {
+            File file = new File(contentPath);
+            if (file.exists()) {
+                NamedTag namedTag = NBTUtil.read(file);
+                CompoundTag root = (CompoundTag) namedTag.getTag();
+                if (root.containsKey("servers")) {
+                    ListTag<CompoundTag> servers = root.getListTag("servers").asCompoundTagList();
+                    for (CompoundTag server : servers) {
+                        String name = server.getString("name");
+                        String ip = server.getString("ip");
+                        String code = "<tr><td class='first'><label><input disabled type='checkbox'></label></td><td>" + name + "</td><td>" + ip + "</td><td class='last'>-</td></tr>";
+                        com.append(code);
+                    }
+                }
+            }
+        } catch (Exception ignore) {}
+        frame.executeJavaScript("document.getElementById(\"instance-servers\").innerHTML = \"<tbody>" + com + "</tbody>\"");
+    }
+
+    private void resolvePackMaps(String contentPath) {
+        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Worldname</th><th>File</th><th class='last'>Actions</th></tr>");
+        File contents = new File(contentPath);
+        if (contents.exists() && contents.isDirectory()) {
+            for (File file : Objects.requireNonNull(contents.listFiles())) {
+                String contentName = file.getName().replace(".zip", "").replace(".jar", "");
+                try {
+                    File world = new File(file.getAbsolutePath()+"/level.dat");
+                    if(world.exists() && !world.isDirectory()) {
+                        NamedTag namedTag = NBTUtil.read(world);
+                        CompoundTag root = (CompoundTag) namedTag.getTag();
+                        if (root.containsKey("Data")) {
+                            CompoundTag dataTag = root.getCompoundTag("Data");
+                            if (dataTag.containsKey("LevelName")) {
+                                contentName = dataTag.getString("LevelName");
+                            }
+                        }
+                    }
+                } catch (Exception ignore) {}
+                String path = "saves/"+file.getName();
+                String code = "<tr><td class='first'><label><input disabled type='checkbox'></label></td><td>" + contentName + "</td><td>" + path + "</td><td class='last'>-</td></tr>";
+                com.append(code);
+            }
+        }
+        frame.executeJavaScript("document.getElementById(\"instance-maps\").innerHTML = \"<tbody>" + com + "</tbody>\"");
     }
 }
 

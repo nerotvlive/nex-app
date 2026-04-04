@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AppFrame extends NexusWebFrame implements ComponentListener, WebFrame {
 
     /** The minimum size of the application window. */
-    private final Dimension minSize = new Dimension(1024, 640);
+    private final Dimension minSize = new Dimension(1036, 640);
 
     /** A unique identifier for this window instance, used for distinguishing between multiple windows. */
     private final String windowId = StringGenerator.generateAlphanumericString(12);

@@ -11,6 +11,63 @@
 
     #instance-view {
 
+        .content-table {
+            border: 1px solid var(--bs-border-color-translucent);
+            border-radius: var(--nex-border-radius);
+            padding: 0 !important;
+            background: var(--nex-brighter);
+            margin-bottom: 1.5rem;
+
+            strong {
+                text-shadow: none;
+            }
+
+            table {
+                tr {
+                    th {
+                        background: var(--nex-brighter-100);
+                        text-shadow: none;
+                        padding: 0.5rem;
+                    }
+
+                    th.first, td.first {
+                        background: var(--nex-brighter-100);
+                        width: 1.5rem;
+                        white-space: nowrap;
+                        padding-right: 0;
+                        padding-left: 5px;
+                    }
+
+                    td {
+                        padding: 0.5rem;
+                        text-shadow: none;
+                    }
+
+                    .last {
+                        text-align: right;
+                    }
+                }
+
+                tr:nth-child(odd) {
+                    td {
+                        background: var(--nex-brighter);
+                    }
+
+                    td.first {
+                        background: var(--nex-brighter-100);
+                    }
+                }
+
+                tr:hover {
+                    background: var(--nex-brighter-200);
+                }
+
+                tr.nohover {
+                    background: unset;
+                }
+            }
+        }
+
         #launch-button {
             position: absolute;
             bottom: 1rem;
@@ -356,7 +413,7 @@
         transition: none;
     }
 
-    @container nav-container (max-width: 31rem) {
+    @container nav-container (max-width: 37rem) {
         .nav-link {
             font-size: 0;
         }

@@ -66,25 +66,59 @@
                     <li class="nav-item">
                         <button class="nav-link left active" id="tab-about" data-bs-toggle="tab" data-bs-target="#tab-about-content" type="button" aria-controls="tab-about-content" aria-selected="true"><i class="bi bi-card-text"></i>About</button>
                     </li>
-                    <li class="nav-item disabled active">
-                        <button disabled class="nav-link" id="tab-mods" data-bs-toggle="tab" data-bs-target="#tab-mods-content" type="button" aria-controls="tab-mods-content" aria-selected="false"><i class="bi bi-code-slash"></i>Mods</button>
+                    <li class="nav-item active">
+                        <button class="nav-link" id="tab-mods" data-bs-toggle="tab" data-bs-target="#tab-mods-content" type="button" aria-controls="tab-mods-content" aria-selected="false"><i class="bi bi-code-slash"></i>Mods</button>
                     </li>
-                    <li class="nav-item disabled">
-                        <button disabled class="nav-link" id="tab-maps" data-bs-toggle="tab" data-bs-target="#tab-maps-content" type="button" aria-controls="tab-maps-content" aria-selected="false"><i class="bi bi-map"></i>Maps</button>
+                    <li class="nav-item">
+                        <button class="nav-link" id="tab-maps" data-bs-toggle="tab" data-bs-target="#tab-maps-content" type="button" aria-controls="tab-maps-content" aria-selected="false"><i class="bi bi-map"></i>Maps</button>
                     </li>
-                    <li class="nav-item disabled">
-                        <button disabled class="nav-link" id="tab-resourcePacks" data-bs-toggle="tab" data-bs-target="#tab-resourcePacks-content" type="button" aria-controls="tab-resourcePacks-content" aria-selected="false"><i class="bi bi-brush"></i>Resource Packs</button>
+                    <li class="nav-item">
+                        <button class="nav-link" id="tab-servers" data-bs-toggle="tab" data-bs-target="#tab-servers-content" type="button" aria-controls="tab-servers-content" aria-selected="false"><i class="bi bi-hdd-stack"></i>Servers</button>
                     </li>
-                    <li class="nav-item disabled">
-                        <button disabled class="nav-link right" id="tab-shaders" data-bs-toggle="tab" data-bs-target="#tab-shaders-content" type="button" aria-controls="tab-shaders-content" aria-selected="false"><i class="bi bi-cloud-haze2"></i>Shaders</button>
+                    <li class="nav-item">
+                        <button class="nav-link" id="tab-resourcePacks" data-bs-toggle="tab" data-bs-target="#tab-resourcePacks-content" type="button" aria-controls="tab-resourcePacks-content" aria-selected="false"><i class="bi bi-brush"></i>Resource Packs</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link right" id="tab-shaders" data-bs-toggle="tab" data-bs-target="#tab-shaders-content" type="button" aria-controls="tab-shaders-content" aria-selected="false"><i class="bi bi-cloud-haze2"></i>Shaders</button>
                     </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane m-0 p-0 fade show active" id="tab-about-content" aria-labelledby="tab-about">${instance.description}</div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-mods-content" aria-labelledby="tab-mods">${instance.mods}</div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-maps-content" aria-labelledby="tab-maps">${instance.maps}</div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-resourcePacks-content" aria-labelledby="tab-resourcePacks">${instance.resourcePacks}</div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-shaders-content" aria-labelledby="tab-shaders">${instance.shaders}</div>
+                    <div class="tab-pane m-0 p-0 fade" id="tab-mods-content" aria-labelledby="tab-mods">
+                        <div class="content-table shadow">
+                            <table class="w-100" id="instance-mods">
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane m-0 p-0 fade" id="tab-maps-content" aria-labelledby="tab-maps">
+                        <div class="content-table shadow">
+                            <table class="w-100" id="instance-maps">
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane m-0 p-0 fade" id="tab-servers-content" aria-labelledby="tab-maps">
+                        <div class="content-table shadow">
+                            <table class="w-100" id="instance-servers">
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane m-0 p-0 fade" id="tab-resourcePacks-content" aria-labelledby="tab-resourcePacks">
+                        <div class="content-table shadow">
+                            <table class="w-100" id="instance-resourcepacks">
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane m-0 p-0 fade" id="tab-shaders-content" aria-labelledby="tab-shaders">
+                        <div class="content-table shadow">
+                            <table class="w-100" id="instance-shaders">
+
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="side">
@@ -337,34 +371,34 @@
                         <div class="d-flex">
                             <div>
                                 Game Type
-                            <label>
-                                <select id="creator-mc-type" onchange="document.getElementById('creator-mc-versions').innerHTML = ''; document.getElementById('creator-ml-versions').innerHTML = ''; console.log('[CONNECTOR] library.creator.init.'+this.value);">
-                                    <option value="vanilla">Vanilla</option>
-                                    <option value="experimental">Experimental</option>
-                                    <option value="fabric">Fabric</option>
-                                    <option value="forge">Forge</option>
-                                    <option value="neoforge">NeoForge</option>
-                                    <option value="quilt">Quilt</option>
-                                </select>
-                            </label>
+                                <label>
+                                    <select id="creator-mc-type" onchange="document.getElementById('creator-mc-versions').innerHTML = ''; document.getElementById('creator-ml-versions').innerHTML = ''; console.log('[CONNECTOR] library.creator.init.'+this.value);">
+                                        <option value="vanilla">Vanilla</option>
+                                        <option value="experimental">Experimental</option>
+                                        <option value="fabric">Fabric</option>
+                                        <option value="forge">Forge</option>
+                                        <option value="neoforge">NeoForge</option>
+                                        <option value="quilt">Quilt</option>
+                                    </select>
+                                </label>
                             </div>
                             <div>
                                 Minecraft Version
-                            <label>
-                                <select id="creator-mc-versions" onchange="document.getElementById('creator-ml-versions').innerHTML = ''; console.log('[CONNECTOR] library.creator.init.version.'+document.getElementById('creator-mc-type').value+'.'+this.value);">
+                                <label>
+                                    <select id="creator-mc-versions" onchange="document.getElementById('creator-ml-versions').innerHTML = ''; console.log('[CONNECTOR] library.creator.init.version.'+document.getElementById('creator-mc-type').value+'.'+this.value);">
 
-                                </select>
-                            </label>
+                                    </select>
+                                </label>
                             </div>
                         </div>
                         <div class="d-flex">
                             <div>
                                 Modloader version
-                            <label>
-                                <select id="creator-ml-versions" class="d-none" onchange="">
+                                <label>
+                                    <select id="creator-ml-versions" class="d-none" onchange="">
 
-                                </select>
-                            </label>
+                                    </select>
+                                </label>
                             </div>
                             <label>
 
