@@ -160,6 +160,7 @@ public class CurseForgeIntegration {
                             content.addProperty("name",resource.getName());
                             content.addProperty("author",author);
                             content.addProperty("version",resourceVersion);
+                            content.addProperty("versionId",fId);
                             content.addProperty("path",path+file.getFileName());
                             content.addProperty("link",link);
                             contents.add(content);

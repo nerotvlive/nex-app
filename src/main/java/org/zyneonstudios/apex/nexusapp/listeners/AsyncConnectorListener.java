@@ -896,7 +896,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
         for(String path : instance.getContentsByPathMap().keySet()) {
             if(path.startsWith(modType+"/")) {
                 LocalInstanceContent content = instance.getContentsByPathMap().get(path);
-                com.append("<tr><td class='first'><label><input disabled type='checkbox'></label></td><td>").append(content.name()).append("<br>by ").append(content.author()).append("</td><td>").append(content.version()).append("<br>").append(content.path()).append("</td><td class='last'>-</td></tr>");
+                com.append("<tr><td class='first'><label><input disabled type='checkbox'></label></td><td><strong>").append(content.name()).append("</strong><br>by ").append(content.author()).append("</td><td>").append(content.version()).append("<br>").append(content.path()).append("</td><td class='last'>-</td></tr>");
             }
         }
         frame.executeJavaScript("document.getElementById(\"instance-"+modType.replace("shaderpacks","shaders")+"\").innerHTML = \"<tbody>" + com + "</tbody>\"");

@@ -112,6 +112,7 @@ public class ModrinthIntegration {
                             String slug = path;
                             String name = path.split("/")[path.split("/").length-1];
                             String version = "Unknown version";
+                            String resourceId = "null";
                             String author = "Modrinth user";
                             String link = "null";
 
@@ -121,6 +122,7 @@ public class ModrinthIntegration {
                                 slug = resource.getSlug();
                                 name = resource.getTitle();
                                 version = resourceVersion.getVersionNumber();
+                                resourceId = info.versionId;
                                 try {
                                     JsonObject authorObject = GsonUtility.getObject("https://api.modrinth.com/v2/user/"+resourceVersion.getAuthorId());
                                     if(authorObject.has("username")) {
@@ -137,6 +139,7 @@ public class ModrinthIntegration {
                             content.addProperty("name",name);
                             content.addProperty("author",author);
                             content.addProperty("version",version);
+                            content.addProperty("versionId",resourceId);
                             content.addProperty("path",path);
                             content.addProperty("link",link);
                             contents.add(content);
