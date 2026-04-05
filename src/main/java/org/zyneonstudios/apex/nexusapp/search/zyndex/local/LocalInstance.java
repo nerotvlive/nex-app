@@ -103,7 +103,7 @@ public class LocalInstance {
                 if (fileName.startsWith(".") || fileName.toLowerCase().endsWith(".txt")) continue;
                 String relativePath = dirName + "/" + fileName;
                 String name = fileName.replace(".jar", "").replace(".zip", "");
-                String author = "Custom source";
+                String author = "custom source";
                 String version = "Not added via Zyneon Desktop";
                 String idOrSlug = relativePath;
                 String link = null;

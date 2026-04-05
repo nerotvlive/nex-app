@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.zyneonstudios.nexus.instance.ZynstanceBuilder;
 import com.zyneonstudios.nexus.utilities.file.FileActions;
 import com.zyneonstudios.nexus.utilities.json.GsonUtility;
+import com.zyneonstudios.nexus.utilities.storage.JsonStorage;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
@@ -111,6 +112,7 @@ public class CurseForgeIntegration {
                 if (indexJson.has("files")) {
                     ArrayList<Download> fileDownloads = new ArrayList<>();
                     JsonArray files = indexJson.getAsJsonArray("files");
+                    JsonArray contents = new JsonArray();
                     for (JsonElement file_ : files) {
 
                         JsonObject fileData = file_.getAsJsonObject();
@@ -119,6 +121,18 @@ public class CurseForgeIntegration {
 
                         CurseForgeResource resource = new CurseForgeResource(pId);
                         CurseForgeResourceVersion file = new CurseForgeResourceVersion(pId, fId);
+
+                        String resourceVersion = file.getDisplayName();
+                        String author = "CurseForge user";
+                        try {
+                            JsonObject authorObject = resource.getAuthors().get(0).getAsJsonObject();
+                            if(authorObject.has("name")) {
+                                author = authorObject.get("name").getAsString();
+                            }
+                        } catch (Exception ignore) {}
+
+                        String link = "null";
+
 
                         String path = "mods/";
                         if (resource.getClassId() == 5) {
@@ -139,6 +153,17 @@ public class CurseForgeIntegration {
                             File filePath = new File(installDir.getAbsolutePath() + "/" + path + file.getFileName());
                             filePath.getParentFile().mkdirs();
                             Download fileDownload = new Download(project.getName() + " " + path + file.getFileName(), new URI(url).toURL(), filePath.toPath());
+
+                            link = "curseforge";
+                            JsonObject content = new JsonObject();
+                            content.addProperty("id_or_slug",pId);
+                            content.addProperty("name",resource.getName());
+                            content.addProperty("author",author);
+                            content.addProperty("version",resourceVersion);
+                            content.addProperty("path",path+file.getFileName());
+                            content.addProperty("link",link);
+                            contents.add(content);
+
                             fileDownloads.add(fileDownload);
                         } catch (Exception e) {
                             NexusApplication.getLogger().err("Cannot download file \"" + path + file.getFileName() + "\" for curseforge pack \"" + project.getName() + "\": " + e.getMessage(), false);
@@ -219,6 +244,9 @@ public class CurseForgeIntegration {
                                 }
 
                                 instanceConverter.create();
+                                JsonStorage instanceContents = new JsonStorage(finalInstallDir +"/zyneonContents.json");
+                                instanceContents.set("contents",contents);
+
                                 if (NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
                                     NexusApplication.getInstance().getApplicationFrame().getBrowser().reload();
                                 }

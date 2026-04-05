@@ -6,12 +6,14 @@ import com.google.gson.JsonObject;
 import com.zyneonstudios.nexus.instance.ZynstanceBuilder;
 import com.zyneonstudios.nexus.utilities.file.FileActions;
 import com.zyneonstudios.nexus.utilities.json.GsonUtility;
+import com.zyneonstudios.nexus.utilities.storage.JsonStorage;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
 import org.apache.commons.io.FileUtils;
 import org.zyneonstudios.apex.nexusapp.downloads.Download;
 import org.zyneonstudios.apex.nexusapp.events.DownloadEndEvent;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResource;
+import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResourceVersion;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,17 +23,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ModrinthIntegration {
 
+    private static final Pattern MOD_PATTERN = Pattern.compile("data/([^/]+)/versions/([^/]+)/");
+
     public static void installModpack(File installDir, String projectId, String versionId) {
         JsonObject data = GsonUtility.getObject("https://api.modrinth.com/v2/version/"+versionId);
         ModrinthResource project = new ModrinthResource(projectId);
         installDir = getInstallDir(installDir,project.getSlug());
-
-        String fantastico;
 
         String fileName = "modrinth-"+projectId+"-"+versionId+".mrpack";
         String downloadName = (NexusApplication.getInstance().getWorkingPath()+"/temp/"+fileName).replace("\\","/").replace("//","/");
@@ -94,14 +98,49 @@ public class ModrinthIntegration {
             if(index.exists()) {
                 JsonObject indexJson = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromFile(index), JsonObject.class);
                 if(indexJson.has("files")) {
+                    JsonArray contents = new JsonArray();
                     final double[] progress = {0};
                     final int[] finished = {0};
                     ArrayList<Download> fileDownloads = new ArrayList<>();
                     JsonArray files = indexJson.getAsJsonArray("files");
                     for(JsonElement file_:files) {
                         JsonObject file = file_.getAsJsonObject();
+                        String path = file.get("path").getAsString();
                         for(JsonElement downloads:file.getAsJsonArray("downloads")) {
                             String url = downloads.getAsString();
+                            ModInfo info = extractInfo(url);
+                            String slug = path;
+                            String name = path.split("/")[path.split("/").length-1];
+                            String version = "Unknown version";
+                            String author = "Modrinth user";
+                            String link = "null";
+
+                            if(info!=null && info.modId!=null && info.versionId!=null) {
+                                ModrinthResource resource = new ModrinthResource(info.modId());
+                                ModrinthResourceVersion resourceVersion = new ModrinthResourceVersion(resource,info.versionId());
+                                slug = resource.getSlug();
+                                name = resource.getTitle();
+                                version = resourceVersion.getVersionNumber();
+                                try {
+                                    JsonObject authorObject = GsonUtility.getObject("https://api.modrinth.com/v2/user/"+resourceVersion.getAuthorId());
+                                    if(authorObject.has("username")) {
+                                        author = authorObject.get("username").getAsString();
+                                    }
+                                } catch (Exception e) {
+                                    author = resourceVersion.getAuthorId();
+                                }
+                                link = "modrinth";
+                            }
+
+                            JsonObject content = new JsonObject();
+                            content.addProperty("id_or_slug",slug);
+                            content.addProperty("name",name);
+                            content.addProperty("author",author);
+                            content.addProperty("version",version);
+                            content.addProperty("path",path);
+                            content.addProperty("link",link);
+                            contents.add(content);
+
                             try {
                                 File filePath = new File(installDir.getAbsolutePath()+"/"+file.get("path").getAsString());
                                 filePath.getParentFile().mkdirs();
@@ -157,6 +196,10 @@ public class ModrinthIntegration {
                                 instanceConverter.setIconUrl(project.getIconUrl());
 
                                 instanceConverter.create();
+
+                                JsonStorage instanceContents = new JsonStorage(finalInstallDir +"/zyneonContents.json");
+                                instanceContents.set("contents",contents);
+
                                 if(NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
                                     NexusApplication.getInstance().getApplicationFrame().getBrowser().reload();
                                 }
@@ -233,5 +276,20 @@ public class ModrinthIntegration {
             return getInstallDir(bak, id+"-"+ StringGenerator.generateAlphanumericString(8));
         }
         return installDir;
+    }
+
+    private static ModInfo extractInfo(String url) {
+        Matcher matcher = MOD_PATTERN.matcher(url);
+        if (matcher.find()) {
+            return new ModInfo(matcher.group(1), matcher.group(2));
+        }
+        return null;
+    }
+
+    record ModInfo(String modId, String versionId) {
+        @Override
+        public String toString() {
+            return String.format("Mod: %s | Version: %s", modId, versionId);
+        }
     }
 }
