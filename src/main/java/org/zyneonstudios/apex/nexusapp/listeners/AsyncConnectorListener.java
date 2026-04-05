@@ -31,6 +31,7 @@ import org.zyneonstudios.apex.nexusapp.search.modrinth.resource.ModrinthResource
 import org.zyneonstudios.apex.nexusapp.search.modrinth.search.facets.categories.ModrinthCategory;
 import org.zyneonstudios.apex.nexusapp.search.zyndex.ZyndexIntegration;
 import org.zyneonstudios.apex.nexusapp.search.zyndex.local.LocalInstance;
+import org.zyneonstudios.apex.nexusapp.search.zyndex.local.LocalInstanceContent;
 import org.zyneonstudios.apex.nexusapp.utilities.*;
 
 import javax.imageio.ImageIO;
@@ -744,11 +745,11 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
                 frame.executeJavaScript(cmd,button);
 
-                resolvePackMods(lI.getPath()+"/mods","mods");
+                resolvePackMods(lI,"mods");
                 resolvePackMaps(lI.getPath()+"/saves");
                 resolvePackServers(lI.getPath()+"/servers.dat");
-                resolvePackMods(lI.getPath()+"/resourcepacks","resourcepacks");
-                resolvePackMods(lI.getPath()+"/shaderpacks","shaders");
+                resolvePackMods(lI,"resourcepacks");
+                resolvePackMods(lI,"shaderpacks");
 
                 NexusApplication.getInstance().getLocalSettings().setLastInstanceId(showId);
             } else if(s.startsWith("start.")) {
@@ -888,6 +889,17 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
             }
         }
+    }
+
+    private void resolvePackMods(LocalInstance instance, String modType) {
+        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Project</th><th>Version</th><th class='last'>Actions</th></tr>");
+        for(String path : instance.getContentsByPathMap().keySet()) {
+            if(path.startsWith(modType+"/")) {
+                LocalInstanceContent content = instance.getContentsByPathMap().get(path);
+                com.append("<tr><td class='first'><label><input disabled type='checkbox'></label></td><td>").append(content.name()).append("<br>by ").append(content.author()).append("</td><td>").append(content.version()).append("<br>").append(content.path()).append("</td><td class='last'>-</td></tr>");
+            }
+        }
+        frame.executeJavaScript("document.getElementById(\"instance-"+modType.replace("shaderpacks","shaders")+"\").innerHTML = \"<tbody>" + com + "</tbody>\"");
     }
 
     private void resolvePackMods(String contentPath, String modType) {

@@ -1,17 +1,23 @@
 package org.zyneonstudios.apex.nexusapp.search.zyndex.local;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.zyneonstudios.nexus.instance.Zynstance;
 import com.zyneonstudios.nexus.utilities.storage.JsonStorage;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.*;
 
 public class LocalInstance {
 
     private JsonStorage settings;
+    private JsonStorage contents;
     private final Zynstance instance;
     private String path;
+
+    private final HashMap<String, LocalInstanceContent> contentsMap = new HashMap<>();
+    private final HashMap<String, LocalInstanceContent> contentsMapByPath = new HashMap<>();
 
     private boolean fullscreen = NexusApplication.getInstance().getLocalSettings().getDefaultMinecraftFullscreen();
     private int width = NexusApplication.getInstance().getLocalSettings().getDefaultMinecraftWindowWidth();
@@ -38,6 +44,7 @@ public class LocalInstance {
         this.instance = new Zynstance(instanceFile);
         this.path = path.replace("\\","/");
         reloadSettings();
+        reloadContents();
     }
 
     public void reloadSettings() {
@@ -68,6 +75,50 @@ public class LocalInstance {
         }
         if(settings.has("settings.onExitCommands")) {
             this.onExitHook = (ArrayList<String>)settings.get("settings.onExitCommands");
+        }
+    }
+
+    public void reloadContents() {
+        String baseDir = this.path.replace("zyneonInstance.json", "");
+        this.contents = new JsonStorage(baseDir + "zyneonContents.json");
+        this.contents.ensure("contents", new JsonArray());
+        Map<String, JsonObject> metaCache = new HashMap<>();
+        if (this.contents.has("contents")) {
+            List<Object> rawList = (List<Object>) this.contents.get("contents");
+            for (Object obj : rawList) {
+                JsonObject contentMeta = this.contents.getGson().toJsonTree(obj).getAsJsonObject();
+                if (contentMeta.has("path")) {
+                    String p = contentMeta.get("path").getAsString().replace("\\", "/");
+                    metaCache.put(p, contentMeta);
+                }
+            }
+        }
+        String[] targetDirs = {"mods", "saves", "resourcepacks", "shaderpacks"};
+        for (String dirName : targetDirs) {
+            File folder = new File(baseDir + dirName);
+            File[] files = folder.listFiles();
+            if (files == null) continue;
+            for (File file : files) {
+                String fileName = file.getName();
+                if (fileName.startsWith(".") || fileName.toLowerCase().endsWith(".txt")) continue;
+                String relativePath = dirName + "/" + fileName;
+                String name = fileName.replace(".jar", "").replace(".zip", "");
+                String author = "Custom source";
+                String version = "Not added via Zyneon Desktop";
+                String idOrSlug = relativePath;
+                String link = null;
+                JsonObject meta = metaCache.get(relativePath);
+                if (meta != null) {
+                    if (meta.has("id_or_slug")) idOrSlug = meta.get("id_or_slug").getAsString();
+                    if (meta.has("name")) name = meta.get("name").getAsString();
+                    if (meta.has("author")) author = meta.get("author").getAsString();
+                    if (meta.has("version")) version = meta.get("version").getAsString();
+                    if (meta.has("link")) link = meta.get("link").getAsString();
+                }
+                LocalInstanceContent value = new LocalInstanceContent(idOrSlug, name, author, version, relativePath, link);
+                contentsMap.put(idOrSlug, value);
+                contentsMapByPath.put(relativePath, value);
+            }
         }
     }
 
@@ -166,5 +217,17 @@ public class LocalInstance {
     public void setOnExitHook(ArrayList<String> onExitHook) {
         this.onExitHook = onExitHook;
         settings.set("settings.onExitCommands",onExitHook);
+    }
+
+    public HashMap<String, LocalInstanceContent> getContentsMap() {
+        return contentsMap;
+    }
+
+    public HashMap<String, LocalInstanceContent> getContentsByPathMap() {
+        return contentsMapByPath;
+    }
+
+    public JsonStorage getContents() {
+        return contents;
     }
 }

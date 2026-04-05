@@ -15,7 +15,7 @@
             border: 1px solid var(--bs-border-color-translucent);
             border-radius: var(--nex-border-radius);
             padding: 0 !important;
-            background: var(--nex-brighter);
+            background: var(--nex-brighter-100);
             margin-bottom: 1.5rem;
 
             strong {
@@ -24,23 +24,27 @@
 
             table {
                 tr {
+
                     th {
-                        background: var(--nex-brighter-100);
+                        background: transparent;
                         text-shadow: none;
                         padding: 0.5rem;
                     }
 
+                    td {
+                        background: var(--nex-darker-100);
+                        padding: 0.5rem;
+                        text-shadow: none;
+                        border-bottom: 1px solid var(--bs-border-color-translucent);
+                    }
+
                     th.first, td.first {
-                        background: var(--nex-brighter-100);
+                        background: transparent;
                         width: 1.5rem;
                         white-space: nowrap;
                         padding-right: 0;
                         padding-left: 5px;
-                    }
-
-                    td {
-                        padding: 0.5rem;
-                        text-shadow: none;
+                        border-bottom: none;
                     }
 
                     .last {
@@ -50,20 +54,32 @@
 
                 tr:nth-child(odd) {
                     td {
-                        background: var(--nex-brighter);
+                        background: var(--nex-darker);
                     }
 
                     td.first {
-                        background: var(--nex-brighter-100);
+                        background: transparent;
+                    }
+                }
+
+                tr:nth-child(2) td:nth-child(2) {
+                    border-top-left-radius: var(--nex-border-radius);
+                }
+
+                tr:last-child {
+                    td {
+                        border-bottom: none;
                     }
                 }
 
                 tr:hover {
-                    background: var(--nex-brighter-200);
-                }
+                    td {
+                        background: var(--nex-brighter);
+                    }
 
-                tr.nohover {
-                    background: unset;
+                    td.first {
+                        background: transparent;
+                    }
                 }
             }
         }
