@@ -69,6 +69,9 @@ public class Download {
     // Flag to indicate if the download should be cancelled.
     private volatile boolean cancelled = false;
 
+    //Flag to indicate if the download is still preparing and shouldn't start
+    private volatile boolean preparing = false;
+
     /**
      * Constructor for the Download.
      *
@@ -154,11 +157,19 @@ public class Download {
         return false;
     }
 
+    public boolean isPreparing() {
+        return preparing;
+    }
+
+    public void setPreparing(boolean preparing) {
+        this.preparing = preparing;
+    }
+
     /**
      * Cancels the download.
      */
     public void cancel() {
-        if (state == DownloadManager.DownloadState.RUNNING || state == DownloadManager.DownloadState.PAUSED || state == DownloadManager.DownloadState.WAITING) {
+        if (state == DownloadManager.DownloadState.RUNNING || state == DownloadManager.DownloadState.PAUSED || state == DownloadManager.DownloadState.WAITING || state == DownloadManager.DownloadState.PREPARING) {
             setFailed();
             cancelled = true;
             paused = false;

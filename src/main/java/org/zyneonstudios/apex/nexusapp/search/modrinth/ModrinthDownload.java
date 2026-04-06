@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ModrinthDownload extends Download {
 
-    private DownloadManager.DownloadState state = DownloadManager.DownloadState.WAITING;
+    private DownloadManager.DownloadState state = DownloadManager.DownloadState.PREPARING;
     private String percentString = "0%";
     private Instant startTime;
     private Instant finishTime = null;
@@ -26,11 +26,41 @@ public class ModrinthDownload extends Download {
     private boolean finished = false;
     private double percent = 0;
     private DownloadEndEvent event = null;
-    private final Collection<Download> fileDownloads;
+    private Collection<Download> fileDownloads;
 
     public ModrinthDownload(ModrinthResource project, Collection<Download> fileDownloads, Path basePath) throws MalformedURLException {
         super(UUID.randomUUID(), project.getTitle(), new URL(project.getUrl()), basePath);
         this.fileDownloads = fileDownloads;
+        state = DownloadManager.DownloadState.WAITING;
+    }
+
+    public ModrinthDownload(ModrinthResource project, Path basePath) throws MalformedURLException {
+        super(UUID.randomUUID(), project.getTitle(), new URL(project.getUrl()), basePath);
+        this.fileDownloads = null;
+    }
+
+    public Collection<Download> getFileDownloads() {
+        return fileDownloads;
+    }
+
+    public void setFileDownloads(Collection<Download> fileDownloads) {
+        this.fileDownloads = fileDownloads;
+    }
+
+    @Override
+    public boolean isPreparing() {
+        return state.equals(DownloadManager.DownloadState.PREPARING);
+    }
+
+    @Override
+    public void setPreparing(boolean preparing) {
+        if(state==DownloadManager.DownloadState.WAITING||state==DownloadManager.DownloadState.PREPARING) {
+            if (preparing) {
+                state = DownloadManager.DownloadState.PREPARING;
+            } else {
+                state = DownloadManager.DownloadState.WAITING;
+            }
+        }
     }
 
     @Override

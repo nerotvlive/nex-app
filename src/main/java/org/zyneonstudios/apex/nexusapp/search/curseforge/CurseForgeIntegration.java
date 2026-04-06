@@ -110,150 +110,160 @@ public class CurseForgeIntegration {
                 JsonObject indexJson = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromFile(index), JsonObject.class);
 
                 if (indexJson.has("files")) {
-                    ArrayList<Download> fileDownloads = new ArrayList<>();
-                    JsonArray files = indexJson.getAsJsonArray("files");
-                    JsonArray contents = new JsonArray();
-                    for (JsonElement file_ : files) {
-
-                        JsonObject fileData = file_.getAsJsonObject();
-                        int pId = fileData.get("projectID").getAsInt();
-                        int fId = fileData.get("fileID").getAsInt();
-
-                        CurseForgeResource resource = new CurseForgeResource(pId);
-                        CurseForgeResourceVersion file = new CurseForgeResourceVersion(pId, fId);
-
-                        String resourceVersion = file.getDisplayName();
-                        String author = "CurseForge user";
-                        try {
-                            JsonObject authorObject = resource.getAuthors().get(0).getAsJsonObject();
-                            if(authorObject.has("name")) {
-                                author = authorObject.get("name").getAsString();
-                            }
-                        } catch (Exception ignore) {}
-
-                        String link = "null";
-
-
-                        String path = "mods/";
-                        if (resource.getClassId() == 5) {
-                            path = "plugins/";
-                        } else if (resource.getClassId() == 12) {
-                            path = "resourcepacks/";
-                        } else if (resource.getClassId() == 17) {
-                            path = "worlds/";
-                        } else if (resource.getClassId() == 6552) {
-                            path = "shaderpacks/";
-                        } else if (resource.getClassId() == 6945) {
-                            path = "datapacks/";
-                        }
-
-
-                        String url = file.getDownloadUrl();
-                        try {
-                            File filePath = new File(installDir.getAbsolutePath() + "/" + path + file.getFileName());
-                            filePath.getParentFile().mkdirs();
-                            Download fileDownload = new Download(project.getName() + " " + path + file.getFileName(), new URI(url).toURL(), filePath.toPath());
-
-                            link = "curseforge";
-                            JsonObject content = new JsonObject();
-                            content.addProperty("id_or_slug",pId);
-                            content.addProperty("name",resource.getName());
-                            content.addProperty("author",author);
-                            content.addProperty("version",resourceVersion);
-                            content.addProperty("versionId",fId);
-                            content.addProperty("path",path+file.getFileName());
-                            content.addProperty("link",link);
-                            contents.add(content);
-
-                            fileDownloads.add(fileDownload);
-                        } catch (Exception e) {
-                            NexusApplication.getLogger().err("Cannot download file \"" + path + file.getFileName() + "\" for curseforge pack \"" + project.getName() + "\": " + e.getMessage(), false);
-                        }
-
-                    }
-
                     try {
-                        CurseForgeDownload packDownload = new CurseForgeDownload(project, fileDownloads, installDir.toPath());
+                        CurseForgeDownload packDownload = new CurseForgeDownload(project, installDir.toPath());
                         NexusApplication.getInstance().getDownloadManager().addDownload(packDownload);
-                        File finalInstallDir = installDir;
-                        packDownload.setFinishEvent(new DownloadEndEvent(packDownload) {
-                            @Override
-                            public boolean onFinish() {
-                                String title = project.getName();
-                                ZynstanceBuilder instanceConverter = new ZynstanceBuilder(finalInstallDir + "/zyneonInstance.json");
-                                instanceConverter.setName(title);
-                                instanceConverter.setVersion(versionName);
-                                instanceConverter.setId("curseforge-" + slug);
-                                instanceConverter.setSummary(project.getSummary());
-                                instanceConverter.setDescription(project.getSummary());
-                                if (indexJson.has("minecraft")) {
-                                    JsonObject dependencies = indexJson.get("minecraft").getAsJsonObject();
-                                    if (dependencies.has("version")) {
-                                        instanceConverter.setMinecraftVersion(dependencies.get("version").getAsString());
-                                    }
+                        ArrayList<Download> fileDownloads = new ArrayList<>();
+                        JsonArray files = indexJson.getAsJsonArray("files");
+                        JsonArray contents = new JsonArray();
+                        for (JsonElement file_ : files) {
 
-                                    if (dependencies.has("modLoaders")) {
-                                        JsonArray modLoaders = dependencies.getAsJsonArray("modLoaders");
-                                        for (JsonElement loader_ : modLoaders) {
-                                            JsonObject loader = loader_.getAsJsonObject();
-                                            if (loader.has("primary") && loader.get("primary").getAsBoolean()) {
-                                                String[] mId = loader.get("id").getAsString().split("-", 2);
-                                                if (mId[0].equalsIgnoreCase("fabric")) {
-                                                    instanceConverter.setMetaProperty("modloader", "fabric");
-                                                    instanceConverter.setFabricVersion(mId[1]);
-                                                } else if (mId[0].equalsIgnoreCase("forge")) {
-                                                    instanceConverter.setMetaProperty("modloader", "forge");
-                                                    instanceConverter.setForgeVersion(mId[1]);
-                                                } else if (mId[0].equalsIgnoreCase("quilt")) {
-                                                    instanceConverter.setMetaProperty("modloader", "quilt");
-                                                    instanceConverter.setQuiltVersion(mId[1]);
-                                                } else if (mId[0].equalsIgnoreCase("neoforge")) {
-                                                    instanceConverter.setMetaProperty("modloader", "neoforge");
-                                                    instanceConverter.setNeoForgeVersion(mId[1]);
+                            JsonObject fileData = file_.getAsJsonObject();
+                            int pId = fileData.get("projectID").getAsInt();
+                            int fId = fileData.get("fileID").getAsInt();
+
+                            CurseForgeResource resource = new CurseForgeResource(pId);
+                            CurseForgeResourceVersion file = new CurseForgeResourceVersion(pId, fId);
+
+                            String resourceVersion = file.getDisplayName();
+                            String author = "CurseForge user";
+                            try {
+                                JsonObject authorObject = resource.getAuthors().get(0).getAsJsonObject();
+                                if (authorObject.has("name")) {
+                                    author = authorObject.get("name").getAsString();
+                                }
+                            } catch (Exception ignore) {
+                            }
+
+                            String link = "null";
+
+
+                            String path = "mods/";
+                            if (resource.getClassId() == 5) {
+                                path = "plugins/";
+                            } else if (resource.getClassId() == 12) {
+                                path = "resourcepacks/";
+                            } else if (resource.getClassId() == 17) {
+                                path = "worlds/";
+                            } else if (resource.getClassId() == 6552) {
+                                path = "shaderpacks/";
+                            } else if (resource.getClassId() == 6945) {
+                                path = "datapacks/";
+                            }
+
+
+                            String url = file.getDownloadUrl();
+                            try {
+                                File filePath = new File(installDir.getAbsolutePath() + "/" + path + file.getFileName());
+                                filePath.getParentFile().mkdirs();
+                                Download fileDownload = new Download(project.getName() + " " + path + file.getFileName(), new URI(url).toURL(), filePath.toPath());
+
+                                link = "curseforge";
+                                JsonObject content = new JsonObject();
+                                content.addProperty("id_or_slug", pId);
+                                content.addProperty("name", resource.getName());
+                                content.addProperty("author", author);
+                                content.addProperty("version", resourceVersion);
+                                content.addProperty("versionId", fId);
+                                content.addProperty("path", path + file.getFileName());
+                                content.addProperty("link", link);
+                                contents.add(content);
+
+                                fileDownloads.add(fileDownload);
+                            } catch (Exception e) {
+                                NexusApplication.getLogger().err("Cannot download file \"" + path + file.getFileName() + "\" for curseforge pack \"" + project.getName() + "\": " + e.getMessage(), false);
+                            }
+
+                        }
+
+                        try {
+                            packDownload.setFileDownloads(fileDownloads);
+                            packDownload.setPreparing(false);
+                            File finalInstallDir = installDir;
+                            packDownload.setFinishEvent(new DownloadEndEvent(packDownload) {
+                                @Override
+                                public boolean onFinish() {
+                                    String title = project.getName();
+                                    ZynstanceBuilder instanceConverter = new ZynstanceBuilder(finalInstallDir + "/zyneonInstance.json");
+                                    instanceConverter.setName(title);
+                                    instanceConverter.setVersion(versionName);
+                                    instanceConverter.setId("curseforge-" + slug);
+                                    instanceConverter.setSummary(project.getSummary());
+                                    instanceConverter.setDescription(project.getSummary());
+                                    if (indexJson.has("minecraft")) {
+                                        JsonObject dependencies = indexJson.get("minecraft").getAsJsonObject();
+                                        if (dependencies.has("version")) {
+                                            instanceConverter.setMinecraftVersion(dependencies.get("version").getAsString());
+                                        }
+
+                                        if (dependencies.has("modLoaders")) {
+                                            JsonArray modLoaders = dependencies.getAsJsonArray("modLoaders");
+                                            for (JsonElement loader_ : modLoaders) {
+                                                JsonObject loader = loader_.getAsJsonObject();
+                                                if (loader.has("primary") && loader.get("primary").getAsBoolean()) {
+                                                    String[] mId = loader.get("id").getAsString().split("-", 2);
+                                                    if (mId[0].equalsIgnoreCase("fabric")) {
+                                                        instanceConverter.setMetaProperty("modloader", "fabric");
+                                                        instanceConverter.setFabricVersion(mId[1]);
+                                                    } else if (mId[0].equalsIgnoreCase("forge")) {
+                                                        instanceConverter.setMetaProperty("modloader", "forge");
+                                                        instanceConverter.setForgeVersion(mId[1]);
+                                                    } else if (mId[0].equalsIgnoreCase("quilt")) {
+                                                        instanceConverter.setMetaProperty("modloader", "quilt");
+                                                        instanceConverter.setQuiltVersion(mId[1]);
+                                                    } else if (mId[0].equalsIgnoreCase("neoforge")) {
+                                                        instanceConverter.setMetaProperty("modloader", "neoforge");
+                                                        instanceConverter.setNeoForgeVersion(mId[1]);
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
 
-                                instanceConverter.setDownloadUrl("curseforge");
-                                instanceConverter.setOriginUrl("local");
-                                ArrayList<String> tags = new ArrayList<>();
+                                    instanceConverter.setDownloadUrl("curseforge");
+                                    instanceConverter.setOriginUrl("local");
+                                    ArrayList<String> tags = new ArrayList<>();
 
-                                if (project.getCategories() != null) {
-                                    for (JsonElement category : project.getCategories()) {
-                                        JsonObject cat = category.getAsJsonObject();
-                                        tags.add(cat.get("name").getAsString());
+                                    if (project.getCategories() != null) {
+                                        for (JsonElement category : project.getCategories()) {
+                                            JsonObject cat = category.getAsJsonObject();
+                                            tags.add(cat.get("name").getAsString());
+                                        }
                                     }
-                                }
 
-                                tags.add("curseforge");
-                                instanceConverter.setTags(tags);
-                                ArrayList<String> authors = new ArrayList<>();
+                                    tags.add("curseforge");
+                                    instanceConverter.setTags(tags);
+                                    ArrayList<String> authors = new ArrayList<>();
 
-                                if (project.getAuthors() != null) {
-                                    for (JsonElement author : project.getAuthors()) {
-                                        JsonObject auth = author.getAsJsonObject();
-                                        authors.add(auth.get("name").getAsString());
+                                    if (project.getAuthors() != null) {
+                                        for (JsonElement author : project.getAuthors()) {
+                                            JsonObject auth = author.getAsJsonObject();
+                                            authors.add(auth.get("name").getAsString());
+                                        }
                                     }
+
+                                    instanceConverter.setAuthors(authors);
+
+                                    if (project.getLogo() != null && project.getLogo().has("url")) {
+                                        instanceConverter.setIconUrl(project.getLogo().get("url").getAsString());
+                                    }
+
+                                    instanceConverter.create();
+                                    JsonStorage instanceContents = new JsonStorage(finalInstallDir + "/zyneonContents.json");
+                                    instanceContents.set("contents", contents);
+
+                                    if (NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
+                                        NexusApplication.getInstance().getApplicationFrame().getBrowser().reload();
+                                    }
+                                    return false;
                                 }
-
-                                instanceConverter.setAuthors(authors);
-
-                                if (project.getLogo() != null && project.getLogo().has("url")) {
-                                    instanceConverter.setIconUrl(project.getLogo().get("url").getAsString());
-                                }
-
-                                instanceConverter.create();
-                                JsonStorage instanceContents = new JsonStorage(finalInstallDir +"/zyneonContents.json");
-                                instanceContents.set("contents",contents);
-
-                                if (NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
-                                    NexusApplication.getInstance().getApplicationFrame().getBrowser().reload();
-                                }
-                                return false;
-                            }
-                        });
+                            });
+                        } catch (Exception e) {
+                            packDownload.setPreparing(false);
+                            packDownload.cancel();
+                            NexusApplication.getLogger().err(e.getMessage());
+                            throw new RuntimeException(e);
+                        }
                     } catch (Exception e) {
                         NexusApplication.getLogger().err(e.getMessage());
                         throw new RuntimeException(e);

@@ -4,9 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zyneonstudios.nexus.instance.Zynstance;
 import com.zyneonstudios.nexus.utilities.storage.JsonStorage;
+import org.zyneonstudios.apex.nexusapp.Main;
 import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.*;
 
 public class LocalInstance {
@@ -28,6 +30,7 @@ public class LocalInstance {
     private ArrayList<String> preLaunchHook = NexusApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands();
     private ArrayList<String> onLaunchHook = NexusApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands();
     private ArrayList<String> onExitHook = NexusApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands();
+    private String about = null;
 
 
     /**
@@ -79,6 +82,7 @@ public class LocalInstance {
     }
 
     public void reloadContents() {
+        reloadAbout();
         String baseDir = this.path.replace("zyneonInstance.json", "");
         this.contents = new JsonStorage(baseDir + "zyneonContents.json");
         this.contents.ensure("contents", new JsonArray());
@@ -229,5 +233,33 @@ public class LocalInstance {
 
     public JsonStorage getContents() {
         return contents;
+    }
+
+    public String getAbout() {
+        if(about == null) {
+            return getInstance().getDescription();
+        }
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public void resetAbout() {
+        this.about = null;
+    }
+
+    public void reloadAbout() {
+        resetAbout();
+        String baseDir = this.path.replace("zyneonInstance.json", "");
+        File about = new File(baseDir + "zyneonAbout.md");
+        if(about.exists()) {
+            try {
+                this.about = Files.readString(about.toPath());
+            } catch (Exception e) {
+                Main.getLogger().err(e.getMessage(),false);
+            }
+        }
     }
 }

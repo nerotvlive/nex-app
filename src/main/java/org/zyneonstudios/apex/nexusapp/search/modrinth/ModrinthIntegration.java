@@ -96,123 +96,135 @@ public class ModrinthIntegration {
             File index = new File(modrinthPackPath+"/modrinth.index.json");
 
             if(index.exists()) {
-                JsonObject indexJson = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromFile(index), JsonObject.class);
-                if(indexJson.has("files")) {
-                    JsonArray contents = new JsonArray();
-                    final double[] progress = {0};
-                    final int[] finished = {0};
-                    ArrayList<Download> fileDownloads = new ArrayList<>();
-                    JsonArray files = indexJson.getAsJsonArray("files");
-                    for(JsonElement file_:files) {
-                        JsonObject file = file_.getAsJsonObject();
-                        String path = file.get("path").getAsString();
-                        for(JsonElement downloads:file.getAsJsonArray("downloads")) {
-                            String url = downloads.getAsString();
-                            ModInfo info = extractInfo(url);
-                            String slug = path;
-                            String name = path.split("/")[path.split("/").length-1];
-                            String version = "Unknown version";
-                            String resourceId = "null";
-                            String author = "Modrinth user";
-                            String link = "null";
+                try {
+                    ModrinthDownload packDownload = new ModrinthDownload(project, installDir.toPath());
+                    NexusApplication.getInstance().getDownloadManager().addDownload(packDownload);
+                    JsonObject indexJson = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromFile(index), JsonObject.class);
+                    if (indexJson.has("files")) {
+                        JsonArray contents = new JsonArray();
+                        final double[] progress = {0};
+                        final int[] finished = {0};
+                        ArrayList<Download> fileDownloads = new ArrayList<>();
+                        JsonArray files = indexJson.getAsJsonArray("files");
+                        for (JsonElement file_ : files) {
+                            JsonObject file = file_.getAsJsonObject();
+                            String path = file.get("path").getAsString();
+                            for (JsonElement downloads : file.getAsJsonArray("downloads")) {
+                                String url = downloads.getAsString();
+                                ModInfo info = extractInfo(url);
+                                String slug = path;
+                                String name = path.split("/")[path.split("/").length - 1];
+                                String version = "Unknown version";
+                                String resourceId = "null";
+                                String author = "Modrinth user";
+                                String link = "null";
 
-                            if(info!=null && info.modId!=null && info.versionId!=null) {
-                                ModrinthResource resource = new ModrinthResource(info.modId());
-                                ModrinthResourceVersion resourceVersion = new ModrinthResourceVersion(resource,info.versionId());
-                                slug = resource.getSlug();
-                                name = resource.getTitle();
-                                version = resourceVersion.getVersionNumber();
-                                resourceId = info.versionId;
-                                try {
-                                    JsonObject authorObject = GsonUtility.getObject("https://api.modrinth.com/v2/user/"+resourceVersion.getAuthorId());
-                                    if(authorObject.has("username")) {
-                                        author = authorObject.get("username").getAsString();
+                                if (info != null && info.modId != null && info.versionId != null) {
+                                    ModrinthResource resource = new ModrinthResource(info.modId());
+                                    ModrinthResourceVersion resourceVersion = new ModrinthResourceVersion(resource, info.versionId());
+                                    slug = resource.getSlug();
+                                    name = resource.getTitle();
+                                    version = resourceVersion.getVersionNumber();
+                                    resourceId = info.versionId;
+                                    try {
+                                        JsonObject authorObject = GsonUtility.getObject("https://api.modrinth.com/v2/user/" + resourceVersion.getAuthorId());
+                                        if (authorObject.has("username")) {
+                                            author = authorObject.get("username").getAsString();
+                                        }
+                                    } catch (Exception e) {
+                                        author = resourceVersion.getAuthorId();
                                     }
-                                } catch (Exception e) {
-                                    author = resourceVersion.getAuthorId();
+                                    link = "modrinth";
                                 }
-                                link = "modrinth";
-                            }
 
-                            JsonObject content = new JsonObject();
-                            content.addProperty("id_or_slug",slug);
-                            content.addProperty("name",name);
-                            content.addProperty("author",author);
-                            content.addProperty("version",version);
-                            content.addProperty("versionId",resourceId);
-                            content.addProperty("path",path);
-                            content.addProperty("link",link);
-                            contents.add(content);
+                                JsonObject content = new JsonObject();
+                                content.addProperty("id_or_slug", slug);
+                                content.addProperty("name", name);
+                                content.addProperty("author", author);
+                                content.addProperty("version", version);
+                                content.addProperty("versionId", resourceId);
+                                content.addProperty("path", path);
+                                content.addProperty("link", link);
+                                contents.add(content);
 
-                            try {
-                                File filePath = new File(installDir.getAbsolutePath()+"/"+file.get("path").getAsString());
-                                filePath.getParentFile().mkdirs();
-                                Download fileDownload = new Download(project.getTitle()+" "+file.get("path").getAsString(), new URL(url), filePath.toPath());
-                                fileDownloads.add(fileDownload);
-                            } catch (Exception e) {
-                                NexusApplication.getLogger().err("Cannot download file \""+file.get("path").getAsString()+"\" for modrinth pack \""+project.getTitle()+"\": "+e.getMessage(),false);
+                                try {
+                                    File filePath = new File(installDir.getAbsolutePath() + "/" + file.get("path").getAsString());
+                                    filePath.getParentFile().mkdirs();
+                                    Download fileDownload = new Download(project.getTitle() + " " + file.get("path").getAsString(), new URL(url), filePath.toPath());
+                                    fileDownloads.add(fileDownload);
+                                } catch (Exception e) {
+                                    NexusApplication.getLogger().err("Cannot download file \"" + file.get("path").getAsString() + "\" for modrinth pack \"" + project.getTitle() + "\": " + e.getMessage(), false);
+                                }
                             }
                         }
+                        try {
+                            packDownload.setFileDownloads(fileDownloads);
+                            packDownload.setPreparing(false);
+                            File finalInstallDir = installDir;
+                            packDownload.setFinishEvent(new DownloadEndEvent(packDownload) {
+                                @Override
+                                public boolean onFinish() {
+                                    String version = indexJson.get("versionId").getAsString();
+                                    String title = indexJson.get("name").getAsString();
+                                    ZynstanceBuilder instanceConverter = new ZynstanceBuilder(finalInstallDir + "/zyneonInstance.json");
+                                    instanceConverter.setName(title);
+                                    instanceConverter.setVersion(version);
+                                    instanceConverter.setId("modrinth-" + projectId);
+                                    instanceConverter.setSummary(project.getDescription());
+                                    instanceConverter.setDescription(project.getBody());
+                                    JsonObject dependencies = indexJson.get("dependencies").getAsJsonObject();
+                                    instanceConverter.setMinecraftVersion(dependencies.get("minecraft").getAsString());
+                                    if (dependencies.has("fabric-loader")) {
+                                        instanceConverter.setMetaProperty("modloader", "fabric");
+                                        instanceConverter.setFabricVersion(dependencies.get("fabric-loader").getAsString());
+                                    } else if (dependencies.has("forge")) {
+                                        instanceConverter.setMetaProperty("modloader", "forge");
+                                        instanceConverter.setForgeVersion(dependencies.get("forge").getAsString());
+                                    } else if (dependencies.has("neoforge")) {
+                                        instanceConverter.setMetaProperty("modloader", "neoforge");
+                                        instanceConverter.setNeoForgeVersion(dependencies.get("neoforge").getAsString());
+                                    } else if (dependencies.has("quilt-loader")) {
+                                        instanceConverter.setMetaProperty("modloader", "quilt");
+                                        instanceConverter.setQuiltVersion(dependencies.get("quilt-loader").getAsString());
+                                    }
+                                    instanceConverter.setDownloadUrl("modrinth");
+                                    instanceConverter.setOriginUrl("local");
+                                    ArrayList<String> tags = new ArrayList<>(Arrays.asList(project.getCategories()));
+                                    tags.add("modrinth");
+                                    instanceConverter.setTags(tags);
+
+                                    ArrayList<String> authors = new ArrayList<>();
+                                    JsonArray members = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromURL("https://api.modrinth.com/v2/project/" + projectId + "/members"), JsonArray.class);
+                                    for (JsonElement member : members) {
+                                        authors.add(member.getAsJsonObject().get("user").getAsJsonObject().get("username").getAsString());
+                                    }
+                                    instanceConverter.setAuthors(authors);
+                                    instanceConverter.setIconUrl(project.getIconUrl());
+
+                                    instanceConverter.create();
+
+                                    JsonStorage instanceContents = new JsonStorage(finalInstallDir + "/zyneonContents.json");
+                                    instanceContents.set("contents", contents);
+
+                                    if (NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
+                                        NexusApplication.getInstance().getApplicationFrame().getBrowser().reload();
+                                    }
+                                    return false;
+                                }
+                            });
+                        } catch (Exception e) {
+                            packDownload.setPreparing(false);
+                            packDownload.cancel();
+                            NexusApplication.getLogger().err(e.getMessage());
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        packDownload.setPreparing(false);
+                        packDownload.cancel();
                     }
-                    try {
-                        ModrinthDownload packDownload = new ModrinthDownload(project, fileDownloads, installDir.toPath());
-                        NexusApplication.getInstance().getDownloadManager().addDownload(packDownload);
-                        File finalInstallDir = installDir;
-                        packDownload.setFinishEvent(new DownloadEndEvent(packDownload) {
-                            @Override
-                            public boolean onFinish() {
-                                String version = indexJson.get("versionId").getAsString();
-                                String title = indexJson.get("name").getAsString();
-                                ZynstanceBuilder instanceConverter = new ZynstanceBuilder(finalInstallDir +"/zyneonInstance.json");
-                                instanceConverter.setName(title);
-                                instanceConverter.setVersion(version);
-                                instanceConverter.setId("modrinth-"+projectId);
-                                instanceConverter.setSummary(project.getDescription());
-                                instanceConverter.setDescription(project.getBody());
-                                JsonObject dependencies = indexJson.get("dependencies").getAsJsonObject();
-                                instanceConverter.setMinecraftVersion(dependencies.get("minecraft").getAsString());
-                                if(dependencies.has("fabric-loader")) {
-                                    instanceConverter.setMetaProperty("modloader","fabric");
-                                    instanceConverter.setFabricVersion(dependencies.get("fabric-loader").getAsString());
-                                } else if(dependencies.has("forge")) {
-                                    instanceConverter.setMetaProperty("modloader","forge");
-                                    instanceConverter.setForgeVersion(dependencies.get("forge").getAsString());
-                                } else if(dependencies.has("neoforge")) {
-                                    instanceConverter.setMetaProperty("modloader","neoforge");
-                                    instanceConverter.setNeoForgeVersion(dependencies.get("neoforge").getAsString());
-                                } else if(dependencies.has("quilt-loader")) {
-                                    instanceConverter.setMetaProperty("modloader","quilt");
-                                    instanceConverter.setQuiltVersion(dependencies.get("quilt-loader").getAsString());
-                                }
-                                instanceConverter.setDownloadUrl("modrinth");
-                                instanceConverter.setOriginUrl("local");
-                                ArrayList<String> tags = new ArrayList<>(Arrays.asList(project.getCategories()));
-                                tags.add("modrinth");
-                                instanceConverter.setTags(tags);
-
-                                ArrayList<String> authors = new ArrayList<>();
-                                JsonArray members = NexusApplication.getInstance().getFastGson().fromJson(GsonUtility.getFromURL("https://api.modrinth.com/v2/project/"+projectId+"/members"), JsonArray.class);
-                                for(JsonElement member : members) {
-                                    authors.add(member.getAsJsonObject().get("user").getAsJsonObject().get("username").getAsString());
-                                }
-                                instanceConverter.setAuthors(authors);
-                                instanceConverter.setIconUrl(project.getIconUrl());
-
-                                instanceConverter.create();
-
-                                JsonStorage instanceContents = new JsonStorage(finalInstallDir +"/zyneonContents.json");
-                                instanceContents.set("contents",contents);
-
-                                if(NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
-                                    NexusApplication.getInstance().getApplicationFrame().getBrowser().reload();
-                                }
-                                return false;
-                            }
-                        });
-                    } catch (Exception e) {
-                        NexusApplication.getLogger().err(e.getMessage());
-                        throw new RuntimeException(e);
-                    }
+                } catch (Exception e) {
+                    NexusApplication.getLogger().err(e.getMessage());
+                    throw new RuntimeException(e);
                 }
             } else {
                 NexusApplication.getLogger().err("Couldn't find Modrinth index json file: "+index.getAbsolutePath());

@@ -117,10 +117,10 @@ public class NexusRunner {
                 }
             } else {
                 NexusApplication.getInstance().getDownloadManager().getDownloads().forEach((uuid, download) -> {
-                    if (download.getState().equals(DownloadManager.DownloadState.WAITING)) {
+                    if (download.getState().equals(DownloadManager.DownloadState.WAITING)&&!download.isPreparing()) {
                         downloading = uuid;
                         download.start();
-                    } else if(download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
+                    } else if(download.getState().equals(DownloadManager.DownloadState.PAUSED)&&!download.isPreparing()) {
                         downloading = uuid;
                         download.resume();
                     }
@@ -130,7 +130,7 @@ public class NexusRunner {
 
         if (NexusApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=downloads")) {
             NexusApplication.getInstance().getDownloadManager().getDownloads().forEach((uuid, download) -> {
-                if (download.getState().equals(DownloadManager.DownloadState.WAITING)||download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
+                if (download.getState().equals(DownloadManager.DownloadState.WAITING)||download.getState().equals(DownloadManager.DownloadState.PREPARING)||download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
                     String id = download.getUuid()+"";
                     String name = download.getName();
                     String url = download.getUrl().toString();

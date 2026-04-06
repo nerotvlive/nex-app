@@ -96,6 +96,7 @@ public class DownloadManager {
      */
     public enum DownloadState {
         WAITING,
+        PREPARING,
         RUNNING,
         PAUSED,
         FINISHED,

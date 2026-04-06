@@ -738,7 +738,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 if(!tags.contains("minecraft-"+show.getMinecraftVersion())) {
                     tags = "minecraft-"+show.getMinecraftVersion() + ", " + tags;
                 }
-                String cmd = "showInstance(\""+ StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(show.getName())+"\",\""+StringUtility.encodeData(show.getVersion())+"\",\""+StringUtility.encodeData(show.getSummary())+"\",\""+ StringUtility.encodeData(show.getDescription()) +"\",\""+tags+"\");";
+                String cmd = "showInstance(\""+ StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(show.getName())+"\",\""+StringUtility.encodeData(show.getVersion())+"\",\""+StringUtility.encodeData(show.getSummary())+"\",\""+ StringUtility.encodeData(lI.getAbout()) +"\",\""+tags+"\");";
                 String button = "";
                 if(NexusApplication.getInstance().getInstanceManager().hasRunningInstance(showId)) {
                     button = "document.getElementById(\"launch-button\").innerHTML = \"<i class='bi bi-check-lg'></i> RUNNING\";";

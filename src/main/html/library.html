@@ -83,9 +83,6 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <h5 id="library-tags">
-
-                    </h5>
                     <div class="tab-pane m-0 p-0 show active" id="tab-about-content" aria-labelledby="tab-about">
                         <div class="content-table shadow">
                         <table class="w-100">
@@ -94,12 +91,34 @@
 
                                 </th>
                                 <th>
-                                    About this instance <label><input class="opacity-0 search" type="text"></label>
+                                    <span id="instance-name" style="text-shadow: none;">${instance.name}</span><span id="instance-version" style="text-shadow: none; margin-left: 0.3rem">${instance.version}</span> <label><input class="opacity-0 search" type="text" disabled></label>
                                 </th>
                             </tr>
                             <tr>
                                 <td class="first opacity-0">
-                                    NX
+                                    <label><input class="opacity-0" type="checkbox" disabled></label>
+                                </td>
+                                <td class="nohover">
+                                    <div class="d-flex w-100 p-2 m-0">
+                                        <div class="m-0 p-0 w-100">
+                                            <span>
+                                                <strong>Summary</strong><br>
+                                                <span id="instance-summary" style="text-shadow: none;"></span>
+                                            </span>
+                                        </div>
+                                        <div class="m-0 p-0 w-100">
+                                            <div class="m-0 p-0">
+                                                <strong>Tags</strong><br>
+                                                <div class="m-0 p-0" id="library-tags">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="first opacity-0">
+                                    <label><input class="opacity-0" type="checkbox" disabled></label>
                                 </td>
                                 <td id="instance-about" class="nohover">
 
@@ -151,8 +170,8 @@
                     </div>
                     <div class="card-body">
                         <p>
-                            <strong id="instance-name">${instance.name}</strong> v<span id="instance-version">${instance.version}</span><br><br>
-                            <span id="instance-summary">${instance.summary}</span>
+
+                            <span>${}</span>
                         </p>
                     </div>
                 </div>
