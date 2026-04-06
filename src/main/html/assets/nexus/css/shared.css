@@ -81,6 +81,8 @@
     --bs-primary-border-subtle: var(--nex-primary-accent);
     --bs-primary-bg-subtle: var(--nex-primary-dark);
     --bs-border-radius: var(--nex-border-radius);
+
+    --instance-background: url("http://www");
 }
 
 * {

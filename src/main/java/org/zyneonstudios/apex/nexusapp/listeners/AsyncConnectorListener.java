@@ -892,38 +892,18 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
     }
 
     private void resolvePackMods(LocalInstance instance, String modType) {
-        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Project</th><th>Version</th><th class='last'>Actions</th></tr>");
+        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th><input type='text' class='search' placeholder='Search "+modType+"...'></th><th>Version</th><th class='last'>Actions</th></tr>");
         for(String path : instance.getContentsByPathMap().keySet()) {
             if(path.startsWith(modType+"/")) {
                 LocalInstanceContent content = instance.getContentsByPathMap().get(path);
                 com.append("<tr><td class='first'><label><input disabled type='checkbox'></label></td><td><strong>").append(content.name()).append("</strong><br>by ").append(content.author()).append("</td><td>").append(content.version()).append("<br>").append(content.path()).append("</td><td class='last'>-</td></tr>");
             }
         }
-        frame.executeJavaScript("document.getElementById(\"instance-"+modType.replace("shaderpacks","shaders")+"\").innerHTML = \"<tbody>" + com + "</tbody>\"");
-    }
-
-    private void resolvePackMods(String contentPath, String modType) {
-        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Project</th><th>Version</th><th class='last'>Actions</th></tr>");
-        File contents = new File(contentPath);
-        if (contents.exists() && contents.isDirectory()) {
-            for (File file : Objects.requireNonNull(contents.listFiles())) {
-                if(!file.getName().toLowerCase().endsWith(".txt")&&!file.isDirectory()) {
-                    String contentName = file.getName().replace(".zip", "").replace(".jar", "");
-                    String version = "Unknown";
-                    String path = modType.replace("shaders","shaderpacks")+"/"+file.getName();
-
-                    String two = version + "<br>" + path;
-
-                    String code = "<tr><td class='first'><label><input disabled type='checkbox'></label></td><td>" + contentName + "</td><td>" + two + "</td><td class='last'>-</td></tr>";
-                    com.append(code);
-                }
-            }
-        }
-        frame.executeJavaScript("document.getElementById(\"instance-"+modType+"\").innerHTML = \"<tbody>" + com + "</tbody>\"");
+        frame.executeJavaScript("document.getElementById(\"instance-"+modType.replace("shaderpacks","shaders")+"\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-"+modType.replace("shaderpacks","shaders")+"').querySelector('input.search').oninput = function() { filterTable('instance-"+modType.replace("shaderpacks","shaders")+"'); };");
     }
 
     private void resolvePackServers(String contentPath) {
-        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Servername</th><th>IP/Hostname</th><th class='last'>Actions</th></tr>");
+        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th><input type='text' class='search' placeholder='Search servers...'></th><th>IP/Hostname</th><th class='last'>Actions</th></tr>");
         try {
             File file = new File(contentPath);
             if (file.exists()) {
@@ -940,11 +920,11 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
             }
         } catch (Exception ignore) {}
-        frame.executeJavaScript("document.getElementById(\"instance-servers\").innerHTML = \"<tbody>" + com + "</tbody>\"");
+        frame.executeJavaScript("document.getElementById(\"instance-servers\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-servers').querySelector('input.search').oninput = function() { filterTable('instance-servers'); };");
     }
 
     private void resolvePackMaps(String contentPath) {
-        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th>Worldname</th><th>File</th><th class='last'>Actions</th></tr>");
+        StringBuilder com = new StringBuilder("<tr class='nohover'><th class='first'><label><input disabled type='checkbox'></label></th><th><input type='text' class='search' placeholder='Search maps...'></th><th>File</th><th class='last'>Actions</th></tr>");
         File contents = new File(contentPath);
         if (contents.exists() && contents.isDirectory()) {
             for (File file : Objects.requireNonNull(contents.listFiles())) {
@@ -967,7 +947,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 com.append(code);
             }
         }
-        frame.executeJavaScript("document.getElementById(\"instance-maps\").innerHTML = \"<tbody>" + com + "</tbody>\"");
+        frame.executeJavaScript("document.getElementById(\"instance-maps\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-servers').querySelector('input.search').oninput = function() { filterTable('instance-servers'); };");
     }
 }
 

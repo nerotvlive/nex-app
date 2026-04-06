@@ -240,9 +240,26 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
         frameMenu.getPopupMenu().setBackground(Color.black);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        JMenuItem resetWindowSize = new JMenuItem("Reset window size");
-        resetWindowSize.addActionListener(e -> setSize((int)(screenSize.getWidth()/1.5), (int)(screenSize.getHeight()/1.5)));
+        JMenu resetWindowSize = new JMenu("(Re)set window size");
+        resetWindowSize.getPopupMenu().setBackground(Color.black);
         frameMenu.add(resetWindowSize);
+
+        JMenuItem resetAutomatic = new JMenuItem("Automatically");
+        JMenuItem reset1k = new JMenuItem("1920x1080 Screen (1K)");
+        JMenuItem reset2k = new JMenuItem("2560x1440 Sceeen (2K)");
+        JMenuItem reset4k = new JMenuItem("3840x2160 Screen (4K)");
+        JMenuItem resetSmall = new JMenuItem("Smallest");
+        resetAutomatic.addActionListener(e -> setSize((int)(screenSize.getWidth()/1.4), (int)(screenSize.getHeight()/1.4)));
+        reset1k.addActionListener(e -> setSize((int)(1920/1.4), (int)(1080/1.4)));
+        reset2k.addActionListener(e -> setSize((int)(2560/1.4), (int)(1440/1.4)));
+        reset4k.addActionListener(e -> setSize((int)(3840/1.4), (int)(2160/1.4)));
+        resetSmall.addActionListener(e -> setSize(getMinSize()));
+        resetWindowSize.add(resetAutomatic);
+        resetWindowSize.add(reset1k);
+        resetWindowSize.add(reset2k);
+        resetWindowSize.add(reset4k);
+        resetWindowSize.add(resetSmall);
+
 
         JMenuItem resetWindowLocation = new JMenuItem("Reset window location");
         resetWindowLocation.addActionListener(e -> setLocationRelativeTo(null));

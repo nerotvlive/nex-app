@@ -291,3 +291,24 @@ function enableInstanceGrouping(bool) {
         }
     }
 }
+
+function filterTable(tableId) {
+    const table = document.getElementById(tableId);
+    const input = table.querySelector("input.search");
+    const filter = input.value.toUpperCase();
+    const tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        let visible = false;
+        const td = tr[i].getElementsByTagName("td");
+
+        for (let j = 1; j < td.length; j++) {
+            if (td[j] && td[j].innerText.toUpperCase().indexOf(filter) > -1) {
+                visible = true;
+                break;
+            }
+        }
+
+        tr[i].style.display = visible ? "" : "none";
+    }
+}

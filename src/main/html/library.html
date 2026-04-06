@@ -83,36 +83,40 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane m-0 p-0 fade show active" id="tab-about-content" aria-labelledby="tab-about">${instance.description}</div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-mods-content" aria-labelledby="tab-mods">
+                    <h5 id="library-tags">
+
+                    </h5>
+                    <div class="tab-pane m-0 p-0 fade show active" id="tab-about-content" aria-labelledby="tab-about">
+                        ${instance.description}</div>
+                    <div class="tab-pane m-0 p-0" id="tab-mods-content" aria-labelledby="tab-mods">
                         <div class="content-table shadow">
                             <table class="w-100" id="instance-mods">
 
                             </table>
                         </div>
                     </div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-maps-content" aria-labelledby="tab-maps">
+                    <div class="tab-pane m-0 p-0" id="tab-maps-content" aria-labelledby="tab-maps">
                         <div class="content-table shadow">
                             <table class="w-100" id="instance-maps">
 
                             </table>
                         </div>
                     </div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-servers-content" aria-labelledby="tab-maps">
+                    <div class="tab-pane m-0 p-0" id="tab-servers-content" aria-labelledby="tab-maps">
                         <div class="content-table shadow">
                             <table class="w-100" id="instance-servers">
 
                             </table>
                         </div>
                     </div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-resourcePacks-content" aria-labelledby="tab-resourcePacks">
+                    <div class="tab-pane m-0 p-0" id="tab-resourcePacks-content" aria-labelledby="tab-resourcePacks">
                         <div class="content-table shadow">
                             <table class="w-100" id="instance-resourcepacks">
 
                             </table>
                         </div>
                     </div>
-                    <div class="tab-pane m-0 p-0 fade" id="tab-shaders-content" aria-labelledby="tab-shaders">
+                    <div class="tab-pane m-0 p-0" id="tab-shaders-content" aria-labelledby="tab-shaders">
                         <div class="content-table shadow">
                             <table class="w-100" id="instance-shaders">
 
@@ -121,7 +125,7 @@
                     </div>
                 </div>
             </div>
-            <div class="side">
+            <div class="side d-none">
                 <div class="card w-100 shadow">
                     <div class="card-header">
                         <strong>Overview</strong>
@@ -138,9 +142,7 @@
                         <strong>Tags</strong>
                     </div>
                     <div class="card-body">
-                        <h5 id="library-tags">
 
-                        </h5>
                     </div>
                 </div>
             </div>
