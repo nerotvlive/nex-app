@@ -947,7 +947,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 com.append(code);
             }
         }
-        frame.executeJavaScript("document.getElementById(\"instance-maps\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-servers').querySelector('input.search').oninput = function() { filterTable('instance-servers'); };");
+        frame.executeJavaScript("document.getElementById(\"instance-maps\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-maps').querySelector('input.search').oninput = function() { filterTable('instance-maps'); };");
     }
 }
 

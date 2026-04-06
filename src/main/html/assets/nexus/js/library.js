@@ -168,8 +168,8 @@ function showInstance(id,name,version,summary,description,tagsString) {
     document.getElementById("instance-name").innerText = name;
     document.getElementById("instance-version").innerText = version;
     document.getElementById("instance-summary").innerText = summary;
-    document.getElementById("tab-about-content").innerHTML = marked.parse(description);
-    openLinksInNewTab(document.getElementById("tab-about-content"));
+    document.getElementById("instance-about").innerHTML = marked.parse(description);
+    openLinksInNewTab(document.getElementById("instance-about"));
 
     document.getElementById("launch-button").innerHTML = "<i class=\"bi bi-rocket-takeoff\"></i> LAUNCH";
     document.getElementById("launch-button").onclick = function () {

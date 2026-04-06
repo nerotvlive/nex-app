@@ -9,6 +9,10 @@
     width: 100%;
     height: 100%;
 
+    #update-button, #folder-button, #library-settings-button {
+        z-index: 1000;
+    }
+
     #instance-view {
         position: relative;
         z-index: 1;
@@ -110,7 +114,7 @@
             bottom: 0.5rem;
             right: 0.5rem;
             max-width: fit-content;
-            padding: 0.75rem 4rem 0.75rem 3rem;
+            padding: 0.75rem 3rem;
             box-shadow: 0 0 0.4rem #00000050;
             z-index: 1000;
         }
