@@ -735,10 +735,14 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 } else if(show.getQuiltVersion()!=null&&!tags.contains("quilt-"+show.getQuiltVersion())) {
                     tags = "quilt-"+show.getQuiltVersion() + ", " + tags;
                 }
+                String bg = null;
+                if(lI.getInstance().getBackgroundUrl()!=null&&!lI.getInstance().getBackgroundUrl().isEmpty()&&!lI.getInstance().getBackgroundUrl().isBlank()) {
+                    bg = lI.getInstance().getBackgroundUrl();
+                }
                 if(!tags.contains("minecraft-"+show.getMinecraftVersion())) {
                     tags = "minecraft-"+show.getMinecraftVersion() + ", " + tags;
                 }
-                String cmd = "showInstance(\""+ StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(show.getName())+"\",\""+StringUtility.encodeData(show.getVersion())+"\",\""+StringUtility.encodeData(show.getSummary())+"\",\""+ StringUtility.encodeData(lI.getAbout()) +"\",\""+tags+"\");";
+                String cmd = "showInstance(\""+ StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(show.getName())+"\",\""+StringUtility.encodeData(show.getVersion())+"\",\""+StringUtility.encodeData(show.getSummary())+"\",\""+ StringUtility.encodeData(lI.getAbout()) +"\",\""+tags+"\",\""+bg+"\");";
                 String button = "";
                 if(NexusApplication.getInstance().getInstanceManager().hasRunningInstance(showId)) {
                     button = "document.getElementById(\"launch-button\").innerHTML = \"<i class='bi bi-check-lg'></i> RUNNING\";";

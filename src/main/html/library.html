@@ -46,42 +46,89 @@
         </div>
     </div>
     <div class="position-relative big-card w-100 m-2 card shadow overflow-hidden p-0 m-3">
-        <div class="title-menu card-header shadow p-1 w-100 d-flex flex-row border-bottom-0">
-            <h4 class="m-0 w-100" style="padding: 0.5rem 0.5rem 0.75rem 0.75rem;" id="library-title"><img alt="" src=""><span>Library</span></h4>
-            <div class="buttons w-100 d-flex flex-row align-self-center justify-content-end">
-                <a id="update-button" class="update shadow d-none"><i class="bi bi-download"></i></a>
-                <a id="folder-button" class="folder shadow d-none"><i class="bi bi-folder2"></i></a>
-                <a id="library-settings-button" class="settings shadow d-none" onclick="console.log('[CONNECTOR] library.settings.'+activeInstance)"><i class="bi bi-gear"></i></a>
+        <div class="nex-side-view p-3" id="overview">
+            <div class="p-3">
+                <div class="content-table shadow">
+                    <table class="w-100">
+                        <tr>
+                            <th>
+                                <label><input class="opacity-0 z-n1" type="checkbox" disabled></label>
+                            </th>
+                            <th>
+                                hi
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="first"></td>
+                            <td class="nohover">
+                                ye
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="nex-side-view p-3" id="overview">
-            Overview
-        </div>
-
         <div class="nex-side-view p-3" style="display: none" id="instance-view">
-            <button id="launch-button" type="button" class="btn btn-nex-primary w-100 text-nowrap overflow-hidden" style="width: 19rem !important;"></button>
             <div id="instance-description">
-                <ul class="nav">
-                    <li class="nav-item">
-                        <button class="nav-link left active" id="tab-about" data-bs-toggle="tab" data-bs-target="#tab-about-content" type="button" aria-controls="tab-about-content" aria-selected="true"><i class="bi bi-card-text"></i>About</button>
-                    </li>
-                    <li class="nav-item active">
-                        <button class="nav-link" id="tab-mods" data-bs-toggle="tab" data-bs-target="#tab-mods-content" type="button" aria-controls="tab-mods-content" aria-selected="false"><i class="bi bi-code-slash"></i>Mods</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="tab-maps" data-bs-toggle="tab" data-bs-target="#tab-maps-content" type="button" aria-controls="tab-maps-content" aria-selected="false"><i class="bi bi-map"></i>Maps</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="tab-servers" data-bs-toggle="tab" data-bs-target="#tab-servers-content" type="button" aria-controls="tab-servers-content" aria-selected="false"><i class="bi bi-hdd-stack"></i>Servers</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="tab-resourcePacks" data-bs-toggle="tab" data-bs-target="#tab-resourcePacks-content" type="button" aria-controls="tab-resourcePacks-content" aria-selected="false"><i class="bi bi-brush"></i>Resource Packs</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link right" id="tab-shaders" data-bs-toggle="tab" data-bs-target="#tab-shaders-content" type="button" aria-controls="tab-shaders-content" aria-selected="false"><i class="bi bi-cloud-haze2"></i>Shaders</button>
-                    </li>
-                </ul>
+                <div class="content-table m-2 shadow">
+                    <table class="w-100">
+                        <tr>
+                            <th></th>
+                            <th class="position-relative p-3">
+                                <span class="d-none" id="library-title"><span>Library</span></span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="first">
+                                <label><input class="opacity-0 z-n1" type="checkbox" disabled></label>
+                            </td>
+                            <td class="nohover position-relative">
+                                <div class="p-0 m-0 d-flex position-relative">
+                                    <div class="d-flex gap-3">
+                                        <img height="128" width="128" alt="instance icon" id="instance-icon" src="">
+                                        <div class="p-0 m-0 position-relative d-flex flex-column" style="height: 128px; overflow: hidden; overflow-y: auto;">
+                                            <h3 class="p-0 m-0 mb-1"><span id="instance-name"></span> <span id="instance-version" style="background: var(--nex-brighter-100); font-size: 0.8rem; padding: 0.1rem 0.5rem; font-weight: 0 !important; position: absolute; margin: 0.5rem 0.5rem; border-radius: var(--bs-border-radius)"></span></h3>
+                                            <div class="m-0 p-0 h-100" id="library-tags"></div>
+                                            <span id="instance-summary" style="max-width: calc(100% - 15rem); min-height: 4rem; max-height: 4rem; font-size: 0.8rem;"></span>
+                                        </div>
+                                    </div>
+                                    <div class="position-absolute buttons w-100 d-flex gap-2 flex-row align-self-start justify-content-end">
+                                        <a id="update-button" type="button" class="btn btn-nex-primary btn-nex-glass"><i class="bi bi-download"></i></a>
+                                        <a id="folder-button" type="button" class="btn btn-nex-primary btn-nex-glass"><i class="bi bi-folder2"></i></a>
+                                        <a id="library-settings-button" type="button" class="btn btn-nex-primary btn-nex-glass" onclick="console.log('[CONNECTOR] library.settings.'+activeInstance)"><i class="bi bi-gear"></i></a>
+                                    </div>
+                                </div>
+                                <button id="launch-button" type="button" class="btn btn-nex-primary text-nowrap overflow-hidden"></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first"></td>
+                            <td class="nohover p-0 position-relative d-flex w-100">
+                                <ul class="nav w-100">
+                                    <li class="nav-item">
+                                        <button class="nav-link left active" id="tab-about" data-bs-toggle="tab" data-bs-target="#tab-about-content" type="button" aria-controls="tab-about-content" aria-selected="true"><i class="bi bi-card-text"></i>About</button>
+                                    </li>
+                                    <li class="nav-item active">
+                                        <button class="nav-link" id="tab-mods" data-bs-toggle="tab" data-bs-target="#tab-mods-content" type="button" aria-controls="tab-mods-content" aria-selected="false"><i class="bi bi-code-slash"></i>Mods</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" id="tab-maps" data-bs-toggle="tab" data-bs-target="#tab-maps-content" type="button" aria-controls="tab-maps-content" aria-selected="false"><i class="bi bi-map"></i>Maps</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" id="tab-servers" data-bs-toggle="tab" data-bs-target="#tab-servers-content" type="button" aria-controls="tab-servers-content" aria-selected="false"><i class="bi bi-hdd-stack"></i>Servers</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" id="tab-resourcePacks" data-bs-toggle="tab" data-bs-target="#tab-resourcePacks-content" type="button" aria-controls="tab-resourcePacks-content" aria-selected="false"><i class="bi bi-brush"></i>Resource Packs</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link right" id="tab-shaders" data-bs-toggle="tab" data-bs-target="#tab-shaders-content" type="button" aria-controls="tab-shaders-content" aria-selected="false"><i class="bi bi-cloud-haze2"></i>Shaders</button>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <div class="tab-content">
                     <div class="tab-pane m-0 p-0 show active" id="tab-about-content" aria-labelledby="tab-about">
                         <div class="content-table shadow">
@@ -91,7 +138,7 @@
 
                                 </th>
                                 <th>
-                                    <span id="instance-name" style="text-shadow: none;">${instance.name}</span><span id="instance-version" style="text-shadow: none; margin-left: 0.3rem">${instance.version}</span> <label><input class="opacity-0 search" type="text" disabled></label>
+                                    <span>About</span> <label><input class="opacity-0 search" type="text" disabled></label>
                                 </th>
                             </tr>
                             <tr>
@@ -102,15 +149,13 @@
                                     <div class="d-flex w-100 p-2 m-0">
                                         <div class="m-0 p-0 w-100">
                                             <span>
-                                                <strong>Summary</strong><br>
-                                                <span id="instance-summary" style="text-shadow: none;"></span>
+                                                <strong style="text-shadow: none">Summary</strong><br>
+                                                <span style="text-shadow: none;"></span>
                                             </span>
                                         </div>
                                         <div class="m-0 p-0 w-100">
                                             <div class="m-0 p-0">
-                                                <strong>Tags</strong><br>
-                                                <div class="m-0 p-0" id="library-tags">
-                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -160,27 +205,6 @@
 
                             </table>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="side d-none">
-                <div class="card w-100 shadow">
-                    <div class="card-header">
-                        <strong>Overview</strong>
-                    </div>
-                    <div class="card-body">
-                        <p>
-
-                            <span>${}</span>
-                        </p>
-                    </div>
-                </div>
-                <div class="card w-100 shadow">
-                    <div class="card-header">
-                        <strong>Tags</strong>
-                    </div>
-                    <div class="card-body">
-
                     </div>
                 </div>
             </div>
@@ -455,4 +479,4 @@
         </div>
     </div>
 </div>
-<button onclick="loadScript('assets/nexus/js/library.js', onload);  setTimeout(()=>{ loadFolderButtonHoverEvent(); addInstanceGroup('uncategorized','Uncategorized','nex-secondary'); addInstanceGroup('essentialplus','Essential+','nex-primary'); document.getElementById('essentialplus').classList.add('d-none'); document.getElementById('uncategorized').classList.add('d-none'); if(localStorage.getItem('submenu-group_uncategorized-collapse') === null) { enableSubMenuGroup('uncategorized-collapse') } initLibrary(); }, 100);" class="onload d-none">On page load</button>
+<button onclick="loadScript('assets/nexus/js/library.js', onload);  setTimeout(()=>{ addInstanceGroup('uncategorized','Uncategorized','nex-secondary'); addInstanceGroup('essentialplus','Essential+','nex-primary'); document.getElementById('essentialplus').classList.add('d-none'); document.getElementById('uncategorized').classList.add('d-none'); if(localStorage.getItem('submenu-group_uncategorized-collapse') === null) { enableSubMenuGroup('uncategorized-collapse') } initLibrary(); }, 100);" class="onload d-none">On page load</button>

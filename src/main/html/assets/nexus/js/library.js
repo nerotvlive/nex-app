@@ -84,17 +84,6 @@ function addInstanceGroup(id,name,colorName) {
     }
 }
 
-function loadFolderButtonHoverEvent() {
-    const button = document.querySelector(".title-menu").querySelector(".buttons").querySelector(".folder");
-    const icon = button.querySelector("i");
-    button.addEventListener("mouseover", () => {
-        icon.className = "bi bi-folder2-open";
-    });
-    button.addEventListener("mouseout", () => {
-        icon.className = "bi bi-folder2";
-    });
-}
-
 function initLibrary() {
     console.log("[CONNECTOR] library.init");
     initArrayBoxes();
@@ -125,18 +114,22 @@ function showOverview() {
     activeInstance = null;
     document.getElementById("overview-button").classList.add("active");
     document.getElementById("library-title").querySelector("span").innerText = "Library Overview";
-    document.getElementById("library-title").querySelector("img").src = "";
+    document.getElementById("instance-icon").src = "";
     document.getElementById("folder-button").classList.add("d-none");
     document.getElementById("library-settings-button").classList.add("d-none");
 }
 
-function showInstance(id,name,version,summary,description,tagsString) {
+function showInstance(id,name,version,summary,description,tagsString,bg) {
+    if(bg) {
+        document.documentElement.style.setProperty('--instance-background', "url('"+bg+"');");
+    }
+    document.getElementById("instance-icon").classList.add("d-none");
     document.getElementById("folder-button").classList.add("d-none");
     document.getElementById("library-settings-button").classList.add("d-none");
     document.getElementById("update-button").classList.add("d-none");
 
     document.getElementById("library-title").querySelector("span").classList.remove("icon");
-    document.getElementById("library-title").querySelector("img").src = "";
+    document.getElementById("instance-icon").src = "";
     id = decodeURIComponent(id);
     name = decodeURIComponent(name);
     activeInstanceName = name;
@@ -158,7 +151,8 @@ function showInstance(id,name,version,summary,description,tagsString) {
     document.getElementById("library-title").querySelector("span").innerText = name;
 
         if(document.getElementById(id)&&document.getElementById(id).querySelector("img")&&document.getElementById(id).querySelector("img").src) {
-            document.getElementById("library-title").querySelector("img").src = document.getElementById(id).querySelector("img").src;
+            document.getElementById("instance-icon").src = document.getElementById(id).querySelector("img").src;
+            document.getElementById("instance-icon").classList.remove("d-none");
             document.getElementById("library-title").querySelector("span").classList.add("icon");
         }
 
@@ -171,7 +165,7 @@ function showInstance(id,name,version,summary,description,tagsString) {
     document.getElementById("instance-about").innerHTML = marked.parse(description);
     openLinksInNewTab(document.getElementById("instance-about"));
 
-    document.getElementById("launch-button").innerHTML = "<i class=\"bi bi-rocket-takeoff\"></i> LAUNCH";
+    document.getElementById("launch-button").innerHTML = "<i class=\"bi bi-play-fill\"></i> RUN";
     document.getElementById("launch-button").onclick = function () {
         console.log('[CONNECTOR] library.start.'+activeInstance);
         document.getElementById("launch-button").innerText = "UPDATING..."
