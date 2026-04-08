@@ -41,7 +41,39 @@ function addInstance(id,name,icon,group) {
                 }
 
                 template.parentElement.insertBefore(button, template);
+                addInstanceToOverview(id,name,icon,group)
             }
+        }
+    }
+}
+
+function addInstanceToOverview(id,name,icon,group) {
+    if(instanceGrouping === false) {
+        group = null;
+    }
+
+    const elementId = id+"-ov"
+    if(!document.getElementById(elementId)) {
+        const template = document.getElementById("overview-template-row");
+        if(template&&template.parentElement) {
+            let list = template.parentElement;
+            const row = template.cloneNode(true);
+            const button = row.querySelector('.instance-show');
+            button.onclick = function () {
+                console.log("[CONNECTOR] library.showInstance."+id);
+            }
+            const button2 = row.querySelector('.instance-launch');
+            button2.onclick = function () {
+                console.log("[CONNECTOR] library.start."+id);
+            }
+            row.id = elementId;
+            row.classList.remove("d-none");
+            if(icon) {
+                row.querySelector(".instance-icon").src = icon;
+                row.querySelector(".instance-icon").classList.remove("d-none");
+            }
+            row.querySelector(".instance-name").innerText = name;
+            list.insertBefore(row, template);
         }
     }
 }

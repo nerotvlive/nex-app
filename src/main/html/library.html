@@ -75,21 +75,29 @@
         </div>
         <div class="p-0 m-0 w-100 h-100">
             <div class="nex-side-view p-3" id="overview">
-                <div class="p-3">
+                <div class="p-2">
                     <div class="content-table shadow">
-                        <table class="w-100">
+                        <table class="w-100" id="instance-overview">
                             <tr>
+                                <th></th>
                                 <th>
-                                    <label><input class="opacity-0 z-n1" type="checkbox" disabled></label>
+                                    <label><input class="search" type="text" placeholder="Search instances..." oninput="filterTable('instance-overview')"></label>
                                 </th>
-                                <th>
-                                    hi
-                                </th>
+                                <th></th>
                             </tr>
-                            <tr>
-                                <td class="first"></td>
-                                <td class="nohover">
-                                    ye
+                            <tr id="overview-template-row" class="d-none">
+                                <td class="first"><label><input class="opacity-0 z-n1" type="checkbox" disabled></label></td>
+                                <td class="nohover d-flex">
+                                    <div style="position: relative; min-width: 48px; max-width: 48px; width: 48px; height: 48px; background: var(--nex-darker-200); padding: 0.5rem; margin: 0; border-radius: var(--bs-border-radius);">
+                                        <img class="instance-icon d-none" height="48" width="48" alt="instance icon" style="position: absolute; left: 0; top: 0;">
+                                    </div>
+                                    <span class="instance-name w-100 p-2">Name</span>
+                                </td>
+                                <td class="nohover position-relative">
+                                    <div class="position-absolute d-flex gap-2 p-3" style="bottom: 0; right: 0;">
+                                        <button type="button" class="btn btn-nex-primary btn-nex-glass instance-show">Show</button>
+                                        <button type="button" class="btn btn-nex-glass btn-nex-primary instance-launch">Launch</button>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -111,7 +119,7 @@
                                 <td class="first">
                                     <label><input class="opacity-0 z-n1" type="checkbox" disabled></label>
                                 </td>
-                                <td class="nohover position-relative">
+                                <td class="nohover position-relative menu">
                                     <div class="p-0 m-0 d-flex position-relative">
                                         <div class="d-flex gap-3">
                                             <img height="128" width="128" alt="instance icon" id="instance-icon" src="">
@@ -168,26 +176,6 @@
                                     <th>
                                         <span>About</span> <label><input class="opacity-0 search" type="text" disabled></label>
                                     </th>
-                                </tr>
-                                <tr>
-                                    <td class="first opacity-0">
-                                        <label><input class="opacity-0" type="checkbox" disabled></label>
-                                    </td>
-                                    <td class="nohover">
-                                        <div class="d-flex w-100 p-2 m-0">
-                                            <div class="m-0 p-0 w-100">
-                                                <span>
-                                                    <strong style="text-shadow: none">Summary</strong><br>
-                                                    <span style="text-shadow: none;"></span>
-                                                </span>
-                                            </div>
-                                            <div class="m-0 p-0 w-100">
-                                                <div class="m-0 p-0">
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="first opacity-0">

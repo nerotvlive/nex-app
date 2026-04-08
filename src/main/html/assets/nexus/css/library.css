@@ -16,7 +16,12 @@
         border: 1px solid var(--bs-border-color-translucent);
         gap: 0;
         border-radius: var(--bs-border-radius);
+        overflow: hidden;
         width: 100%;
+    }
+
+    .btn {
+        border: none !important;
     }
 ;
 
@@ -498,9 +503,21 @@
         border-bottom: 0;
         border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
         z-index: 10;
+        overflow: hidden;
 
         th, td {
             max-height: fit-content !important;
+
+            .btn {
+                max-width: 14rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        td.menu {
+            min-width: 16rem;
+            max-width: 16rem;
         }
     }
 
