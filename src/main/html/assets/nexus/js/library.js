@@ -64,8 +64,8 @@ function addInstanceGroup(id,name,colorName) {
             group.querySelector("a").onclick = function () {
                 toggleSubMenuGroup(id + "-collapse")
             };
-            group.querySelector("h6").innerText = name;
-            group.querySelector("h6").onclick = function () {
+            group.querySelector("span.group-title").innerText = name;
+            group.querySelector("span.group-title").onclick = function () {
                 toggleSubMenuGroup(id + "-collapse")
             };
             if (colorName) {
