@@ -504,12 +504,18 @@
         border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
         z-index: 10;
         overflow: hidden;
+        padding: 0.5rem !important;
+        background: var(--nex-brighter);
 
+        tr {
+            background: transparent !important;
+        }
         th, td {
+            background: transparent !important;
             max-height: fit-content !important;
 
             .btn {
-                max-width: 14rem;
+                max-width: 14.25rem;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
