@@ -34,6 +34,7 @@ import org.cef.handler.CefDownloadHandlerAdapter;
 import org.cef.handler.CefLoadHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zyneonstudios.apex.nexusapp.utilities.NativeUtility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -204,6 +205,8 @@ public class NexusApplication {
         localSettings.setDefaultMinecraftOnExitCommands((ArrayList<String>)settings.get("settings.minecraft.onExitCommands"));
 
         instanceManager = new LocalInstanceManager(new JsonStorage(workingDirFile.getAbsolutePath() + "/data/instances.json"));
+
+        NativeUtility.readColors();
 
         CurseForgeCategories.init();
 

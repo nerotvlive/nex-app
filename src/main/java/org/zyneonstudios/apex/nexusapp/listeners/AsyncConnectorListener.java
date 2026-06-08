@@ -65,8 +65,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             NexusApplication.getInstance().getDownloadManager().getDownloads().get(NexusApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.theme.changed.")) {
             if (s.endsWith("dark")) {
-                frame.setTitleBackground(Color.black);
-                frame.setTitleForeground(Color.white);
+                frame.setTitleForeground(NativeUtility.getForegroundColor());
                 frame.getSmartBar().getBar().setBackground(Color.decode("#1f1f1f"));
                 frame.getSmartBar().setBorderColor(Color.decode("#292929"));
                 frame.getSmartBar().setColor(Color.lightGray);
@@ -80,8 +79,6 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     throw new RuntimeException(ignore);
                 }
             } else {
-                frame.setTitleBackground(Color.white);
-                frame.setTitleForeground(Color.black);
                 frame.getSmartBar().setBackgroundColor(Color.decode("#f0f0f0"));
                 frame.getSmartBar().setBorderColor(Color.lightGray);
                 frame.getSmartBar().setColor(Color.decode("#292929"));
@@ -99,6 +96,15 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             // Handle page loaded events.
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
+
+            NativeUtility.readColors();
+            frame.executeJavaScript("setSystemForeground('"+NativeUtility.getForegroundColorCode()+"');");
+            if(frame.isBrowserFocussed()) {
+                frame.executeJavaScript("setSystemBackground('"+NativeUtility.getActiveBGColorCode()+"');");
+            } else {
+                frame.executeJavaScript("setSystemBackground('" + NativeUtility.getBackgroundColorCode() + "');");
+            }
+
             for (PageLoadedEvent event : NexusApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
                 event.setUrl(frame.getBrowser().getURL());
                 event.execute();

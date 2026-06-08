@@ -1,6 +1,6 @@
 :root,[data-bs-theme="light"],[data-bs-theme="dark"] {
-    --nex-bg: black;
-    --nex-fg: #d7d7d7;
+    --nex-bg: var(--nex-sys-bg);
+    --nex-fg: "#f7f7f7";
     --nex-iv: white;
 
     --nex-darker: #00000010;
@@ -83,6 +83,11 @@
     --bs-border-radius: var(--nex-border-radius);
 
     --instance-background: url("http://www");
+}
+
+:root {
+    --nex-sys-bg: var(--nex-bg);
+    --nex-sys-fg: var(--nex-fg);
 }
 
 * {
@@ -411,6 +416,7 @@ body {
 
                     i {
                         margin-left: 0.45rem;
+                        color: var(--nex-sys-fg);
                     }
 
                     span {
@@ -419,6 +425,7 @@ body {
                         text-overflow: ellipsis;
                         max-width: 12rem;
                         overflow: hidden;
+                        color: var(--nex-sys-fg);
                     }
                 }
 
@@ -488,6 +495,7 @@ body {
             overflow: hidden;
             border-radius: var(--nex-border-radius) var(--nex-border-radius) 0 0;
             height: 6.5rem;
+            color: var(--nex-sys-fg);
 
             * {
                 transition: background-color var(--nex-animation-speed) ease;

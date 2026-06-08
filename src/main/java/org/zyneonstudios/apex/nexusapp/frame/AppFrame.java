@@ -1,12 +1,13 @@
 package org.zyneonstudios.apex.nexusapp.frame;
 
-import org.zyneonstudios.apex.nexusapp.Main;
-import org.zyneonstudios.apex.nexusapp.listeners.AsyncConnectorListener;
-import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import com.zyneonstudios.nexus.desktop.frame.nexus.NexusWebFrame;
 import com.zyneonstudios.nexus.desktop.frame.web.NexusWebSetup;
 import com.zyneonstudios.nexus.desktop.frame.web.WebFrame;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
+import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
+import org.zyneonstudios.apex.nexusapp.Main;
+import org.zyneonstudios.apex.nexusapp.listeners.AsyncConnectorListener;
+import org.zyneonstudios.apex.nexusapp.main.NexusApplication;
 import org.zyneonstudios.apex.nexusapp.utilities.DiscordRichPresence;
 
 import javax.imageio.ImageIO;
@@ -116,6 +117,9 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
      * @param decorated Whether the frame is decorated.
      */
     private void setupMenus(String url, NexusWebSetup setup, boolean decorated) {
+        if(OperatingSystem.getType().equals(OperatingSystem.Type.Linux)&&decorated) {
+            return;
+        }
         JPanel spacer = new JPanel();
         spacer.setBackground(null);
         menuBar.setBackground(Color.black);
@@ -214,6 +218,22 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
             getTitlebar().add(menuBar, BorderLayout.WEST);
             getTitlebar().add(title, BorderLayout.CENTER);
             getTitlebar().add(right, BorderLayout.EAST);
+
+            /*Automatically scale the title bar height based on screen resolution*/
+            int mainScreenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+            int h;
+            if(mainScreenHeight > 1440) {
+                h = 40;
+            } else if(mainScreenHeight > 1080) {
+                h = 36;
+            } else if(mainScreenHeight > 720) {
+                h = 32;
+            } else {
+                h = 28;
+            }
+            getTitlebar().setMinimumSize(new Dimension(getWidth(), h));
+            getTitlebar().setPreferredSize(new Dimension(getWidth(), h));
+            getTitlebar().setSize(new Dimension(getWidth(), h));
         }
     }
 
@@ -224,6 +244,9 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
      * @param decorated Whether the frame is decorated.
      */
     private void setupDebugMenuItems(NexusWebSetup setup, boolean decorated) {
+        if(OperatingSystem.getType().equals(OperatingSystem.Type.Linux)&&decorated) {
+            return;
+        }
         JMenuItem inputUrl = new JMenuItem("Input URL");
         inputUrl.addActionListener(e -> showUrlInputDialog());
         browser.add(inputUrl);
@@ -425,7 +448,9 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
         menuBar.setBackground(color);
         actions.getPopupMenu().setBackground(color);
         browser.getPopupMenu().setBackground(color);
-        smartBar.setSpaceColor(color);
+        try {
+            smartBar.setSpaceColor(color);
+        } catch (Exception ignore) {}
     }
 
     /**

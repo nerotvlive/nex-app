@@ -161,7 +161,7 @@ public class CombinedSearch {
             }
 
             int i = 0;
-            while (i < curseForgeResults.size() || i < modrinthJsonResults.size() || i < nexJsonResults.size()) {
+            while (i < curseForgeJsonResults.size() || i < modrinthJsonResults.size() || i < nexJsonResults.size()) {
                 if (i < curseForgeJsonResults.size()) {
                     results.add(curseForgeJsonResults.get(i));
                 }

@@ -951,3 +951,15 @@ function stopScrolling() {
 function capitalizeFirstLetter(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
+
+function setSystemBackground(colorHexCode) {
+    if(colorHexCode) {
+        document.documentElement.style.setProperty('--nex-sys-bg', colorHexCode);
+    }
+}
+
+function setSystemForeground(colorHexCode) {
+    if(colorHexCode) {
+        document.documentElement.style.setProperty('--nex-sys-fg', colorHexCode);
+    }
+}
