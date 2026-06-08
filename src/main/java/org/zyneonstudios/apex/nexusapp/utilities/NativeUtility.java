@@ -281,8 +281,12 @@ public class NativeUtility {
                 throw new UnsupportedOperationException("[NativeUtility] This method is only supported on Windows 10+, Linux (GTK/QT) and macOS. Reading native theme mode is not supported on: " + OperatingSystem.getType() + ". Falling back to light mode!");
             }
         } catch (Exception e) {
-            NexusApplication.getLogger().err("[NativeUtility] Failed to read native theme mode. Falling back to light mode!");
-            return false;
+            String theme = "light";
+            if(NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("dark")) {
+                theme = "dark";
+            }
+            NexusApplication.getLogger().err("[NativeUtility] Failed to read native theme mode. Falling back to "+theme+" mode!");
+            return theme.equalsIgnoreCase("dark");
         }
     }
 
@@ -437,5 +441,23 @@ public class NativeUtility {
             }
         }
         return "";
+    }
+
+    public static boolean useDarkMode() {
+        if(NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("dark")) {
+            try {
+                return isDarkMode();
+            } catch (Exception e) {
+                return true;
+            }
+        } else if(NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("light")) {
+            return false;
+        } else {
+            try {
+                return isDarkMode();
+            } catch (Exception e) {
+                return false;
+            }
+        }
     }
 }

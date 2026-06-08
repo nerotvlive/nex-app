@@ -117,9 +117,6 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
      * @param decorated Whether the frame is decorated.
      */
     private void setupMenus(String url, NexusWebSetup setup, boolean decorated) {
-        if(OperatingSystem.getType().equals(OperatingSystem.Type.Linux)&&decorated) {
-            return;
-        }
         JPanel spacer = new JPanel();
         spacer.setBackground(null);
         menuBar.setBackground(Color.black);
@@ -197,7 +194,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
         menuBar.setOpaque(true);
 
         // Attach the menu bar to the native frame or custom title bar.
-        if (NexusApplication.getInstance().getLocalSettings().useNativeWindow()) {
+        if (NexusApplication.getInstance().getLocalSettings().useNativeWindow() && !OperatingSystem.getType().equals(OperatingSystem.Type.Linux)) {
             menuBar.setBorderPainted(false);
             setJMenuBar(menuBar);
         } else {

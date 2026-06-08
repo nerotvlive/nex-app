@@ -100,7 +100,7 @@ const root = document.querySelector(':root');
  * The current theme (dark, light, auto).
  * @type {string}
  */
-let theme = "dark";
+let theme = "auto";
 
 /**
  * Indicates if animations are enabled.
@@ -546,7 +546,7 @@ addEventListener("DOMContentLoaded", () => {
 
     window.matchMedia('(prefers-color-scheme: dark)')
         .addEventListener('change', () => {
-            updateTheme();
+            window.location.reload();
         });
 
     updateTheme();

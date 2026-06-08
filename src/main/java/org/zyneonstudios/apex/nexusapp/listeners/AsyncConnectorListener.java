@@ -56,6 +56,46 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
         this.frame = (AppFrame)frame;
     }
 
+    private void evaluateTheme() {
+        evaluateTheme(NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("dark"));
+    }
+
+    private void evaluateTheme(boolean requestDark) {
+        if(requestDark) {
+            if(NativeUtility.isDarkMode()) {
+                frame.executeJavaScript("setSystemForeground('"+NativeUtility.getForegroundColorCode()+"');");
+                if(frame.isBrowserFocussed()) {
+                    frame.executeJavaScript("setSystemBackground('"+NativeUtility.getActiveBGColorCode()+"');");
+                } else {
+                    frame.executeJavaScript("setSystemBackground('" + NativeUtility.getBackgroundColorCode() + "');");
+                }
+                frame.setTitleForeground(NativeUtility.getForegroundColor());
+                frame.setTitleBackground(NativeUtility.getBackgroundColor());
+            } else {
+                frame.executeJavaScript("setSystemForeground('#ffffff');");
+                frame.executeJavaScript("setSystemBackground('#000000');");
+                frame.setTitleForeground(Color.BLACK);
+                frame.setTitleBackground(Color.WHITE);
+            }
+        } else {
+            if(!NativeUtility.isDarkMode()) {
+                frame.executeJavaScript("setSystemForeground('"+NativeUtility.getForegroundColorCode()+"');");
+                if(frame.isBrowserFocussed()) {
+                    frame.executeJavaScript("setSystemBackground('"+NativeUtility.getActiveBGColorCode()+"');");
+                } else {
+                    frame.executeJavaScript("setSystemBackground('" + NativeUtility.getBackgroundColorCode() + "');");
+                }
+                frame.setTitleForeground(NativeUtility.getForegroundColor());
+                frame.setTitleBackground(NativeUtility.getBackgroundColor());
+            } else {
+                frame.executeJavaScript("setSystemForeground('#000000');");
+                frame.executeJavaScript("setSystemBackground('#ffffff');");
+                frame.setTitleForeground(Color.WHITE);
+                frame.setTitleBackground(Color.BLACK);
+            }
+        }
+    }
+
     @Override
     protected void resolveMessage(String s) {
         NexusApplication.getLogger().deb("[CONNECTOR] Resolving "+s);
@@ -64,8 +104,12 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
         } else if (s.equals("download.cancelRunning")) {
             NexusApplication.getInstance().getDownloadManager().getDownloads().get(NexusApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.theme.changed.")) {
+            NativeUtility.readColors();
             if (s.endsWith("dark")) {
-                frame.setTitleForeground(NativeUtility.getForegroundColor());
+                frame.executeJavaScript("setStorageItem('settings.appearance.theme', 'dark');");
+                NexusApplication.getInstance().getLocalSettings().setTheme("dark");
+                evaluateTheme(true);
+                frame.getSmartBar().setBackgroundColor(Color.decode("#1f1f1f"));
                 frame.getSmartBar().getBar().setBackground(Color.decode("#1f1f1f"));
                 frame.getSmartBar().setBorderColor(Color.decode("#292929"));
                 frame.getSmartBar().setColor(Color.lightGray);
@@ -75,11 +119,13 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 frame.getSmartBar().setPlaceholderColor(Color.darkGray);
                 try {
                     frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/icon.png"))).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-                } catch (Exception ignore) {
-                    throw new RuntimeException(ignore);
-                }
-            } else {
+                } catch (Exception ignore) {}
+            } else if (s.endsWith("light")) {
+                frame.executeJavaScript("setStorageItem('settings.appearance.theme', 'light');");
+                NexusApplication.getInstance().getLocalSettings().setTheme("light");
+                evaluateTheme(false);
                 frame.getSmartBar().setBackgroundColor(Color.decode("#f0f0f0"));
+                frame.getSmartBar().getBar().setBackground(Color.decode("#f0f0f0"));
                 frame.getSmartBar().setBorderColor(Color.lightGray);
                 frame.getSmartBar().setColor(Color.decode("#292929"));
                 frame.getSmartBar().setFeedbackColor(Color.decode("#0a54ff"));
@@ -88,22 +134,21 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 frame.getSmartBar().setPlaceholderColor(Color.lightGray);
                 try {
                     frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/icon-inverted.png"))).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-                } catch (Exception ignore) {
-                    throw new RuntimeException(ignore);
+                } catch (Exception ignore) {}
+            } else {
+                String theme = "light";
+                if(NativeUtility.isDarkMode()) {
+                    theme = "dark";
                 }
+                resolveMessage("event.theme.changed."+theme);
+                frame.executeJavaScript("setStorageItem('settings.appearance.theme', 'auto');");
+                NexusApplication.getInstance().getLocalSettings().setTheme("auto");
             }
-
-            // Handle page loaded events.
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
 
             NativeUtility.readColors();
-            frame.executeJavaScript("setSystemForeground('"+NativeUtility.getForegroundColorCode()+"');");
-            if(frame.isBrowserFocussed()) {
-                frame.executeJavaScript("setSystemBackground('"+NativeUtility.getActiveBGColorCode()+"');");
-            } else {
-                frame.executeJavaScript("setSystemBackground('" + NativeUtility.getBackgroundColorCode() + "');");
-            }
+            evaluateTheme();
 
             for (PageLoadedEvent event : NexusApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
                 event.setUrl(frame.getBrowser().getURL());

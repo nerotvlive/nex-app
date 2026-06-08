@@ -128,6 +128,9 @@ public class NexusApplication {
         settings.ensure("settings.window.nativeDecorations", OperatingSystem.getType().equals(OperatingSystem.Type.Windows));
         localSettings.setUseNativeWindow(settings.getBool("settings.window.nativeDecorations"));
 
+        settings.ensure("settings.window.theme","auto");
+        localSettings.setTheme(settings.getString("settings.window.theme"));
+
         settings.ensure("settings.window.minimizeOnStart",true);
         localSettings.setMinimizeApp(settings.getBool("settings.window.minimizeOnStart"));
 

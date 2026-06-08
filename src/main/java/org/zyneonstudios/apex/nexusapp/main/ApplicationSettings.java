@@ -13,6 +13,7 @@ public class ApplicationSettings {
     private boolean discoverSearchNEX = true;
     private boolean discoverSearchCurseForge = true;
     private boolean discoverSearchModrinth = true;
+    private String theme = "auto";
     private String lastInstanceId = "";
     private String jre25path = "";
     private String jre21path = "";
@@ -29,6 +30,15 @@ public class ApplicationSettings {
     private ArrayList<String> defaultMinecraftPreLaunchCommands = new ArrayList<>();
     private ArrayList<String> defaultMinecraftOnLaunchCommands = new ArrayList<>();
     private ArrayList<String> defaultMinecraftOnExitCommands = new ArrayList<>();
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+        NexusApplication.getInstance().getSettings().set("settings.window.theme", this.theme);
+    }
 
     public HashMap<String, Object> getTemporarySettings() {
         return temporarySettings;
