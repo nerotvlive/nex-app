@@ -50,6 +50,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
 
     private static final Logger log = LoggerFactory.getLogger(AsyncConnectorListener.class);
     private final AppFrame frame;
+    private boolean initialized = false;
 
     public AsyncConnectorListener(WebFrame frame, String message) {
         super(frame, message);
@@ -57,7 +58,11 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
     }
 
     private void evaluateTheme() {
-        evaluateTheme(NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("dark"));
+        boolean dark = NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("dark");
+        if(NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("auto")||NexusApplication.getInstance().getLocalSettings().getTheme().equalsIgnoreCase("automatic")) {
+            dark = NativeUtility.isDarkMode();
+        }
+        evaluateTheme(dark);
     }
 
     private void evaluateTheme(boolean requestDark) {
@@ -104,10 +109,19 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
         } else if (s.equals("download.cancelRunning")) {
             NexusApplication.getInstance().getDownloadManager().getDownloads().get(NexusApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.theme.changed.")) {
+            String theme;
             NativeUtility.readColors();
-            if (s.endsWith("dark")) {
-                frame.executeJavaScript("setStorageItem('settings.appearance.theme', 'dark');");
-                NexusApplication.getInstance().getLocalSettings().setTheme("dark");
+            boolean dark = s.endsWith("dark");
+            if(dark) {
+                theme = "dark";
+            } else {
+                theme = "light";
+            }
+            if(s.endsWith("auto")||s.endsWith("automatic")) {
+                dark = NativeUtility.isDarkMode();
+                theme = "auto";
+            }
+            if (dark) {
                 evaluateTheme(true);
                 frame.getSmartBar().setBackgroundColor(Color.decode("#1f1f1f"));
                 frame.getSmartBar().getBar().setBackground(Color.decode("#1f1f1f"));
@@ -120,9 +134,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 try {
                     frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/icon.png"))).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
                 } catch (Exception ignore) {}
-            } else if (s.endsWith("light")) {
-                frame.executeJavaScript("setStorageItem('settings.appearance.theme', 'light');");
-                NexusApplication.getInstance().getLocalSettings().setTheme("light");
+            } else {
                 evaluateTheme(false);
                 frame.getSmartBar().setBackgroundColor(Color.decode("#f0f0f0"));
                 frame.getSmartBar().getBar().setBackground(Color.decode("#f0f0f0"));
@@ -135,15 +147,14 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 try {
                     frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/icon-inverted.png"))).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
                 } catch (Exception ignore) {}
-            } else {
-                String theme = "light";
-                if(NativeUtility.isDarkMode()) {
-                    theme = "dark";
-                }
-                resolveMessage("event.theme.changed."+theme);
-                frame.executeJavaScript("setStorageItem('settings.appearance.theme', 'auto');");
-                NexusApplication.getInstance().getLocalSettings().setTheme("auto");
             }
+            NexusApplication.getLogger().deb("[CONNECTOR] Changing theme to: "+theme+"...");
+            NexusApplication.getLogger().deb("[CONNECTOR] Changing local setting to: "+theme+"...");
+            NexusApplication.getInstance().getLocalSettings().setTheme(theme);
+            NexusApplication.getLogger().deb("[CONNECTOR] Local setting is now: "+NexusApplication.getInstance().getLocalSettings().getTheme()+"...");
+            NexusApplication.getLogger().deb("[CONNECTOR] Changing UILS setting to: "+theme+"...");
+            frame.executeJavaScript("setStorageItem(\"settings.appearance.theme\", \""+theme.toLowerCase()+"\");");
+            frame.executeJavaScript("console.error('Theme changed to: "+theme+"');");
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
 
@@ -155,6 +166,10 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 event.execute();
             }
 
+            if(!initialized) {
+                initialized = true;
+                frame.getBrowser().reload();
+            }
         } else if(s.startsWith("discover.search.")) {
             s = s.replace("discover.search.", "");
 

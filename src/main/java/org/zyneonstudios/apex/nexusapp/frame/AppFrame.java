@@ -194,7 +194,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
         menuBar.setOpaque(true);
 
         // Attach the menu bar to the native frame or custom title bar.
-        if (NexusApplication.getInstance().getLocalSettings().useNativeWindow() && !OperatingSystem.getType().equals(OperatingSystem.Type.Linux)) {
+        if (NexusApplication.getInstance().getLocalSettings().useNativeWindow() && (!OperatingSystem.getType().equals(OperatingSystem.Type.Linux)||NexusApplication.getLogger().isDebugging())) {
             menuBar.setBorderPainted(false);
             setJMenuBar(menuBar);
         } else {
@@ -241,9 +241,6 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
      * @param decorated Whether the frame is decorated.
      */
     private void setupDebugMenuItems(NexusWebSetup setup, boolean decorated) {
-        if(OperatingSystem.getType().equals(OperatingSystem.Type.Linux)&&decorated) {
-            return;
-        }
         JMenuItem inputUrl = new JMenuItem("Input URL");
         inputUrl.addActionListener(e -> showUrlInputDialog());
         browser.add(inputUrl);

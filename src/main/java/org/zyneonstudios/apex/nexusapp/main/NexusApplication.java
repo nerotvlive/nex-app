@@ -382,6 +382,7 @@ public class NexusApplication {
      * @param closeAsync Defines if the close action should run asynchronously.
      */
     public static void stop(int exitCode, boolean closeAsync) {
+        getInstance().getApplicationFrame().getBrowser().reload();
         if(closeAsync) {
             SwingUtilities.invokeLater(() -> {
                 end(exitCode);
@@ -402,6 +403,7 @@ public class NexusApplication {
 
 
     private static void end(int exitCode) {
+        getInstance().getApplicationFrame().getBrowser().reload();
         try {
             if (getInstance().getWebSetup() != null && getInstance().getWebSetup().getWebApp() != null) {
                 getInstance().getWebSetup().getWebApp().dispose();

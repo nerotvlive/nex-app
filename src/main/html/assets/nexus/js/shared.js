@@ -100,7 +100,7 @@ const root = document.querySelector(':root');
  * The current theme (dark, light, auto).
  * @type {string}
  */
-let theme = "auto";
+let theme = "unset";
 
 /**
  * Indicates if animations are enabled.
@@ -194,7 +194,7 @@ function reloadApp() {
  */
 function initAppearanceSettings() {
     // Load theme from storage or use default
-    theme = getStorageItem("settings.appearance.theme") || theme;
+    theme = getStorageItem("settings.appearance.theme") || "auto";
 
     //Load landing page
     if(getStorageItem("settings.appearance.landingPage")) {
@@ -472,15 +472,22 @@ function toggleMenu() {
  * Updates the application's theme based on the 'theme' variable.
  */
 function updateTheme() {
+    if(theme === "unset") {
+        if(getStorageItem("settings.appearance.theme")) {
+            theme = getStorageItem("settings.appearance.theme");
+        } else {
+            theme = "auto";
+        }
+    }
+
     let style = theme;
     if (style === "auto" || style === "automatic") {
         style = window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
     }
 
     root.style.setProperty('--nex-bg', style === "light" ? 'white' : 'black');
-    console.log(`[CONNECTOR] event.theme.changed.${style}`);
+    console.log(`[CONNECTOR] event.theme.changed.${theme}`);
     document.body.setAttribute('data-bs-theme', style);
-    setStorageItem("settings.appearance.theme", theme);
 }
 
 // --- Local Storage Helpers ---
