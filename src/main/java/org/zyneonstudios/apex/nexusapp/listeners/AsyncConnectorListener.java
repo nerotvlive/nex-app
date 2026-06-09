@@ -79,8 +79,8 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             } else {
                 frame.executeJavaScript("setSystemForeground('#ffffff');");
                 frame.executeJavaScript("setSystemBackground('#000000');");
-                frame.setTitleForeground(Color.BLACK);
-                frame.setTitleBackground(Color.WHITE);
+                frame.setTitleForeground(Color.WHITE);
+                frame.setTitleBackground(Color.BLACK);
             }
         } else {
             if(!NativeUtility.isDarkMode()) {
@@ -95,8 +95,8 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             } else {
                 frame.executeJavaScript("setSystemForeground('#000000');");
                 frame.executeJavaScript("setSystemBackground('#ffffff');");
-                frame.setTitleForeground(Color.WHITE);
-                frame.setTitleBackground(Color.BLACK);
+                frame.setTitleForeground(Color.BLACK);
+                frame.setTitleBackground(Color.WHITE);
             }
         }
     }

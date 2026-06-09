@@ -730,8 +730,8 @@ body {
             flex: 1;
             background: var(--bs-body-bg);
             border-top-left-radius: calc(var(--nex-border-radius) * 1.5);
-            border-left: 1px solid var(--bs-border-color);
-            border-top: 1px solid var(--bs-border-color);
+            border-left: 1px solid transparent;
+            border-top: 1px solid transparent;
             overflow: hidden;
 
             .nav-item {
