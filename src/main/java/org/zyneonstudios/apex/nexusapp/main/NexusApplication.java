@@ -235,12 +235,13 @@ public class NexusApplication {
     }
 
     private void initCommands() {
+        consoleHandler.addCommand(new ConnectorCommand());
+        consoleHandler.addCommand(new ExitCommand());
+        consoleHandler.addCommand(new GetCommand());
         consoleHandler.addCommand(new HelpCommand());
         consoleHandler.addCommand(new JavascriptCommand());
+        consoleHandler.addCommand(new KillCommand());
         consoleHandler.addCommand(new LaunchCommand());
-        consoleHandler.addCommand(new GetCommand());
-        consoleHandler.addCommand(new ExitCommand());
-        consoleHandler.addCommand(new ConnectorCommand());
         consoleHandler.addCommand(new ModrinthCommand());
     }
 
@@ -348,7 +349,7 @@ public class NexusApplication {
     /**
      * Launches the application.
      *
-     * @return True if the application was launched successfully, false otherwise.
+     * @return True, if the application was launched successfully, false otherwise.
      */
     public boolean launch() {
         if (!launched) {
@@ -379,52 +380,39 @@ public class NexusApplication {
      * Stops the application.
      *
      * @param exitCode The exit code to use.
-     * @param closeAsync Defines if the close action should run asynchronously.
-     */
-    public static void stop(int exitCode, boolean closeAsync) {
-        getInstance().getApplicationFrame().getBrowser().reload();
-        if(closeAsync) {
-            SwingUtilities.invokeLater(() -> {
-                end(exitCode);
-            });
-        } else {
-            end(exitCode);
-        }
-    }
-
-    /**
-     * Stops the application.
-     *
-     * @param exitCode The exit code to use.
      */
     public static void stop(int exitCode) {
-        stop(exitCode, true);
+        SwingUtilities.invokeLater(() -> {
+            end(exitCode);
+        });
     }
 
 
     private static void end(int exitCode) {
-        getInstance().getApplicationFrame().getBrowser().reload();
-        try {
-            if (getInstance().getWebSetup() != null && getInstance().getWebSetup().getWebApp() != null) {
-                getInstance().getWebSetup().getWebApp().dispose();
-            }
-        } catch (Exception ignore) {
-        }
-        try {
-            CefApp.getInstance().dispose();
-        } catch (Exception ignore) {
-        }
-        forceKillJcefHelpers();
         try {
             if (getInstance().getModuleLoader() != null) {
                 getInstance().getModuleLoader().deactivateModules();
             }
-        } catch (Exception ignore) {
-        }
-        System.gc();
-
+        } catch (Exception ignore) {}
+        disposeCef();
+        forceKillJcefHelpers();
         FileActions.deleteFolder(new File((NexusApplication.getInstance().getWorkingPath()+"/temp/").replace("\\","/").replace("//","/")));
         System.exit(exitCode);
+    }
+
+    private static void disposeCef() {
+        try {
+            if (getInstance().getWebSetup() != null && getInstance().getWebSetup().getWebApp() != null) {
+                getInstance().getWebSetup().getWebApp().dispose();
+            }
+        } catch (Exception e) {
+            getLogger().err("Couldn't dispose web app: " + e.getMessage());
+        }
+        try {
+            CefApp.getInstance().dispose();
+        } catch (Exception e) {
+            getLogger().err("Couldn't dispose CEF: " + e.getMessage());
+        }
     }
 
     private static void forceKillJcefHelpers() {
