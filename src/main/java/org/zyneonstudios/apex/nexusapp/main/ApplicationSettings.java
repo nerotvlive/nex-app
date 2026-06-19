@@ -13,6 +13,7 @@ public class ApplicationSettings {
     private boolean discoverSearchNEX = true;
     private boolean discoverSearchCurseForge = true;
     private boolean discoverSearchModrinth = true;
+    private boolean killOnExit = false;
     private String theme = "auto";
     private String lastInstanceId = "";
     private String jre25path = "";
@@ -38,6 +39,15 @@ public class ApplicationSettings {
     public void setTheme(String theme) {
         this.theme = theme;
         NexusApplication.getInstance().getSettings().set("settings.window.theme", this.theme);
+    }
+
+    public boolean useKillOnExit() {
+        return killOnExit;
+    }
+
+    public void setKillOnExit(boolean killOnExit) {
+        this.killOnExit = killOnExit;
+        NexusApplication.getInstance().getSettings().set("settings.behavior.killOnExit", killOnExit);
     }
 
     public HashMap<String, Object> getTemporarySettings() {

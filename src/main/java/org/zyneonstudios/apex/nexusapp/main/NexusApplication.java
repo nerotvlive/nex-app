@@ -122,6 +122,9 @@ public class NexusApplication {
         setupWebEnvironment(workingDirFile);
         getLogger().log("Initializing application...");
 
+        settings.ensure("settings.behavior.killOnExit",false);
+        localSettings.setKillOnExit(settings.getBool("settings.behavior.killOnExit"));
+
         settings.ensure("settings.behavior.keepRunning",true);
         localSettings.setKeepRunning(settings.getBool("settings.behavior.keepRunning"));
 
@@ -243,6 +246,7 @@ public class NexusApplication {
         consoleHandler.addCommand(new KillCommand());
         consoleHandler.addCommand(new LaunchCommand());
         consoleHandler.addCommand(new ModrinthCommand());
+        consoleHandler.addCommand(new SettingsCommand());
     }
 
     /**
@@ -382,9 +386,11 @@ public class NexusApplication {
      * @param exitCode The exit code to use.
      */
     public static void stop(int exitCode) {
-        SwingUtilities.invokeLater(() -> {
-            end(exitCode);
-        });
+        if(getInstance().getLocalSettings().useKillOnExit()) {
+            System.exit(-10);
+        } else {
+            SwingUtilities.invokeLater(() -> end(exitCode));
+        }
     }
 
 
