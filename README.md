@@ -9,7 +9,7 @@
 </details>
 
 ## We're searching for help
-Currently, the NEXUS app effectively has only one developer. This person works on it as a hobby and is entirely self-taught, so we are looking for support, as it is not possible to develop the app in a clear and easily expandable way over a large scope. GitHub contributions and/or contact from the team to support us are welcome. Discord account for contact: @dnl.nsmnn -> GitHub: https://github.com/nerotvlive
+Currently, the NEXUS app effectively has only one developer. This person works on it as a hobby and is entirely self-taught, so we are looking for support, as it is not possible to develop the app in a clear and easily expandable way over a large scope. GitHub contributions and/or contact from the team to support us are welcome. Discord account for contact: @nerotvlive -> GitHub: https://github.com/nerotvlive
 
 ## Description
 The NEXUS App is a modular and extensible Minecraft modding application which integrates various platforms.
