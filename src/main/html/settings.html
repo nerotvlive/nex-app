@@ -1,4 +1,4 @@
-<link href="assets/nexus/css/settings.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
+<link href="assets/nexus/css/settings_old.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
 <div id="bg-div"></div>
 <div id="settings" class="nex-flex w-100 h-100">
     <!-- Sidebar/Submenu for Settings Categories -->
@@ -66,6 +66,11 @@
             <strong>Actions</strong>
         </div>
         <div class="submenu-group">
+            <!-- New settings action button -->
+            <button id="options-button" type="button" class="btn btn-nex-secondary" onclick="loadPage('options.html',false);">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Use new settings</span>
+            </button>
             <!-- Reload action button -->
             <button id="reload-button" type="button" class="btn btn-nex-secondary" onclick="reloadApp();">
                 <i class="bi bi-arrow-clockwise"></i>
@@ -156,23 +161,12 @@
                         </td>
                     </tr>
                     <!-- Discord RPC Toggle Row -->
-                    <tr class="discord-rpc-switch">
+                    <tr class="discord-rpc-switch last">
                         <td class="left" colspan="2">Enable Discord Rich Presence <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to use Discord Rich Presence to show your friends that you are using the NEXUS App."></i></td>
                         <td class="right">
                             <div class="form-switch">
                                 <label>
                                     <input class="form-check-input privacy-enableDiscordRPC switch" type="checkbox" onchange="console.log('[CONNECTOR] discordrpc.'+this.checked);" role="switch">
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Telemetry Toggle Row -->
-                    <tr class="telemetry-switch disabled last">
-                        <td class="left" colspan="2">Enable telemetry <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="For now, telemetry is disabled by default and can't be enabled. Perhaps this option will be removed entirely after the beta anyway."></i></td>
-                        <td class="right">
-                            <div class="form-switch">
-                                <label>
-                                    <input disabled class="form-check-input privacy-enableTelemetry switch" type="checkbox" role="switch">
                                 </label>
                             </div>
                         </td>
@@ -553,29 +547,6 @@
             </div>
         </div>
 
-        <!-- Privacy Settings Section -->
-        <!--div id="privacy-settings" class="settings-card overflow-auto flex-column gap-3">
-            <div class="settings-section">
-                <div>
-                    <strong>User related privacy settings</strong>
-                </div>
-                <table class="table m-0">
-                    <tbody>
-                    <tr class="telemetry-switch disabled">
-                        <td class="left" colspan="2">Enable telemetry <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="For now, telemetry is disabled by default and can't be enabled. Perhaps this option will be removed entirely after the beta anyway."></i></td>
-                        <td class="right">
-                            <div class="form-switch">
-                                <label>
-                                    <input disabled class="form-check-input privacy-enableTelemetry switch" type="checkbox" role="switch">
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div-->
-
         <!-- Default Instance Settings Section -->
         <div id="default-instance-settings" class="settings-card overflow-auto flex-column gap-3">
             <div class="settings-section">
@@ -720,4 +691,4 @@
 
     </div>
 </div>
-<button onclick="loadScript('assets/nexus/js/settings.js', null); setTimeout(()=>{ initSettings(); }, 100);" class="onload d-none">On page load</button>
+<button onclick="loadScript('assets/nexus/js/settings_old.js', null); setTimeout(()=>{ initSettings(); }, 100);" class="onload d-none">On page load</button>
