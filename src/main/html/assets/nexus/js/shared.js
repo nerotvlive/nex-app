@@ -1,5 +1,5 @@
 /**
- * @fileoverview This file contains shared JavaScript functions and variables used throughout the NEXUS App.
+ * @fileoverview This file contains shared JavaScript functions and variables used throughout the NEX App.
  */
 
 // --- Global Variables ---

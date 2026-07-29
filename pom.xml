@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.zyneonstudios.apex</groupId>
-    <artifactId>nexus-app</artifactId>
+    <groupId>com.zyneonstudios.apex</groupId>
+    <artifactId>nex-app</artifactId>
     <version>3.0.0-pre.33</version>
 
     <properties>
@@ -13,8 +13,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.name>Reformatio</nexus.name>
         <nexus.type>stable</nexus.type>
-        <app.mainClass>org.zyneonstudios.apex.nexusapp.Main</app.mainClass>
-        <app.name>NEXUS App</app.name>
+        <app.mainClass>com.zyneonstudios.apex.nexapp.Main</app.mainClass>
+        <app.name>NEX App</app.name>
         <app.vendor>Zyneon Studios</app.vendor>
         <app.version.jpackage>3.0.0</app.version.jpackage>
     </properties>

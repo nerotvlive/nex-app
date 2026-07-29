@@ -66,11 +66,6 @@
             <strong>Actions</strong>
         </div>
         <div class="submenu-group">
-            <!-- New settings action button -->
-            <button id="options-button" type="button" class="btn btn-nex-secondary" onclick="loadPage('options.html',false);">
-                <i class="bi bi-sliders2-vertical"></i>
-                <span>Use new settings</span>
-            </button>
             <!-- Reload action button -->
             <button id="reload-button" type="button" class="btn btn-nex-secondary" onclick="reloadApp();">
                 <i class="bi bi-arrow-clockwise"></i>
@@ -102,9 +97,9 @@
                 <div class="card shadow position-relative" style="margin-bottom: 1rem;">
                     <div class="card-body overflow-hidden position-relative d-flex">
                         <div class="d-flex flex-grow-1">
-                            <img alt="NEXUS App icon" class="general-appIcon" src="assets/nexus/img/app-128.png">
+                            <img alt="NEX App icon" class="general-appIcon" src="assets/nexus/img/app-128.png">
                             <div class="d-flex flex-column" style="padding: 0 0 0 1rem;">
-                                <h4 class="p-0 m-0"><strong class="general-appName">NEXUS App</strong></h4>
+                                <h4 class="p-0 m-0"><strong class="general-appName">NEX App</strong></h4>
                                 <span style="opacity: 0.9;" class="d-flex position-relative flex-lg-row gap-1">by <strong>Zyneon Apex</strong></span>
                                 <span style="opacity: 0.9;" class="d-flex position-relative flex-lg-row gap-1">Version: <strong class="general-appVersion">Web</strong></span>
                                 <div style="height: 100%; white-space: nowrap; display: flex; gap: 0.5rem; align-items: flex-end;">
@@ -127,7 +122,7 @@
                     <tbody>
                     <!-- Landing Page Selection Row -->
                     <tr>
-                        <td class="left" colspan="2">Landing page <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose which page the NEXUS App displays when it starts."></i></td>
+                        <td class="left" colspan="2">Landing page <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose which page the NEX App displays when it starts."></i></td>
                         <td class="right">
                             <label>
                                 <select class="form-select appearance-landing" onchange="landing = this.value; setLanding(this.value);">
@@ -162,7 +157,7 @@
                     </tr>
                     <!-- Discord RPC Toggle Row -->
                     <tr class="discord-rpc-switch last">
-                        <td class="left" colspan="2">Enable Discord Rich Presence <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to use Discord Rich Presence to show your friends that you are using the NEXUS App."></i></td>
+                        <td class="left" colspan="2">Enable Discord Rich Presence <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to use Discord Rich Presence to show your friends that you are using the NEX App."></i></td>
                         <td class="right">
                             <div class="form-switch">
                                 <label>
@@ -187,7 +182,7 @@
                     <tbody>
                     <!-- Theme Selection Row -->
                     <tr>
-                        <td class="left" colspan="2">Theme <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose the color scheme in which the NEXUS App should be displayed."></i></td>
+                        <td class="left" colspan="2">Theme <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose the color scheme in which the NEX App should be displayed."></i></td>
                         <td class="right">
                             <label>
                                 <select class="form-select appearance-theme" onchange="theme = this.value; updateTheme();">
@@ -200,7 +195,7 @@
                     </tr>
                     <!-- Animations Toggle Row -->
                     <tr>
-                        <td class="left" colspan="2">Animations <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether the displayed and supported elements of the NEXUS App should have animations or not."></i></td>
+                        <td class="left" colspan="2">Animations <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether the displayed and supported elements of the NEX App should have animations or not."></i></td>
                         <td class="right">
                             <div class="form-switch">
                                 <label>
@@ -211,7 +206,7 @@
                     </tr>
                     <!-- Render Effects Toggle Row -->
                     <tr class="disabled d-none">
-                        <td class="left" colspan="2">Render effects <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to render the effects of the NEXUS App interface, such as glow effects, shadows or backgrounds."></i></td>
+                        <td class="left" colspan="2">Render effects <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether you want to render the effects of the NEX App interface, such as glow effects, shadows or backgrounds."></i></td>
                         <td class="right">
                             <div class="form-switch">
                                 <label>
@@ -222,7 +217,7 @@
                     </tr>
                     <!-- Accent Color Selection Row -->
                     <tr>
-                        <td class="left">Accent color <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose the accent color of the NEXUS App interface."></i></td>
+                        <td class="left">Accent color <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose the accent color of the NEX App interface."></i></td>
                         <td>
                             <div class="text-switch">
                                 <span>Custom <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose your own color via the color picker, RGB, HSL and/or HEX code."></i> </span>
@@ -255,7 +250,7 @@
                     </tr>
                     <!-- Border Radius Control Row -->
                     <tr>
-                        <td class="left">Border radius <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you set the radius of the rounded edges. This determines how rounded the corners of the NEXUS App interface should be, with a value between 0 and 2 (1 by default)."></i></td>
+                        <td class="left">Border radius <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you set the radius of the rounded edges. This determines how rounded the corners of the NEX App interface should be, with a value between 0 and 2 (1 by default)."></i></td>
                         <td>
                             <label>
                                 <!-- Number Input for Border Radius -->
@@ -298,7 +293,7 @@
                     <tbody>
                     <!-- Floating Panel Toggle Row -->
                     <tr class="floating-switch">
-                        <td class="left" colspan="2">Floating <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether the dynamic NEXUS App panel should float or connect to the bottom edge. By default, it's floating."></i></td>
+                        <td class="left" colspan="2">Floating <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you choose whether the dynamic NEX App panel should float or connect to the bottom edge. By default, it's floating."></i></td>
                         <td class="right">
                             <div class="form-switch">
                                 <label>
@@ -309,7 +304,7 @@
                     </tr>
                     <!-- Inline Panel Toggle Row -->
                     <tr>
-                        <td class="left" colspan="2">Inline to menu  <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you integrate the dynamic NEXUS App panel into the menu so that it is only visible when the menu is expanded."></i></td>
+                        <td class="left" colspan="2">Inline to menu  <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you integrate the dynamic NEX App panel into the menu so that it is only visible when the menu is expanded."></i></td>
                         <td class="right">
                             <div class="form-switch">
                                 <label>
@@ -343,26 +338,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="settings-section">
-                <div>
-                    <strong>Extended appearance settings</strong>
-                </div>
-                <table class="table m-0">
-                    <tbody>
-                    <tr class="native-window-switch last">
-                        <td class="left" colspan="2">Use native window decorations (requires restart) <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Selects whether to use the operating system's native window display. Recommended for Windows: on, recommended for Linux: off."></i></td>
-                        <td class="right">
-                            <div class="form-switch">
-                                <label>
-                                    <input class="form-check-input appearance-nativeWindow switch" type="checkbox" role="switch" onchange="console.log('[CONNECTOR] nativeWindow.'+this.checked);">
-                                </label>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
 
         <!-- Download Settings Section -->
@@ -380,7 +355,7 @@
                     <tbody>
                     <!-- Java 25 path selection row -->
                     <tr class="java-25-path-value">
-                        <td class="left" colspan="2">Java 25 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 25 version or the path where the NEXUS App should install Java 25."></i></td>
+                        <td class="left" colspan="2">Java 25 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 25 version or the path where the NEX App should install Java 25."></i></td>
                         <td class="center" onclick="console.log('[CONNECTOR] settings.open.javaPath.25');">
                             <span class="jre-25-path-value path-value">${jre.25.path}</span>
                         </td>
@@ -390,7 +365,7 @@
                     </tr>
                     <!-- Java 21 path selection row -->
                     <tr class="java-21-path-value">
-                        <td class="left" colspan="2">Java 21 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 21 version or the path where the NEXUS App should install Java 21."></i></td>
+                        <td class="left" colspan="2">Java 21 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 21 version or the path where the NEX App should install Java 21."></i></td>
                         <td class="center" onclick="console.log('[CONNECTOR] settings.open.javaPath.21');">
                             <span class="jre-21-path-value path-value">${jre.21.path}</span>
                         </td>
@@ -400,7 +375,7 @@
                     </tr>
                     <!-- Java 17 path selection row -->
                     <tr class="java-17-path-value">
-                        <td class="left" colspan="2">Java 17 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 17 version or the path where the NEXUS App should install Java 17."></i></td>
+                        <td class="left" colspan="2">Java 17 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 17 version or the path where the NEX App should install Java 17."></i></td>
                         <td class="center" onclick="console.log('[CONNECTOR] settings.open.javaPath.17');">
                             <span class="jre-17-path-value path-value">${jre.17.path}</span>
                         </td>
@@ -410,7 +385,7 @@
                     </tr>
                     <!-- Java 8 path selection row -->
                     <tr class="java-8-path-value last">
-                        <td class="left" colspan="2">Java 8 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 8 version or the path where the NEXUS App should install Java 8."></i></td>
+                        <td class="left" colspan="2">Java 8 installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 8 version or the path where the NEX App should install Java 8."></i></td>
                         <td class="center" onclick="console.log('[CONNECTOR] settings.open.javaPath.8');">
                             <span class="jre-8-path-value path-value">${jre.8.path}</span>
                         </td>
@@ -556,7 +531,7 @@
                 <table class="table m-0">
                     <tbody>
                     <tr class="instance-default-path last">
-                        <td class="left" colspan="2">Default instance installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 8 version or the path where the NEXUS App should install Java 21."></i></td>
+                        <td class="left" colspan="2">Default instance installation path <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Lets you select an installed Java 8 version or the path where the NEX App should install Java 21."></i></td>
                         <td class="center" onclick="console.log('[CONNECTOR] settings.open.instancePath');">
                             <span class="instance-default-path-value path-value"></span>
                         </td>

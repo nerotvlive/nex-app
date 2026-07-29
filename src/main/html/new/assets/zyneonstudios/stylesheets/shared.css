@@ -1,0 +1,350 @@
+:root {
+    /*
+    background variables & classes
+    */
+
+    --zyn-background-app: #ffffff10;
+    .zyn-background-app {
+        background: var(--zyn-background-app);
+    }
+
+    --zyn-background-body: radial-gradient(circle at bottom right, #FF00FF25 0%, var(--zyn-background-color) 90%);
+    .zyn-background-body {
+        background: var(--zyn-background-body);
+    }
+
+    --zyn-background: var(--zyn-background-color);
+    .zyn-background {
+        background: var(--zyn-background-color);
+    }
+
+    --zyn-background-color: #202020;
+    .zyn-background-color {
+        background-color: var(--zyn-background-color);
+    }
+
+    --zyn-background-dark: var(--zyn-ov-darker-100);
+    .zyn-background-dark {
+        background: var(--zyn-background-dark);
+    }
+
+    --zyn-background-darker: var(--zyn-ov-darker-200);
+    .zyn-background-darker {
+        background: var(--zyn-background-darker);
+    }
+
+    --zyn-background-darkest: var(--zyn-ov-darker-300);
+    .zyn-background-darkest {
+        background: var(--zyn-background-darkest);
+    }
+
+    --zyn-background-bright: #ffffff09;
+    .zyn-background-bright {
+        background: var(--zyn-background-bright);
+    }
+
+    --zyn-background-brighter: #ffffff13;
+    .zyn-background-brighter {
+        background: var(--zyn-background-brighter);
+    }
+
+    --zyn-background-brightest: var(--zyn-ov-brighter-200);
+    .zyn-background-brightest {
+        background: var(--zyn-background-brightest);
+    }
+
+
+
+    /*
+    overlay variables & classes
+     */
+
+    /*darker overlays*/
+    --zyn-ov-darker: var(--zyn-ov-darker-010);
+    .zyn-ov-darker {
+        background: var(--zyn-ov-darker);
+    }
+
+    --zyn-ov-darker-010: #00000001;
+    .zyn-ov-darker-010 {
+        background: var(--zyn-ov-darker-010);
+    }
+
+    --zyn-ov-darker-100: #00000010;
+    .zyn-ov-darker-100 {
+        background: var(--zyn-ov-darker-100);
+    }
+
+    --zyn-ov-darker-200: #00000020;
+    .zyn-ov-darker-200 {
+        background: var(--zyn-ov-darker-200);
+    }
+
+    --zyn-ov-darker-300: #00000030;
+    .zyn-ov-darker-300 {
+        background: var(--zyn-ov-darker-300);
+    }
+
+    --zyn-ov-darker-400: #00000040;
+    .zyn-ov-darker-400 {
+        background: var(--zyn-ov-darker-400);
+    }
+
+    --zyn-ov-darker-500: #00000050;
+    .zyn-ov-darker-500 {
+        background: var(--zyn-ov-darker-500);
+    }
+
+    --zyn-ov-darker-600: #00000060;
+    .zyn-ov-darker-600 {
+        background: var(--zyn-ov-darker-600);
+    }
+
+    --zyn-ov-darker-700: #00000070;
+    .zyn-ov-darker-700 {
+        background: var(--zyn-ov-darker-700);
+    }
+
+    --zyn-ov-darker-800: #00000080;
+    .zyn-ov-darker-800 {
+        background: var(--zyn-ov-darker-800);
+    }
+
+    --zyn-ov-darker-900: #00000090;
+    .zyn-ov-darker-900 {
+        background: var(--zyn-ov-darker-900);
+    }
+
+    --zyn-ov-darker-950: #00000095;
+    .zyn-ov-darker-950 {
+        background: var(--zyn-ov-darker-950);
+    }
+
+    --zyn-ov-darker-990: #00000099;
+    .zyn-ov-darker-990 {
+        background: var(--zyn-ov-darker-990);
+    }
+
+    --zyn-ov-darker-999: #000000;
+    .zyn-ov-darker-999 {
+        background: var(--zyn-ov-darker-999);
+    }
+
+    /*brighter overlays*/
+    --zyn-ov-brighter: var(--zyn-ov-brighter-010);
+    .zyn-ov-brighter {
+        background: var(--zyn-ov-brighter);
+    }
+
+    --zyn-ov-brighter-010: #ffffff01;
+    .zyn-ov-brighter-010 {
+        background: var(--zyn-ov-brighter-010);
+    }
+
+    --zyn-ov-brighter-100: #ffffff10;
+    .zyn-ov-brighter-100 {
+        background: var(--zyn-ov-brighter-100);
+    }
+
+    --zyn-ov-brighter-200: #ffffff20;
+    .zyn-ov-brighter-200 {
+        background: var(--zyn-ov-brighter-200);
+    }
+
+    --zyn-ov-brighter-300: #ffffff30;
+    .zyn-ov-brighter-300 {
+        background: var(--zyn-ov-brighter-300);
+    }
+
+    --zyn-ov-brighter-400: #ffffff40;
+    .zyn-ov-brighter-400 {
+        background: var(--zyn-ov-brighter-400);
+    }
+
+    --zyn-ov-brighter-500: #ffffff50;
+    .zyn-ov-brighter-500 {
+        background: var(--zyn-ov-brighter-500);
+    }
+
+    --zyn-ov-brighter-600: #ffffff60;
+    .zyn-ov-brighter-600 {
+        background: var(--zyn-ov-brighter-600);
+    }
+
+    --zyn-ov-brighter-700: #ffffff70;
+    .zyn-ov-brighter-700 {
+        background: var(--zyn-ov-brighter-700);
+    }
+
+    --zyn-ov-brighter-800: #ffffff80;
+    .zyn-ov-brighter-800 {
+        background: var(--zyn-ov-brighter-800);
+    }
+
+    --zyn-ov-brighter-900: #ffffff90;
+    .zyn-ov-brighter-900 {
+        background: var(--zyn-ov-brighter-900);
+    }
+
+    --zyn-ov-brighter-950: #ffffff95;
+    .zyn-ov-brighter-950 {
+        background: var(--zyn-ov-brighter-950);
+    }
+
+    --zyn-ov-brighter-990: #ffffff99;
+    .zyn-ov-brighter-990 {
+        background: var(--zyn-ov-brighter-990);
+    }
+
+    --zyn-ov-brighter-999: #ffffff;
+    .zyn-ov-brighter-999 {
+        background: var(--zyn-ov-brighter-999);
+    }
+
+
+
+    /*
+    border radius variables & classes
+     */
+
+    --zyn-br-none: none;
+    .zyn-br-none {
+        border-radius: var(--zyn-br-none);
+    }
+
+    --zyn-br-xs: calc(0.25 * var(--zyn-br));
+    .zyn-br-xs {
+        border-radius: var(--zyn-br-xs);
+    }
+
+    --zyn-br-sm: calc(0.5 * var(--zyn-br));
+    .zyn-br-sm {
+        border-radius: var(--zyn-br-sm);
+    }
+
+    --zyn-br-md: calc(0.75 * var(--zyn-br));
+    .zyn-br-md {
+        border-radius: var(--zyn-br-md);
+    }
+
+    --zyn-br-df: var(--zyn-br);
+    .zyn-br-df {
+        border-radius: var(--zyn-br-df);
+    }
+
+    --zyn-br-lg: calc(1.25 * var(--zyn-br));
+    .zyn-br-lg {
+        border-radius: var(--zyn-br-lg);
+    }
+
+    --zyn-br-bg: calc(1.5 * var(--zyn-br));
+    .zyn-br-bg {
+        border-radius: var(--zyn-br-bg);
+    }
+
+    --zyn-br-xl: calc(1.75 * var(--zyn-br));
+    .zyn-br-xl {
+        border-radius: var(--zyn-br-xl);
+    }
+
+    --zyn-br-2xl: calc(2 * var(--zyn-br));
+    .zyn-br-2xl {
+        border-radius: var(--zyn-br-2xl);
+    }
+
+    --zyn-br-3xl: calc(2.25 * var(--zyn-br));
+    .zyn-br-3xl {
+        border-radius: var(--zyn-br-3xl);
+    }
+
+    --zyn-br-full: 9999px;
+    .zyn-br-full {
+        border-radius: var(--zyn-br-full);
+    }
+
+    --zyn-br-2f: calc(2 * var(--zyn-br));
+    .zyn-br-2f {
+        border-radius: var(--zyn-br-2f);
+    }
+
+    --zyn-br: 1rem;
+    .zyn-br {
+        border-radius: var(--zyn-br);
+    }
+
+
+
+    /*
+    shadow variables & classes
+    */
+
+    --zyn-box-shadow: 0 0 0.3rem var(--zyn-ov-darker-300);
+    .zyn-box-shadow {
+        box-shadow: var(--zyn-box-shadow);
+    }
+
+    --zyn-shadow-sm: 0.2rem 0.2rem 0.25rem var(--zyn-ov-darker-600);
+    .zyn-shadow-sm {
+        box-shadow: var(--zyn-shadow-sm);
+    }
+
+    --zyn-shadow-md: 0.2rem 0.2rem 0.5rem var(--zyn-ov-darker-600);
+    .zyn-shadow-md {
+        box-shadow: var(--zyn-shadow-md);
+    }
+
+    --zyn-shadow-lg: 0.2rem 0.2rem 0.75rem var(--zyn-ov-darker-600);
+    .zyn-shadow-lg {
+        box-shadow: var(--zyn-shadow-lg);
+    }
+
+    --zyn-shadow-xl: 0.2rem 0.2rem 1rem var(--zyn-ov-darker-600);
+    .zyn-shadow-xl {
+        box-shadow: var(--zyn-shadow-xl);
+    }
+
+
+
+    /*
+    foreground variables & classes
+    */
+
+    --zyn-foreground: #ffffff99;
+    .zyn-foreground {
+        color: var(--zyn-foreground);
+    }
+
+
+
+    /*
+    other properties
+    */
+    font-family:
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            'Segoe UI',
+            Roboto,
+            Oxygen,
+            Ubuntu,
+            Cantarell,
+            'Open Sans',
+            'Helvetica Neue',
+            sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --zyn-transition: all 0.15s ease;
+}
+
+body {
+    background: var(--zyn-background);
+    color: var(--zyn-foreground);
+    user-select: none;
+    -webkit-user-select: none;
+
+    * {
+        user-select: none;
+        -webkit-user-select: none;
+    }
+}

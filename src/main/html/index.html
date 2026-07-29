@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <!-- Title of the application -->
-        <title>NEXUS App</title>
+        <title>NEX App</title>
         <!-- Character set and viewport settings -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,9 +12,9 @@
         <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap Icons -->
         <link rel="stylesheet" href="assets/bootstrap/icons/font/bootstrap-icons.min.css">
-        <!-- Shared CSS for the NEXUS App -->
+        <!-- Shared CSS for the NEX App -->
         <link href="assets/nexus/css/shared.css" rel="stylesheet">
-        <!-- Shared JavaScript for the NEXUS App -->
+        <!-- Shared JavaScript for the NEX App -->
         <script src="assets/nexus/js/shared.js"></script>
     </head>
     <!-- For sub-page specific scripts and more -->
@@ -51,8 +51,8 @@
         <div id="main" class="d-flex position-relative h-100">
             <!-- Main menu -->
             <div id="menu" class="transition">
-                <!-- NEXUS App menu logo -->
-                <img alt="NEXUS App logo" src="assets/nexus/img/logo.png">
+                <!-- NEX App menu logo -->
+                <img alt="NEX App logo" src="assets/nexus/img/logo.png">
                 <ul>
                     <!-- Toggle menu button -->
                     <li onclick="toggleMenu();">
@@ -79,6 +79,10 @@
                         <i class="bi bi-gear-wide"></i>
                         <span>Settings</span>
                     </li>
+                    <li id="new-ui-button" onclick="window.location.href = 'new/index.html';">
+                        <i class="bi bi-palette-fill"></i>
+                        <span>New UI (alpha)</span>
+                    </li>
                 </ul>
             </div>
             <!-- Menu panel -->
@@ -88,7 +92,7 @@
                     <!-- Panel mode toggle -->
                     <i class="mode bi" onclick="changePanelMode();"></i>
                     <!-- App name -->
-                    <span><strong>NEXUS</strong> App</span>
+                    <span><strong>NEX</strong> App</span>
                     <!-- Panel toggle button -->
                     <div class="panel-toggle" onclick="togglePanel();"></div>
                     <!-- Panel buttons -->

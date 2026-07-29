@@ -1,0 +1,19 @@
+body {
+    #main {
+        box-shadow: inset 0 12px 12px -10px var(--zyn-ov-darker-900);
+        div {
+            height: 100%;
+            width: 100%;
+        }
+
+        #navigation {
+            width: 4rem;
+            background: var(--zyn-ov-darker-800);
+            border-right: 1px solid var(--zyn-ov-brighter-200);
+        }
+
+        #content {
+
+        }
+    }
+}
