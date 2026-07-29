@@ -7,9 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
+import java.io.*;
 
 /**
  * The {@code RootController} class is a REST controller responsible for handling HTTP requests
@@ -51,15 +50,35 @@ public class RootController {
                 if(NEXApplication.getInstance().getLocalSettings().useNewUI())  {
                     frontendPath = frontendPath + "/new";
                 }
+
+                InputStream inputStream;
                 File file = new File(frontendPath + path);
 
-                // Check if the file exists
-                if (!file.exists()) {
-                    throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+                // Check if the file exists on the filesystem
+                if (file.exists()) {
+                    inputStream = new FileInputStream(file);
+                } else {
+                    // Try to load from classpath (inside JAR)
+                    String resourcePath = "/static" + path;
+                    if (NEXApplication.getInstance().getLocalSettings().useNewUI()) {
+                        resourcePath = "/static/new" + path;
+                    }
+                    inputStream = getClass().getResourceAsStream(resourcePath);
+                    if (inputStream == null) {
+                        // Fallback to original html path if static doesn't work
+                        resourcePath = "/html" + path;
+                        if (NEXApplication.getInstance().getLocalSettings().useNewUI()) {
+                            resourcePath = "/html/new" + path;
+                        }
+                        inputStream = getClass().getResourceAsStream(resourcePath);
+                        if (inputStream == null) {
+                            throw new FileNotFoundException("Resource not found: " + resourcePath);
+                        }
+                    }
                 }
 
-                // Create an InputStreamResource from the file.
-                InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+                // Create an InputStreamResource from the stream.
+                InputStreamResource resource = new InputStreamResource(inputStream);
 
                 // Determine the appropriate media type based on the file extension.
                 MediaType mediaType = getMediaType(path);
