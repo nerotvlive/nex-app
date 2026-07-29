@@ -302,14 +302,6 @@ menu .popover {
 }
 
 body {
-    #bg-div {
-        background: radial-gradient(circle at bottom right, var(--nex-primary-darker), transparent);
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-
-
     transition: all var(--nex-animation-speed) ease;
     background: var(--nex-bg);
 

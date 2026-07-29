@@ -100,7 +100,7 @@ const root = document.querySelector(':root');
  * The current theme (dark, light, auto).
  * @type {string}
  */
-let theme = "unset";
+let theme = "dark";
 
 /**
  * Indicates if animations are enabled.
@@ -194,12 +194,7 @@ function reloadApp() {
  */
 function initAppearanceSettings() {
     // Load theme from storage or use default
-    theme = getStorageItem("settings.appearance.theme") || "auto";
-
-    //Load landing page
-    if(getStorageItem("settings.appearance.landingPage")) {
-        landing = getStorageItem("settings.appearance.landingPage");
-    }
+    theme = "dark";
 
     // Load animations setting from storage or use default
     if(getStorageItem("settings.appearance.animations")) {
@@ -472,18 +467,8 @@ function toggleMenu() {
  * Updates the application's theme based on the 'theme' variable.
  */
 function updateTheme() {
-    if(theme === "unset") {
-        if(getStorageItem("settings.appearance.theme")) {
-            theme = getStorageItem("settings.appearance.theme");
-        } else {
-            theme = "auto";
-        }
-    }
-
+    theme = "dark";
     let style = theme;
-    if (style === "auto" || style === "automatic") {
-        style = window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light";
-    }
 
     root.style.setProperty('--nex-bg', style === "light" ? 'white' : 'black');
     console.log(`[CONNECTOR] event.theme.changed.${theme}`);
