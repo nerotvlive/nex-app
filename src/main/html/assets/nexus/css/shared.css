@@ -729,9 +729,7 @@ body {
         #content {
             flex: 1;
             background: var(--bs-body-bg);
-            border-top-left-radius: calc(var(--nex-border-radius) * 1.5);
             border-left: 1px solid #f8f8f820;
-            border-top: 1px solid #f8f8f820;
             overflow: hidden;
 
             .nav-item {
@@ -1000,13 +998,23 @@ body {
         #content::after {
             content: "";
             position: absolute;
-            border-top-left-radius: calc(var(--nex-border-radius) * 1.5);
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.5);
             pointer-events: none;
+        }
+    }
+
+    #main.windows {
+        #content {
+            border-top-left-radius: calc(var(--nex-border-radius) * 1.5);
+            border-top: 1px solid #f8f8f820;
+        }
+
+        #content::after {
+            border-top-left-radius: calc(var(--nex-border-radius) * 1.5);
         }
     }
 

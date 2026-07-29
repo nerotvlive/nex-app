@@ -22,6 +22,7 @@ import com.zyneonstudios.nexus.utilities.file.FileActions;
 import com.zyneonstudios.nexus.utilities.file.FileExtractor;
 import com.zyneonstudios.nexus.utilities.storage.JsonStorage;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
+import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
 import fr.theshark34.openlauncherlib.minecraft.AuthInfos;
 import live.nerotv.aminecraftlauncher.launcher.*;
 import org.cef.CefApp;
@@ -55,6 +56,7 @@ public class NEXApplication {
     private static final Logger log = LoggerFactory.getLogger(NEXApplication.class);
     private ReadableZyndex NEX = null;
     private final LocalInstanceManager instanceManager;
+    private final OperatingSystem.Type operatingSystem;
 
     private final Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
     private final Gson fastGson = new GsonBuilder().create();
@@ -97,6 +99,8 @@ public class NEXApplication {
         consoleHandler = new NexusConsoleHandler();
         consoleHandler.startReading();
         initCommands();
+
+        operatingSystem = OperatingSystem.getType();
 
         // Setup working directory
         File workingDirFile = new File(path);
@@ -228,6 +232,10 @@ public class NEXApplication {
         });
 
         this.downloadManager = new DownloadManager(this);
+    }
+
+    public OperatingSystem.Type getOperatingSystem() {
+        return operatingSystem;
     }
 
     private void initCommands() {

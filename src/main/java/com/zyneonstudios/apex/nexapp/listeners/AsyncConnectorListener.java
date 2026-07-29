@@ -10,6 +10,7 @@ import com.zyneonstudios.nexus.instance.ReadableZynstance;
 import com.zyneonstudios.nexus.instance.Zynstance;
 import com.zyneonstudios.nexus.instance.ZynstanceBuilder;
 import com.zyneonstudios.nexus.utilities.file.FileActions;
+import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
 import com.zyneonstudios.verget.Verget;
 import com.zyneonstudios.verget.minecraft.MinecraftVerget;
 import jnafilechooser.api.JnaFileChooser;
@@ -73,7 +74,9 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
-
+            if(NEXApplication.getInstance().getOperatingSystem() == OperatingSystem.Type.Windows) {
+                frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
+            }
             evaluateTheme();
 
             for (PageLoadedEvent event : NEXApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
