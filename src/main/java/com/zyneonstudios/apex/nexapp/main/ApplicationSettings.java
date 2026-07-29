@@ -13,7 +13,6 @@ public class ApplicationSettings {
     private boolean discoverSearchCurseForge = true;
     private boolean discoverSearchModrinth = true;
     private boolean killOnExit = false;
-    private String theme = "auto";
     private String lastInstanceId = "";
     private String jre25path = "";
     private String jre21path = "";
@@ -30,15 +29,7 @@ public class ApplicationSettings {
     private ArrayList<String> defaultMinecraftPreLaunchCommands = new ArrayList<>();
     private ArrayList<String> defaultMinecraftOnLaunchCommands = new ArrayList<>();
     private ArrayList<String> defaultMinecraftOnExitCommands = new ArrayList<>();
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-        NEXApplication.getInstance().getSettings().set("settings.window.theme", this.theme);
-    }
+    private boolean newUI = false;
 
     public boolean useKillOnExit() {
         return killOnExit;
@@ -83,6 +74,15 @@ public class ApplicationSettings {
 
     public void removeTemporarySetting(String path) {
         temporarySettings.remove(path);
+    }
+
+    public boolean useNewUI() {
+        return newUI;
+    }
+
+    public void setNewUI(boolean newUI) {
+        this.newUI = newUI;
+        NEXApplication.getInstance().getSettings().set("settings.window.useNewUI", this.newUI);
     }
 
     public boolean keepRunning() {

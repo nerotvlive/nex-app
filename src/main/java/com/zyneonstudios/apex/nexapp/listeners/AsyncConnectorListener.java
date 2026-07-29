@@ -71,36 +71,6 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).pause();
         } else if (s.equals("download.cancelRunning")) {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).cancel();
-        } else if (s.startsWith("event.theme.changed.")) {
-            String theme;
-            boolean dark = s.endsWith("dark");
-            if(dark) {
-                theme = "dark";
-            } else {
-                theme = "light";
-            }
-            if(s.endsWith("auto")||s.endsWith("automatic")) {
-                theme = "auto";
-            }
-            evaluateTheme();
-            frame.getSmartBar().setBackgroundColor(Color.decode("#1f1f1f"));
-            frame.getSmartBar().getBar().setBackground(Color.decode("#1f1f1f"));
-            frame.getSmartBar().setBorderColor(Color.decode("#292929"));
-            frame.getSmartBar().setColor(Color.lightGray);
-            frame.getSmartBar().setFeedbackColor(Color.decode("#96e8ff"));
-            frame.getSmartBar().setSuccessColor(Color.decode("#34bf49"));
-            frame.getSmartBar().setErrorColor(Color.decode("#e63c30"));
-            frame.getSmartBar().setPlaceholderColor(Color.darkGray);
-            try {
-                frame.setIconImage(ImageIO.read(Objects.requireNonNull(getClass().getResource("/icon.png"))).getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-            } catch (Exception ignore) {}
-            NEXApplication.getLogger().deb("[CONNECTOR] Changing theme to: "+theme+"...");
-            NEXApplication.getLogger().deb("[CONNECTOR] Changing local setting to: "+theme+"...");
-            NEXApplication.getInstance().getLocalSettings().setTheme(theme);
-            NEXApplication.getLogger().deb("[CONNECTOR] Local setting is now: "+ NEXApplication.getInstance().getLocalSettings().getTheme()+"...");
-            NEXApplication.getLogger().deb("[CONNECTOR] Changing UILS setting to: "+theme+"...");
-            frame.executeJavaScript("setStorageItem(\"settings.appearance.theme\", \""+theme.toLowerCase()+"\");");
-            frame.executeJavaScript("console.error('Theme changed to: "+theme+"');");
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
 
@@ -221,7 +191,6 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().get(i);
                         frame.executeJavaScript("addToArrayBox('on-exit-hook-array-box',\""+arg+"\",'settings.remove.on-exit-hook-array-box."+i+"');");
                     }
-
                 } else if(s.equals("java")) {
                     String p25 = NEXApplication.getInstance().getLocalSettings().getJava25Path();
                     String p21 = NEXApplication.getInstance().getLocalSettings().getJava21Path();
@@ -524,6 +493,10 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 if(s.startsWith("defaultMemory.")) {
                     int memory = Integer.parseInt(s.replace("defaultMemory.", ""));
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftMemory(memory);
+                } else if(s.startsWith("newui.")) {
+                    boolean newUI = Boolean.parseBoolean(s.replaceFirst("newui.", ""));
+                    NEXApplication.getInstance().getLocalSettings().setNewUI(newUI);
+                    frame.getBrowser().reload();
                 } else if(s.startsWith("windowWidth.")) {
                     int width = Integer.parseInt(s.replace("windowWidth.", ""));
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftWindowWidth(width);

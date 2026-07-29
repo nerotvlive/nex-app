@@ -104,6 +104,19 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
         setAsyncWebFrameConnectorEvent(new AsyncConnectorListener(this, null));
     }
 
+
+    public Dimension getDefaultSize() {
+        int mainScreenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int mainScreenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+        if (mainScreenWidth > 2560) {
+            mainScreenWidth = 2560;
+        }
+        if (mainScreenHeight > 1440) {
+            mainScreenHeight = 1440;
+        }
+        return new Dimension((int) (mainScreenWidth / 1.4), (int) (mainScreenHeight / 1.4));
+    }
+
     /**
      * Sets up the menu bar, including the "Actions" and "Browser" menus, and the developer bar.
      *

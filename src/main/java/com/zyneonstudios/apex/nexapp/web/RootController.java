@@ -48,6 +48,9 @@ public class RootController {
             try {
                 // Construct the full path to the requested file in the UI directory.
                 String frontendPath = NEXApplication.getInstance().getUiPath();
+                if(NEXApplication.getInstance().getLocalSettings().useNewUI())  {
+                    frontendPath = frontendPath + "/new";
+                }
                 File file = new File(frontendPath + path);
 
                 // Check if the file exists

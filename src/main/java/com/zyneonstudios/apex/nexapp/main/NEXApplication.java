@@ -126,11 +126,11 @@ public class NEXApplication {
         settings.ensure("settings.behavior.keepRunning",true);
         localSettings.setKeepRunning(settings.getBool("settings.behavior.keepRunning"));
 
-        settings.ensure("settings.window.theme","auto");
-        localSettings.setTheme(settings.getString("settings.window.theme"));
-
         settings.ensure("settings.window.minimizeOnStart",true);
         localSettings.setMinimizeApp(settings.getBool("settings.window.minimizeOnStart"));
+
+        settings.ensure("settings.window.useNewUI", false);
+        localSettings.setNewUI(settings.getBool("settings.window.useNewUI"));
 
         settings.ensure("settings.window.uiScale",0.0);
         localSettings.setUiScale(settings.getDoub("settings.window.uiScale"));
@@ -355,7 +355,7 @@ public class NEXApplication {
                 String url = onlineUI ? "https://zyneonstudios.github.io/nexus-app/src/main/html?app=true" : "http://localhost:" + Main.getPort() + "/index.html?app=true";
                 applicationFrame = new AppFrame(webSetup, url, true);
                 applicationFrame.setTitlebar(version, Color.black, Color.white);
-                applicationFrame.setSize((int)(screenSize.getWidth()/1.5), (int)(screenSize.getHeight()/1.5));
+                applicationFrame.setSize(applicationFrame.getDefaultSize());
                 applicationFrame.setLocationRelativeTo(null);
                 applicationFrame.setVisible(true);
                 launched = true;
