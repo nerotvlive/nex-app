@@ -116,6 +116,7 @@ function addWaitingDownload(id,name,url,path,index) {
 
 function initDownloads() {
     console.log("[CONNECTOR] downloads.init");
+    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nexus-app`,`_blank`);' class='bi bi-github'></i><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
     initLoader();
 }
 initDownloads();

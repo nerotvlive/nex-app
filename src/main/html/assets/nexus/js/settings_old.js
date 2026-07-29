@@ -68,7 +68,9 @@ function initSettings() {
     }
     initArrayBoxes();
     console.log("[CONNECTOR] settings.init");
-    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<span class='text nexus-version'>"+version+"</span><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
+
+    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nexus-app`,`_blank`);' class='bi bi-github'></i><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
+
 
     sleep(10).then(() => {
         document.getElementById("settings").classList.add("active");
