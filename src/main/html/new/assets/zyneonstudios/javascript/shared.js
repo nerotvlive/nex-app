@@ -11,7 +11,6 @@ async function resolveAsync(backendMessage) {
 }
 
 function setActivePage(page) {
-    document.getElementById("login").classList.add("d-none");
     window.history.pushState({}, document.title, window.location.pathname + "?page=" + page);
     if(activePage && activePage !== page && activePage !== null) {
         if(document.getElementById(activePage)) {
@@ -31,7 +30,6 @@ function setActivePage(page) {
         document.getElementById(page+"-button").classList.add("active");
     }
     activePage = page;
-    console.error("Active page set to " + page);
 }
 
 function enableNavigation() {
