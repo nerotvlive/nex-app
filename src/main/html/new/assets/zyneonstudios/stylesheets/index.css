@@ -73,7 +73,7 @@ body {
                     z-index: 1000;
                     font-size: 1rem;
                     position: absolute;
-                    background: var(--zyn-ov-darker-400);
+                    background: var(--zyn-ov-darker-800);
                     padding: 0.25rem 0.75rem;
                     margin: 0 0 0 3.15rem;
                     border-radius: var(--zyn-br-sm);

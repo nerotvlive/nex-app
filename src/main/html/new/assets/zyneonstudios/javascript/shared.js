@@ -23,6 +23,9 @@ function setActivePage(page) {
     }
     if(document.getElementById(page)) {
         document.getElementById(page).classList.remove("d-none");
+    } else {
+        setActivePage("error404");
+        return;
     }
     if(document.getElementById(page+"-button")) {
         document.getElementById(page+"-button").classList.add("active");
