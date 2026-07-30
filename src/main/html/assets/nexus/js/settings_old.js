@@ -130,6 +130,10 @@ function setAnimations(bool) {
     }
 }
 
+function setWindows(bool) {
+    console.log("[CONNECTOR] settings.set.mergeNavigation."+bool);
+}
+
 /**
  * Toggles render effects (glass effect, shadows) on/off and updates the stored preference.
  * @param {boolean} bool - True to enable render effects, false to disable.

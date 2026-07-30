@@ -264,7 +264,7 @@
                         </td>
                     </tr>
                     <!-- UI Scale Control Row -->
-                    <tr class="last">
+                    <tr>
                         <td class="left">UI Scale <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Use this to fine tune the size of the application user interface elements."></i></td>
                         <td>
                             <label>
@@ -277,6 +277,16 @@
                                 <!-- Range Slider for UI Scale -->
                                 <input type="range" class="range appearance-uiScale form-range" min="-2" value="0" max="2" step="0.1" oninput="debouncedSetUIScale(parseFloat(this.value));">
                             </label>
+                        </td>
+                    </tr>
+                    <tr class="windows-switch last" id="windows-switch">
+                        <td class="left" colspan="2">Merge sidebar with titlebar <i class="bi bi-info-circle" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Recommended for Windows 10+"></i></td>
+                        <td class="right">
+                            <div class="form-switch">
+                                <label>
+                                    <input class="form-check-input appearance-windows switch" id="mergeNavigationSwitch" type="checkbox" role="switch" onchange="setWindows(this.checked);">
+                                </label>
+                            </div>
                         </td>
                     </tr>
                     </tbody>

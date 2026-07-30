@@ -30,6 +30,7 @@ public class ApplicationSettings {
     private ArrayList<String> defaultMinecraftOnLaunchCommands = new ArrayList<>();
     private ArrayList<String> defaultMinecraftOnExitCommands = new ArrayList<>();
     private boolean newUI = false;
+    private boolean mergeNavigation = false;
 
     public boolean useKillOnExit() {
         return killOnExit;
@@ -87,6 +88,15 @@ public class ApplicationSettings {
 
     public boolean keepRunning() {
         return keepRunning;
+    }
+
+    public boolean mergeNavigation() {
+        return mergeNavigation;
+    }
+
+    public void setMergeNavigation(boolean mergeNavigation) {
+        this.mergeNavigation = mergeNavigation;
+        NEXApplication.getInstance().getSettings().set("settings.window.mergeNavigation", this.mergeNavigation);
     }
 
     public void setKeepRunning(boolean keepRunning) {

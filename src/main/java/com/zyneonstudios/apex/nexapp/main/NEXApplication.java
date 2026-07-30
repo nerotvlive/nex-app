@@ -124,6 +124,9 @@ public class NEXApplication {
         setupWebEnvironment(workingDirFile);
         getLogger().log("Initializing application...");
 
+        settings.ensure("settings.window.mergeNavigation", (operatingSystem.equals(OperatingSystem.Type.Windows)));
+        localSettings.setMergeNavigation(settings.getBool("settings.window.mergeNavigation"));
+
         settings.ensure("settings.behavior.killOnExit",false);
         localSettings.setKillOnExit(settings.getBool("settings.behavior.killOnExit"));
 

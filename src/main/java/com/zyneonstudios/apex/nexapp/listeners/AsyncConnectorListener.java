@@ -74,7 +74,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
-            if(NEXApplication.getInstance().getOperatingSystem() == OperatingSystem.Type.Windows) {
+            if(NEXApplication.getInstance().getLocalSettings().mergeNavigation()) {
                 frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
             }
             evaluateTheme();
@@ -496,6 +496,16 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 if(s.startsWith("defaultMemory.")) {
                     int memory = Integer.parseInt(s.replace("defaultMemory.", ""));
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftMemory(memory);
+                } else if(s.startsWith("mergeNavigation.")) {
+                    boolean merge = Boolean.parseBoolean(s.replaceFirst("mergeNavigation.", ""));
+                    NEXApplication.getInstance().getLocalSettings().setMergeNavigation(merge);
+                    if(merge) {
+                        frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
+                        frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = true;");
+                    } else {
+                        frame.executeJavaScript("document.getElementById('main').classList.remove('windows');");
+                        frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = false;");
+                    }
                 } else if(s.startsWith("newui.")) {
                     boolean newUI = Boolean.parseBoolean(s.replaceFirst("newui.", ""));
                     NEXApplication.getInstance().getLocalSettings().setNewUI(newUI);
@@ -524,6 +534,11 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
             }
         } else if(s.equals("initAppearanceAndGeneralValues")) {
+            if(NEXApplication.getInstance().getLocalSettings().mergeNavigation()) {
+                frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = true;");
+            } else {
+                frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = false;");
+            }
             frame.executeJavaScript("document.querySelector('.general-keepRunning').checked = "+ NEXApplication.getInstance().getLocalSettings().keepRunning()+"; document.querySelector('.general-appVersion').innerText=\""+ NEXApplication.getInstance().getVersion()+"\";","document.querySelector('.appearance-hideApp').checked = "+ NEXApplication.getInstance().getLocalSettings().minimizeApp()+";");
         } else if(s.equals("initDiscordRPC")) {
             boolean rpc = true;

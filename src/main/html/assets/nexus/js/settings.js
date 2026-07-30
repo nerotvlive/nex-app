@@ -129,3 +129,4 @@ async function initLoader() {
         }
     }, 2000);
 }
+
