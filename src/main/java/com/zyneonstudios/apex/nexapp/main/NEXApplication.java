@@ -16,6 +16,7 @@ import com.zyneonstudios.apex.nexapp.search.zyndex.local.LocalInstanceManager;
 import com.zyneonstudios.apex.nexapp.utilities.ApplicationLogger;
 import com.zyneonstudios.apex.nexapp.utilities.DiscordRichPresence;
 import com.zyneonstudios.apex.nexapp.utilities.MicrosoftAuthenticator;
+import com.zyneonstudios.apex.nexapp.web.RootController;
 import com.zyneonstudios.nexus.desktop.frame.web.NexusWebSetup;
 import com.zyneonstudios.nexus.index.ReadableZyndex;
 import com.zyneonstudios.nexus.utilities.file.FileActions;
@@ -32,6 +33,7 @@ import org.cef.callback.CefBeforeDownloadCallback;
 import org.cef.callback.CefDownloadItem;
 import org.cef.handler.CefDownloadHandlerAdapter;
 import org.cef.handler.CefLoadHandlerAdapter;
+import org.cef.network.CefRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -319,8 +321,15 @@ public class NEXApplication {
         });
         webSetup.getWebClient().addLoadHandler(new CefLoadHandlerAdapter() {
             @Override
+            public void onLoadStart(CefBrowser browser, CefFrame frame, CefRequest.TransitionType transitionType) {
+                if(!RootController.isLocalRequest(browser.getURL())) {
+                    browser.loadURL("http://localhost:"+Main.getPort()+"/601?url="+browser.getURL());
+                }
+            }
+
+            @Override
             public void onLoadingStateChange(CefBrowser browser, boolean isLoading, boolean canGoBack, boolean canGoForward) {
-                if(!(browser.getURL().startsWith("http://localhost:" + Main.getPort()) || browser.getURL().isEmpty() || browser.getURL().startsWith("http://127.0.0.1:" + Main.getPort()))) {
+                if(!RootController.isLocalRequest(browser.getURL())) {
                     browser.loadURL("http://localhost:"+Main.getPort()+"/601?url="+browser.getURL());
                 }
             }

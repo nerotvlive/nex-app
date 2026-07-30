@@ -83,8 +83,26 @@
                     <div id="settings" class="content-div d-none">
                         Settings
                     </div>
-                    <div id="error_external_url" class="content-div d-none">
-
+                    <div id="error601" class="content-div d-flex flex-column justify-content-center align-items-center h-100 w-100 zyn-ov-brighter-100">
+                        <div class="zyn-br-sm p-4 h-auto w-auto text-center zyn-ov-brighter-100 zyn-shadow-lg" style="border: 1px solid var(--zyn-ov-brighter-200);">
+                            <h5>Error 601</h5>
+                            <p>
+                                <span class="text-danger-emphasis" id="url601">error</span><br>is an external URL. For safety reasons, the NEX App does not allow browsing the internet.<br>
+                                Do you want to open it in your default browser?<br>
+                                <br>
+                                Do not trust URLs from unknown sources.<br>
+                                We assume no responsibility for potential security risks associated with this URL.
+                            </p>
+                            <br>
+                            <button type="button" class="btn btn-light" onclick="setActivePage(landingPage);">
+                                <i class="bi bi-house" style="margin-right: 0.5rem;"></i>
+                                <span>Go back</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-light" onclick="window.open(document.getElementById('url601').innerText, '_blank');">
+                                <i class="bi bi-globe" style="margin-right: 0.5rem;"></i>
+                                <span>Open in default browser</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,7 +111,8 @@
             </button>
             <div id="connect" class="active">
                 <div class="d-flex h-auto header">
-                    <input type="text" disabled placeholder="APEX CONNECT" class="form-control" />
+                    <label for="connect-input"></label>
+                    <input id="connect-input" type="text" disabled placeholder="APEX CONNECT" class="form-control" />
                     <button onclick="document.getElementById('connect').classList.remove('active'); document.getElementById('connect-button').classList.add('active')">X</button>
                 </div>
                 <div class="h-100 zyn-ov-brighter-100 d-flex justify-content-center align-items-center">

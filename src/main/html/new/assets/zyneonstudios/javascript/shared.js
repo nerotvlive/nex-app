@@ -66,10 +66,18 @@ function login() {
 
 addEventListener("DOMContentLoaded", (event) => {
     if(urlParams.has("page")) {
-        if(document.getElementById(urlParams.get("page")+"-button")) {
-            document.getElementById(urlParams.get("page")+"-button").click();
+        const page = urlParams.get("page");
+
+        if(page === "error601") {
+            if(urlParams.has('url')) {
+                document.getElementById("url601").innerText = urlParams.get('url');
+            }
+        }
+
+        if(document.getElementById(page+"-button")) {
+            document.getElementById(page+"-button").click();
         } else {
-            setActivePage(urlParams.get("page"));
+            setActivePage(page);
         }
     } else {
         if(document.getElementById(landingPage+"-button")) {
