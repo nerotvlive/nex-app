@@ -3,6 +3,7 @@ package com.zyneonstudios.apex.nexapp.listeners;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.starxg.keytar.Keytar;
+import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.utilities.*;
 import com.zyneonstudios.nexus.desktop.events.AsyncWebFrameConnectorEvent;
 import com.zyneonstudios.nexus.desktop.frame.web.WebFrame;
@@ -511,7 +512,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 } else if(s.startsWith("newui.")) {
                     boolean newUI = Boolean.parseBoolean(s.replaceFirst("newui.", ""));
                     NEXApplication.getInstance().getLocalSettings().setNewUI(newUI);
-                    frame.getBrowser().reload();
+                    frame.getBrowser().loadURL("http://localhost:"+Main.getPort()+"/index.html");
                 } else if(s.startsWith("windowWidth.")) {
                     int width = Integer.parseInt(s.replace("windowWidth.", ""));
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftWindowWidth(width);
