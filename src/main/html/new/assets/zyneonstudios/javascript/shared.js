@@ -45,6 +45,7 @@ function toggleNavigation() {
 
 function initLogin() {
     setActivePage("login");
+    document.getElementById("microsoft-card").classList.add("d-none");
     const login = document.getElementById("login");
     const button = login.querySelector("button");
     button.disabled = true;

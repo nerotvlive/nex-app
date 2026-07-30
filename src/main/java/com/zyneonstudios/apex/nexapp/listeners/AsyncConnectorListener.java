@@ -589,7 +589,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 if(MicrosoftAuthenticator.isLoggedIn()) {
                     frame.executeJavaScript("setActivePage('library');");
                 } else {
-                    frame.executeJavaScript("document.getElementById('login').querySelector('button').classList.remove('disabled'); document.getElementById('login').querySelector('button').classList.remove('opacity-50'); document.getElementById('login').querySelector('button').querySelector('span').innerText = 'SIGN IN'; document.getElementById('login').querySelector('button').disabled = false;");
+                    frame.executeJavaScript("document.getElementById('microsoft-card').classList.remove('d-none'); document.getElementById('login').querySelector('button').classList.remove('disabled'); document.getElementById('login').querySelector('button').classList.remove('opacity-50'); document.getElementById('login').querySelector('button').querySelector('span').innerText = 'SIGN IN'; document.getElementById('login').querySelector('button').disabled = false;");
                 }
             } else if(s.equals("init")) {
                 NEXApplication.getInstance().getInstanceManager().reload();
