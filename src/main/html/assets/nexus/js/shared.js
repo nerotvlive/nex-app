@@ -593,6 +593,7 @@ addEventListener("DOMContentLoaded", () => {
     if (getStorageItem("devtools") === "true") {
         const buttons = document.querySelector(".menu-panel .card-header .buttons");
         buttons.innerHTML = "<i class='bi bi-arrow-clockwise' onClick='location.reload();'></i>" + buttons.innerHTML;
+        document.getElementById("new-ui-button").classList.remove("d-none");
     }
 });
 
