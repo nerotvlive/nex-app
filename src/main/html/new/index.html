@@ -13,12 +13,124 @@
     <body data-bs-theme="dark">
         <div id="main" class="zyn-background-body position-absolute w-100 h-100 d-flex">
             <div id="navigation">
-                <button onclick="resolve('settings.set.newui.false');">back</button>
-            </div>
-            <div id="content">
+                <button onclick="toggleNavigation();">
+                    <i class="bi bi-list"></i>
+                    <span>Toggle menu</span>
+                </button>
+                <hr>
+                <button id="discover-button" onclick="setActivePage('discover')">
+                    <i class="bi bi-globe-europe-africa"></i>
+                    <span>Discover</span>
+                </button>
+                <button id="library-button" onclick="initLogin();">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Library</span>
+                </button>
+                <button id="downloads-button" onclick="setActivePage('downloads')">
+                    <i class="bi bi-download"></i>
+                    <span>Downloads</span>
+                </button>
+                <button id="settings-button" onclick="setActivePage('settings')">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </button>
+                <hr>
+                <button onclick="resolve('settings.set.newui.false');">
+                    <i class="bi bi-door-open"></i>
+                    <span>Back</span>
+                </button>
+                <hr>
+                <button onclick="window.location.reload();">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span>Reload</span>
+                </button>
+                <button onclick="resolve('devtools');">
+                    <i class="bi bi-code"></i>
+                    <span>Show DevTools</span>
+                </button>
 
             </div>
+            <div id="content">
+                <div class="content-card overflow-hidden">
+                    <div id="loading" class="content-div d-flex justify-content-center align-items-center h-100 w-100">
+                        <div class="w-50" style="height: 1rem">
+                            <div class="loader"></div>
+                        </div>
+                    </div>
+                    <div id="discover" class="content-div d-none">
+                        Discover
+                    </div>
+                    <div id="search" class="content-div d-none">
+                        Search
+                    </div>
+                    <div id="login" class="content-div d-flex flex-column justify-content-center align-items-center h-100 w-100 zyn-ov-brighter-100">
+                        <div class="zyn-br-sm p-4 h-auto w-auto text-center zyn-ov-brighter-100 zyn-shadow-lg" style="border: 1px solid var(--zyn-ov-brighter-200);">
+                            <h5>Login with Microsoft</h5>
+                            <p>You have to own Minecraft: Java Edition to use the library functions.</p>
+                            <br>
+                            <button type="button" class="btn btn-warning" onclick="login();" disabled>
+                                <i class="bi bi-microsoft" style="margin-right: 0.5rem;"></i>
+                                <span>loading...</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="library" class="content-div d-none">
+                        Library
+                    </div>
+                    <div id="downloads" class="content-div d-none">
+                        Downloads
+                    </div>
+                    <div id="settings" class="content-div d-none">
+                        Settings
+                    </div>
+                </div>
+            </div>
+            <button id="connect-button" onclick="document.getElementById('connect').classList.add('active'); document.getElementById('connect-button').classList.remove('active')">
+                <i class="bi bi-arrow-bar-left"></i>
+            </button>
+            <div id="connect" class="active">
+                <div class="d-flex h-auto header">
+                    <input type="text" disabled placeholder="APEX CONNECT" class="form-control" />
+                    <button onclick="document.getElementById('connect').classList.remove('active'); document.getElementById('connect-button').classList.add('active')">X</button>
+                </div>
+                <div class="h-100 zyn-ov-brighter-100 d-flex justify-content-center align-items-center">
+                    <div class="w-50" style="height: 0.5rem">
+                        <div class="loader"></div>
+                    </div>
+                </div>
+                <ul class="d-none">
+                    <li>
+                        <span class="text-white">Notifications</span><br>
+                        <span class="text-warning-emphasis">• Fetch failed</span>
+                    </li>
+                    <li>
+                        nerotvlive<br>
+                        <span class="text-info-emphasis">• Playing Essential+ Explora...</span>
+                    </li>
+                    <li>
+                        SchleimerHD<br>
+                        <span class="text-info-emphasis">• Playing Essential+ VR</span>
+                    </li>
+                    <li>
+                        FantasticoTV<br>
+                        <span class="text-success-emphasis">• Online</span>
+                    </li>
+                    <li>
+                        plocki<br>
+                        <span class="text-success-emphasis">• Online</span>
+                    </li>
+                    <li>
+                        DerFantastico<br>
+                        <span class="text-danger-emphasis">• Offline</span>
+                    </li>
+                    <li>
+                        NHStudios<br>
+                        <span class="text-danger-emphasis">• Offline</span>
+                    </li>
+                </ul>
+            </div>
         </div>
+        <script src="assets/popper/dist/umd/popper.min.js"></script>
         <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="assets/zyneonstudios/javascript/shared.js"></script>
     </body>

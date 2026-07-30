@@ -68,7 +68,9 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
     @Override
     protected void resolveMessage(String s) {
         NEXApplication.getLogger().deb("[CONNECTOR] Resolving "+s);
-        if (s.equals("download.pauseRunning")) {
+        if(s.equals("devtools")) {
+            getFrame().getBrowser().openDevTools();
+        } else if (s.equals("download.pauseRunning")) {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).pause();
         } else if (s.equals("download.cancelRunning")) {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).cancel();
@@ -582,7 +584,13 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             }
         } else if(s.startsWith("library.")) {
             s = s.replace("library.", "");
-            if(s.equals("init")) {
+            if(s.equals("authenticate")) {
+                if(MicrosoftAuthenticator.isLoggedIn()) {
+                    frame.executeJavaScript("setActivePage('library');");
+                } else {
+                    frame.executeJavaScript("document.getElementById('login').querySelector('button').classList.remove('disabled'); document.getElementById('login').querySelector('button').classList.remove('opacity-50'); document.getElementById('login').querySelector('button').querySelector('span').innerText = 'SIGN IN'; document.getElementById('login').querySelector('button').disabled = false;");
+                }
+            } else if(s.equals("init")) {
                 NEXApplication.getInstance().getInstanceManager().reload();
                 String showId = null;
                 for(LocalInstance lI: NEXApplication.getInstance().getInstanceManager().getInstances().values()) {

@@ -96,16 +96,18 @@ public class NexusRunner {
         }
 
         CompletableFuture.runAsync(()-> {
-            if(downloading != null) {
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = 'var(--nex-primary)';");
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.add('downloading');");
-            } else {
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = '';");
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '';");
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '';");
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.remove('downloading');");
+            if(!NEXApplication.getInstance().getLocalSettings().useNewUI()) {
+                if (downloading != null) {
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = 'var(--nex-primary)';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.add('downloading');");
+                } else {
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = '';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.remove('downloading');");
+                }
             }
 
             if (downloading != null) {

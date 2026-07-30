@@ -8,6 +8,11 @@
         background: var(--zyn-background-app);
     }
 
+    --zyn-accent: #8732ec;
+    --zyn-accent-accent: color-mix(in srgb, var(--zyn-accent), white 25%);
+    --zyn-accent-dark: color-mix(in srgb, var(--zyn-accent), black 25%);
+    --zyn-accent-darker: color-mix(in srgb, var(--zyn-accent), black 50%);
+
     --zyn-background-body: radial-gradient(circle at bottom right, #FF00FF25 0%, var(--zyn-background-color) 90%);
     .zyn-background-body {
         background: var(--zyn-background-body);
@@ -347,4 +352,18 @@ body {
         user-select: none;
         -webkit-user-select: none;
     }
+}
+
+.loader {
+    width: 120px;
+    height: 20px;
+    transform: skewX(-45deg);
+    background:
+            linear-gradient(var(--zyn-accent) 0 0) left -30px top 0/30px 20px no-repeat
+            #ccc;
+    animation: l3 1s infinite linear;
+}
+
+@keyframes l3 {
+    100% {background-position: right -30px top 0}
 }
