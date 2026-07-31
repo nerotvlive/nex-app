@@ -8,7 +8,7 @@ Currently, the NEX App effectively has only one developer. This person works on 
 ## Description
 The NEX App is a modular and extensible Minecraft modding application that integrates various platforms like NEX, Modrinth and CurseForge.
 
-<img src="https://github.com/nerotvlive/nexus-app/blob/master/src/main/html/assets/nexus/img/app-screenshot.png?raw=true">
+<img src="https://nerotvlive.github.io/nex-app/src/main/html/assets/nexus/img/app-screenshot.png">
 
 ## Supported platforms
 [<img src="https://i.ibb.co/FK4LNHm/platforms.png">](https://apex.zyneonstudios.org/nexus-app#download)
