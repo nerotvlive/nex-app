@@ -158,10 +158,10 @@ public class MicrosoftAuthenticator {
     private static void refreshBrowser() {
         if(NEXApplication.getInstance().getApplicationFrame() != null) {
             if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=settings")) {
-                NEXApplication.getInstance().getApplicationFrame().getBrowser().loadURL(NEXApplication.getInstance().isOnlineUI() ? "https://nerofynetwork.github.io/NEXUS-App/src/main/html/index.html?page=settings.html&st=account-settings&app=true" : "localhost:" + Main.getPort() + "/index.html?page=settings.html&st=account-settings&app=true");
+                NEXApplication.getInstance().getApplicationFrame().getBrowser().loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=settings.html&st=account-settings&app=true");
             } else if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=library")|| NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=login")) {
                 if(NEXApplication.getInstance().getLocalSettings().useNewUI()) {
-                    NEXApplication.getInstance().getApplicationFrame().getBrowser().loadURL("http://localhost:"+Main.getPort()+"/index.html?page=library");
+                    NEXApplication.getInstance().getApplicationFrame().getBrowser().loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=library");
                 } else {
                     NEXApplication.getInstance().getApplicationFrame().getBrowser().reload();
                 }

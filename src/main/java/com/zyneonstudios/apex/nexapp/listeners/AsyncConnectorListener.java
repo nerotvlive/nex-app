@@ -512,7 +512,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 } else if(s.startsWith("newui.")) {
                     boolean newUI = Boolean.parseBoolean(s.replaceFirst("newui.", ""));
                     NEXApplication.getInstance().getLocalSettings().setNewUI(newUI);
-                    frame.getBrowser().loadURL("http://localhost:"+Main.getPort()+"/index.html");
+                    frame.getBrowser().loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html");
                 } else if(s.startsWith("windowWidth.")) {
                     int width = Integer.parseInt(s.replace("windowWidth.", ""));
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftWindowWidth(width);

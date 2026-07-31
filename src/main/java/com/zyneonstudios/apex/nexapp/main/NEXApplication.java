@@ -323,14 +323,22 @@ public class NEXApplication {
             @Override
             public void onLoadStart(CefBrowser browser, CefFrame frame, CefRequest.TransitionType transitionType) {
                 if(!RootController.isAllowedRequest(browser.getURL())) {
-                    browser.loadURL("http://localhost:"+Main.getPort()+"/601?url="+browser.getURL());
+                    if(NEXApplication.getInstance().isOnlineUI()) {
+                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=error601&url="+browser.getURL());
+                    } else {
+                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"601?url="+browser.getURL());
+                    }
                 }
             }
 
             @Override
             public void onLoadingStateChange(CefBrowser browser, boolean isLoading, boolean canGoBack, boolean canGoForward) {
                 if(!RootController.isAllowedRequest(browser.getURL())) {
-                    browser.loadURL("http://localhost:"+Main.getPort()+"/601?url="+browser.getURL());
+                    if(NEXApplication.getInstance().isOnlineUI()) {
+                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=error601&url="+browser.getURL());
+                    } else {
+                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"601?url="+browser.getURL());
+                    }
                 }
             }
         });
@@ -372,8 +380,7 @@ public class NEXApplication {
         if (!launched) {
             try {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                String url = onlineUI ? "https://zyneonstudios.github.io/nexus-app/src/main/html?app=true" : "http://localhost:" + Main.getPort() + "/index.html?app=true";
-                applicationFrame = new AppFrame(webSetup, url, true);
+                applicationFrame = new AppFrame(webSetup, getBaseUrl()+"index.html?app=true", true);
                 applicationFrame.setTitlebar(version, Color.black, Color.white);
                 applicationFrame.setSize(applicationFrame.getDefaultSize());
                 applicationFrame.setLocationRelativeTo(null);
@@ -391,6 +398,16 @@ public class NEXApplication {
         loadModules();
         moduleLoader.activateModules();
         return launched;
+    }
+
+    public String getBaseUrl() {
+        String url;
+        if(getLocalSettings().useNewUI()) {
+            url = onlineUI ? "https://nerotvlive.github.io/nex-app/src/main/html/new/" : "http://localhost:" + Main.getPort() + "/";
+        } else {
+            url = onlineUI ? "https://nerotvlive.github.io/nex-app/src/main/html/" : "http://localhost:" + Main.getPort() + "/";
+        }
+        return url;
     }
 
     /**
