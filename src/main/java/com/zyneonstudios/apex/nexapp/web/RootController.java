@@ -47,7 +47,7 @@ public class RootController {
         }
 
         // Check if the request is from a local address.
-        if (isLocalRequest(url)) {
+        if (isAllowedRequest(url)) {
             try {
                 // Construct the full path to the requested file in the UI directory.
                 String frontendPath = NEXApplication.getInstance().getUiPath();
@@ -106,19 +106,23 @@ public class RootController {
     }
 
     /**
-     * Checks if the given URL is from a local address.
+     * Checks if the given URL is from an allowed address.
      *
      * @param url The URL to check.
-     * @return True if the URL is from a local address, false otherwise.
+     * @return True if the URL is from an allowed address, false otherwise.
      */
     @SuppressWarnings("HttpUrlsUsage")
-    public static boolean isLocalRequest(String url) {
+    public static boolean isAllowedRequest(String url) {
         if(url==null||url.isBlank()) {
             return true;
         }
         url = url.toLowerCase();
         return url.startsWith("http://localhost") ||
                 url.startsWith("https://localhost") ||
+                url.startsWith("https://zyneonstudios.com/") ||
+                url.startsWith("https://apex.zyneonstudios.com/") ||
+                url.startsWith("https://zyneonstudios.github.io/") ||
+                url.startsWith("https://nerotvlive.github.io/") ||
                 url.startsWith("http://127.0.0.1") ||
                 url.startsWith("https://127.0.0.1") ||
                 url.startsWith("http://0:0:0:0:0:0:0:1") ||

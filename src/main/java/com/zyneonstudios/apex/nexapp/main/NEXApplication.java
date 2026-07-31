@@ -322,14 +322,14 @@ public class NEXApplication {
         webSetup.getWebClient().addLoadHandler(new CefLoadHandlerAdapter() {
             @Override
             public void onLoadStart(CefBrowser browser, CefFrame frame, CefRequest.TransitionType transitionType) {
-                if(!RootController.isLocalRequest(browser.getURL())) {
+                if(!RootController.isAllowedRequest(browser.getURL())) {
                     browser.loadURL("http://localhost:"+Main.getPort()+"/601?url="+browser.getURL());
                 }
             }
 
             @Override
             public void onLoadingStateChange(CefBrowser browser, boolean isLoading, boolean canGoBack, boolean canGoForward) {
-                if(!RootController.isLocalRequest(browser.getURL())) {
+                if(!RootController.isAllowedRequest(browser.getURL())) {
                     browser.loadURL("http://localhost:"+Main.getPort()+"/601?url="+browser.getURL());
                 }
             }
