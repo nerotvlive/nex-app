@@ -89,3 +89,11 @@ addEventListener("DOMContentLoaded", (event) => {
         }
     }
 });
+
+document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+});
+
+document.addEventListener('dragstart', (event) => {
+    event.preventDefault();
+});
