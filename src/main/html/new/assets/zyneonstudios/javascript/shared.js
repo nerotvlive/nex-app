@@ -88,6 +88,10 @@ addEventListener("DOMContentLoaded", (event) => {
             setActivePage(landingPage);
         }
     }
+
+    setTimeout(() => {
+        document.getElementById("connect-preloader").innerHTML = "<strong class='text-danger-emphasis'>NOT ALLOWED</strong>";
+    }, 2345);
 });
 
 document.addEventListener('contextmenu', (event) => {
