@@ -77,10 +77,12 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
-            if(NEXApplication.getInstance().getLocalSettings().mergeNavigation()) {
+            if(NEXApplication.getInstance().getLocalSettings().mergeNavigation()&&!NEXApplication.getInstance().getLocalSettings().useNewUI()) {
                 frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
             }
-            evaluateTheme();
+            if(!NEXApplication.getInstance().getLocalSettings().useNewUI()) {
+                evaluateTheme();
+            }
 
             for (PageLoadedEvent event : NEXApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
                 event.setUrl(frame.getBrowser().getURL());

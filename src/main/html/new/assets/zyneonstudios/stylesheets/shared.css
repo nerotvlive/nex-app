@@ -367,3 +367,18 @@ body {
 @keyframes l3 {
     100% {background-position: right -30px top 0}
 }
+
+.slider-indicators {
+    button {
+        background: white;
+        width: 2.5rem;
+        height: 0.5rem;
+        border: none;
+        opacity: 0.5;
+        box-shadow: var(--zyn-shadow-md);
+    }
+
+    button.active {
+        opacity: 1;
+    }
+}

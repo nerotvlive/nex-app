@@ -6,6 +6,7 @@
     }
 
     ::-webkit-scrollbar-track {
+        margin: 1rem 0 !important;
         position: absolute;
         background: transparent;
     }
@@ -13,7 +14,7 @@
     ::-webkit-scrollbar-thumb {
         position: absolute;
         scrollbar-width: thin;
-        background: #ffffff50;
+        background: #ffffff25;
         border-radius: 10px;
         background-clip: padding-box;
     }
@@ -26,8 +27,12 @@
 
 body {
     #main {
-        box-shadow: inset 0 12px 12px -10px var(--zyn-ov-darker-900);
+        box-shadow: inset 0 16px 16px -10px var(--zyn-ov-darker-900);
         gap: 0.5rem;
+
+        * {
+            transition: none;
+        }
 
         div {
             height: 100%;
@@ -35,7 +40,6 @@ body {
         }
 
         #navigation {
-            transition: all 0.15s ease;
             width: 4.15rem;
             background: var(--zyn-ov-darker-800);
             border-right: 1px solid var(--zyn-ov-brighter-200);
@@ -50,7 +54,6 @@ body {
             flex-shrink: 0;
 
             button {
-                transition: all 0.15s ease;
                 display: flex;
                 border: 1px solid transparent;
                 border-radius: var(--zyn-br-sm);
@@ -82,7 +85,6 @@ body {
             }
 
             button.active {
-                transition: all 0.15s ease;
                 background: var(--zyn-accent-darker);
                 border: 1px solid var(--zyn-accent);
                 box-shadow: 0 0 0.4rem var(--zyn-accent);
@@ -113,9 +115,9 @@ body {
         }
 
         #connect-button {
-            transition: all 0.15s ease;
             display: none;
             position: absolute;
+            z-index: 1000;
             top: 1rem;
             right: 1rem;
             background: var(--zyn-ov-brighter-200);
@@ -134,7 +136,6 @@ body {
         }
 
         #connect {
-            transition: all 0.15s ease;
             width: 0;
             flex-grow: 0;
             flex-shrink: 0;
@@ -180,9 +181,9 @@ body {
                 list-style: none;
                 margin: 0;
                 border-top: 1px solid var(--zyn-ov-brighter-200);
+                height: 100%;
 
                 li {
-                    transition: all 0.15s ease;
                     border-bottom: 1px solid var(--zyn-ov-brighter-200);
                     padding: 0.5rem 1rem;
                 }
@@ -204,13 +205,56 @@ body {
 
         #content {
             .content-card {
-                background: var(--zyn-ov-darker-800);
+                background: var(--zyn-ov-darker-400);
                 margin: 0.5rem 0;
                 height: calc(100% - 1rem);
                 border-radius: var(--zyn-br-sm);
                 border: 1px solid var(--zyn-ov-brighter-200);
                 box-shadow: var(--zyn-shadow-md);
             }
+        }
+    }
+
+    #main.compact {
+        gap: unset;
+
+        #navigation {
+            hr {
+                margin: 0.25rem;
+            }
+        }
+
+        #connect-button {
+            top: 0.5rem;
+            right: 0.5rem;
+            box-shadow: var(--zyn-shadow-lg);
+        }
+
+        #connect {
+            margin: unset;
+            height: unset;
+            border: none;
+            border-radius: 0;
+        }
+
+        #connect.active {
+            border-left: 1px solid var(--zyn-ov-brighter-200);
+        }
+
+        #content {
+            .content-card {
+                margin: unset;
+                height: 100vh;
+                border-radius: unset;
+                border: unset;
+                box-shadow: unset;
+            }
+        }
+    }
+
+    #main.animate {
+        * {
+            transition: var(--zyn-transition);
         }
     }
 }

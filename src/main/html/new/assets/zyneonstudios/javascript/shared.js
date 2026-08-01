@@ -11,7 +11,6 @@ async function resolveAsync(backendMessage) {
 }
 
 function setActivePage(page) {
-    window.history.pushState({}, document.title, window.location.pathname + "?page=" + page);
     if(activePage && activePage !== page && activePage !== null) {
         if(document.getElementById(activePage)) {
             document.getElementById(activePage).classList.add("d-none");
@@ -30,6 +29,48 @@ function setActivePage(page) {
         document.getElementById(page+"-button").classList.add("active");
     }
     activePage = page;
+    let params = "&";
+    for (const [key, value] of urlParams) {
+        if(key !== "page") {
+            params += key + "=" + value + "&";
+        }
+    }
+    window.history.pushState({}, document.title, window.location.pathname + "?page=" + page + params);
+    resolve("event.page.loaded");
+}
+
+function loadPage(page, params = "") {
+    if(document.getElementById(page)) {
+        const contentDiv = document.getElementById(page);
+        if (params) {
+            if (params.startsWith("?")) {
+                params.replace("?", "&");
+            } else if (!params.startsWith("&")) {
+                params += "&";
+            }
+        }
+
+        let page_ = page;
+        if (!page.endsWith(".html")) {
+            page_ += ".html";
+        }
+
+        fetch("pages/"+page_)
+            .then(response => response.text())
+            .then(html => {
+                contentDiv.innerHTML = html;
+            })
+            .then(() => {
+                const onloadElement = contentDiv.querySelector('.onload');
+                if (onloadElement) {
+                    onloadElement.click();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                contentDiv.innerHTML = "<h3 class='p-4 text-danger-emphasis'>" + error + "</h3>";
+            });
+    }
 }
 
 function enableNavigation() {
@@ -67,6 +108,13 @@ function login() {
 }
 
 addEventListener("DOMContentLoaded", (event) => {
+    loadPage("discover");
+    loadPage("downloads");
+    loadPage("library");
+    loadPage("search");
+    loadPage("settings");
+    initSettings();
+
     if(urlParams.has("page")) {
         const page = urlParams.get("page");
 
@@ -74,6 +122,16 @@ addEventListener("DOMContentLoaded", (event) => {
             if(urlParams.has('url')) {
                 document.getElementById("url601").innerText = urlParams.get('url');
             }
+        }
+
+        if(document.getElementById(page)) {
+            let params = "&";
+            for (const [key, value] of urlParams) {
+                if(key !== "page") {
+                    params += key + "=" + value + "&";
+                }
+            }
+            loadPage(page,params);
         }
 
         if(document.getElementById(page+"-button")) {
@@ -92,6 +150,7 @@ addEventListener("DOMContentLoaded", (event) => {
     setTimeout(() => {
         document.getElementById("connect-preloader").innerHTML = "<strong class='text-danger-emphasis'>NOT ALLOWED</strong>";
     }, 2345);
+    loadScript("assets/bootstrap/js/bootstrap.bundle.min.js")
 });
 
 document.addEventListener('contextmenu', (event) => {
@@ -101,3 +160,17 @@ document.addEventListener('contextmenu', (event) => {
 document.addEventListener('dragstart', (event) => {
     event.preventDefault();
 });
+
+function loadScript(url, callback) {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    script.async = true;
+    if (callback) {
+        script.onload = callback;
+    }
+    script.onerror = function() {
+        console.error("Error loading script: " + url);
+    };
+    document.head.appendChild(script);
+}

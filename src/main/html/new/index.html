@@ -8,10 +8,11 @@
         <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="assets/bootstrap/icons/bootstrap-icons.min.css">
         <link rel="stylesheet" href="assets/zyneonstudios/stylesheets/shared.css">
+        <link rel="stylesheet" href="assets/zyneonstudios/stylesheets/discover.css">
         <link rel="stylesheet" href="assets/zyneonstudios/stylesheets/index.css">
     </head>
     <body data-bs-theme="dark">
-        <div id="main" class="zyn-background-body position-absolute w-100 h-100 d-flex">
+        <div id="main" class="zyn-background-body position-absolute w-100 h-100 d-flex compact animate">
             <div id="navigation">
                 <button onclick="toggleNavigation();">
                     <i class="bi bi-list"></i>
@@ -49,21 +50,17 @@
                     <span>Show DevTools</span>
                 </button>
             </div>
-            <div id="content">
-                <div class="content-card overflow-hidden">
+            <div id="content" class="mh-100 position-relative">
+                <div class="content-card mh-100 overflow-hidden overflow-y-auto">
                     <div id="loading" class="content-div d-flex justify-content-center align-items-center h-100 w-100">
                         <div class="w-50" style="height: 1rem">
                             <div class="loader"></div>
                         </div>
                     </div>
-                    <div id="discover" class="content-div d-none">
-                        Discover
-                    </div>
-                    <div id="search" class="content-div d-none">
-                        Search
-                    </div>
-                    <div id="login" class="content-div d-none flex-column justify-content-center align-items-center h-100 w-100 zyn-ov-brighter-100">
-                        <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 zyn-ov-brighter-100">
+                    <div id="discover" class="content-div d-none"></div>
+                    <div id="search" class="content-div d-none"></div>
+                    <div id="login" class="content-div d-none flex-column justify-content-center align-items-center h-100 w-100">
+                        <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100">
                             <div class="zyn-br-sm p-4 h-auto w-auto text-center zyn-ov-brighter-100 zyn-shadow-lg d-none" id="microsoft-card" style="border: 1px solid var(--zyn-ov-brighter-200);">
                                 <h5>Login with Microsoft</h5>
                                 <p>You have to own Minecraft: Java Edition to use the library functions.</p>
@@ -75,17 +72,11 @@
                             </div>
                         </div>
                     </div>
-                    <div id="library" class="content-div d-none">
-                        Library
-                    </div>
-                    <div id="downloads" class="content-div d-none">
-                        Downloads
-                    </div>
-                    <div id="settings" class="content-div d-none">
-                        Settings
-                    </div>
-                    <div id="error601" class="content-div d-none flex-column justify-content-center align-items-center h-100 w-100 zyn-ov-brighter-100">
-                        <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 zyn-ov-brighter-100">
+                    <div id="library" class="content-div d-none"></div>
+                    <div id="downloads" class="content-div d-none"></div>
+                    <div id="settings" class="content-div d-none"></div>
+                    <div id="error601" class="content-div d-none flex-column justify-content-center align-items-center h-100 w-100">
+                        <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100">
                             <div class="zyn-br-sm p-4 h-auto w-auto text-center zyn-ov-brighter-100 zyn-shadow-lg" style="border: 1px solid var(--zyn-ov-brighter-200);">
                                 <h5>Error 601</h5>
                                 <p>
@@ -108,7 +99,7 @@
                         </div>
                     </div>
                     <div id="error404" class="content-div d-none">
-                        <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 zyn-ov-brighter-100">
+                        <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100">
                             <div class="zyn-br-sm p-4 h-auto w-auto text-center zyn-ov-brighter-100 zyn-shadow-lg" style="border: 1px solid var(--zyn-ov-brighter-200);">
                                 <h5>Error 404</h5>
                                 <p>
@@ -171,7 +162,8 @@
             </div>
         </div>
         <script src="assets/popper/dist/umd/popper.min.js"></script>
-        <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="assets/zyneonstudios/javascript/shared.js"></script>
+        <script src="assets/zyneonstudios/javascript/settings.js"></script>
+        <script src="assets/zyneonstudios/javascript/discover.js"></script>
     </body>
 </html>

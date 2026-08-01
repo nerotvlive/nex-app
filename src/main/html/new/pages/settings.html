@@ -1,0 +1,15 @@
+<div class="d-flex flex-column position-relative p-3 gap-3">
+    <h4 class="p-0 m-0">Appearance</h4>
+    <div class="h-auto zyn-ov-brighter-100 p-1 px-2 rounded d-flex">
+        <div>
+            Compact UI
+        </div>
+        <div class="text-end">
+            <div class="form-check form-switch d-flex justify-content-end">
+                <label class="form-check-label" for="compact-switch"></label>
+                <input class="form-check-input" type="checkbox" role="switch" id="compact-switch" onchange="enableCompactUI(this.checked);">
+            </div>
+        </div>
+    </div>
+</div>
+<button onclick="setTimeout(()=>{ initSettingValues(); }, 100);" class="onload d-none">On page load</button>

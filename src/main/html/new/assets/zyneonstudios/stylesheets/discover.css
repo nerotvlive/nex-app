@@ -1,0 +1,37 @@
+#main {
+    #discover {
+        #discover-menu {
+            padding: 0.35rem 0.5rem;
+            border-bottom: 1px solid var(--zyn-ov-brighter-100);
+        }
+
+        #discover-header {
+            margin: 2.8rem 0.5rem 0.5rem 0.5rem;
+            width: calc(100% - 1rem);
+            border-radius: var(--zyn-br-sm);
+            overflow: hidden;
+            border: 1px solid var(--zyn-ov-brighter-200);
+            box-shadow: var(--zyn-shadow-md);
+
+            img {
+                position: relative;
+                z-index: -1;
+                height: 50vh;
+                object-fit: cover;
+            }
+        }
+    }
+}
+
+#main.compact {
+    #discover {
+        #discover-header {
+            margin: 2.27rem 0 0 0;
+            box-shadow: none;
+            border-radius: 0;
+            border: none;
+            border-bottom: 1px solid var(--zyn-ov-brighter-200);
+            width: 100%;
+        }
+    }
+}
