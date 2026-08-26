@@ -30,7 +30,9 @@ import org.cef.CefApp;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefBeforeDownloadCallback;
+import org.cef.callback.CefCommandLine;
 import org.cef.callback.CefDownloadItem;
+import org.cef.handler.CefAppHandlerAdapter;
 import org.cef.handler.CefDownloadHandlerAdapter;
 import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.network.CefRequest;
@@ -310,6 +312,7 @@ public class NEXApplication {
      */
     private void setupWebEnvironment(File workingDirFile) {
         webSetup = new NexusWebSetup(workingDirFile.getAbsolutePath() + "/libs/cef/");
+        webSetup.getBuilder().getCefSettings().windowless_rendering_enabled = false;
         webSetup.enableCache(true);
         webSetup.enableCookies(true);
         webSetup.setup();

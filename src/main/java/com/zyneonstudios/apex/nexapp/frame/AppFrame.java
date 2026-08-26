@@ -1,6 +1,5 @@
 package com.zyneonstudios.apex.nexapp.frame;
 
-import com.zyneonstudios.nexus.desktop.frame.nexus.NexusWebFrame;
 import com.zyneonstudios.nexus.desktop.frame.web.NexusWebSetup;
 import com.zyneonstudios.nexus.desktop.frame.web.WebFrame;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
