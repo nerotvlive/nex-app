@@ -2,6 +2,12 @@
 
 - - -
 
+> **"re"-Branch selected**<br>
+> You are seeing the **"re"-Branch**. Here I try to implement native WebView support and JavaFX fallback to remove the JCEF dependency.<br>
+> [Click here to get back to the main branch](https://github.com/nerotvlive/nex-app)
+
+- - -
+
 ## We're searching for help
 Currently, the NEX App effectively has only one developer. This person works on it as a hobby and is entirely self-taught, so we are looking for support, as it is not possible to develop the app in a clear and easily expandable way over a large scope. GitHub contributions and/or contact from the team to support us are welcome. Discord account for contact: @nerotvlive -> GitHub: https://github.com/nerotvlive
 
