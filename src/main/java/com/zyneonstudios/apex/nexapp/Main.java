@@ -13,6 +13,7 @@ public class Main {
 
     static void main(String[] args) {
         Main.args = args;
+        System.setProperty("prism.order", "sw");
         nexApp = new NEXApp();
         springApp = new SpringApplication(Main.class);
         springApp.setHeadless(false);

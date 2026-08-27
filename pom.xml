@@ -27,6 +27,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
@@ -34,9 +35,23 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>25.0.4</version>
+            <classifier>win</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
             <version>25.0.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>25.0.4</version>
+            <classifier>win</classifier>
+        </dependency>
+
         <dependency>
             <groupId>io.avaje.webview</groupId>
             <artifactId>avaje-webview</artifactId>
@@ -50,6 +65,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>
+                        --add-modules jdk.unsupported.desktop --add-exports java.desktop/jdk.swing.interop=ALL-UNNAMED
+                    </jvmArguments>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -57,6 +77,21 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.zyneonstudios.apex.nexapp.Main</mainClass>
+                    <options>
+                        <option>--add-modules</option>
+                        <option>jdk.unsupported.desktop</option>
+                        <option>--add-exports</option>
+                        <option>java.desktop/jdk.swing.interop=ALL-UNNAMED</option>
+                    </options>
+                </configuration>
             </plugin>
 
             <plugin>
