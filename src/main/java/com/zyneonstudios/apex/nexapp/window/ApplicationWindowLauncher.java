@@ -1,18 +1,14 @@
 package com.zyneonstudios.apex.nexapp.window;
 
+import com.zyneonstudios.apex.nexapp.Main;
 import io.avaje.webview.Webview;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebView;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
-
 import javax.swing.*;
 import java.awt.*;
 
-@Component
 public class ApplicationWindowLauncher {
 
     private Webview webview = null;
@@ -28,11 +24,11 @@ public class ApplicationWindowLauncher {
         title = "NEX App";
         width = 1280;
         height = 720;
-        url = "http://localhost:8274";
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+
     public void launchWindow() {
+        url = Main.getBaseUrl();
         try {
             launchNativeWebView();
         } catch (Exception e) {
