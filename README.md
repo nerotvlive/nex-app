@@ -7,6 +7,8 @@
 
 ### Description
 The NEX App is a modular and extensible Minecraft modding application that integrates various platforms like NEX, Modrinth and CurseForge.<br>
-It is compatible with Windows, Linux and macOS (Java 25 JDK required: [Azul Zulu 25 recommended](https://www.azul.com/downloads/?version=java-25-lts&os=windows&architecture=x86-64-bit&package=jdk#downloads-tabs)()).
+It is compatible with Windows, Linux and macOS (Java 25 JDK required: [Azul Zulu 25 recommended](https://www.azul.com/downloads/?version=java-25-lts&os=windows&architecture=x86-64-bit&package=jdk#downloads-tabs)).
 
-The Zyneon NEX App is an independent project and not affiliated with Minecraft, Mojang AB, Mojang Studios, XBOX, XBOX Game Studios, Microsoft, Rinth Inc., Spark Universe, Modrinth, Overwolf or CurseForge.
+
+> **Disclaimer**<br>
+> The Zyneon NEX App is an independent project and not affiliated with Minecraft, Mojang AB, Mojang Studios, XBOX, XBOX Game Studios, Microsoft, Rinth Inc., Spark Universe, Modrinth, Overwolf or CurseForge.
