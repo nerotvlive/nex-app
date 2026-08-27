@@ -1,16 +1,16 @@
-### Zyneon Studios presents:
+# NEX App
+#### by Zyneon Apex, a Zyneon Studios Division
 
-- - -
+> [!IMPORTANT]
+> **We're searching for help**<br>
+> Currently, the NEX App effectively has only one developer. This person works on it as a hobby and is entirely self-taught, so we are looking for support, as it is not possible to develop the app in a clear and easily expandable way over a large scope. GitHub contributions and/or contact from the team to support us are welcome. Discord account for contact: @nerotvlive -> GitHub: https://github.com/nerotvlive
 
-## We're searching for help
-Currently, the NEX App effectively has only one developer. This person works on it as a hobby and is entirely self-taught, so we are looking for support, as it is not possible to develop the app in a clear and easily expandable way over a large scope. GitHub contributions and/or contact from the team to support us are welcome. Discord account for contact: @nerotvlive -> GitHub: https://github.com/nerotvlive
-
-## Description
+### Description
 The NEX App is a modular and extensible Minecraft modding application that integrates various platforms like NEX, Modrinth and CurseForge.
 
-<img src="https://nerotvlive.github.io/nex-app/src/main/html/assets/nexus/img/app-screenshot.png">
+<img src="https://nerotvlive.github.io/nex-app/src/main/html/assets/nexus/img/app-screenshot.png" alt="App">
 
-## Supported platforms
+### Supported platforms
 [<img src="https://i.ibb.co/FK4LNHm/platforms.png">](https://apex.zyneonstudios.org/nexus-app#download)
 [<img src="https://i.ibb.co/nBLzRMT/download.png">](https://apex.zyneonstudios.org/nexus-app#download)
 [Alternative/Direct Downloads](https://github.com/nerotvlive/nexus-app/releases/)
