@@ -4,35 +4,97 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.zyneonstudios.apex</groupId>
-    <artifactId>nexus-app-parent</artifactId>
-    <version>3.0.0</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>nexus-app</module>
-        <module>nexus-app-bootstrapper</module>
-    </modules>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.zyneonstudios.apex</groupId>
+    <artifactId>nex-app</artifactId>
+    <version>26.0.0-revision.1</version>
 
     <properties>
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>nerofy-releases</id>
-            <url>https://maven.nrfy.net/releases</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>25.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>25.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>io.avaje.webview</groupId>
+            <artifactId>avaje-webview</artifactId>
+            <version>0.28</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>nerofy-snapshots</id>
-            <name>Nerofy Network Maven repository</name>
-            <url>https://maven.nrfy.net/snapshots</url>
-        </repository>
-    </distributionManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <workingDirectory>src/frontend</workingDirectory>
+                    <nodeVersion>v26.7.0</nodeVersion>
+                    <pnpmVersion>11.22.0</pnpmVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and pnpm</id>
+                        <goals>
+                            <goal>install-node-and-pnpm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>pnpm install</id>
+                        <goals>
+                            <goal>pnpm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pnpm run build</id>
+                        <goals>
+                            <goal>pnpm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

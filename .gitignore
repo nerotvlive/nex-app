@@ -1,0 +1,18 @@
+target
+target/*
+*.local
+.run
+.run/*
+
+# Editor directories and files
+.vscode/*
+.vscode
+!.vscode/extensions.json
+.idea
+.idea/*
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
