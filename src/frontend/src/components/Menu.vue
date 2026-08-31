@@ -1,67 +1,120 @@
-<script setup lang="ts">
+<script setup>
+import { ref } from 'vue';
 
+const isNavActive = ref(false);
+function toggleNavigation() {
+  isNavActive.value = !isNavActive.value;
+}
+
+const startDrag = () => {
+  if (window.startWindowDrag) {
+    window.startWindowDrag();
+  }
+};
 </script>
 
 <template>
-  <ul class="bg-black/35 border-r-zinc-400/25 border-r shadow p-2">
-    <li onclick="this.parentElement.classList.toggle('active');" class="bg-zinc-700/25 flex gap-1 p-1 hover:bg-zinc-500/25 hover:transition-all hover:cursor-pointer">
+  <div class="menu" :class="{ 'active': isNavActive }" @mousedown="startDrag">
+    <button @click="toggleNavigation" @mousedown.stop>
       <i class="bi bi-list"></i>
-      <span>Menu</span>
-    </li>
-  </ul>
+      <span>Toggle menu</span>
+    </button>
+    <router-link to="/" @mousedown.stop active-class="active">
+      <i class="bi bi-house-door"></i>
+      <span>Dashboard</span>
+    </router-link>
+  </div>
 </template>
 
 <style scoped>
-ul.shadow {
-  box-shadow: 0 0 0.5rem #00000075;
+div.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  width: 3.5rem;
+  transition: width 0.25s ease;
+  overflow: hidden;
 
-  li {
-    align-items: center;
-    position: relative;
+  button, a {
+    height: 2.5rem;
+    min-width: 2.5rem;
+    width: 2.5rem;
     border-radius: 0.5rem;
+    display: flex;
+    white-space: nowrap;
 
     i {
+      position: absolute;
+      height: 2.5rem;
+      width: 2.5rem;
       display: flex;
-      width: 1.5rem;
-      height: 1.5rem;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
     }
 
     span {
-      margin-right: 0.334rem;
-      display: none;
+      position: absolute;
+      left: 3.75rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      background: #00000090;
+      padding: 0 0.5rem;
+      border-radius: 0.5rem;
+      opacity: 0;
+      z-index: -1;
+      transform: translateX(-0.5rem);
     }
   }
 
-  li:hover {
+  button:hover,a:hover {
+    background: #ffffff20;
+    transition: all 0.25s ease;
+    cursor: pointer;
+
     span {
-      display: block;
-      position: absolute;
-      left: 2.75rem;
-      background: #121212;
-      border-radius: 0.5rem;
-      box-shadow: 0 0 0.5rem #00000075;
-      border: 1px solid #ffffff10;
-      padding: 0.25rem 0.75rem;
-      opacity: 0.97;
+      opacity: 1;
+      z-index: 1;
+      transition: all 0.25s ease;
+      transform: translateX(0rem);
+    }
+  }
+
+  button.active ,a.active {
+    background: white;
+
+    i {
+      color: black;
     }
   }
 }
 
-ul.active {
-  li {
+div.menu.active {
+  width: 12rem;
+
+  button,a {
+    width: 100%;
+    transition: width 0.25s ease;
+
     span {
-      display: unset !important;
-      position: unset !important;
-      left: unset !important;
-      background: unset !important;
-      border-radius: unset !important;
-      box-shadow: unset !important;
-      border: unset !important;
-      padding: unset !important;
-      opacity: unset !important;
+      position: relative;
+      left: unset;
+      padding: 0 0 0 2.5rem;
+      background: unset;
+      z-index: unset;
+      opacity: 1;
+      transition: all 0.5s ease;
+      transform: translateX(0rem);
+      max-width: 10.5rem;
+      overflow: hidden;
     }
+  }
+
+  button.active ,a.active {
+    background: white;
+    color: black;
   }
 }
 </style>

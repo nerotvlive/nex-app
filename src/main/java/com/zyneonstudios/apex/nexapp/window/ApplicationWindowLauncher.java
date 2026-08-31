@@ -2,18 +2,12 @@ package com.zyneonstudios.apex.nexapp.window;
 
 import com.zyneonstudios.apex.nexapp.Main;
 import io.avaje.webview.Webview;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.web.WebView;
 import javax.swing.*;
 import java.awt.*;
 
 public class ApplicationWindowLauncher {
 
     private Webview webview = null;
-    private JFrame jFrame = null;
-    private WebView fxWebView = null;
 
     private String title;
     private String url;
@@ -27,12 +21,15 @@ public class ApplicationWindowLauncher {
     }
 
 
+    @SuppressWarnings("all")
     public void launchWindow() {
         url = Main.getBaseUrl();
         try {
             launchNativeWebView();
         } catch (Exception e) {
-            launchFallbackWebView();
+            System.err.println("Failed to launch native WebView: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
         }
     }
 
@@ -45,46 +42,39 @@ public class ApplicationWindowLauncher {
                         .height(height)
                         .enableDeveloperTools(true)
                         .navigate(url)
+                        .borderless(true, true)
                         .build();
 
-                jFrame = null;
-                fxWebView = null;
+                this.webview.bind("startWindowDrag", (args) -> {
+                    this.webview.startWindowDrag();
+                    return null;
+                });
+
+                this.webview.bind("closeWindow", (args) -> {
+                    System.exit(0);
+                    return null;
+                });
+
+                this.webview.bind("minimizeWindow", (args) -> {
+                    this.webview.minimizeWindow();
+                    return null;
+                });
+
+                this.webview.bind("maximizeWindow", (args) -> {
+                    this.webview.maximizeWindow();
+                    return null;
+                });
 
                 this.webview.run();
                 System.exit(0);
             } catch (Throwable e) {
-                this.launchFallbackWebView();
+                throw new RuntimeException("Failed to launch native WebView", e);
             }
-        });
-    }
-
-    public void launchFallbackWebView() {
-        webview = null;
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame(title+ " (Swing/JavaFX)");
-            frame.setBackground(Color.BLACK);
-            frame.getContentPane().setBackground(Color.BLACK);
-            JFXPanel fxPanel = new JFXPanel();
-            fxPanel.setBackground(Color.BLACK);
-            frame.add(fxPanel, BorderLayout.CENTER);
-            frame.setSize(width, height);
-            frame.setLocationRelativeTo(null);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
-            Platform.runLater(() -> {
-                fxWebView = new WebView();
-                fxWebView.getEngine().load(url);
-                Scene scene = new Scene(fxWebView);
-                fxPanel.setScene(scene);
-            });
         });
     }
 
     public void setTitle(String title) {
         this.title = title;
-        if(jFrame != null) {
-            jFrame.setTitle(title+" (Swing/JavaFX)");
-        }
         if(webview != null) {
             webview.setTitle(title+" (WebView)");
         }
@@ -96,9 +86,6 @@ public class ApplicationWindowLauncher {
 
     public void setUrl(String url) {
         this.url = url;
-        if(fxWebView != null) {
-            fxWebView.getEngine().load(url);
-        }
         if(webview != null) {
             webview.navigate(url);
         }
@@ -115,9 +102,6 @@ public class ApplicationWindowLauncher {
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
-        if (jFrame != null) {
-            jFrame.setSize(width, height);
-        }
         if(webview != null) {
             webview.setSize(width,height);
         }
