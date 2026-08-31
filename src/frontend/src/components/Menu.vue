@@ -60,7 +60,7 @@ div.menu {
       height: 2.5rem;
       display: flex;
       align-items: center;
-      background: #00000090;
+      background: #000000;
       padding: 0 0.5rem;
       border-radius: 0.5rem;
       opacity: 0;
