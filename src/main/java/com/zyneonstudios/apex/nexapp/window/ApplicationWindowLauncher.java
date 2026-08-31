@@ -2,8 +2,8 @@ package com.zyneonstudios.apex.nexapp.window;
 
 import com.zyneonstudios.apex.nexapp.Main;
 import io.avaje.webview.Webview;
-import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class ApplicationWindowLauncher {
 
@@ -45,23 +45,44 @@ public class ApplicationWindowLauncher {
                         .borderless(true, true)
                         .build();
 
-                this.webview.bind("startWindowDrag", (args) -> {
+                this.webview.bind("startWindowDrag", (_) -> {
                     this.webview.startWindowDrag();
                     return null;
                 });
 
-                this.webview.bind("closeWindow", (args) -> {
+                this.webview.bind("closeWindow", (_) -> {
                     System.exit(0);
                     return null;
                 });
 
-                this.webview.bind("minimizeWindow", (args) -> {
+                this.webview.bind("minimizeWindow", (_) -> {
                     this.webview.minimizeWindow();
                     return null;
                 });
 
-                this.webview.bind("maximizeWindow", (args) -> {
+                this.webview.bind("maximizeWindow", (_) -> {
                     this.webview.maximizeWindow();
+                    return null;
+                });
+
+                this.webview.bind("openUrl", (args) -> {
+                    if (args != null && !args.isBlank()) {
+                        String cleanUrl = args.replaceAll("[\\[\\]\"]", "").trim();
+                        Thread.ofPlatform().start(() -> {
+                            try {
+                                String os = System.getProperty("os.name").toLowerCase();
+                                if (os.contains("win")) {
+                                    new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", cleanUrl).start();
+                                } else if (os.contains("mac")) {
+                                    new ProcessBuilder("open", cleanUrl).start();
+                                } else {
+                                    new ProcessBuilder("xdg-open", cleanUrl).start();
+                                }
+                            } catch (IOException e) {
+                                System.err.println("[openUrl] Fehler: " + e.getMessage());
+                            }
+                        });
+                    }
                     return null;
                 });
 

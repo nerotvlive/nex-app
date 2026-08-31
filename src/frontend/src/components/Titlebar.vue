@@ -27,7 +27,7 @@ const minimizeApp = () => {
 <template>
   <div class="titlebar" @mousedown="startDrag">
     <div class="flex justify-between items-center">
-      <strong class="ml-3">NEX App</strong>
+      <span><strong class="ml-3">NEX</strong> App</span>
       <div class="flex window-controls">
         <button @click="minimizeApp()" @mousedown.stop>
           <i class="bi bi-dash-lg"></i>
