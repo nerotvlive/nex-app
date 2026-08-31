@@ -5,9 +5,12 @@
 <template>
   <div class="dashboard h-full flex flex-col">
     <div class="header flex p-4 text-xl justify-between">
-      <div>
-        <strong>NEX App</strong><br>
-        <span class="text-lg">26.0.0-revision.1<br><span class="text-sm opacity-50">Reditus Magnificus</span></span>
+      <div class="flex flex-col justify-between">
+        <div>
+          <strong>NEX App</strong><br>
+          <span class="text-lg">26.0.0-revision.1<br><span class="text-sm opacity-50">Reditus Magnificus</span></span>
+        </div>
+        <strong class="bg-yellow-200 text-lg text-black w-fit px-2 rounded-lg">BETA BUILD</strong>
       </div>
       <div class="flex flex-col justify-between text-sm">
         <div class="flex justify-end">

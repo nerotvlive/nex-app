@@ -105,7 +105,6 @@ div.menu.active {
       background: unset;
       z-index: unset;
       opacity: 1;
-      transition: all 0.5s ease;
       transform: translateX(0rem);
       max-width: 10.5rem;
       overflow: hidden;
