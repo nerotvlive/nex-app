@@ -61,7 +61,11 @@ public class ApplicationWindowLauncher {
                 });
 
                 this.webview.bind("maximizeWindow", (_) -> {
-                    this.webview.maximizeWindow();
+                    if(this.webview.isMaximized()) {
+                        this.webview.unmaximizeWindow();
+                    } else {
+                        this.webview.maximizeWindow();
+                    }
                     return null;
                 });
 
