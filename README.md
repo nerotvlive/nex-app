@@ -3,7 +3,8 @@
 
 > [!TIP]
 > **"re"-Branch selected**<br>
-> You are seeing the **"re"-Branch**. Here I try to implement native WebView support and JavaFX fallback to remove the JCEF dependency.<br>
+> You are seeing the **"re"-Branch**. Here I try to implement native WebView support ~~and JavaFX fallback~~ to remove the JCEF dependency.<br>
+> Yeah nvm, this branch is going to introduce a whole new rewrite of the application.<br>
 > [Click here to get back to the main branch](https://github.com/nerotvlive/nex-app)
 
 ### Description
