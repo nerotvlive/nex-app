@@ -33,8 +33,8 @@ div.menu {
   padding: 0.5rem;
   gap: 0.5rem;
   width: 3.5rem;
-  transition: width 0.25s ease;
   overflow: hidden;
+  transition: all 0.25s ease;
 
   button, a {
     height: 2.5rem;
@@ -43,6 +43,7 @@ div.menu {
     border-radius: 0.5rem;
     display: flex;
     white-space: nowrap;
+    transition: all 0.25s ease;
 
     i {
       position: absolute;
@@ -65,20 +66,19 @@ div.menu {
       border-radius: 0.5rem;
       opacity: 0;
       z-index: -1;
-      transform: translateX(-0.5rem);
+      transform: translateX(-0.25rem);
     }
   }
 
   button:hover,a:hover {
     background: #ffffff20;
-    transition: all 0.25s ease;
     cursor: pointer;
 
     span {
       opacity: 1;
       z-index: 1;
-      transition: all 0.25s ease;
       transform: translateX(0rem);
+      transition: opacity 0.25s ease;
     }
   }
 
@@ -96,7 +96,6 @@ div.menu.active {
 
   button,a {
     width: 100%;
-    transition: width 0.25s ease;
 
     span {
       position: relative;

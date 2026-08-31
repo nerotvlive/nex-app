@@ -38,6 +38,7 @@ public class ApplicationWindowLauncher {
             try {
                 this.webview = Webview.builder()
                         .title(title + " (WebView)")
+                        .minSize(800,480)
                         .width(width)
                         .height(height)
                         .enableDeveloperTools(true)
