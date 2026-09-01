@@ -31,7 +31,6 @@ import MenuView from "@/components/MenuView.vue";
 
 <style scoped>
 .library {
-  background: url("../assets/zyneonstudios/images/background.jpg");
-  background-size: cover;
+
 }
 </style>
