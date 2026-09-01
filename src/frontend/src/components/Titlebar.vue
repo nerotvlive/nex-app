@@ -3,35 +3,23 @@ const startDrag = () => {
   if (window.startWindowDrag) {
     window.startWindowDrag();
   }
-  if(window.cefQuery) {
-    window.cefQuery({ request: "startWindowDrag" });
-  }
 };
 
 const closeApp = () => {
   if (window.closeWindow) {
     window.closeWindow();
   }
-  if(window.cefQuery) {
-    window.cefQuery({ request: "closeWindow" });
-  }
 };
 
 const maximizeApp = () => {
-  if (window.maximizeWindow) {
-    window.maximizeWindow();
-  }
-  if(window.cefQuery) {
-    window.cefQuery({ request: "maximizeWindow" });
+  if (window.toggleMaximizeWindow) {
+    window.toggleMaximizeWindow();
   }
 };
 
 const minimizeApp = () => {
   if (window.minimizeWindow) {
     window.minimizeWindow();
-  }
-  if(window.cefQuery) {
-    window.cefQuery({ request: "minimizeWindow" });
   }
 };
 </script>
@@ -57,10 +45,8 @@ const minimizeApp = () => {
 
 <style scoped>
   .titlebar {
-    -webkit-app-region: drag;
 
     button {
-      -webkit-app-region: no-drag;
       height: 2rem;
       width: 2rem;
     }

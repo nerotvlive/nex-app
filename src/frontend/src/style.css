@@ -26,3 +26,28 @@
 body {
   margin: 0;
 }
+
+* {
+  ::-webkit-scrollbar {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    position: absolute;
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    position: absolute;
+    scrollbar-width: thin;
+    background: #ffffff25;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    position: absolute;
+    background: #ffffff50;
+  }
+}

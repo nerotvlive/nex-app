@@ -1,14 +1,14 @@
 package com.zyneonstudios.apex.nexapp;
 
-import com.zyneonstudios.apex.nexapp.window.ApplicationWindowLauncher;
+import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
 
 public class NEXApp {
 
     private boolean launched = false;
-    private ApplicationWindowLauncher window;
+    private WebviewWindow window;
 
     public NEXApp() {
-        window = new ApplicationWindowLauncher();
+        window = new WebviewWindow();
     }
 
     public void launch() {
@@ -20,7 +20,7 @@ public class NEXApp {
         }
     }
 
-    public ApplicationWindowLauncher getWindow() {
+    public WebviewWindow getWindow() {
         return window;
     }
 
