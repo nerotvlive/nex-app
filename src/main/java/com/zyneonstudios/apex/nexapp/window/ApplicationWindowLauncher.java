@@ -2,6 +2,8 @@ package com.zyneonstudios.apex.nexapp.window;
 
 import com.zyneonstudios.apex.nexapp.Main;
 import io.avaje.webview.Webview;
+
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 

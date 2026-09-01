@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomePage from '../pages/Dashboard.vue'
 import NotFoundError from '../pages/errors/NotFound.vue'
+import Library from "@/pages/Library.vue";
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -14,6 +15,12 @@ const routes: RouteRecordRaw[] = [
     name: 'Dashboard',
     meta: { title: 'Dashboard' },
     component: HomePage
+  },
+  {
+    path: '/library',
+    name: 'Library',
+    meta: { title: 'Library' },
+    component: Library
   },
   {
     path: '/:pathMatch(.*)*',

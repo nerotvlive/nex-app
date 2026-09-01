@@ -23,6 +23,10 @@ const startDrag = () => {
       <i class="bi bi-house-door"></i>
       <span>Dashboard</span>
     </router-link>
+    <router-link to="/library" @mousedown.stop active-class="active">
+      <i class="bi bi-grid-1x2-fill"></i>
+      <span>Library</span>
+    </router-link>
   </div>
 </template>
 
@@ -33,10 +37,13 @@ div.menu {
   padding: 0.5rem;
   gap: 0.5rem;
   width: 3.5rem;
+  min-width: 3.5rem;
   overflow: hidden;
   transition: all 0.25s ease;
+  -webkit-app-region: drag;
 
   button, a {
+    -webkit-app-region: no-drag;
     height: 2.5rem;
     min-width: 2.5rem;
     width: 2.5rem;
@@ -93,6 +100,7 @@ div.menu {
 
 div.menu.active {
   width: 12rem;
+  min-width: 12rem;
 
   button,a {
     width: 100%;
