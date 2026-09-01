@@ -12,6 +12,8 @@ div.flex.menuview {
         background: var(--color-zinc-900);
         gap: 5px;
         box-shadow: 0 0 0.75rem #00000050;
+        transition: all 0.15s ease;
+        white-space: nowrap;
 
         hr {
             color: var(--color-zinc-800);
@@ -43,6 +45,13 @@ div.flex.menuview {
             background: var(--color-zinc-900);
             box-shadow: unset;
         }
+    }
+
+    div.menu.disabled, div.menu:disabled {
+        min-width: 0;
+        max-width: 0;
+        padding: 0;
+        overflow-y: hidden;
     }
 
     div.content {
