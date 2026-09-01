@@ -6,8 +6,8 @@ div.flex.menuview {
     div.menu {
         overflow: hidden;
         overflow-y: auto;
-        max-width: 15rem;
-        min-width: 15rem;
+        max-width: 16rem;
+        min-width: 16rem;
         border-right: 1px solid var(--color-zinc-800);
         background: var(--color-zinc-900);
         gap: 5px;

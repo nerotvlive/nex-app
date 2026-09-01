@@ -4,7 +4,7 @@ import '@/assets/zyneonstudios/styles/components/menuview.css';
 
 <template>
   <div class="flex menuview">
-    <div class="flex flex-col p-2 menu">
+    <div class="flex flex-col p-3 menu">
       <slot name="menu"></slot>
     </div>
     <div class="content grow">
