@@ -6,14 +6,15 @@ div.flex.menuview {
     div.menu {
         overflow: hidden;
         overflow-y: auto;
-        max-width: 16rem;
-        min-width: 16rem;
+        max-width: 14rem;
+        min-width: 14rem;
         border-right: 1px solid var(--color-zinc-800);
         background: var(--color-zinc-900);
         gap: 5px;
         box-shadow: 0 0 0.75rem #00000050;
         transition: all 0.15s ease;
         white-space: nowrap;
+        font-size: 0.9rem;
 
         hr {
             color: var(--color-zinc-800);
@@ -50,8 +51,9 @@ div.flex.menuview {
     div.menu.disabled, div.menu:disabled {
         min-width: 0;
         max-width: 0;
-        padding: 0;
+        padding: 0.75rem 0;
         overflow-y: hidden;
+        border-right: none;
     }
 
     div.content {

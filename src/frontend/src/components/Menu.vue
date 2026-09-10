@@ -83,9 +83,9 @@ div.menu {
 
     span {
       opacity: 1;
-      z-index: 1;
       transform: translateX(0rem);
       transition: opacity 0.25s ease;
+      z-index: 10;
     }
   }
 
