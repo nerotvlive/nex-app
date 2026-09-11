@@ -67,8 +67,8 @@ const handlePlay = (instance: InstanceItem) => {
         </div>
         <hr>
         <input v-model="menuSearchQuery" type="text" placeholder="Search instances..." class="bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit mb-1 text-xs w-full py-2 px-4 rounded transition hover:shadow-md focus:shadow-md shadow-black/25"/>
-        <button v-for="inst in filteredMenuInstances" :key="inst.id" @click="selectInstance(inst)" class="grow flex items-center gap-2" :class="{ 'bg-zinc-700': currentView === inst.id }">
-          <i :class="['bi', inst.icon]"></i>
+        <button v-for="inst in filteredMenuInstances" :key="inst.id" @click="selectInstance(inst)" class="grow flex items-center gap-2" :class="{ 'active': currentView === inst.id || activeInstance?.id === inst.id }">
+          <i :class="['bi', inst.icon]"><span></span></i>
           <span class="truncate">{{ inst.title }}</span>
         </button>
       </template>

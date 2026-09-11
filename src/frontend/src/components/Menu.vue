@@ -90,10 +90,11 @@ div.menu {
   }
 
   button.active ,a.active {
-    background: white;
+    background: var(--color-blue-600);
+    box-shadow: 0 0 0.667rem var(--color-blue-600);
 
     i {
-      color: black;
+      color: white;
     }
   }
 }
@@ -119,8 +120,8 @@ div.menu.active {
   }
 
   button.active ,a.active {
-    background: white;
-    color: black;
+    background: var(--color-blue-600);
+    color: white;
   }
 }
 </style>

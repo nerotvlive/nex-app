@@ -40,10 +40,17 @@ div.flex.menuview {
             box-shadow: 0 0 0.4rem #00000050;
         }
 
+        button.active, a.active {
+            background: white;
+            color: black;
+            box-shadow: 0 0 0.4rem #00000050;
+        }
+
         button:disabled, a:disabled, button.disabled, a.disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background: var(--color-zinc-900);
+            color: #7c7c7c;
+            background: var(--color-zinc-800);
             box-shadow: unset;
         }
     }

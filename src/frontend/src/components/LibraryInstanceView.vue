@@ -18,6 +18,9 @@ const scrollToContent = () => {
     <MenuBar :title="title" :menuDisabled="menuDisabled" class="w-full border-b relative z-10">
       <template #menu>
         <div class="flex gap-1">
+          <button class="px-3 p-2 bg-blue-500/15 hover:bg-blue-500/25 text-white text-sm rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Update instance">
+            <i class="bi bi-download"></i>
+          </button>
           <button class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white text-sm rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Open instance folder">
             <i class="bi bi-folder2"></i>
           </button>
