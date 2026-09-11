@@ -47,7 +47,7 @@ const filteredInstances = computed(() => {
       </template>
     </MenuBar>
     <div class="grow overflow-y-auto overflow-hidden overview-bg p-3 pr-1">
-      <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pr-2 pb-6">
+      <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 pr-2 pb-6">
         <div v-for="inst in filteredInstances" :key="inst.id" @click="emit('select', inst)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-4 flex flex-col justify-between transition cursor-pointer group shadow-lg">
           <div>
             <div class="flex items-start justify-between mb-3">
@@ -55,13 +55,14 @@ const filteredInstances = computed(() => {
                 <i :class="['bi', inst.icon]"></i>
               </div>
               <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
-              {{ inst.loader }} {{ inst.version }}
-            </span>
+                {{ inst.loader }} {{ inst.version }}
+              </span>
             </div>
             <h3 class="font-bold text-lg mb-1">{{ inst.title }}</h3>
+            <p class="text-sm text-zinc-300">{{ inst.description }}</p>
           </div>
 
-          <div class="flex justify-end gap-2 mt-4 pt-3">
+          <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-t-zinc-700">
             <button @click.stop="emit('play', inst)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
               <i class="bi bi-play-fill"></i> Spielen
             </button>
@@ -77,8 +78,13 @@ const filteredInstances = computed(() => {
               <i :class="['bi', inst.icon]"></i>
             </div>
             <div>
-              <h3 class="font-bold text-base">{{ inst.title }}</h3>
-              <span class="text-xs text-zinc-400">{{ inst.loader }} • Minecraft {{ inst.version }}</span>
+              <div class="flex gap-2">
+                <h3 class="font-bold text-base">{{ inst.title }}</h3>
+                <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
+                  {{ inst.loader }} {{ inst.version }}
+                </span>
+              </div>
+              <p class="text-sm text-zinc-300">{{ inst.description }}</p>
             </div>
           </div>
           <div class="flex items-center gap-2">
