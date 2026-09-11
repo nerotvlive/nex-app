@@ -58,10 +58,9 @@ const filteredInstances = computed(() => {
             </span>
           </div>
           <h3 class="font-bold text-lg mb-1">{{ inst.title }}</h3>
-          <p class="text-xs text-zinc-400 line-clamp-2">Lokale Instanz verwaltet über die NEX App Core Engine.</p>
         </div>
 
-        <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-zinc-600/60">
+        <div class="flex justify-end gap-2 mt-4 pt-3">
           <button @click.stop="emit('play', inst)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
             <i class="bi bi-play-fill"></i> Spielen
           </button>
