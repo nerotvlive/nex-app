@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <div class="flex menuview">
-    <div class="flex flex-col p-3 menu" :class="{ disabled: isDisabled }">
+    <div class="flex flex-col menu" :class="{ disabled: isDisabled }">
       <slot name="menu"></slot>
     </div>
     <div class="content grow">
