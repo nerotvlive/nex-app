@@ -36,8 +36,11 @@ const scrollToContent = () => {
         <img alt="logo" src="https://www.wolkenspeicher.cloud/index.php/s/rNZSmanwYi8M2Xn/download" class="w-full h-full object-contain bg-black/25">
       </div>
       <div class="seperator"></div>
-      <div class="instance-content bg-zinc-800">
-
+      <div class="instance-content bg-zinc-800 relative">
+        <button class="fixed flex gap-2 bottom-4 right-4 text-2xl font-bold p-4 px-6 bg-blue-600 rounded-lg shadow-lg shadow-black/10 hover:bg-blue-500 hover:shadow-blue-600/10 transition hover:cursor-pointer">
+          <i class="bi bi-rocket-takeoff-fill"></i>
+          <span>LAUNCH</span>
+        </button>
       </div>
     </div>
   </div>
