@@ -66,7 +66,7 @@ const handlePlay = (instance: InstanceItem) => {
           </button>
         </div>
         <hr>
-        <input v-model="menuSearchQuery" type="text" placeholder="Search instances..." class="bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit mb-1 text-xs w-full py-2 px-4 rounded transition shadow-lg shadow-black/25"/>
+        <input v-model="menuSearchQuery" type="text" placeholder="Search instances..." class="bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit mb-1 text-xs w-full py-2 px-4 rounded transition hover:shadow-md focus:shadow-md shadow-black/25"/>
         <button v-for="inst in filteredMenuInstances" :key="inst.id" @click="selectInstance(inst)" class="grow flex items-center gap-2" :class="{ 'bg-zinc-700': currentView === inst.id }">
           <i :class="['bi', inst.icon]"></i>
           <span class="truncate">{{ inst.title }}</span>
@@ -80,7 +80,7 @@ const handlePlay = (instance: InstanceItem) => {
 
         <div class="h-full flex flex-col relative">
           <template v-if="currentView === 'overview'">
-            <LibraryOverview :instances="instances" @select="selectInstance" @play="handlePlay" />
+            <LibraryOverview :menuDisabled="isMenuDisabled" :instances="instances" @select="selectInstance" @play="handlePlay" />
           </template>
           <template v-else-if="activeInstance">
             <LibraryInstanceView :menuDisabled="isMenuDisabled" :title="activeInstance.title" :id="activeInstance.id" :key="activeInstance.id" />
@@ -95,14 +95,14 @@ const handlePlay = (instance: InstanceItem) => {
 .library {
   .menubutton {
     position: absolute;
-    z-index: 1;
+    z-index: 11;
     font-size: 1.25rem;
     justify-content: center;
     align-items: center;
     display: flex;
     width: 2rem;
     height: 2rem;
-    margin: 0.667rem;
+    margin: 0.8rem;
     border-radius: 33%;
     overflow: hidden;
     box-shadow: none !important;

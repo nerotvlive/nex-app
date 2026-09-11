@@ -8,7 +8,7 @@ div.flex.menuview {
         overflow-y: auto;
         max-width: 14rem;
         min-width: 14rem;
-        border-right: 1px solid var(--color-zinc-800);
+        border-right: 1px solid #ffffff25;;
         background: var(--color-zinc-900);
         gap: 5px;
         box-shadow: 0 0 0.75rem #00000050;

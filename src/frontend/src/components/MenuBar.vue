@@ -6,7 +6,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="transition-all text-xl bg-zinc-800/75 flex justify-between p-3 px-4 menubar h-14" :class="{ 'pl-13': menuDisabled }">
+  <div class="transition-all text-xl flex justify-between menubar items-center px-3" :class="{ 'pl-13': menuDisabled }">
     <div>
       <slot name="title">
         <strong>
@@ -24,8 +24,9 @@ defineProps<{
 
 <style scoped>
   .menubar {
-    border-color: #ffffff15;
-    box-shadow: 0 0 0.5rem #0009;
-    backdrop-filter: blur(10px);
+    background: #212123;
+    height: 3.5rem;
+    border-color: #ffffff25;
+    box-shadow: 0 0 0.5rem #0004;
   }
 </style>
