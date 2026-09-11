@@ -5,6 +5,7 @@ import io.avaje.webview.Webview;
 
 import java.awt.*;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class WebviewWindow {
 
@@ -26,7 +27,7 @@ public class WebviewWindow {
             Thread.ofPlatform().start(() -> {
                 try {
                     this.webview = Webview.builder()
-                            .title("NEX App")
+                            .title("nex-app")
                             .minSize(800, 480)
                             .width(width)
                             .height(height)

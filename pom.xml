@@ -39,6 +39,41 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/src/frontend/dist</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/resources/static</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>clean-old-static-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.build.outputDirectory}/static</directory>
+                                </fileset>
+                                <fileset>
+                                    <directory>${project.basedir}/src/frontend/dist</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -46,13 +81,6 @@
                         --add-modules jdk.unsupported.desktop --add-exports java.desktop/jdk.swing.interop=ALL-UNNAMED
                     </jvmArguments>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -82,12 +110,14 @@
                 <executions>
                     <execution>
                         <id>install node and pnpm</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>install-node-and-pnpm</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>pnpm install</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>pnpm</goal>
                         </goals>
@@ -97,11 +127,35 @@
                     </execution>
                     <execution>
                         <id>pnpm run build</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>pnpm</goal>
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-frontend-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/frontend/dist</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
