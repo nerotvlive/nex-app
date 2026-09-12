@@ -47,30 +47,6 @@ const handlePlay = (instance: InstanceItem) => {
   <div class="library h-full w-full">
     <MenuView :isDisabled="isMenuDisabled">
       <template #menu>
-        <!--div class="flex gap-1">
-          <button @click="toggleMenu" :class="{ 'rotate-0': !isMenuDisabled, 'rotate-180': isMenuDisabled }">
-            <i class="bi bi-arrow-bar-left"></i>
-          </button>
-          <button @click="showOverview" class="grow" :class="{ 'bg-zinc-700': currentView === 'overview' }">
-            <i class="bi bi-grid-3x3-gap-fill"></i>
-            Overview
-          </button>
-        </div>
-        <div class="flex gap-1">
-          <button class="grow">
-            <i class="bi bi-plus-lg"></i>
-            Add Instance
-          </button>
-          <button>
-            <i class="bi bi-arrow-clockwise"></i>
-          </button>
-        </div>
-        <hr>
-        <input v-model="menuSearchQuery" type="text" placeholder="Search instances..." class="bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit mb-1 text-xs w-full py-2 px-4 rounded transition hover:shadow-md focus:shadow-md shadow-black/25"/>
-        <button v-for="inst in filteredMenuInstances" :key="inst.id" @click="selectInstance(inst)" class="grow flex items-center gap-2" :class="{ 'active': currentView === inst.id || activeInstance?.id === inst.id }">
-          <i :class="['bi', inst.icon]"><span></span></i>
-          <span class="truncate">{{ inst.title }}</span>
-        </button-->
         <div class="flex flex-col h-full">
           <div class="flex gap-1 p-3 pb-1">
             <button @click="toggleMenu" :class="{ 'rotate-0': !isMenuDisabled, 'rotate-180': isMenuDisabled }">
@@ -81,7 +57,7 @@ const handlePlay = (instance: InstanceItem) => {
               Overview
             </button>
           </div>
-          <div class="mx-3 pt-0 pb-2 border-b border-zinc-800">
+          <div class="mx-3 pt-0 pb-1 border-b border-zinc-800">
             <div class="flex gap-1 pb-2">
               <button class="grow">
                 <i class="bi bi-plus-lg"></i>
@@ -99,9 +75,11 @@ const handlePlay = (instance: InstanceItem) => {
               <span class="truncate">{{ inst.title }}</span>
               </button>
           </div>
-          <div class="mx-3 pt-1 pb-2 border-t border-zinc-800">
-            ACCOUNT<br>
-            ACCOUNT
+          <div class="pb-1 shadow-t">
+            <div class="px-3 pt-1 border-t border-zinc-800">
+              ACCOUNT<br>
+              ACCOUNT
+            </div>
           </div>
         </div>
       </template>
@@ -126,6 +104,11 @@ const handlePlay = (instance: InstanceItem) => {
 
 <style scoped>
 .library {
+  .shadow-t {
+    z-index: 10;
+    box-shadow: 0 -0.4rem 1rem #0002;
+  }
+
   .menubutton {
     position: absolute;
     z-index: 11;
