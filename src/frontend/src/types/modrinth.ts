@@ -13,6 +13,19 @@ export interface CategoryTag {
     header: string;
 }
 
+export interface LoaderTag {
+    name: string;
+    icon: string;
+    supported_project_types: string[];
+}
+
+export interface GameVersion {
+    version: string;
+    version_type: 'release' | 'snapshot' | 'alpha' | 'beta';
+    date: string;
+    major: boolean;
+}
+
 export interface SearchResultItem {
     project_id: string;
     project_type: ProjectType;

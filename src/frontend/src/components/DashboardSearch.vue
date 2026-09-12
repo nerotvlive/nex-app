@@ -3,7 +3,7 @@ import MenuBar from "@/components/MenuBar.vue";
 import { ref, onMounted } from "vue";
 import MenuView from "@/components/MenuView.vue";
 import { useRoute } from "vue-router";
-import {SearchResponse, SearchResultItem} from "@/types/modrinth";
+import {CategoryTag, GameVersion, LoaderTag, SearchResponse, SearchResultItem} from "@/types/modrinth";
 
 const isMenuDisabled = ref(false);
 const searchBar = ref<HTMLInputElement | null>(null);
@@ -17,9 +17,11 @@ const emit = defineEmits<{
 const viewMode = ref<'grid' | 'list'>('grid');
 const searchQuery = ref('');
 
-const selectedType = ref<'mod' | 'modpack' | 'resourcepack' | 'shader' | ''>('');
+const selectedType = ref<'mod' | 'modpack' | 'resourcepack' | 'shader' | 'datapack' | ''>('modpack');
 const selectedLoader = ref('');
 const selectedVersion = ref('');
+const selectedCategory = ref('');
+const selectedEnvironment = ref<'client_only' | 'client_and_server' | 'server_only' | 'dedicated_server_only' | 'singleplayer_only' | ''>('');
 const selectedSort = ref<'relevance' | 'downloads' | 'follows' | 'newest' | 'updated'>('relevance');
 
 const offset = ref(0);
@@ -30,11 +32,23 @@ const results = ref<SearchResultItem[]>([])
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 
-const facets: string[][] = [];
+const loaders = ref<LoaderTag[]>([]);
+const gameVersions = ref<GameVersion[]>([]);
+const categories = ref<CategoryTag[]>([]);
 
-if (selectedType.value) { facets.push([`projects_type:${selectedType.value}`]) }
-if (selectedType.value) { facets.push([`categories:${selectedLoader.value}`]) }
-if (selectedType.value) { facets.push([`versions:${selectedVersion.value}`]) }
+async function loadFilterOptions() {
+  const [loaderResponse, versionResponse, categoryResponse] = await Promise.all([
+    fetch('https://api.modrinth.com/v2/tag/loader'),
+    fetch('https://api.modrinth.com/v2/tag/game_version'),
+    fetch('https://api.modrinth.com/v2/tag/category'),
+  ]);
+
+  loaders.value = await loaderResponse.json();
+  categories.value = await categoryResponse.json();
+
+  const versions: GameVersion[] = await versionResponse.json();
+  gameVersions.value = versions.filter(version => version.version_type === 'release').sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+}
 
 async function searchModrinth(loadMore: boolean = false) {
   const query = searchQuery.value.trim();
@@ -49,6 +63,14 @@ async function searchModrinth(loadMore: boolean = false) {
   error.value = null;
 
   try {
+    const facets: string[][] = [];
+
+    if (selectedType.value) { facets.push([`project_type:${selectedType.value}`]) }
+    if (selectedLoader.value) { facets.push([`categories:${selectedLoader.value}`]) }
+    if (selectedCategory.value) { facets.push([`categories:${selectedCategory.value}`]) }
+    if (selectedVersion.value) { facets.push([`versions:${selectedVersion.value}`]) }
+    if (selectedEnvironment.value) {facets.push([`environment:${selectedEnvironment.value}`])}
+
     const params = new URLSearchParams({
       query,
       limit: String(limit),
@@ -82,7 +104,8 @@ function handleScroll(event: Event) {
 
 onMounted(async () => {
   searchBar.value?.focus();
-  searchModrinth(true)
+  await loadFilterOptions();
+  searchModrinth(true);
 
   const input = route.query.q;
   if (typeof input === "string") {
@@ -116,10 +139,40 @@ const toggleMenu = () => {
             </button>
           </div>
           <div class="grow flex flex-col p-3 gap-1 pt-2 overflow-y-auto overflow-hidden">
-            <button class="grow">
-              <i class="bi bi-plus-lg"></i>
-              Beispielknopf
-            </button>
+            <select v-model="selectedType" @change="searchModrinth()">
+              <option value="">All Types</option>
+              <option value="mod">Mods</option>
+              <option value="modpack">Modpacks</option>
+              <option value="resourcepack">Reourcepacks</option>
+              <option value="shader">Shader</option>
+              <option value="datapack">Datapacks</option>
+            </select>
+            <select v-model="selectedLoader" @change="searchModrinth()">
+              <option value="">All Loaders</option>
+              <option v-for="loader in loaders.filter(loader => !selectedType || loader.supported_project_types.includes(selectedType))" :key="loader.name">
+                {{ loader.name }}
+              </option>
+            </select>
+            <select v-model="selectedVersion" @change="searchModrinth()">
+              <option value="">All Versions</option>
+              <option v-for="version in gameVersions.filter(v => v.version_type === 'release')" :key="version.version" :value="version.version">
+                {{ version.version }}
+              </option>
+            </select>
+            <select v-model="selectedEnvironment" @change="searchModrinth()">
+              <option value="">All Environments</option>
+              <option value="client_only">Client only</option>
+              <option value="client_and_server">Client and server</option>
+              <option value="server_only">Server only</option>
+              <option value="dedicated_server_only">Dedicated server only</option>
+              <option value="singleplayer_only">Singleplayer only</option>
+            </select>
+            <select v-model="selectedCategory" @change="searchModrinth()">
+              <option value="">All Categories</option>
+              <option v-for="category in categories.filter(category =>!selectedType || category.project_type === selectedType)" :key="category.name" :value="category.name">
+                {{ category.name }}
+              </option>
+            </select>
           </div>
           <div class="pb-1 shadow-t">
             <div class="px-3 pt-1 border-t border-zinc-800">
@@ -165,7 +218,7 @@ const toggleMenu = () => {
                       />
                     </div>
                     <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
-                {{ proj.project_type }} - {{ proj.versions.slice(0, 2).join(', ') }}
+                {{ proj.project_type }}
               </span>
                   </div>
                   <h3 class="font-bold text-lg mb-1">{{ proj.title }}</h3>
@@ -196,7 +249,7 @@ const toggleMenu = () => {
                     <div class="flex gap-2">
                       <h3 class="font-bold text-base">{{ proj.title }}</h3>
                       <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
-                  {{ proj.project_type }} - {{ proj.versions.slice(0, 2).join(', ') }}
+                  {{ proj.project_type }}
                 </span>
                     </div>
                     <p class="text-sm text-zinc-300">{{ proj.description }}</p>
