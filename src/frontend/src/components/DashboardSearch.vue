@@ -217,12 +217,7 @@ const toggleMenu = () => {
                 <div>
                   <div class="flex items-start justify-between mb-3">
                     <div class="max-w-12 max-h-12 min-w-12 min-h-12 rounded-md bg-zinc-700 flex items-center justify-center text-xl text-white group-hover:scale-105 transition">
-                      <img
-                          v-if="proj.icon_url"
-                          :src="proj.icon_url"
-                          :alt="proj.title"
-                          class="w-full h-full object-cover rounded-md"
-                      />
+                      <img v-if="proj.icon_url" :src="proj.icon_url" :alt="proj.title" class="w-full h-full object-cover rounded-md"/>
                     </div>
                     <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
                 {{ proj.project_type }}
@@ -245,12 +240,7 @@ const toggleMenu = () => {
               <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex items-center justify-between transition cursor-pointer shadow-md">
                 <div class="flex items-center gap-4">
                   <div class="min-w-10 max-w-10 min-h-10 max-h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white-400">
-                    <img
-                        v-if="proj.icon_url"
-                        :src="proj.icon_url"
-                        :alt="proj.title"
-                        class="w-full h-full object-cover rounded-md"
-                    />
+                    <img v-if="proj.icon_url" :src="proj.icon_url" :alt="proj.title" class="w-full h-full object-cover rounded-md"/>
                   </div>
                   <div>
                     <div class="flex gap-2">
@@ -281,8 +271,5 @@ const toggleMenu = () => {
 </template>
 
 <style scoped>
-select, option {
-  background: black !important;
-  color: white !important;
-}
+
 </style>
