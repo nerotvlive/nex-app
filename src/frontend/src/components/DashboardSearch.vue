@@ -147,7 +147,14 @@ const toggleMenu = () => {
               <option value="shader">Shader</option>
               <option value="datapack">Datapacks</option>
             </select>
-            <select v-model="selectedLoader" @change="searchModrinth()">
+            <select v-model="selectedLoader" @change="searchModrinth(); selectedLoader = '';" class="block" :class="selectedType !== 'modpack' && selectedType !== '' && selectedType !== 'mod' ? 'hidden' : ''">
+              <option value="">All Loaders</option>
+              <option value="fabric">Fabric</option>
+              <option value="forge">Forge</option>
+              <option value="neoforge">NeoForge</option>
+              <option value="quilt">Quilt</option>
+            </select>
+            <select v-model="selectedLoader" @change="searchModrinth()" class="hidden">
               <option value="">All Loaders</option>
               <option v-for="loader in loaders.filter(loader => !selectedType || loader.supported_project_types.includes(selectedType))" :key="loader.name">
                 {{ loader.name }}
@@ -274,5 +281,8 @@ const toggleMenu = () => {
 </template>
 
 <style scoped>
-
+select, option {
+  background: black !important;
+  color: white !important;
+}
 </style>
