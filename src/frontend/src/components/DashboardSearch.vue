@@ -25,6 +25,11 @@ console.log(route.query.q);
 
 onMounted(async () => {
   searchBar.value?.focus();
+
+  const input = route.query.q;
+  if (typeof input === "string") {
+    searchQuery.value = input;
+  }
 })
 
 </script>
