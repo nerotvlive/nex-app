@@ -4,14 +4,6 @@ import {computed, ref, onMounted} from "vue";
 import type {InstanceItem} from "@/data/mockInstances";
 import MenuView from "@/components/MenuView.vue";
 
-const openExternal = (url: string) => {
-  if (window.openUrl) {
-    window.openUrl(url);
-  } else {
-    window.open(url, '_blank');
-  }
-};
-
 const props = defineProps<{
   instances: InstanceItem[];
   menuDisabled?: boolean;
