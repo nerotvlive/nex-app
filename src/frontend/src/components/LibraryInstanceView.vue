@@ -67,6 +67,7 @@ const scrollToContent = () => {
 
   .instance-content {
     min-height: calc(100% + 1px);
+    background: linear-gradient(to bottom, transparent, var(--color-zinc-800));
   }
 }
 </style>
