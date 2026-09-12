@@ -73,6 +73,7 @@ function handleScroll(event: Event) {
 
 onMounted(async () => {
   searchBar.value?.focus();
+  searchModrinth(true)
 
   const input = route.query.q;
   if (typeof input === "string") {
