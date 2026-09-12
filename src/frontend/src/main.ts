@@ -6,6 +6,14 @@ import router from './router'
 
 const app = createApp(App)
 
+export const openExternal = (url: string) => {
+    if (window.openUrl) {
+        window.openUrl(url);
+    } else {
+        window.open(url, '_blank');
+    }
+};
+
 app.use(router)
 app.mount('#app')
 

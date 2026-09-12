@@ -1,16 +1,9 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
 
-const openExternal = (url: string) => {
-  if (window.openUrl) {
-    window.openUrl(url);
-  } else {
-    window.open(url, '_blank');
-  }
-};
-
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { openExternal } from "@/main";
 
 const router = useRouter()
 const searchQuery = ref('')
