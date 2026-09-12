@@ -23,10 +23,6 @@ const startDrag = () => {
       <i class="bi bi-house-door"></i>
       <span>Dashboard</span>
     </router-link>
-    <router-link to="/search" @mousedown.stop active-class="active">
-      <i class="bi bi-search"></i>
-      <span>Search</span>
-    </router-link>
     <router-link to="/library" @mousedown.stop active-class="active">
       <i class="bi bi-grid-1x2"></i>
       <span>Library</span>

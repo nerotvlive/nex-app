@@ -80,10 +80,6 @@ const scrollToContent = () => {
   .dashboard-header {
     background: url("../assets/zyneonstudios/images/background.jpg");
     background-size: cover;
-
-    img {
-      backdrop-filter: blur(4px);
-    }
   }
 
   .dashboard-content {
