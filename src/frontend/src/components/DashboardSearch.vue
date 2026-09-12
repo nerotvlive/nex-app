@@ -216,7 +216,7 @@ const toggleMenu = () => {
               <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-4 flex flex-col justify-between transition cursor-pointer group shadow-lg">
                 <div>
                   <div class="flex items-start justify-between mb-3">
-                    <div class="w-12 h-12 rounded-md bg-zinc-700 flex items-center justify-center text-xl text-white group-hover:scale-105 transition">
+                    <div class="max-w-12 max-h-12 min-w-12 min-h-12 rounded-md bg-zinc-700 flex items-center justify-center text-xl text-white group-hover:scale-105 transition">
                       <img
                           v-if="proj.icon_url"
                           :src="proj.icon_url"
@@ -244,7 +244,7 @@ const toggleMenu = () => {
             <div v-else class="flex flex-col gap-2 pr-2 pb-6">
               <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex items-center justify-between transition cursor-pointer shadow-md">
                 <div class="flex items-center gap-4">
-                  <div class="w-10 h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white-400">
+                  <div class="min-w-10 max-w-10 min-h-10 max-h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white-400">
                     <img
                         v-if="proj.icon_url"
                         :src="proj.icon_url"
