@@ -139,7 +139,7 @@ const toggleMenu = () => {
             </button>
           </div>
           <div class="grow flex flex-col p-3 gap-1 pt-2 overflow-y-auto overflow-hidden">
-            <select v-model="selectedType" @change="searchModrinth()">
+            <select v-model="selectedType" @change="searchModrinth(); selectedLoader = ''; selectedCategory = '';">
               <option value="">All Types</option>
               <option value="mod">Mods</option>
               <option value="modpack">Modpacks</option>
@@ -147,7 +147,7 @@ const toggleMenu = () => {
               <option value="shader">Shader</option>
               <option value="datapack">Datapacks</option>
             </select>
-            <select v-model="selectedLoader" @change="searchModrinth(); selectedLoader = '';" class="block" :class="selectedType !== 'modpack' && selectedType !== '' && selectedType !== 'mod' ? 'hidden' : ''">
+            <select v-model="selectedLoader" @change="searchModrinth();" class="block" :class="selectedType !== 'modpack' && selectedType !== '' && selectedType !== 'mod' ? 'hidden' : ''">
               <option value="">All Loaders</option>
               <option value="fabric">Fabric</option>
               <option value="forge">Forge</option>
