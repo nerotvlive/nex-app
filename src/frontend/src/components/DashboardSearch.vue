@@ -20,40 +20,55 @@ const emit = defineEmits<{
 const viewMode = ref<'grid' | 'list'>('grid');
 const searchQuery = ref('');
 
-
+const offset = ref(0);
+const limit = 24;
+const hasMore = ref<boolean>(true);
 
 const results = ref<SearchResultItem[]>([])
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 
-async function searchModrinth() {
+async function searchModrinth(loadMore: boolean = false) {
   const query = searchQuery.value.trim();
-  if (!query) {
+  if (loading.value || (loadMore && !hasMore.value)) return;
+  if (!loadMore) {
+    offset.value = 0;
     results.value = [];
-    return;
+    hasMore.value = true;
   }
 
   loading.value = true;
   error.value = null;
 
   try {
-    const response = await fetch(`https://api.modrinth.com/v2/search?${new URLSearchParams({
+    const params = new URLSearchParams({
       query,
-      limit: '24',
+      limit: String(limit),
+      offset: String(offset.value),
       index: 'relevance'
-    })}`);
+    });
+
+    const response = await fetch(`https://api.modrinth.com/v2/search?${params}`);
     if (!response.ok) {
       window.alert("Modrinth Wallah Krise: " + response.statusText);
     }
 
     const data: SearchResponse = await response.json();
-    results.value = data.hits;
+    results.value.push(...data.hits);
+    offset.value += data.hits.length;
+    hasMore.value = offset.value < data.total_hits;
 
   } catch (e) {
     window.alert("Wallah Krise: " + e);
   } finally {
     loading.value = false;
   }
+}
+
+function handleScroll(event: Event) {
+  const element = event.target as HTMLElement;
+  const nearEnd = element.scrollTop + element.clientHeight >= element.scrollHeight - 150;
+  if (nearEnd) searchModrinth(true);
 }
 
 onMounted(async () => {
@@ -75,27 +90,57 @@ onMounted(async () => {
       </template>
 
       <template #content>
-        <MenuBar :menuDisabled="menuDisabled" class="w-full border-b relative z-10">
-          <template #title>
-            <div class="flex gap-1 text-sm">
-              <button @click="viewMode = 'grid'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'grid', 'opacity-50 text-zinc-400': viewMode !== 'grid' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Grid-Layout">
-                <i class="bi bi-grid-fill"></i>
-              </button>
-              <button @click="viewMode = 'list'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'list', 'opacity-50 text-zinc-400': viewMode !== 'list' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="List-Layout">
-                <i class="bi bi-list-ul"></i>
-              </button>
+        <div class="h-full flex flex-col">
+          <MenuBar :menuDisabled="menuDisabled" class="w-full border-b relative z-10">
+            <template #title>
+              <div class="flex gap-1 text-sm">
+                <button @click="viewMode = 'grid'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'grid', 'opacity-50 text-zinc-400': viewMode !== 'grid' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Grid-Layout">
+                  <i class="bi bi-grid-fill"></i>
+                </button>
+                <button @click="viewMode = 'list'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'list', 'opacity-50 text-zinc-400': viewMode !== 'list' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="List-Layout">
+                  <i class="bi bi-list-ul"></i>
+                </button>
+              </div>
+            </template>
+            <template #menu>
+              <input v-model="searchQuery" ref="searchBar" type="text" placeholder="Search resources..." @keyup.enter="searchModrinth()" class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25" />
+            </template>
+          </MenuBar>
+
+          <div @scroll="handleScroll" class="min-h-0 grow overflow-y-auto overview-bg p-3 pr-1">
+            <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 pr-2 pb-6">
+              <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-4 flex flex-col justify-between transition cursor-pointer group shadow-lg">
+                <div>
+                  <div class="flex items-start justify-between mb-3">
+                    <div class="w-12 h-12 rounded-md bg-zinc-700 flex items-center justify-center text-xl text-white group-hover:scale-105 transition">
+                      <img
+                          v-if="proj.icon_url"
+                          :src="proj.icon_url"
+                          :alt="proj.title"
+                          class="w-full h-full object-cover rounded-md"
+                      />
+                    </div>
+                    <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
+                {{ proj.project_type }} - {{ proj.versions.slice(0, 2).join(', ') }}
+              </span>
+                  </div>
+                  <h3 class="font-bold text-lg mb-1">{{ proj.title }}</h3>
+                  <p class="text-sm text-zinc-300">{{ proj.description }}</p>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-t-zinc-700">
+                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-download"></i> Install
+                  </button>
+                </div>
+              </div>
             </div>
-          </template>
-          <template #menu>
-            <input v-model="searchQuery" ref="searchBar" type="text" placeholder="Search resources..." @keyup.enter="searchModrinth()" class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25" />
-          </template>
-        </MenuBar>
-        <div class="grow overflow-y-auto overflow-hidden overview-bg p-3 pr-1">
-          <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 pr-2 pb-6">
-            <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-4 flex flex-col justify-between transition cursor-pointer group shadow-lg">
-              <div>
-                <div class="flex items-start justify-between mb-3">
-                  <div class="w-12 h-12 rounded-md bg-zinc-700 flex items-center justify-center text-xl text-white group-hover:scale-105 transition">
+
+
+            <div v-else class="flex flex-col gap-2 pr-2 pb-6">
+              <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex items-center justify-between transition cursor-pointer shadow-md">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white-400">
                     <img
                         v-if="proj.icon_url"
                         :src="proj.icon_url"
@@ -103,49 +148,26 @@ onMounted(async () => {
                         class="w-full h-full object-cover rounded-md"
                     />
                   </div>
-                  <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
-                {{ proj.project_type }} - {{ proj.versions.slice(0, 2).join(', ') }}
-              </span>
-                </div>
-                <h3 class="font-bold text-lg mb-1">{{ proj.title }}</h3>
-                <p class="text-sm text-zinc-300">{{ proj.description }}</p>
-              </div>
-
-              <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-t-zinc-700">
-                <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
-                  <i class="bi bi-download"></i> Install
-                </button>
-              </div>
-            </div>
-          </div>
-
-
-          <div v-else class="flex flex-col gap-2 pr-2 pb-6">
-            <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex items-center justify-between transition cursor-pointer shadow-md">
-              <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white-400">
-                  <img
-                      v-if="proj.icon_url"
-                      :src="proj.icon_url"
-                      :alt="proj.title"
-                      class="w-full h-full object-cover rounded-md"
-                  />
-                </div>
-                <div>
-                  <div class="flex gap-2">
-                    <h3 class="font-bold text-base">{{ proj.title }}</h3>
-                    <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
+                  <div>
+                    <div class="flex gap-2">
+                      <h3 class="font-bold text-base">{{ proj.title }}</h3>
+                      <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
                   {{ proj.project_type }} - {{ proj.versions.slice(0, 2).join(', ') }}
                 </span>
+                    </div>
+                    <p class="text-sm text-zinc-300">{{ proj.description }}</p>
                   </div>
-                  <p class="text-sm text-zinc-300">{{ proj.description }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-download"></i> Install
+                  </button>
                 </div>
               </div>
-              <div class="flex items-center gap-2">
-                <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
-                  <i class="bi bi-download"></i> Install
-                </button>
-              </div>
+            </div>
+
+            <div v-if="loading" class="py-2 text-center text-zinc-300">
+              Loading more results...
             </div>
           </div>
         </div>
