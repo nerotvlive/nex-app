@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomePage from '../pages/Dashboard.vue'
 import NotFoundError from '../pages/errors/NotFound.vue'
 import Library from "@/pages/Library.vue";
+import DashboardSearch from "@/components/DashboardSearch.vue";
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -21,6 +22,12 @@ const routes: RouteRecordRaw[] = [
     name: 'Library',
     meta: { title: 'Library' },
     component: Library
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    meta: { title: 'Search' },
+    component: DashboardSearch
   },
   {
     path: '/:pathMatch(.*)*',
