@@ -21,7 +21,7 @@ const handleSearch = () => {
     <MenuBar title="NEX App" class="w-full border-b relative z-10">
       <template #menu>
         <div class="flex gap-1">
-          <input @input="handleSearch()" onclick="location.href = '/search';" v-model="searchQuery" type="text" placeholder="Search resources..." class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25 outline-none"/>
+          <input @input="handleSearch()" @click="handleSearch()" v-model="searchQuery" type="text" placeholder="Search resources..." class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25 outline-none"/>
         </div>
       </template>
     </MenuBar>
