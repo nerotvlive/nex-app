@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
 import { ref, onMounted } from "vue";
-import type { InstanceItem } from "@/data/mockInstances";
 import MenuView from "@/components/MenuView.vue";
 import { useRoute } from "vue-router";
 import {SearchResponse, SearchResultItem} from "@/types/modrinth";
 
 const props = defineProps<{
-  instances: InstanceItem[];
   menuDisabled?: boolean;
 }>();
 
