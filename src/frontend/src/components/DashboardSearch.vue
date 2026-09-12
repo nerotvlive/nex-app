@@ -210,7 +210,7 @@ const toggleMenu = () => {
             </select>
             <i class="bi bi-chevron-down absolute right-3 top-1 mt-0.5"></i>
           </div>
-          <div class="grow flex flex-col p-3 gap-2 pt-2 overflow-y-auto">
+          <div class="grow flex flex-col p-3 gap-1 pt-2 overflow-y-auto">
             <div class="bg-zinc-800 rounded-lg p-2 pb-1" :class="{'pb-2':isVersionsOpen}">
               <span @click="isVersionsOpen = !isVersionsOpen" class="flex justify-between items-center cursor-pointer select-none">
                 <strong class="text-xs uppercase tracking-wider text-zinc-400 block mb-1">Game versions</strong>
