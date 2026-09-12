@@ -1,27 +1,38 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import MenuView from "@/components/MenuView.vue";
 import LibraryInstanceView from "@/components/LibraryInstanceView.vue";
 import LibraryOverview from "@/components/LibraryOverview.vue";
-import { mockInstances, type InstanceItem } from '@/data/mockInstances';
+import { fetchInstances, type InstanceWrapper } from '@/data/mockInstances';
 
 const isMenuDisabled = ref(false);
-const instances = ref<InstanceItem[]>(mockInstances);
+const instances = ref<InstanceWrapper[]>([]);
 const menuSearchQuery = ref('');
 
 const currentView = ref<string>('overview');
-const activeInstance = ref<InstanceItem | null>(null);
+const activeInstance = ref<InstanceWrapper | null>(null);
+
+onMounted(async () => {
+  instances.value = await fetchInstances();
+});
 
 const filteredMenuInstances = computed(() => {
   if (!menuSearchQuery.value.trim()) {
     return instances.value;
   }
   const query = menuSearchQuery.value.toLowerCase();
-  return instances.value.filter(inst =>
-      inst.title.toLowerCase().includes(query) ||
-      inst.loader.toLowerCase().includes(query) ||
-      inst.version.toLowerCase().includes(query)
-  );
+  return instances.value.filter(item => {
+    const info = item.instance.info;
+    const versions = item.instance.versions;
+    return (
+        info.name.toLowerCase().includes(query) ||
+        info.description.toLowerCase().includes(query) ||
+        info.version.toLowerCase().includes(query) ||
+        (versions.fabric && versions.fabric.toLowerCase().includes(query)) ||
+        (versions.forge && versions.forge.toLowerCase().includes(query)) ||
+        versions.minecraft.toLowerCase().includes(query)
+    );
+  });
 });
 
 const toggleMenu = () => {
@@ -33,13 +44,18 @@ const showOverview = () => {
   activeInstance.value = null;
 };
 
-const selectInstance = (instance: InstanceItem) => {
-  currentView.value = instance.id;
-  activeInstance.value = instance;
+const selectInstance = (item: InstanceWrapper) => {
+  const instanceId = item.instance.meta.id;
+  currentView.value = instanceId;
+  activeInstance.value = item;
 };
 
-const handlePlay = (instance: InstanceItem) => {
-  alert(`Launch placeholder: ${instance.title} (${instance.loader} ${instance.version})...`);
+const handlePlay = (item: InstanceWrapper) => {
+  const info = item.instance.info;
+  const versions = item.instance.versions;
+  const loaderName = versions.fabric ? 'Fabric' : 'Forge';
+  const loaderVersion = versions.fabric || versions.forge || '';
+  alert(`Launch placeholder: ${info.name} (${loaderName} ${loaderVersion})...`);
 };
 </script>
 
@@ -63,17 +79,20 @@ const handlePlay = (instance: InstanceItem) => {
                 <i class="bi bi-plus-lg"></i>
                 Add Instance
               </button>
-              <button>
+              <button @click="async () => { instances = await fetchInstances(); }">
                 <i class="bi bi-arrow-clockwise"></i>
               </button>
             </div>
             <input v-model="menuSearchQuery" type="text" placeholder="Search instances..." class="bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit mb-1 text-xs w-full py-2 px-4 rounded transition hover:shadow-md focus:shadow-md shadow-black/25"/>
           </div>
           <div class="grow flex flex-col p-3 gap-1 pt-2 overflow-y-auto overflow-hidden">
-            <button v-for="inst in filteredMenuInstances" :key="inst.id" @click="selectInstance(inst)" class="grow flex items-center gap-2" :class="{ 'active': currentView === inst.id || activeInstance?.id === inst.id }">
-              <i :class="['bi', inst.icon]"><span></span></i>
-              <span class="truncate">{{ inst.title }}</span>
-              </button>
+            <button v-for="item in filteredMenuInstances" :key="item.instance.meta.id" @click="selectInstance(item)" class="grow flex items-center gap-2" :class="{ 'active': currentView === item.instance.meta.id || activeInstance?.instance.meta.id === item.instance.meta.id }">
+              <span class="w-5 h-5 rounded bg-zinc-700 flex items-center justify-center text-xs text-white overflow-hidden shrink-0">
+                <img v-if="item.instance.resources?.icon" :src="item.instance.resources.icon" alt="" class="w-full h-full object-cover" />
+                <i v-else class="bi bi-controller"></i>
+              </span>
+              <span class="truncate">{{ item.instance.info.name }}</span>
+            </button>
           </div>
           <div class="pb-1 shadow-t">
             <div class="px-3 pt-1 border-t border-zinc-800">
@@ -94,7 +113,7 @@ const handlePlay = (instance: InstanceItem) => {
             <LibraryOverview :menuDisabled="isMenuDisabled" :instances="instances" @select="selectInstance" @play="handlePlay" />
           </template>
           <template v-else-if="activeInstance">
-            <LibraryInstanceView :menuDisabled="isMenuDisabled" :title="activeInstance.title" :id="activeInstance.id" :key="activeInstance.id" />
+            <LibraryInstanceView :menuDisabled="isMenuDisabled" :instance="activeInstance" :key="activeInstance.instance.meta.id" />
           </template>
         </div>
       </template>

@@ -6,15 +6,10 @@ defineProps<{
   menuDisabled?: boolean;
   instance: InstanceWrapper;
 }>();
-
-const scrollToContent = () => {
-  const contentElement = document.querySelector('.instance-content');
-  contentElement?.scrollIntoView({ behavior: 'smooth' });
-};
 </script>
 
 <template>
-  <div class="h-full instance-view flex flex-col">
+  <div class="h-full instance-settings flex flex-col">
     <MenuBar :title="instance.instance.info.name" :menuDisabled="menuDisabled" class="w-full border-b relative z-10">
       <template #menu>
         <div class="flex gap-1">
@@ -31,19 +26,8 @@ const scrollToContent = () => {
       </template>
     </MenuBar>
     <div class="grow overflow-y-auto overflow-hidden">
-      <!-- Dynamisches Hintergrundbild via Style-Binding -->
-      <div
-          class="instance-header relative flex h-2/5 max-h-2/5 justify-center items-center"
-          :style="instance.instance.resources?.background ? { backgroundImage: `url(${instance.instance.resources.background})` } : {}"
-      >
-        <i @click="scrollToContent" class="bi bi-caret-down-fill absolute bottom-3 right-3 z-10 w-6 h-6 flex justify-center items-center hover:bg-white/25 rounded-md hover:cursor-pointer"></i>
-        <img v-if="instance.instance.resources?.logo" alt="" :src="instance.instance.resources.logo" class="w-full h-full object-contain bg-black/25">
-      </div>
       <div class="seperator"></div>
       <div class="instance-content bg-zinc-800 relative p-6">
-        <h2 class="text-xl font-bold mb-2">{{ instance.instance.info.name }}</h2>
-        <p class="text-zinc-300 text-sm mb-4">{{ instance.instance.info.description }}</p>
-
         <button class="fixed flex gap-2 bottom-4 right-4 text-2xl font-bold p-4 px-6 bg-blue-600 rounded-lg shadow-lg shadow-black/10 hover:bg-blue-500 hover:shadow-blue-600/10 transition hover:cursor-pointer">
           <i class="bi bi-rocket-takeoff-fill"></i>
           <span>LAUNCH</span>
@@ -54,21 +38,12 @@ const scrollToContent = () => {
 </template>
 
 <style scoped>
-.instance-view {
+.instance-settings {
   .seperator {
     width: 100%;
     height: 1px;
     background-color: var(--color-zinc-800);
     border-top: 1px solid #ffffff25;
-  }
-
-  .instance-header {
-    background-size: cover;
-    background-position: center;
-
-    img {
-      backdrop-filter: blur(4px);
-    }
   }
 
   .instance-content {
