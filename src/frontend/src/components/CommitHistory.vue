@@ -91,11 +91,11 @@ onMounted(() => {
     </div>
 
     <div v-else-if="commits.length > 0" class="relative pl-6 border-l-2 border-zinc-700 space-y-8">
-      <div v-for="item in commits" :key="item.sha" class="relative group bg-zinc-500/25 hover:bg-zinc-400/25 py-2 px-4 rounded transition hover:shadow-md shadow-black/25">
+      <div v-for="item in commits" :key="item.sha" class="relative group bg-zinc-500/25 hover:bg-zinc-400/25 py-2 px-4 rounded transition hover:shadow-md shadow-black/25 hover:cursor-pointer" @click="openExternal(item.html_url)">
         <div class="absolute -left-7.75 top-1 w-3 h-3 bg-zinc-700 rounded-full border-2 border-zinc-900 group-hover:bg-indigo-600 transition-colors"></div>
 
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-          <a @click="openExternal(item.html_url)" rel="noopener noreferrer" class="text-sm text-zinc-100 hover:text-indigo-400 transition-colors hover:cursor-pointer">
+          <a rel="noopener noreferrer" class="text-sm text-zinc-100 transition-colors">
             {{ item.commit.message }}
           </a>
           <span class="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded w-fit">
