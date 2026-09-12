@@ -199,7 +199,7 @@ const toggleMenu = () => {
             <button @click="toggleMenu" class="min-w-fit" :class="{ 'rotate-0': !isMenuDisabled, 'rotate-180': isMenuDisabled }">
               <i class="bi bi-arrow-bar-left"></i>
             </button>
-            <input v-model="filterSearch" type="text" placeholder="Search filters..." class="bg-zinc-800 hover:bg-zinc-700 text-white h-full mb-1 text-xs w-full py-2 px-3 rounded transition hover:shadow-md focus:shadow-md shadow-black/25"/>
+            <input v-model="filterSearch" type="text" placeholder="Search filters..." class="bg-zinc-800 hover:bg-zinc-700 text-white h-full mb-1 text-xs w-full py-2 px-3 rounded-[0.4rem] transition hover:shadow-md focus:shadow-md shadow-black/25"/>
           </div>
           <div class="mx-3 flex pt-0 pb-2 border-b border-zinc-800 relative">
             <select v-model="selectedType" @change="selectedLoaders = []; selectedCategories = []; searchModrinth(); " class="w-full">
