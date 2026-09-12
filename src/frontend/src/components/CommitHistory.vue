@@ -71,7 +71,7 @@ onMounted(() => {
         Changelog
         <span class="text-sm font-normal text-zinc-500">({{ owner }}/{{ repo }}@{{ branch }} commits)</span>
       </h2>
-      <button @click="fetchCommits" class="px-3 py-1.5 text-sm font-medium bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg transition-colors cursor-pointer">
+      <button @click="fetchCommits" class="flex text-xs gap-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit py-2 px-4 rounded transition shadow-sm shadow-black/25 hover:cursor-pointer">
         Refresh
       </button>
     </div>
@@ -91,11 +91,11 @@ onMounted(() => {
     </div>
 
     <div v-else-if="commits.length > 0" class="relative pl-6 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-8">
-      <div v-for="item in commits" :key="item.sha" class="relative group">
+      <div v-for="item in commits" :key="item.sha" class="relative group bg-zinc-500/25 hover:bg-zinc-400/25 py-2 px-4 rounded transition shadow-md shadow-black/25">
         <div class="absolute -left-7.75 top-1 w-3 h-3 bg-zinc-300 dark:bg-zinc-700 rounded-full border-2 border-white dark:border-zinc-900 group-hover:bg-indigo-600 transition-colors"></div>
 
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-          <a @click="openExternal(item.html_url)" rel="noopener noreferrer" class="font-medium text-zinc-900 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors line-clamp-1 hover:cursor-pointer">
+          <a @click="openExternal(item.html_url)" rel="noopener noreferrer" class="font-medium text-zinc-900 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors hover:cursor-pointer">
             {{ item.commit.message }}
           </a>
           <span class="text-xs font-mono text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded w-fit">
