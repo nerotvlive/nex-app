@@ -20,6 +20,11 @@ const emit = defineEmits<{
 const viewMode = ref<'grid' | 'list'>('grid');
 const searchQuery = ref('');
 
+const selectedType = ref<'mod' | 'modpack' | 'resourcepack' | 'shader' | ''>('');
+const selectedLoader = ref('');
+const selectedVersion = ref('');
+const selectedSort = ref<'relevance' | 'downloads' | 'follows' | 'newest' | 'updated'>('relevance');
+
 const offset = ref(0);
 const limit = 24;
 const hasMore = ref<boolean>(true);
@@ -27,6 +32,12 @@ const hasMore = ref<boolean>(true);
 const results = ref<SearchResultItem[]>([])
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
+
+const facets: string[][] = [];
+
+if (selectedType.value) { facets.push([`projects_type:${selectedType.value}`]) }
+if (selectedType.value) { facets.push([`categories:${selectedLoader.value}`]) }
+if (selectedType.value) { facets.push([`versions:${selectedVersion.value}`]) }
 
 async function searchModrinth(loadMore: boolean = false) {
   const query = searchQuery.value.trim();
@@ -45,7 +56,8 @@ async function searchModrinth(loadMore: boolean = false) {
       query,
       limit: String(limit),
       offset: String(offset.value),
-      index: 'relevance'
+      index: selectedSort.value,
+      facets: JSON.stringify(facets)
     });
 
     const response = await fetch(`https://api.modrinth.com/v2/search?${params}`);
