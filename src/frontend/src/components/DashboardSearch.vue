@@ -199,18 +199,18 @@ const toggleMenu = () => {
             <button @click="toggleMenu" class="min-w-fit" :class="{ 'rotate-0': !isMenuDisabled, 'rotate-180': isMenuDisabled }">
               <i class="bi bi-arrow-bar-left"></i>
             </button>
-            <input v-model="filterSearch" type="text" placeholder="Search filters..." class="bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-full mb-1 text-xs w-full py-2 px-4 rounded transition hover:shadow-md focus:shadow-md shadow-black/25"/>
+            <input v-model="filterSearch" type="text" placeholder="Search filters..." class="bg-zinc-800 hover:bg-zinc-700 text-white h-full mb-1 text-xs w-full py-2 px-3 rounded transition hover:shadow-md focus:shadow-md shadow-black/25"/>
           </div>
-          <div class="mx-3 flex pt-0 pb-1 border-b border-zinc-800 relative">
+          <div class="mx-3 flex pt-0 pb-2 border-b border-zinc-800 relative">
             <select v-model="selectedType" @change="selectedLoaders = []; selectedCategories = []; searchModrinth(); " class="w-full">
               <option value="mod">Mods</option>
               <option value="modpack">Modpacks</option>
               <option value="resourcepack">Resourcepacks</option>
               <option value="shader">Shaderpacks</option>
             </select>
-            <i class="bi bi-chevron-down absolute right-3 bottom-2"></i>
+            <i class="bi bi-chevron-down absolute right-3 top-1 mt-0.5"></i>
           </div>
-          <div class="grow flex flex-col p-3 gap-3 pt-2 overflow-y-auto">
+          <div class="grow flex flex-col p-3 gap-2 pt-2 overflow-y-auto">
             <div class="bg-zinc-800 rounded-lg p-2 pb-1" :class="{'pb-2':isVersionsOpen}">
               <span @click="isVersionsOpen = !isVersionsOpen" class="flex justify-between items-center cursor-pointer select-none">
                 <strong class="text-xs uppercase tracking-wider text-zinc-400 block mb-1">Game versions</strong>
