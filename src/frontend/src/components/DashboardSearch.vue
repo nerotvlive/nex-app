@@ -5,10 +5,7 @@ import MenuView from "@/components/MenuView.vue";
 import { useRoute } from "vue-router";
 import {SearchResponse, SearchResultItem} from "@/types/modrinth";
 
-const props = defineProps<{
-  menuDisabled?: boolean;
-}>();
-
+const isMenuDisabled = ref(false);
 const searchBar = ref<HTMLInputElement | null>(null);
 const route = useRoute();
 
@@ -93,18 +90,52 @@ onMounted(async () => {
   }
 })
 
+const toggleMenu = () => {
+  isMenuDisabled.value = !isMenuDisabled.value;
+};
 </script>
 
 <template>
   <div class="h-full search-view flex flex-col">
-    <MenuView :isDisabled="menuDisabled">
+    <MenuView :isDisabled="isMenuDisabled">
       <template #menu>
-
+        <div class="flex flex-col h-full">
+          <div class="flex gap-1 p-3 pb-1">
+            <button @click="toggleMenu" :class="{ 'rotate-0': !isMenuDisabled, 'rotate-180': isMenuDisabled }">
+              <i class="bi bi-arrow-bar-left"></i>
+            </button>
+            <button class="grow">
+              <i class="bi bi-grid-3x3-gap-fill"></i>
+              Beispielknopf
+            </button>
+          </div>
+          <div class="mx-3 flex pt-0 pb-1 border-b border-zinc-800">
+            <button class="grow">
+              <i class="bi bi-plus-lg"></i>
+              Beispielknopf
+            </button>
+          </div>
+          <div class="grow flex flex-col p-3 gap-1 pt-2 overflow-y-auto overflow-hidden">
+            <button class="grow">
+              <i class="bi bi-plus-lg"></i>
+              Beispielknopf
+            </button>
+          </div>
+          <div class="pb-1 shadow-t">
+            <div class="px-3 pt-1 border-t border-zinc-800">
+              SOURCE<br>
+              SOURCE
+            </div>
+          </div>
+        </div>
       </template>
 
       <template #content>
+        <span @click="toggleMenu" class="menubutton" :class="{ 'hide rotate-180': !isMenuDisabled, 'rotate-0': isMenuDisabled }">
+          <i class="bi bi-arrow-bar-right transition-all"></i>
+        </span>
         <div class="h-full flex flex-col">
-          <MenuBar :menuDisabled="menuDisabled" class="w-full border-b relative z-10">
+          <MenuBar :menuDisabled="isMenuDisabled" class="w-full border-b relative z-10">
             <template #title>
               <div class="flex gap-1 text-sm">
                 <button @click="viewMode = 'grid'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'grid', 'opacity-50 text-zinc-400': viewMode !== 'grid' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Grid-Layout">

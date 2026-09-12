@@ -122,33 +122,5 @@ const handlePlay = (item: InstanceWrapper) => {
 </template>
 
 <style scoped>
-.library {
-  .shadow-t {
-    z-index: 10;
-    box-shadow: 0 -0.4rem 1rem #0002;
-  }
 
-  .menubutton {
-    position: absolute;
-    z-index: 11;
-    font-size: 1.25rem;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    width: 2rem;
-    height: 2rem;
-    margin: 0.8rem;
-    border-radius: 33%;
-    overflow: hidden;
-    box-shadow: none !important;
-  }
-  .menubutton:hover {
-    background: #fff3;
-    cursor: pointer;
-  }
-  .hide {
-    opacity: 0;
-    z-index: -1;
-  }
-}
 </style>
