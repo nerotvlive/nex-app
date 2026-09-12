@@ -21,7 +21,14 @@ div.flex.menuview {
             margin: 0.334rem 0;
         }
 
-        button, a {
+        option {
+            background: black !important;
+            color: white !important;
+        }
+
+        button, a, select {
+            -webkit-appearance: none;
+            appearance: none;
             background: var(--color-zinc-800);
             text-align: left;
             padding: 0.334rem 0.5rem;
@@ -34,19 +41,19 @@ div.flex.menuview {
             transition: all 0.15s ease;
         }
 
-        button:hover, a:hover {
+        button:hover, a:hover, select:hover {
             background: var(--color-zinc-700);
             cursor: pointer;
             box-shadow: 0 0 0.4rem #00000050;
         }
 
-        button.active, a.active {
+        button.active, a.active, select.active {
             background: white;
             color: black;
             box-shadow: 0 0 0.4rem #00000050;
         }
 
-        button:disabled, a:disabled, button.disabled, a.disabled {
+        button:disabled, a:disabled, button.disabled, a.disabled, select.disabled {
             opacity: 0.5;
             cursor: not-allowed;
             color: #7c7c7c;
