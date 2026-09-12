@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
-import {computed, ref, onMounted} from "vue";
-import type {InstanceItem} from "@/data/mockInstances";
+import { ref, onMounted } from "vue";
+import type { InstanceItem } from "@/data/mockInstances";
 import MenuView from "@/components/MenuView.vue";
+import { useRoute } from "vue-router";
 
 const props = defineProps<{
   instances: InstanceItem[];
   menuDisabled?: boolean;
 }>();
+
+const searchBar = ref<HTMLInputElement | null>(null);
+const route = useRoute();
 
 const emit = defineEmits<{
   (e: 'select', instance: InstanceItem): void;
@@ -17,20 +21,10 @@ const emit = defineEmits<{
 const viewMode = ref<'grid' | 'list'>('grid');
 const searchQuery = ref('');
 
-const filteredInstances = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return props.instances;
-  }
-  const query = searchQuery.value.toLowerCase();
-  return props.instances.filter(inst =>
-      inst.title.toLowerCase().includes(query) ||
-      inst.loader.toLowerCase().includes(query) ||
-      inst.version.toLowerCase().includes(query)
-  );
-});
+console.log(route.query.q);
 
-onMounted(() => {
-
+onMounted(async () => {
+  searchBar.value?.focus();
 })
 
 </script>
@@ -55,12 +49,12 @@ onMounted(() => {
             </div>
           </template>
           <template #menu>
-            <input v-model="searchQuery" type="text" placeholder="Search resources..." class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25" />
+            <input v-model="searchQuery" ref="searchBar" type="text" placeholder="Search resources..." class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25" />
           </template>
         </MenuBar>
         <div class="grow overflow-y-auto overflow-hidden overview-bg p-3 pr-1">
           <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 pr-2 pb-6">
-            <div v-for="inst in filteredInstances" :key="inst.id" @click="emit('select', inst)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-4 flex flex-col justify-between transition cursor-pointer group shadow-lg">
+            <div v-for="inst in instances" :key="inst.id" @click="emit('select', inst)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-4 flex flex-col justify-between transition cursor-pointer group shadow-lg">
               <div>
                 <div class="flex items-start justify-between mb-3">
                   <div class="w-12 h-12 rounded-md bg-zinc-700 flex items-center justify-center text-xl text-white group-hover:scale-105 transition">
@@ -84,7 +78,7 @@ onMounted(() => {
 
 
           <div v-else class="flex flex-col gap-2 pr-2 pb-6">
-            <div v-for="inst in filteredInstances" :key="inst.id" @click="emit('select', inst)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex items-center justify-between transition cursor-pointer shadow-md">
+            <div v-for="inst in instances" :key="inst.id" @click="emit('select', inst)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex items-center justify-between transition cursor-pointer shadow-md">
               <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white-400">
                   <i :class="['bi', inst.icon]"></i>
