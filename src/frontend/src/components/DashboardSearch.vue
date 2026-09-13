@@ -4,6 +4,7 @@ import { ref, computed, onMounted } from "vue";
 import MenuView from "@/components/MenuView.vue";
 import { useRoute } from "vue-router";
 import {CategoryTag, GameVersion, LoaderTag, SearchResponse, SearchResultItem} from "@/types/modrinth";
+import {openExternal} from "@/main";
 
 const isMenuDisabled = ref(false);
 const searchBar = ref<HTMLInputElement | null>(null);
@@ -304,21 +305,24 @@ const toggleMenu = () => {
                       <img v-if="proj.icon_url" :src="proj.icon_url" :alt="proj.title" class="w-full h-full object-cover rounded-md"/>
                     </div>
                     <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
-                      {{ proj.project_type }}
+                      by {{ proj.author }}
                     </span>
                   </div>
                   <h3 class="font-bold text-lg mb-1">{{ proj.title }}</h3>
                   <p class="text-sm text-zinc-300">{{ proj.description }}</p>
                 </div>
                 <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-t-zinc-700">
-                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                  <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </button>
+                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
                     <i class="bi bi-download"></i> Install
                   </button>
                 </div>
               </div>
             </div>
             <div v-else class="flex flex-col gap-2 pr-2 pb-6">
-              <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex items-center justify-between transition cursor-pointer shadow-md">
+              <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex gap-2 items-center justify-between transition cursor-pointer shadow-md">
                 <div class="flex items-center gap-4">
                   <div class="min-w-10 max-w-10 min-h-10 max-h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white">
                     <img v-if="proj.icon_url" :src="proj.icon_url" :alt="proj.title" class="w-full h-full object-cover rounded-md"/>
@@ -327,14 +331,17 @@ const toggleMenu = () => {
                     <div class="flex gap-2">
                       <h3 class="font-bold text-base">{{ proj.title }}</h3>
                       <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300">
-                        {{ proj.project_type }}
+                        by {{ proj.author }}
                       </span>
                     </div>
                     <p class="text-sm text-zinc-300">{{ proj.description }}</p>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                  <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </button>
+                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
                     <i class="bi bi-download"></i> Install
                   </button>
                 </div>
