@@ -200,7 +200,7 @@
                                     <vendor>Zyneon Apex</vendor>
                                     <mainJar>${project.build.finalName}.jar</mainJar>
                                     <mainClass>org.springframework.boot.loader.launch.JarLauncher</mainClass>
-                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <icon>${project.basedir}/src/main/resources/icon.ico</icon>
                                     <type>APP_IMAGE</type>
                                     <winConsole>true</winConsole>
                                     <javaOptions>
