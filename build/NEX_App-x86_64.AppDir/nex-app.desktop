@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=NEX App
+Exec=nex-app -m %U
+Icon=nex-app
+Categories=Utility;
+Terminal=false
+StartupNotify=true
+StartupWMClass=nex-app
+MimeType=application/zip;x-modrinth-mrpack;x-scheme-handler/modrinth;x-scheme-handler/curseforge;x-scheme-handler/cfauth;x-scheme-handler/curseforge-checkout;<

@@ -1,0 +1,6 @@
+#!/bin/sh
+SELF=$(readlink -f "$0")
+HERE=$(dirname "$SELF")
+JAVA_BIN="$HERE/usr/lib/jre/bin/java"
+JAR_PATH="$HERE/usr/bin/nex-app.jar"
+exec "$JAVA_BIN" -jar "$JAR_PATH" "$@"

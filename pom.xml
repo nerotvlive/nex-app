@@ -164,7 +164,7 @@
         </plugins>
     </build>
 
-    <!--profiles>
+    <profiles>
         <profile>
             <id>windows-exe</id>
             <activation>
@@ -202,5 +202,42 @@
                 </plugins>
             </build>
         </profile>
-    </profiles-->
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-x86_64.AppDir/usr/bin/nex-app.jar" />
+                                        <chmod file="${project.basedir}/build/appimagetool.AppImage" perm="755" />
+                                        <exec executable="./appimagetool-x86_64.AppImage" dir="${project.basedir}/build" failonerror="true">
+                                            <env key="ARCH" value="x86_64" />
+                                            <arg value="NEX_App-x86_64.AppDir" />
+                                            <arg value="NEX_App-${project.version}-x86_64.AppImage" />
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${project.version}-x86_64.AppImage" todir="${project.build.directory}" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
