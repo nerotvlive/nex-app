@@ -231,6 +231,8 @@
                                             <arg value="NEX_App-${project.version}-x86_64.AppImage" />
                                         </exec>
                                         <move file="${project.basedir}/build/NEX_App-${project.version}-x86_64.AppImage" todir="${project.build.directory}" />
+                                        <delete file="${project.basedir}/build/NEX_App-x86_64.AppDir/.DirIcon" />
+                                        <delete file="${project.basedir}/build/NEX_App-x86_64.AppDir/usr/bin/nex-app.jar" />
                                     </target>
                                 </configuration>
                             </execution>
