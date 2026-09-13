@@ -12,8 +12,9 @@
     </parent>
 
     <groupId>com.zyneonstudios.apex</groupId>
+    <name>NEX App</name>
     <artifactId>nex-app</artifactId>
-    <version>26.0.0-revision.1</version>
+    <version>4.0.1</version>
 
     <properties>
         <java.version>25</java.version>
@@ -169,4 +170,44 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>windows-exe</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>1.8.0</version>
+                        <executions>
+                            <execution>
+                                <id>jpackage</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                                <configuration>
+                                    <input>${project.build.directory}</input>
+                                    <destination>${project.build.directory}/jpackage</destination>
+                                    <name>${name}</name>
+                                    <appVersion>${version}</appVersion>
+                                    <vendor>Zyneon Apex</vendor>
+                                    <mainJar>${project.build.finalName}.jar</mainJar>
+                                    <mainClass>com.zyneonstudios.apex.nexapp.Main</mainClass>
+                                    <!--icon>${project.basedir}/src/main/html/favicon.ico</icon-->
+                                    <type>APP_IMAGE</type>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

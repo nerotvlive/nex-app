@@ -1,5 +1,6 @@
 package com.zyneonstudios.apex.nexapp.springboot.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,17 +29,42 @@ public class InstanceController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/instance")
-    public ArrayNode getInstance() {
+    @GetMapping("/instances")
+    public ArrayNode getInstances() {
         if(nex == null) {
             nex = buildNEX();
         }
         return nex;
     }
 
-    @GetMapping("/instances")
-    public ArrayNode getInstances() {
-        return getInstance();
+    @GetMapping("/instance")
+    public ArrayNode getInstance() {
+        return getInstances();
+    }
+
+    @GetMapping("/instance/**")
+    public ObjectNode getInstanceById(HttpServletRequest request) {
+        if (nex == null) {
+            nex = buildNEX();
+        }
+
+        String path = request.getRequestURI();
+        String prefix = path.startsWith("/api/v1/instances/") ? "/api/v1/instances/" : "/api/v1/instance/";
+        String id = path.substring(prefix.length());
+
+        for (JsonNode instanceNode : nex) {
+            JsonNode metaId = instanceNode.path("instance").path("meta").path("id");
+            if (metaId.isString() && id.equals(metaId.asString())) {
+                return (ObjectNode) instanceNode;
+            }
+        }
+
+        return error("404", "Instance not found");
+    }
+
+    @GetMapping("/instances/**")
+    public ObjectNode getInstancesById(HttpServletRequest request) {
+        return getInstanceById(request);
     }
 
     public static ObjectNode fetchJsonObject(String url) {
@@ -50,7 +76,6 @@ public class InstanceController {
         }
     }
 
-
     private ArrayNode buildNEX() {
         ArrayNode nex = objectMapper.createArrayNode();
         for(JsonNode instanceString : fetchJsonObject("https://zyneonstudios.github.io/nexus-nex/zyndex").get("instances").deepCopy().asArray()) {
@@ -59,5 +84,12 @@ public class InstanceController {
             nex.add(instance);
         }
         return nex;
+    }
+
+    private ObjectNode error(String errorId, String errorMessage) {
+        ObjectNode error = objectMapper.createObjectNode();
+        error.put("errorId", errorId);
+        error.put("errorMessage", errorMessage);
+        return error;
     }
 }
