@@ -16,3 +16,17 @@ target/*
 *.njsproj
 *.sln
 *.sw?
+
+build/NEX_App-aarch64-flatpak/repo
+build/NEX_App-aarch64-flatpak/repo/*
+build/NEX_App-aarch64-flatpak/.flatpak-builder
+build/NEX_App-aarch64-flatpak/.flatpak-builder/*
+build/NEX_App-aarch64-flatpak/build-dir
+build/NEX_App-aarch64-flatpak/build-dir/*
+
+build/NEX_App-x86_64-flatpak/repo
+build/NEX_App-x86_64-flatpak/repo/*
+build/NEX_App-x86_64-flatpak/.flatpak-builder
+build/NEX_App-x86_64-flatpak/.flatpak-builder/*
+build/NEX_App-x86_64-flatpak/build-dir
+build/NEX_App-x86_64-flatpak/build-dir/*

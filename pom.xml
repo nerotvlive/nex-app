@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
 
     <groupId>com.zyneonstudios.apex</groupId>
     <name>NEX App</name>
-    <artifactId>nex-app</artifactId>
+    <artifactId>NEX_App</artifactId>
     <version>4.0.1</version>
 
     <properties>
@@ -27,6 +27,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>4.1.1</version>
         </dependency>
 
         <dependency>
@@ -42,6 +43,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
+                <version>3.5.0</version>
                 <configuration>
                     <filesets>
                         <fileset>
@@ -77,25 +79,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>4.1.1</version>
                 <configuration>
                     <jvmArguments>
                         --add-modules jdk.unsupported.desktop --add-exports java.desktop/jdk.swing.interop=ALL-UNNAMED
                     </jvmArguments>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <configuration>
-                    <mainClass>com.zyneonstudios.apex.nexapp.Main</mainClass>
-                    <options>
-                        <option>--add-modules</option>
-                        <option>jdk.unsupported.desktop</option>
-                        <option>--add-exports</option>
-                        <option>java.desktop/jdk.swing.interop=ALL-UNNAMED</option>
-                    </options>
                 </configuration>
             </plugin>
 
@@ -142,6 +130,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <id>copy-frontend-resources</id>
@@ -166,7 +155,7 @@
 
     <profiles>
         <profile>
-            <id>windows-exe</id>
+            <id>windows</id>
             <activation>
                 <os>
                     <family>Windows</family>
@@ -174,6 +163,24 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.original"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.panteleyev</groupId>
                         <artifactId>jpackage-maven-plugin</artifactId>
@@ -192,9 +199,16 @@
                                     <appVersion>${version}</appVersion>
                                     <vendor>Zyneon Apex</vendor>
                                     <mainJar>${project.build.finalName}.jar</mainJar>
-                                    <mainClass>com.zyneonstudios.apex.nexapp.Main</mainClass>
+                                    <mainClass>org.springframework.boot.loader.launch.JarLauncher</mainClass>
                                     <icon>${project.basedir}/src/main/html/favicon.ico</icon>
                                     <type>APP_IMAGE</type>
+                                    <winConsole>true</winConsole>
+                                    <javaOptions>
+                                        <option>--add-modules</option>
+                                        <option>jdk.unsupported.desktop</option>
+                                        <option>--add-exports</option>
+                                        <option>java.desktop/jdk.swing.interop=ALL-UNNAMED</option>
+                                    </javaOptions>
                                 </configuration>
                             </execution>
                         </executions>
@@ -203,12 +217,17 @@
             </build>
         </profile>
         <profile>
-            <id>linux</id>
+            <id>linux-x86_64</id>
             <activation>
                 <os>
                     <family>unix</family>
+                    <arch>amd64</arch>
                 </os>
             </activation>
+            <properties>
+                <appimage.arch>x86_64</appimage.arch>
+                <jre.source.folder>Azul_Zulu-JRE-x86_64</jre.source.folder>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -223,16 +242,128 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-x86_64.AppDir/usr/bin/nex-app.jar" />
-                                        <chmod file="${project.basedir}/build/appimagetool.AppImage" perm="755" />
-                                        <exec executable="./appimagetool-x86_64.AppImage" dir="${project.basedir}/build" failonerror="true">
-                                            <env key="ARCH" value="x86_64" />
-                                            <arg value="NEX_App-x86_64.AppDir" />
-                                            <arg value="NEX_App-${project.version}-x86_64.AppImage" />
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.original"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre/bin" perm="755" includes="*"/>
+
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre/bin" perm="755" includes="*"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <chmod file="${project.basedir}/build/appimagetool-${appimage.arch}.AppImage" perm="755" />
+
+                                        <exec executable="./appimagetool-${appimage.arch}.AppImage" dir="${project.basedir}/build" failonerror="true">
+                                            <env key="ARCH" value="${appimage.arch}" />
+                                            <arg value="NEX_App-${appimage.arch}.AppDir" />
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.AppImage" />
                                         </exec>
-                                        <move file="${project.basedir}/build/NEX_App-${project.version}-x86_64.AppImage" todir="${project.build.directory}" />
-                                        <delete file="${project.basedir}/build/NEX_App-x86_64.AppDir/.DirIcon" />
-                                        <delete file="${project.basedir}/build/NEX_App-x86_64.AppDir/usr/bin/nex-app.jar" />
+                                        <move file="${project.basedir}/build/NEX_App-${project.version}-${appimage.arch}.AppImage" todir="${project.build.directory}" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/.DirIcon" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar" />
+                                        <exec executable="flatpak-builder" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="--repo=repo"/>
+                                            <arg value="--force-clean"/>
+                                            <arg value="build-dir"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp.json"/>
+                                        </exec>
+                                        <exec executable="flatpak" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="build-bundle"/>
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="repo"/>
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.flatpak"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp"/>
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/NEX_App-${project.version}-${appimage.arch}.flatpak" todir="${project.build.directory}"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/repo"/>
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>linux-aarch64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <appimage.arch>aarch64</appimage.arch>
+                <jre.source.folder>Azul_Zulu-JRE-aarch64</jre.source.folder>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.original"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre/bin" perm="755" includes="*"/>
+
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre/bin" perm="755" includes="*"/>
+
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <chmod file="${project.basedir}/build/appimagetool-${appimage.arch}.AppImage" perm="755" />
+                                        <exec executable="./appimagetool-${appimage.arch}.AppImage" dir="${project.basedir}/build" failonerror="true">
+                                            <env key="ARCH" value="${appimage.arch}" />
+                                            <arg value="NEX_App-${appimage.arch}.AppDir" />
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.AppImage" />
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${project.version}-${appimage.arch}.AppImage" todir="${project.build.directory}" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/.DirIcon" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar" />
+                                        <exec executable="flatpak-builder" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="--repo=repo"/>
+                                            <arg value="--force-clean"/>
+                                            <arg value="build-dir"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp.json"/>
+                                        </exec>
+                                        <exec executable="flatpak" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="build-bundle"/>
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="repo"/>
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.flatpak"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp"/>
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/NEX_App-${project.version}-${appimage.arch}.flatpak" todir="${project.build.directory}"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/repo"/>
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
                                     </target>
                                 </configuration>
                             </execution>

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=NEX App
+Exec=nex-app-launcher -m %U
+Icon=com.zyneonstudios.apex.nexapp
+Categories=Utility;
+Terminal=false
+StartupNotify=true
+StartupWMClass=com.zyneonstudios.apex.nexapp
+MimeType=application/zip;application/x-modrinth-mrpack;x-scheme-handler/modrinth;x-scheme-handler/curseforge;x-scheme-handler/cfauth;x-scheme-handler/curseforge-checkout;
