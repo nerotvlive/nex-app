@@ -4,6 +4,7 @@ import com.zyneonstudios.apex.nexapp.Main;
 import io.avaje.webview.Webview;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -38,6 +39,7 @@ public class WebviewWindow {
 
                     initWindowControls();
                     initBindings();
+                    this.webview.setIcon(Path.of("src/main/resources/icon.ico"));
                     this.webview.run();
                     System.exit(0);
                 } catch (Throwable e) {

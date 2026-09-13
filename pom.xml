@@ -35,13 +35,6 @@
             <version>0.29</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.53.4.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -89,13 +82,6 @@
                         --add-modules jdk.unsupported.desktop --add-exports java.desktop/jdk.swing.interop=ALL-UNNAMED
                     </jvmArguments>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -175,24 +161,10 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.zyneonstudios.apex.nexapp.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
-    <profiles>
+    <!--profiles>
         <profile>
             <id>windows-exe</id>
             <activation>
@@ -214,21 +186,15 @@
                                     <goal>jpackage</goal>
                                 </goals>
                                 <configuration>
-                                    <input>target</input>
+                                    <input>${project.build.directory}</input>
                                     <destination>${project.build.directory}/jpackage</destination>
                                     <name>${name}</name>
                                     <appVersion>${version}</appVersion>
                                     <vendor>Zyneon Apex</vendor>
                                     <mainJar>${project.build.finalName}.jar</mainJar>
                                     <mainClass>com.zyneonstudios.apex.nexapp.Main</mainClass>
-                                    <!--icon>${project.basedir}/src/main/html/favicon.ico</icon-->
+                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
                                     <type>APP_IMAGE</type>
-                                    <arguments>
-                                        <argument>--add-modules</argument>
-                                        <argument>jdk.unsupported.desktop</argument>
-                                        <argument>--add-exports</argument>
-                                        <argument>java.desktop/jdk.swing.interop=ALL-UNNAMED</argument>
-                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -236,5 +202,5 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles-->
 </project>
