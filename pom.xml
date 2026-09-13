@@ -89,6 +89,13 @@
                         --add-modules jdk.unsupported.desktop --add-exports java.desktop/jdk.swing.interop=ALL-UNNAMED
                     </jvmArguments>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
