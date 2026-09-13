@@ -6,6 +6,7 @@ import io.avaje.webview.Webview;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class WebviewWindow {
@@ -39,7 +40,7 @@ public class WebviewWindow {
 
                     initWindowControls();
                     initBindings();
-                    this.webview.setIcon(Path.of("src/main/resources/icon.ico"));
+                    initIcon();
                     this.webview.run();
                     System.exit(0);
                 } catch (Throwable e) {
@@ -49,6 +50,20 @@ public class WebviewWindow {
         } catch (Exception e) {
             throw new RuntimeException("Failed to launch native WebView", e);
         }
+    }
+
+    private void initIcon() {
+        try {
+            var iconStream = getClass().getResourceAsStream("/icon.ico");
+            if (iconStream != null) {
+                Path tempIcon = Files.createTempFile("icon", ".ico");
+                tempIcon.toFile().deleteOnExit();
+                try (iconStream) {
+                    Files.copy(iconStream, tempIcon, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                }
+                this.webview.setIcon(tempIcon);
+            }
+        } catch (IOException _) {}
     }
 
     private void initWindowControls() {
