@@ -24,7 +24,7 @@ const scrollToContent = () => {
 
 <template>
   <div class="h-full dashboard-view flex flex-col">
-    <MenuBar title="NEX App" class="w-full border-b relative z-10">
+    <MenuBar title="NEX App" class="w-full border-b relative z-10 backdrop-blur-2xl" style="background: #1c1c1e99;">
       <template #menu>
         <div class="flex gap-1">
           <input @input="handleSearch()" @click="handleSearch()" v-model="searchQuery" type="text" placeholder="Search resources..." class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25 outline-none"/>
@@ -69,6 +69,8 @@ const scrollToContent = () => {
 
 <style scoped>
 .dashboard-view {
+  background: url("../assets/zyneonstudios/images/background.jpg");
+  background-size: cover;
 
   .seperator {
     width: 100%;
@@ -77,13 +79,8 @@ const scrollToContent = () => {
     border-top: 1px solid #ffffff25;
   }
 
-  .dashboard-header {
-    background: url("../assets/zyneonstudios/images/background.jpg");
-    background-size: cover;
-  }
-
   .dashboard-content {
-    background: linear-gradient(to bottom, transparent, var(--color-zinc-800));
+    background: linear-gradient(to bottom, var(--color-zinc-900), var(--color-zinc-800));
     min-height: calc(100% + 1px);
 
     ::-webkit-scrollbar-track {

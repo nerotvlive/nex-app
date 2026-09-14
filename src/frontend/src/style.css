@@ -64,7 +64,7 @@ body {
 
   ::-webkit-scrollbar-track {
     position: absolute;
-    background: transparent;
+    background: var(--color-zinc-900);
   }
 
   ::-webkit-scrollbar-thumb {

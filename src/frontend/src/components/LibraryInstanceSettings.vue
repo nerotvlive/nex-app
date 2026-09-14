@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { InstanceWrapper } from '@/data/mockInstances';
+import type { InstanceWrapper } from '@/data/instances';
 
 defineProps<{
   instance: InstanceWrapper;

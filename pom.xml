@@ -202,7 +202,7 @@
                                     <mainClass>org.springframework.boot.loader.launch.JarLauncher</mainClass>
                                     <icon>${project.basedir}/src/main/resources/icon.ico</icon>
                                     <type>APP_IMAGE</type>
-                                    <winConsole>true</winConsole>
+                                    <winConsole>false</winConsole>
                                     <javaOptions>
                                         <option>--add-modules</option>
                                         <option>jdk.unsupported.desktop</option>

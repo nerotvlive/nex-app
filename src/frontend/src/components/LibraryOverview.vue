@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { fetchInstances, type InstanceWrapper } from '@/data/mockInstances'; // Pfad anpassen falls nötig
+import { fetchInstances, type InstanceWrapper } from '@/data/instances'; // Pfad anpassen falls nötig
 import MenuBar from "@/components/MenuBar.vue";
 
 const props = defineProps<{
@@ -46,7 +46,7 @@ const filteredInstances = computed(() => {
 
 <template>
   <div class="h-full instance-view flex flex-col">
-    <MenuBar :menuDisabled="menuDisabled" class="w-full border-b relative z-10">
+    <MenuBar :menuDisabled="menuDisabled" class="w-full border-b relative z-10" style="background: #1c1c1e;">
       <template #title>
         <div class="flex gap-1 text-sm">
           <button @click="viewMode = 'grid'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'grid', 'opacity-50 text-zinc-400': viewMode !== 'grid' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Grid-Layout">

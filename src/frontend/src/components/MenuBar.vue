@@ -24,7 +24,6 @@ defineProps<{
 
 <style scoped>
   .menubar {
-    background: #212123;
     min-height: 3.5rem;
     max-height: 3.5rem;
     border-color: #ffffff25;

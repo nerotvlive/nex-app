@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import MenuView from "@/components/MenuView.vue";
 import LibraryInstanceView from "@/components/LibraryInstanceView.vue";
 import LibraryOverview from "@/components/LibraryOverview.vue";
-import { fetchInstances, type InstanceWrapper } from '@/data/mockInstances';
+import { fetchInstances, type InstanceWrapper } from '@/data/instances';
 
 const isMenuDisabled = ref(false);
 const instances = ref<InstanceWrapper[]>([]);
@@ -61,7 +61,7 @@ const handlePlay = (item: InstanceWrapper) => {
 
 <template>
   <div class="library h-full w-full">
-    <MenuView :isDisabled="isMenuDisabled">
+    <MenuView :isDisabled="isMenuDisabled" style="background: #1c1c1e;">
       <template #menu>
         <div class="flex flex-col h-full">
           <div class="flex gap-1 p-3 pb-1">

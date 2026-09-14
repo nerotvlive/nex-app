@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
-import type { InstanceWrapper } from '@/data/mockInstances';
+import type { InstanceWrapper } from '@/data/instances';
 import LibraryInstanceSettings from "@/components/LibraryInstanceSettings.vue";
 import {ref} from "vue";
 
