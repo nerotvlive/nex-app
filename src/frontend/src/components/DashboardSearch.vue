@@ -15,7 +15,7 @@ const emit = defineEmits<{
   (e: 'install', project: SearchResultItem): void;
 }>();
 
-const viewMode = ref<'grid' | 'list'>('grid');
+const viewMode = ref<'grid' | 'list'>('list');
 const searchQuery = ref('');
 const filterSearch = ref('');
 
@@ -308,8 +308,8 @@ const toggleMenu = () => {
                       by {{ proj.author }}
                     </span>
                   </div>
-                  <h3 class="font-bold text-lg mb-1">{{ proj.title }}</h3>
-                  <p class="text-sm text-zinc-300">{{ proj.description }}</p>
+                  <h3 class="font-bold text-lg mb-1 truncate">{{ proj.title }}</h3>
+                  <p class="text-sm text-zinc-300 line-clamp-3">{{ proj.description }}</p>
                 </div>
                 <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-t-zinc-700">
                   <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
@@ -321,9 +321,9 @@ const toggleMenu = () => {
                 </div>
               </div>
             </div>
-            <div v-else class="flex flex-col gap-2 pr-2 pb-6">
+            <!--div v-else class="flex flex-col gap-2 pr-2 pb-6">
               <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex gap-2 items-center justify-between transition cursor-pointer shadow-md">
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4 overflow-hidden">
                   <div class="min-w-10 max-w-10 min-h-10 max-h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white">
                     <img v-if="proj.icon_url" :src="proj.icon_url" :alt="proj.title" class="w-full h-full object-cover rounded-md"/>
                   </div>
@@ -334,10 +334,62 @@ const toggleMenu = () => {
                         by {{ proj.author }}
                       </span>
                     </div>
-                    <p class="text-sm text-zinc-300">{{ proj.description }}</p>
+                    <p class="text-sm text-zinc-300 text-nowrap text-ellipsis">{{ proj.description }}</p>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
+                  <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </button>
+                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-download"></i> Install
+                  </button>
+                </div>
+              </div>
+            </div-->
+            <!--div v-else class="flex flex-col gap-2 pr-2 pb-6">
+              <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex gap-2 items-center justify-between transition cursor-pointer shadow-md">
+                <div class="flex items-center gap-4 overflow-hidden flex-1">
+                  <div class="min-w-10 max-w-10 min-h-10 max-h-10 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white shrink-0">
+                    <img v-if="proj.icon_url" :src="proj.icon_url" :alt="proj.title" class="w-full h-full object-cover rounded-md"/>
+                  </div>
+                  <div class="overflow-hidden flex-1">
+                    <div class="flex gap-2 items-center">
+                      <h3 class="font-bold text-base truncate">{{ proj.title }}</h3>
+                      <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300 shrink-0">
+                        by {{ proj.author }}
+                      </span>
+                    </div>
+                    <p class="text-sm text-zinc-300 line-clamp-1">{{ proj.description }}</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </button>
+                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                    <i class="bi bi-download"></i> Install
+                  </button>
+                </div>
+              </div>
+            </div-->
+            <div v-else class="flex flex-col gap-2 pr-2 pb-6">
+              <div v-for="proj in results" :key="proj.project_id" @click="emit('select', proj)" class="bg-zinc-600/25 hover:bg-zinc-500/25 border border-zinc-700 hover:border-zinc-600 rounded-lg p-3 px-4 flex gap-2 items-center justify-between transition cursor-pointer shadow-md">
+                <div class="flex items-center gap-4 overflow-hidden flex-1">
+                  <div class="min-w-12 max-w-12 min-h-12 max-h-12 rounded-lg bg-zinc-700 flex items-center justify-center text-lg text-white shrink-0">
+                    <img v-if="proj.icon_url" :src="proj.icon_url" :alt="proj.title" class="w-full h-full object-cover rounded-md"/>
+                  </div>
+                  <div class="overflow-hidden flex-1">
+                    <div class="flex gap-2 items-center">
+                      <h3 class="font-bold text-base truncate">{{ proj.title }}</h3>
+                      <span class="text-xs px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300 shrink-0">
+                        by {{ proj.author }}
+                      </span>
+                    </div>
+                    <p class="text-sm text-zinc-300 line-clamp-2">{{ proj.description }}</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
                   <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
                     <i class="bi bi-box-arrow-up-right"></i>
                   </button>
