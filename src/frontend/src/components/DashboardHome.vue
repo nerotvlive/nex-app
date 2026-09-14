@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
 
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import { useRouter } from 'vue-router'
 import { openExternal } from "@/main";
 import CommitHistory from "@/components/CommitHistory.vue";
@@ -20,6 +20,22 @@ const scrollToContent = () => {
   const contentElement = document.querySelector('.dashboard-content');
   contentElement?.scrollIntoView({ behavior: 'smooth' });
 };
+
+const version = ref('0.0.0');
+const versionName = ref('unknown');
+const versionType = ref('unstable');
+
+onMounted(async () => {
+  try {
+    const response = await fetch("/api/v1/status");
+    const versionNode = await response.json();
+    version.value = versionNode.version.number;
+    versionName.value = versionNode.version.name;
+    versionType.value = versionNode.version.type;
+  } catch (e) {
+    console.error(e);
+  }
+})
 </script>
 
 <template>
@@ -37,7 +53,7 @@ const scrollToContent = () => {
         <div class="flex flex-col justify-between grow">
           <div>
             <strong>NEX App</strong><br>
-            <span class="text-lg">26.0.0-revision.1<br><span class="text-sm opacity-50">Reditus Magnificus</span></span>
+            <span class="text-lg">{{version}}-{{versionType}}<br><span class="text-sm opacity-50">{{versionName}}</span></span>
           </div>
           <div class="flex gap-2">
             <button @click="openExternal('https://apex.zyneonstudios.com')" class="flex gap-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit font-bold py-2 px-4 rounded transition shadow-lg shadow-black/25 hover:cursor-pointer"><i class="bi bi-globe"></i> Website</button>
@@ -47,7 +63,7 @@ const scrollToContent = () => {
         </div>
         <div class="flex flex-col justify-between text-sm">
           <div class="flex justify-end">
-            <strong class="bg-yellow-200 text-lg text-black w-fit px-2 rounded-lg">BETA BUILD</strong>
+            <strong class="bg-yellow-200 text-lg text-black w-fit px-2 rounded-lg uppercase" :class="versionType === 'stable' ? 'hidden' : ''">unstable build</strong>
           </div>
           <div class="flex gap-2">
 
