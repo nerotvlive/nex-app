@@ -26,6 +26,8 @@ const selectedCategories = ref<string[]>([]);
 const selectedEnvironments = ref<string[]>([]);
 const selectedSort = ref<'relevance' | 'downloads' | 'follows' | 'newest' | 'updated'>('relevance');
 
+const selectedSource = ref<'modrinth' | 'curseforge' | 'nex' | 'combined'>('curseforge');
+
 const isVersionsOpen = ref(false);
 const isUnstableVersionsOpen = ref(false);
 
@@ -267,8 +269,11 @@ const toggleMenu = () => {
 
           <div class="pb-1 shadow-t">
             <div class="px-3 pt-1 border-t border-zinc-800">
-              SOURCE<br>
-              SOURCE
+              <select v-model="selectedSource" class="w-full">
+                <option value="nex">NEX</option>
+                <option value="modrinth">Modrinth</option>
+                <option value="curseforge">CurseForge</option>
+              </select>
             </div>
           </div>
         </div>

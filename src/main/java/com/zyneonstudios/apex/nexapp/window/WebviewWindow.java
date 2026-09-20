@@ -63,7 +63,7 @@ public class WebviewWindow {
                 }
                 this.webview.setIcon(tempIcon);
             }
-        } catch (IOException _) {}
+        } catch (IOException e) {e.printStackTrace();}
     }
 
     private void initWindowControls() {
