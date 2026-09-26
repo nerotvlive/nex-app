@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.awt.*;
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 

@@ -69,8 +69,8 @@ const filteredLoaders = computed(() => {
   const query = filterSearch.value.toLowerCase().trim();
   return availableLoaders.filter(l => {
     if (l.modOnly && selectedType.value !== 'mod') return false;
-    if (query && !l.label.includes(query)) return false;
-    return true;
+    return !(query && !l.label.includes(query));
+
   });
 });
 
@@ -78,8 +78,8 @@ const filteredCategories = computed(() => {
   const query = filterSearch.value.toLowerCase().trim();
   return categories.value.filter(c => {
     if (selectedType.value && c.project_type !== selectedType.value) return false;
-    if (query && !c.name.toLowerCase().includes(query)) return false;
-    return true;
+    return !(query && !c.name.toLowerCase().includes(query));
+
   });
 });
 
@@ -94,8 +94,8 @@ const availableEnvironments = [
 const filteredEnvironments = computed(() => {
   const query = filterSearch.value.toLowerCase().trim();
   return availableEnvironments.filter(e => {
-    if (query && !e.label.toLowerCase().includes(query)) return false;
-    return true;
+    return !(query && !e.label.toLowerCase().includes(query));
+
   });
 });
 
@@ -180,7 +180,7 @@ function handleScroll(event: Event) {
 onMounted(async () => {
   searchBar.value?.focus();
   await loadFilterOptions();
-  searchModrinth(true);
+  await searchModrinth(true);
 
   const input = route.query.q;
   if (typeof input === "string") {
@@ -211,7 +211,7 @@ const toggleMenu = () => {
               <option value="resourcepack">Resourcepacks</option>
               <option value="shader">Shaderpacks</option>
             </select>
-            <i class="bi bi-chevron-down absolute right-3 top-1 mt-0.5"></i>
+            <i class="bi bi-chevron-down absolute right-2 top-1 mt-0.5 pointer-events-none"></i>
           </div>
           <div class="grow flex flex-col p-3 gap-1 pt-2 overflow-y-auto">
             <div class="bg-zinc-800 rounded-lg p-2 pb-1" :class="{'pb-2':isVersionsOpen}">
@@ -268,12 +268,14 @@ const toggleMenu = () => {
           </div>
 
           <div class="pb-1 shadow-t">
-            <div class="px-3 pt-1 border-t border-zinc-800">
+            <div class="px-3 pt-1.5 pb-1 border-t border-zinc-800 relative">
+              <strong class="text-xs uppercase tracking-wider text-zinc-400 block mb-1">Search source</strong>
               <select v-model="selectedSource" class="w-full">
                 <option value="nex">NEX</option>
                 <option value="modrinth">Modrinth</option>
                 <option value="curseforge">CurseForge</option>
               </select>
+              <i class="bi bi-chevron-down absolute right-5 bottom-2.5 mt-0.75 pointer-events-none"></i>
             </div>
           </div>
         </div>

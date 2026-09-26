@@ -95,9 +95,12 @@ const handlePlay = (item: InstanceWrapper) => {
             </button>
           </div>
           <div class="pb-1 shadow-t">
-            <div class="px-3 pt-1 border-t border-zinc-800">
-              ACCOUNT<br>
-              ACCOUNT
+            <div class="px-3 pt-1.5 pb-1 border-t border-zinc-800 relative">
+              <strong class="text-xs uppercase tracking-wider text-zinc-400 block mb-1">Account</strong>
+              <select class="w-full">
+                <option>unauthenticated</option>
+              </select>
+              <i class="bi bi-chevron-down absolute right-5 bottom-2.5 mt-0.75 pointer-events-none"></i>
             </div>
           </div>
         </div>
