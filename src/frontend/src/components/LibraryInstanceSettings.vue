@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InstanceWrapper } from '@/data/instances';
+import '@/assets/zyneonstudios/styles/components/LibraryInstanceSettings.css';
 
 defineProps<{
   instance: InstanceWrapper;
@@ -14,7 +15,3 @@ defineProps<{
 
   </div>
 </template>
-
-<style scoped>
-
-</style>

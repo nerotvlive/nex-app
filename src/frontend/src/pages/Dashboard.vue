@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DashboardHome from "@/components/DashboardHome.vue";
+import '@/assets/zyneonstudios/styles/pages/Dashboard.css';
 
 declare global {
   interface Window {
@@ -13,14 +14,3 @@ declare global {
     <DashboardHome></DashboardHome>
   </div>
 </template>
-
-<style scoped>
-div.dashboard {
-
-
-  .header {
-    height: 12rem;
-    background: linear-gradient(to top, transparent, #00000099);
-  }
-}
-</style>

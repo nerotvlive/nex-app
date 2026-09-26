@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { fetchInstances, type InstanceWrapper } from '@/data/instances'; // Pfad anpassen falls nötig
+import { fetchInstances, type InstanceWrapper } from '@/data/instances';
+import '@/assets/zyneonstudios/styles/components/LibraryOverview.css';
 import MenuBar from "@/components/MenuBar.vue";
 
 const props = defineProps<{
@@ -160,9 +161,3 @@ const filteredInstances = computed(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.overview-bg {
-  background: linear-gradient(to bottom, transparent, var(--color-zinc-800));
-}
-</style>

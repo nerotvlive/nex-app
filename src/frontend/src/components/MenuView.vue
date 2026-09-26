@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import '@/assets/zyneonstudios/styles/components/menuview.css';
+import '@/assets/zyneonstudios/styles/components/MenuView.css';
 
 defineProps<{
   isDisabled?: boolean;
@@ -16,11 +16,3 @@ defineProps<{
     </div>
   </div>
 </template>
-
-<style scoped>
-div.menu {
-  * {
-
-  }
-}
-</style>

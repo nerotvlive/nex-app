@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
+import '@/assets/zyneonstudios/styles/components/DashboardSearch.css';
 import { ref, computed, onMounted } from "vue";
 import MenuView from "@/components/MenuView.vue";
 import { useRoute } from "vue-router";
@@ -416,7 +417,3 @@ const toggleMenu = () => {
     </MenuView>
   </div>
 </template>
-
-<style scoped>
-
-</style>

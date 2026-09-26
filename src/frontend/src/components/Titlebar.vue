@@ -1,5 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import '@/assets/zyneonstudios/styles/components/Titlebar.css';
 
 const startDrag = () => {
   if (window.startWindowDrag) {
@@ -60,22 +61,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-  .titlebar {
-
-    button {
-      height: 2rem;
-      width: 2rem;
-    }
-
-    button:hover {
-      background-color: #ffffff25;
-      cursor: pointer;
-    }
-
-    button.close:hover {
-      background-color: red;
-    }
-  }
-</style>

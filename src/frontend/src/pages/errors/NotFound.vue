@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import Error from "@/pages/errors/Error.vue";
+  import '@/assets/zyneonstudios/styles/pages/errors/NotFound.css';
 
   const url = window.location.href;
   if(url.toLowerCase().endsWith(".html")) {
@@ -13,7 +14,3 @@
       <template #message>Wir konnten diese Seite leider nicht finden...</template>
     </Error>
 </template>
-
-<style scoped>
-
-</style>

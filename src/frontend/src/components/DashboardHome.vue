@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
+import '@/assets/zyneonstudios/styles/components/DashboardHome.css';
 
 import {onMounted, ref} from 'vue'
 import { useRouter } from 'vue-router'
@@ -84,26 +85,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.dashboard-view {
-  background: url("../assets/zyneonstudios/images/background.jpg");
-  background-size: cover;
-
-  .seperator {
-    width: 100%;
-    height: 1px;
-    background-color: var(--color-zinc-800);
-    border-top: 1px solid #ffffff25;
-  }
-
-  .dashboard-content {
-    background: linear-gradient(to bottom, var(--color-zinc-900), var(--color-zinc-800));
-    min-height: calc(100% + 1px);
-
-    ::-webkit-scrollbar-track {
-      margin: 0.667rem;
-    }
-  }
-}
-</style>

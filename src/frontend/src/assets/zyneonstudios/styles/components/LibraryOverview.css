@@ -1,0 +1,3 @@
+.overview-bg {
+    background: linear-gradient(to bottom, transparent, var(--color-zinc-800));
+}

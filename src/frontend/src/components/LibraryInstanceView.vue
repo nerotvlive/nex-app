@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
+import '@/assets/zyneonstudios/styles/components/LibraryInstanceView.css';
 import type { InstanceWrapper } from '@/data/instances';
 import LibraryInstanceSettings from "@/components/LibraryInstanceSettings.vue";
 import {ref} from "vue";
@@ -63,28 +64,3 @@ const scrollToContent = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.instance-view {
-
-  .seperator {
-    width: 100%;
-    height: 1px;
-    background-color: var(--color-zinc-800);
-    border-top: 1px solid #ffffff25;
-  }
-
-  .instance-header {
-    background-size: cover;
-    background-position: center;
-
-    img {
-      backdrop-filter: blur(4px);
-    }
-  }
-
-  .instance-content {
-    min-height: calc(100% + 1px);
-  }
-}
-</style>

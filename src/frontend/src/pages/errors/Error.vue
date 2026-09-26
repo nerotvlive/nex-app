@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import '@/assets/zyneonstudios/styles/pages/errors/Error.css';
 </script>
 <template>
   <div class="flex flex-col items-center">
@@ -12,7 +13,3 @@
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import '@/assets/zyneonstudios/styles/pages/Library.css';
 import MenuView from "@/components/MenuView.vue";
 import LibraryInstanceView from "@/components/LibraryInstanceView.vue";
 import LibraryOverview from "@/components/LibraryOverview.vue";
@@ -123,7 +124,3 @@ const handlePlay = (item: InstanceWrapper) => {
     </MenuView>
   </div>
 </template>
-
-<style scoped>
-
-</style>

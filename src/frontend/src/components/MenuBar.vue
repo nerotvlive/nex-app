@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import '@/assets/zyneonstudios/styles/components/MenuBar.css';
+
 defineProps<{
   menuDisabled?: boolean;
   title?: string;
@@ -21,12 +23,3 @@ defineProps<{
     </div>
   </div>
 </template>
-
-<style scoped>
-  .menubar {
-    min-height: 3.5rem;
-    max-height: 3.5rem;
-    border-color: #ffffff25;
-    box-shadow: 0 0 0.5rem #0004;
-  }
-</style>
