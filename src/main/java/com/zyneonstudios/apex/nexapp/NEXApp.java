@@ -13,6 +13,7 @@ public class NEXApp {
     private String version = "0.0.0";
     private String versionName = "Unknown";
     private String versionType = "unstable";
+    private String versionBuild = "000000000000";
 
     public NEXApp() {
         window = new WebviewWindow();
@@ -27,14 +28,17 @@ public class NEXApp {
                     Properties properties = new Properties();
                     properties.load(is);
 
-                    loadProperty(properties, "version", "app.version", "nex.version", "project.version")
+                    loadProperty(properties, "version")
                             .ifPresent(val -> this.version = val);
 
-                    loadProperty(properties, "versionName", "version.name", "nex.name", "app.versionName", "project.name")
+                    loadProperty(properties, "versionName")
                             .ifPresent(val -> this.versionName = val);
 
-                    loadProperty(properties, "versionType", "version.type", "nex.type", "app.versionType")
+                    loadProperty(properties, "versionType")
                             .ifPresent(val -> this.versionType = val);
+
+                    loadProperty(properties, "versionBuild")
+                            .ifPresent(val -> this.versionBuild = val);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -71,6 +75,10 @@ public class NEXApp {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getVersionBuild() {
+        return versionBuild;
     }
 
     public String getVersionName() {

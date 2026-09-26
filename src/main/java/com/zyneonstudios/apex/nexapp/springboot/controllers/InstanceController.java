@@ -9,14 +9,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
-import java.io.File;
-import java.lang.reflect.Array;
 import java.net.URI;
-import java.nio.file.Path;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -29,7 +22,7 @@ public class InstanceController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/instances")
+    @GetMapping({"/instance", "/instances"})
     public ArrayNode getInstances() {
         if(nex == null) {
             nex = buildNEX();
@@ -37,12 +30,7 @@ public class InstanceController {
         return nex;
     }
 
-    @GetMapping("/instance")
-    public ArrayNode getInstance() {
-        return getInstances();
-    }
-
-    @GetMapping("/instance/**")
+    @GetMapping({"/instance/**", "/instances/**"})
     public ObjectNode getInstanceById(HttpServletRequest request) {
         if (nex == null) {
             nex = buildNEX();
@@ -60,11 +48,6 @@ public class InstanceController {
         }
 
         return error("404", "Instance not found");
-    }
-
-    @GetMapping("/instances/**")
-    public ObjectNode getInstancesById(HttpServletRequest request) {
-        return getInstanceById(request);
     }
 
     public static ObjectNode fetchJsonObject(String url) {

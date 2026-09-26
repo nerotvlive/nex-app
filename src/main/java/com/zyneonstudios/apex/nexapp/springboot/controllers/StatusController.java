@@ -18,6 +18,7 @@ public class StatusController {
                 "status", "online",
                 "version", Map.of(
                         "number", Main.getNEXApp().getVersion(),
+                        "build", Main.getNEXApp().getVersionBuild(),
                         "name", Main.getNEXApp().getVersionName(),
                         "type", Main.getNEXApp().getVersionType()
                 )
