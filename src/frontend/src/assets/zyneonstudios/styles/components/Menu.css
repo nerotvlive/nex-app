@@ -1,4 +1,4 @@
-div.menu {
+div.mainMenu {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -68,7 +68,7 @@ div.menu {
     }
 }
 
-div.menu.active {
+div.mainMenu.active {
     width: 12rem;
     min-width: 12rem;
 

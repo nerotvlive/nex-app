@@ -1,12 +1,94 @@
-.content {
-    border-color: #3c3c3c;
+@import "tailwindcss";
+
+:root {
+    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --mono: ui-monospace, Consolas, monospace;
+
+    font: 18px/145% var(--sans);
+    letter-spacing: 0.18px;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    @media (max-width: 1024px) {
+        font-size: 16px;
+    }
 }
 
-.shadow-overlay::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0.3rem 0.3rem 0.5rem #0007;
-    pointer-events: none;
-    z-index: 20;
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+body {
+    margin: 0;
+
+    .shadow-t {
+        z-index: 10;
+        box-shadow: 0 -0.4rem 1rem #0002;
+    }
+
+    .menubutton {
+        position: absolute;
+        z-index: 11;
+        font-size: 1.25rem;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        width: 2rem;
+        height: 2rem;
+        margin: 0.8rem;
+        border-radius: 33%;
+        overflow: hidden;
+        box-shadow: none !important;
+    }
+    .menubutton:hover {
+        background: #fff3;
+        cursor: pointer;
+    }
+    .hide {
+        opacity: 0;
+        z-index: -1;
+    }
+
+    .content {
+        border-color: #3c3c3c;
+    }
+
+    .shadow-overlay::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        box-shadow: inset 0.3rem 0.3rem 0.5rem #0007;
+        pointer-events: none;
+        z-index: 20;
+    }
+}
+
+* {
+    ::-webkit-scrollbar {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+        position: absolute;
+        background: var(--color-zinc-900);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        position: absolute;
+        scrollbar-width: thin;
+        background: #ffffff25;
+        background-clip: padding-box;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        position: absolute;
+        background: #ffffff50;
+    }
 }

@@ -4,8 +4,9 @@ import '@/assets/zyneonstudios/styles/components/DashboardHome.css';
 
 import {onMounted, ref} from 'vue'
 import { useRouter } from 'vue-router'
-import { openExternal } from "@/main";
+import {openExternal} from "@/assets/zyneonstudios/scripts/shared";
 import CommitHistory from "@/components/CommitHistory.vue";
+import {getApplicationStatus} from "@/assets/zyneonstudios/scripts/types";
 
 const router = useRouter()
 const searchQuery = ref('')
@@ -22,23 +23,17 @@ const scrollToContent = () => {
   contentElement?.scrollIntoView({ behavior: 'smooth' });
 };
 
-const version = ref('0.0.0');
-const versionBuild = ref('000000000000');
-const versionName = ref('unknown');
-const versionType = ref('unstable');
-
+const version = ref<string>("Loading");
+const versionType = ref<string>('backend');
+const versionBuild = ref<string>('..');
+const versionName = ref<string>('Awaiting backend connection...');
 onMounted(async () => {
-  try {
-    const response = await fetch("/api/v1/status");
-    const versionNode = await response.json();
-    version.value = versionNode.version.number;
-    versionBuild.value = versionNode.version.build;
-    versionName.value = versionNode.version.name;
-    versionType.value = versionNode.version.type;
-  } catch (e) {
-    console.error(e);
-  }
-})
+  const status = await getApplicationStatus();
+  version.value = status.version.number;
+  versionType.value = status.version.type;
+  versionBuild.value = status.version.build;
+  versionName.value = status.version.name;
+});
 </script>
 
 <template>

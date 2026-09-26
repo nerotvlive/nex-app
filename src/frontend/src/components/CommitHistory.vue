@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import {openExternal} from "@/main";
+import {openExternal} from "@/assets/zyneonstudios/scripts/shared";
 import '@/assets/zyneonstudios/styles/components/CommitHistory.css';
 
 interface GitHubCommit {

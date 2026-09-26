@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Menu from "@/components/Menu.vue";
 import Titlebar from "@/components/Titlebar.vue";
-import '@/assets/zyneonstudios/styles/shared.css';
 </script>
 
 <template>

@@ -16,12 +16,20 @@ public class StatusController {
         return Map.of(
                 "service", "NEX App API by Zyneon Apex, a Zyneon Studios Division",
                 "status", "online",
+                "system", Map.of(
+                        "os", Map.of(
+                                "name", System.getProperty("os.name"),
+                                "version", System.getProperty("os.version"),
+                                "arch", System.getProperty("os.arch")
+                        )
+                ),
                 "version", Map.of(
                         "number", Main.getNEXApp().getVersion(),
                         "build", Main.getNEXApp().getVersionBuild(),
                         "name", Main.getNEXApp().getVersionName(),
                         "type", Main.getNEXApp().getVersionType()
-                )
+                ),
+                "scheme", "2026.09"
         );
     }
 }

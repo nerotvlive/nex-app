@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MenuBar from "@/components/MenuBar.vue";
 import '@/assets/zyneonstudios/styles/components/LibraryInstanceView.css';
-import type { InstanceWrapper } from '@/data/instances';
+import type { InstanceWrapper } from '@/assets/zyneonstudios/scripts/types';
 import LibraryInstanceSettings from "@/components/LibraryInstanceSettings.vue";
 import {ref} from "vue";
 

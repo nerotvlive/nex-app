@@ -1,6 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import {onMounted, ref} from "vue";
 import '@/assets/zyneonstudios/styles/components/Titlebar.css';
+import {getApplicationStatus} from "@/assets/zyneonstudios/scripts/types";
+
+declare global {
+  interface Window {
+    startWindowDrag?: () => void;
+    closeWindow?: () => void;
+    toggleMaximizeWindow?: () => void;
+    minimizeWindow?: () => void;
+  }
+}
 
 const startDrag = () => {
   if (window.startWindowDrag) {
@@ -26,21 +36,15 @@ const minimizeApp = () => {
   }
 };
 
-const version = ref('0.0.0');
-const versionBuild = ref('000000000000');
-const versionType = ref('unstable');
-
+const version = ref<string>("No backend");
+const versionType = ref<string>('stable');
+const versionBuild = ref<string>('..');
 onMounted(async () => {
-  try {
-    const response = await fetch("/api/v1/status");
-    const versionNode = await response.json();
-    version.value = versionNode.version.number;
-    versionBuild.value = versionNode.version.build;
-    versionType.value = versionNode.version.type;
-  } catch (e) {
-    console.error(e);
-  }
-})
+  const status = await getApplicationStatus();
+  version.value = status.version.number;
+  versionType.value = status.version.type;
+  versionBuild.value = status.version.build;
+});
 </script>
 
 <template>

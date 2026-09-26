@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { fetchInstances, type InstanceWrapper } from '@/data/instances';
+import { fetchInstances, type InstanceWrapper } from '@/assets/zyneonstudios/scripts/types';
 import '@/assets/zyneonstudios/styles/components/LibraryOverview.css';
 import MenuBar from "@/components/MenuBar.vue";
 
