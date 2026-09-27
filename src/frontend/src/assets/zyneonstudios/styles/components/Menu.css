@@ -8,7 +8,6 @@ div.mainMenu {
     min-width: 3.5rem;
     overflow: hidden;
     transition: all 0.25s ease;
-    position: relative;
     -webkit-app-region: drag;
 
     button, a {
@@ -54,7 +53,7 @@ div.mainMenu {
             opacity: 1;
             transform: translateX(0rem);
             transition: opacity 0.25s ease;
-            z-index: 10;
+            z-index: 100;
         }
     }
 

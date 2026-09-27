@@ -16,7 +16,7 @@ const startDrag = () => {
 
 <template>
   <div class="mainMenu" :class="{ 'active': isNavActive }" @mousedown="startDrag">
-    <div class="flex flex-col gap-2 relative">
+    <div class="flex flex-col gap-2">
       <button @click="toggleNavigation" @mousedown.stop>
         <i class="bi bi-list"></i>
         <span>Toggle menu</span>
@@ -31,7 +31,7 @@ const startDrag = () => {
       </router-link>
     </div>
 
-    <div class="flex flex-col gap-2 relative">
+    <div class="flex flex-col gap-2">
       <router-link to="/settings" @mousedown.stop active-class="active">
         <i class="bi bi-gear-wide"></i>
         <span>Settings</span>

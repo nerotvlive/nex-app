@@ -8,7 +8,7 @@ export const openExternal = (url: string) => {
     }
 };
 
-export const reportIssue = async (type:string) => {
+export const reportIssue = async (title:string, issue:string) => {
     const applicationStatus:ApplicationStatus = await getApplicationStatus();
 
     const version = applicationStatus.version.number;
@@ -19,7 +19,7 @@ export const reportIssue = async (type:string) => {
     const os = applicationStatus.system.os.name + " (" + applicationStatus.system.os.version + ")";
     const arch = applicationStatus.system.os.arch;
 
-    const issueTitle = "[" + type + "] ";
+    const issueTitle = title;
     const issueBody = `##### NEX App information
 * **Version Number:** ${version}
 * **Version Build:** ${versionBuild}
@@ -34,6 +34,7 @@ export const reportIssue = async (type:string) => {
 ---
 
 ### Issue description:
+${issue}
 `;
     const githubUrl = `https://github.com/nerotvlive/nex-app/issues/new?labels=bug&title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
     openExternal(githubUrl);
