@@ -43,7 +43,7 @@ body {
         margin: 0.8rem;
         border-radius: 33%;
         overflow: hidden;
-        box-shadow: none !important;
+        box-shadow: none;
     }
     .menubutton:hover {
         background: #fff3;

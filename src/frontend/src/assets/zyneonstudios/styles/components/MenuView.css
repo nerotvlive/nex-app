@@ -22,8 +22,8 @@ div.flex.menuview {
         }
 
         option {
-            background: black !important;
-            color: white !important;
+            background: black;
+            color: white;
         }
 
         button, a, select {
