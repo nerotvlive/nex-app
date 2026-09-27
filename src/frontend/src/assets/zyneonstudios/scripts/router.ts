@@ -3,6 +3,7 @@ import Library from "@/pages/Library.vue";
 import DashboardSearch from "@/components/DashboardSearch.vue";
 import Dashboard from "@/pages/Dashboard.vue";
 import NotFound from "@/pages/errors/NotFound.vue";
+import Settings from "@/pages/Settings.vue";
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -28,6 +29,12 @@ const routes: RouteRecordRaw[] = [
     name: 'Search',
     meta: { title: 'Search' },
     component: DashboardSearch
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    meta: { title: 'Settings' },
+    component: Settings
   },
   {
     path: '/:pathMatch(.*)*',
