@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router'
 import {openExternal} from "@/assets/zyneonstudios/scripts/shared";
 import CommitHistory from "@/components/CommitHistory.vue";
 import {getApplicationStatus} from "@/assets/zyneonstudios/scripts/types";
+import DiscordWidget from "@/components/DiscordWidget.vue";
 
 const router = useRouter()
 const searchQuery = ref('')
@@ -71,10 +72,8 @@ onMounted(async () => {
       <div class="seperator"></div>
       <div class="dashboard-content bg-zinc-800 relative p-4">
         <div class="flex gap-4">
-          <CommitHistory class="p-4 w-full border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 max-h-[81vh] overflow-hidden overflow-y-auto" />
-          <div class="p-4 w-full border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 max-h-[81vh] overflow-hidden overflow-y-auto">
-
-          </div>
+          <CommitHistory class="p-4 w-full border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto" />
+          <DiscordWidget class="border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto" />
         </div>
       </div>
     </div>

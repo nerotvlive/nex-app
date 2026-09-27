@@ -1,5 +1,7 @@
 package com.zyneonstudios.apex.nexapp.integrations.zyndex;
 
+import com.zyneonstudios.apex.nexapp.integrations.zyndex.resource.ZyndexResource;
+
 public interface Zyndex {
 
     String getTitle();
@@ -9,4 +11,6 @@ public interface Zyndex {
 
     String getOwner();
     String[] getContributors();
+
+    ZyndexResource[] getResources();
 }

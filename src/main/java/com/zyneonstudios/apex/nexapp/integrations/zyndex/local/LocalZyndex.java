@@ -1,6 +1,7 @@
 package com.zyneonstudios.apex.nexapp.integrations.zyndex.local;
 
 import com.zyneonstudios.apex.nexapp.integrations.zyndex.Zyndex;
+import com.zyneonstudios.apex.nexapp.integrations.zyndex.resource.ZyndexResource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ public class LocalZyndex implements Zyndex {
 
     private String owner = "Unknown";
     private ArrayList<String> contributors = new ArrayList<>();
+    private ArrayList<ZyndexResource> resources = new ArrayList<>();
 
     @Override
     public String getTitle() {
@@ -133,6 +135,57 @@ public class LocalZyndex implements Zyndex {
     public void removeContributors(Collection<String> contributors) {
         for(String contributor : contributors) {
             removeContributor(contributor);
+        }
+    }
+
+    @Override
+    public ZyndexResource[] getResources() {
+        return resources.toArray(new ZyndexResource[0]);
+    }
+
+    public ArrayList<ZyndexResource> getResourceList() {
+        return resources;
+    }
+
+    public void setResources(ZyndexResource... resources) {
+        this.resources = new ArrayList<>(Arrays.asList(resources));
+    }
+
+    public void setResources(Collection<ZyndexResource> resources) {
+        this.resources = new ArrayList<>(resources);
+    }
+
+    public void addResource(ZyndexResource resource) {
+        if(!resources.contains(resource)) {
+            resources.add(resource);
+        }
+    }
+
+    public void addResources(ZyndexResource... resources) {
+        for(ZyndexResource resource : resources) {
+            addResource(resource);
+        }
+    }
+
+    public void addResources(Collection<ZyndexResource> resources) {
+        for(ZyndexResource resource : resources) {
+            addResource(resource);
+        }
+    }
+
+    public void removeResource(ZyndexResource resource) {
+        resources.remove(resource);
+    }
+
+    public void removeResources(ZyndexResource... resources) {
+        for(ZyndexResource resource : resources) {
+            removeResource(resource);
+        }
+    }
+
+    public void removeResources(Collection<ZyndexResource> resources) {
+        for(ZyndexResource resource : resources) {
+            removeResource(resource);
         }
     }
 }
