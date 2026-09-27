@@ -22,11 +22,15 @@ const startDrag = () => {
         <span>Toggle menu</span>
       </button>
       <router-link to="/" @mousedown.stop active-class="active">
-        <i class="bi bi-house-door"></i>
+        <i class="zi zi-home"></i>
         <span>Dashboard</span>
       </router-link>
+      <router-link to="/discover" @mousedown.stop active-class="active">
+        <i class="bi bi-globe-europe-africa"></i>
+        <span>Discover</span>
+      </router-link>
       <router-link to="/library" @mousedown.stop active-class="active">
-        <i class="bi bi-grid-1x2"></i>
+        <i class="zi zi-library"></i>
         <span>Library</span>
       </router-link>
     </div>

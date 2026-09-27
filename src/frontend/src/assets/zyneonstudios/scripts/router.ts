@@ -4,6 +4,7 @@ import DashboardSearch from "@/components/DashboardSearch.vue";
 import Dashboard from "@/pages/Dashboard.vue";
 import NotFound from "@/pages/errors/NotFound.vue";
 import Settings from "@/pages/Settings.vue";
+import Discover from "@/pages/Discover.vue";
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -19,16 +20,22 @@ const routes: RouteRecordRaw[] = [
     component: Dashboard
   },
   {
-    path: '/library',
-    name: 'Library',
-    meta: { title: 'Library' },
-    component: Library
+    path: '/discover',
+    name: 'Discover',
+    meta: { title: 'Discover' },
+    component: Discover
   },
   {
     path: '/search',
     name: 'Search',
     meta: { title: 'Search' },
     component: DashboardSearch
+  },
+  {
+    path: '/library',
+    name: 'Library',
+    meta: { title: 'Library' },
+    component: Library
   },
   {
     path: '/settings',
