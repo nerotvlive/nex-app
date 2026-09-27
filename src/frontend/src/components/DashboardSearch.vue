@@ -27,7 +27,7 @@ const selectedCategories = ref<string[]>([]);
 const selectedEnvironments = ref<string[]>([]);
 const selectedSort = ref<'relevance' | 'downloads' | 'follows' | 'newest' | 'updated'>('relevance');
 
-const selectedSource = ref<'modrinth' | 'curseforge' | 'nex' | 'combined'>('curseforge');
+const selectedSource = ref<'modrinth' | 'curseforge' | 'nex' | 'combined'>('modrinth');
 
 const isVersionsOpen = ref(false);
 const isUnstableVersionsOpen = ref(false);
@@ -272,9 +272,10 @@ const toggleMenu = () => {
             <div class="px-3 pt-1.5 pb-1 border-t border-zinc-800 relative">
               <strong class="text-xs uppercase tracking-wider text-zinc-400 block mb-1">Search source</strong>
               <select v-model="selectedSource" class="w-full">
-                <option value="nex">NEX</option>
+                <option value="combined" disabled>Combined Search</option>
+                <option value="nex" disabled>NEX</option>
                 <option value="modrinth">Modrinth</option>
-                <option value="curseforge">CurseForge</option>
+                <option value="curseforge" disabled>CurseForge</option>
               </select>
               <i class="bi bi-chevron-down absolute right-5 bottom-2.5 mt-0.75 pointer-events-none"></i>
             </div>
@@ -323,7 +324,7 @@ const toggleMenu = () => {
                   <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
                     <i class="bi bi-box-arrow-up-right"></i>
                   </button>
-                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                  <button @click.stop="emit('install', proj)" class="bg-green-400 hover:bg-green-300 text-black px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
                     <i class="bi bi-download"></i> Install
                   </button>
                 </div>
@@ -401,7 +402,7 @@ const toggleMenu = () => {
                   <button @click="openExternal('https://modrinth.com/project/' + proj.slug);" class="bg-zinc-600 hover:bg-zinc-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm flex items-center gap-2 transition cursor-pointer shadow-md">
                     <i class="bi bi-box-arrow-up-right"></i>
                   </button>
-                  <button @click.stop="emit('install', proj)" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
+                  <button @click.stop="emit('install', proj)" class="bg-green-400 hover:bg-green-300 text-black px-3 py-1 rounded-lg text-xs xl:text-sm font-bold flex items-center gap-2 transition cursor-pointer shadow-md">
                     <i class="bi bi-download"></i> Install
                   </button>
                 </div>

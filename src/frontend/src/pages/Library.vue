@@ -76,11 +76,14 @@ const handlePlay = (item: InstanceWrapper) => {
           </div>
           <div class="mx-3 pt-0 pb-1 border-b border-zinc-800">
             <div class="flex gap-1 pb-1">
-              <button class="grow">
+              <button class="grow disabled" disabled>
                 <i class="bi bi-plus-lg"></i>
                 Add Instance
               </button>
-              <button @click="async () => { instances = await fetchInstances(); }">
+              <!--button @click="async () => { instances = await fetchInstances(); }">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button-->
+              <button onclick="window.location.reload();">
                 <i class="bi bi-arrow-clockwise"></i>
               </button>
             </div>
@@ -98,10 +101,10 @@ const handlePlay = (item: InstanceWrapper) => {
           <div class="pb-1 shadow-t">
             <div class="px-3 pt-1.5 pb-1 border-t border-zinc-800 relative">
               <strong class="text-xs uppercase tracking-wider text-zinc-400 block mb-1">Account</strong>
-              <select class="w-full">
-                <option>unauthenticated</option>
+              <select class="w-full disabled" disabled>
+                <option disabled>unauthenticated</option>
               </select>
-              <i class="bi bi-chevron-down absolute right-5 bottom-2.5 mt-0.75 pointer-events-none"></i>
+              <i class="bi bi-chevron-down absolute right-5 bottom-2.5 mt-0.75 opacity-50 pointer-events-none"></i>
             </div>
           </div>
         </div>
