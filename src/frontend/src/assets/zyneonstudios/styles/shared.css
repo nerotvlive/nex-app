@@ -5,6 +5,12 @@
     --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
     --mono: ui-monospace, Consolas, monospace;
 
+    --zyn-bg: var(--color-zinc-900);
+    --zyn-bg-alt: var(--color-zinc-800);
+    --zyn-bg-item: var(--color-zinc-700);
+    --zyn-bg-item-alt: var(--color-zinc-800);
+    --zyn-bg-item-accent: var(--color-zinc-600);
+
     font: 18px/145% var(--sans);
     letter-spacing: 0.18px;
     font-synthesis: none;
@@ -25,6 +31,26 @@
 
 body {
     margin: 0;
+
+    .zyn-bg {
+        background: var(--zyn-bg);
+    }
+
+    .zyn-bg-alt {
+        background: var(--zyn-bg-alt);
+    }
+
+    .zyn-bg-item {
+        background: var(--zyn-bg-item);
+    }
+
+    .zyn-bg-item-alt {
+        background: var(--zyn-bg-item-alt);
+    }
+
+    .zyn-bg-item-accent {
+        background: var(--zyn-bg-item-accent);
+    }
 
     .shadow-t {
         z-index: 10;

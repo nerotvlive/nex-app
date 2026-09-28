@@ -25,7 +25,7 @@ const scrollToContent = () => {
 
 <template>
   <div class="h-full instance-view flex flex-col">
-    <MenuBar :title="instance.instance.info.name" :menuDisabled="menuDisabled" class="w-full border-b relative z-10">
+    <MenuBar :title="instance.instance.info.name" :menuDisabled="menuDisabled" class="w-full border-b relative z-10 zyn-bg-alt">
       <template #menu class="instance-menu">
         <div class="flex gap-1">
           <button class="px-3 p-2 bg-blue-600 hover:bg-blue-500 hover:shadow-blue-600/10 text-white text-sm rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Launch instance" :class="showSettings ? '' : 'hidden'">

@@ -289,7 +289,7 @@ const toggleMenu = () => {
         </span>
         <div class="h-full flex flex-col">
 
-          <MenuBar :menuDisabled="isMenuDisabled" class="w-full border-b relative z-10" style="background: #1c1c1e;">
+          <MenuBar :menuDisabled="isMenuDisabled" class="w-full border-b relative z-10 zyn-bg-alt">
             <template #title>
               <div class="flex gap-1 text-sm">
                 <button @click="viewMode = 'grid'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'grid', 'opacity-50 text-zinc-400': viewMode !== 'grid' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Grid-Layout">

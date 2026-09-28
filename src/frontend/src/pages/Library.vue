@@ -87,7 +87,7 @@ const handlePlay = (item: InstanceWrapper) => {
                 <i class="bi bi-arrow-clockwise"></i>
               </button>
             </div>
-            <input v-model="menuSearchQuery" type="text" placeholder="Search instances..." class="bg-zinc-800 hover:bg-zinc-700 text-white h-fit mb-1 text-xs w-full py-2 px-4 rounded-md transition hover:shadow-md focus:shadow-md shadow-black/25"/>
+            <input v-model="menuSearchQuery" type="text" placeholder="Search instances..." class="text-white h-fit mb-1 text-xs w-full py-2 px-4 rounded-md transition hover:shadow-md focus:shadow-md shadow-black/25"/>
           </div>
           <div class="grow flex flex-col p-3 gap-1 pt-2 overflow-y-auto overflow-hidden">
             <button v-for="item in filteredMenuInstances" :key="item.instance.meta.id" @click="selectInstance(item)" class="grow flex items-center gap-2" :class="{ 'active': currentView === item.instance.meta.id || activeInstance?.instance.meta.id === item.instance.meta.id }">

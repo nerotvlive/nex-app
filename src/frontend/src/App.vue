@@ -8,7 +8,7 @@ import Titlebar from "@/components/Titlebar.vue";
     <Titlebar />
     <div class="grow overflow-hidden flex">
       <Menu class="overflow-y-auto" />
-      <div class="grow overflow-y-auto bg-zinc-900 border-l border-t content relative shadow-overlay rounded-tl-2xl overflow-hidden">
+      <div class="grow overflow-y-auto zyn-bg border-l border-t content relative shadow-overlay rounded-tl-2xl overflow-hidden">
         <router-view class="" />
       </div>
     </div>

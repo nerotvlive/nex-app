@@ -17,7 +17,7 @@ onMounted(async () => {
 <template>
   <div class="border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] w-[350px] flex flex-col justify-between text-white">
     <div>
-      <h3 class="font-bold text-lg mb-2 bg-[#5865F2] hover:bg-[#4752C4] p-4 py-2 hover:cursor-pointer" @click="openExternal(discordData?.instant_invite || 'https://discord.gg/g3ZwWugj9N')">
+      <h3 class="font-bold text-lg mb-2 bg-[#5865F2] hover:bg-[#4752C4] p-4 py-2 hover:cursor-pointer transition" @click="openExternal(discordData?.instant_invite || 'https://discord.gg/g3ZwWugj9N')">
         <i class="bi bi-discord mr-1"></i>
         Discord Server
       </h3>

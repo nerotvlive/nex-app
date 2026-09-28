@@ -47,19 +47,19 @@ const filteredInstances = computed(() => {
 
 <template>
   <div class="h-full instance-view flex flex-col">
-    <MenuBar :menuDisabled="menuDisabled" class="w-full border-b relative z-10" style="background: #1c1c1e;">
+    <MenuBar :menuDisabled="menuDisabled" class="w-full border-b relative z-10 zyn-bg-alt">
       <template #title>
         <div class="flex gap-1 text-sm">
-          <button @click="viewMode = 'grid'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'grid', 'opacity-50 text-zinc-400': viewMode !== 'grid' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Grid-Layout">
+          <button @click="viewMode = 'grid'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'grid', 'opacity-50 text-zinc-400': viewMode !== 'grid' }" class="px-3 p-2 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="Grid-Layout">
             <i class="bi bi-grid-fill"></i>
           </button>
-          <button @click="viewMode = 'list'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'list', 'opacity-50 text-zinc-400': viewMode !== 'list' }" class="px-3 p-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="List-Layout">
+          <button @click="viewMode = 'list'" :class="{ 'bg-zinc-700 text-white shadow-md': viewMode === 'list', 'opacity-50 text-zinc-400': viewMode !== 'list' }" class="px-3 p-2 text-white rounded transition hover:shadow-lg shadow-black/25 cursor-pointer" title="List-Layout">
             <i class="bi bi-list-ul"></i>
           </button>
         </div>
       </template>
       <template #menu>
-        <input v-model="searchQuery" type="text" placeholder="Search instances..." class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25" />
+        <input v-model="searchQuery" type="text" placeholder="Search instances..." class="h-fit w-fit py-2 px-4 text-sm text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25" />
       </template>
     </MenuBar>
     <div class="grow overflow-y-auto overflow-hidden overview-bg p-3 pr-1">

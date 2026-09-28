@@ -10,7 +10,7 @@
     }
 
     .dashboard-content {
-        background: linear-gradient(to bottom, var(--color-zinc-900), var(--color-zinc-800));
+        background: linear-gradient(to bottom, var(--zyn-bg), var(--zyn-bg-alt));
         min-height: calc(100% + 1px);
 
         ::-webkit-scrollbar-track {
