@@ -24,6 +24,19 @@ const scrollToContent = () => {
   contentElement?.scrollIntoView({ behavior: 'smooth' });
 };
 
+const handleCommitWheel = (event: WheelEvent) => {
+  const outerContainer = document.querySelector('.dashboard-view .overflow-y-auto') as HTMLElement;
+  if (!outerContainer) return;
+
+  const isOuterAtBottom =
+      Math.ceil(outerContainer.scrollTop + outerContainer.clientHeight) >= outerContainer.scrollHeight - 2;
+
+  if (!isOuterAtBottom && event.deltaY > 0) {
+    event.preventDefault();
+    outerContainer.scrollTop += event.deltaY;
+  }
+};
+
 const version = ref<string>("Loading");
 const versionType = ref<string>('backend');
 const versionBuild = ref<string>('..');
@@ -42,7 +55,7 @@ onMounted(async () => {
     <MenuBar title="NEX App" class="w-full border-b relative z-10 backdrop-blur-2xl" style="background: #1c1c1e99;">
       <template #menu>
         <div class="flex gap-1">
-          <input @input="handleSearch()" @click="handleSearch()" v-model="searchQuery" type="text" placeholder="Search resources..." class="h-fit w-fit py-2 px-4 text-sm bg-zinc-500/25 hover:bg-zinc-400/25 text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25 outline-none"/>
+          <input @input="handleSearch()" @click="handleSearch()" v-model="searchQuery" type="text" placeholder="Search resources..." class="h-fit w-fit py-2 px-4 text-sm text-white rounded transition hover:shadow-md focus:shadow-md shadow-black/25 outline-none" style="background: #ffffff15;"/>
         </div>
       </template>
     </MenuBar>
@@ -72,7 +85,7 @@ onMounted(async () => {
       <div class="seperator"></div>
       <div class="dashboard-content bg-zinc-800 relative p-4">
         <div class="flex gap-4">
-          <CommitHistory class="p-4 w-full border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto" />
+          <CommitHistory @wheel="handleCommitWheel" class="p-4 w-full border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto"/>
           <DiscordWidget class="border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto" />
         </div>
       </div>
