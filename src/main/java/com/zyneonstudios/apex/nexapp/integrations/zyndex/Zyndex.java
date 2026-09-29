@@ -1,6 +1,9 @@
 package com.zyneonstudios.apex.nexapp.integrations.zyndex;
 
 import com.zyneonstudios.apex.nexapp.integrations.zyndex.resource.ZyndexResource;
+import tools.jackson.databind.node.ObjectNode;
+
+import java.util.Collection;
 
 public interface Zyndex {
 
@@ -11,6 +14,11 @@ public interface Zyndex {
 
     String getOwner();
     String[] getContributors();
+    Collection<String> getContributorList();
 
     ZyndexResource[] getResources();
+    Collection<ZyndexResource> getResourceList();
+    ZyndexResource getResource(String identifier);
+
+    ObjectNode getJson();
 }
