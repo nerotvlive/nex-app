@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class ZyndexController {
 
     private final ObjectMapper objectMapper;
@@ -65,7 +65,7 @@ public class ZyndexController {
     }
 
     private String getPath(String servletPathOrRequestURI) {
-        return servletPathOrRequestURI.replace("/api/v1/zyndexes","").replace("/api/v1/zyndex","").replace("/api/v1/indexes","").replace("/api/v1/index","");
+        return servletPathOrRequestURI.replace("/api/zyndexes","").replace("/api/zyndex","").replace("/api/indexes","").replace("/api/index","");
     }
 
     public static ObjectNode fetchJsonObject(String url) {

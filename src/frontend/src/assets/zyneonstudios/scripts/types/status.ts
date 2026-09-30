@@ -49,7 +49,7 @@ export async function getApplicationStatus(): Promise<ApplicationStatus> {
 
 async function fetchApplicationStatus(): Promise<ApplicationStatus> {
   try {
-    const response = await fetch('/api/v1/status');
+    const response = await fetch('/api/status');
     if (!response.ok) throw new Error('Could not get application status');
     return await response.json();
   } catch (error) {

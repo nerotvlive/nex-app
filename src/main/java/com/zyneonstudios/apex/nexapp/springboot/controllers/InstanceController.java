@@ -9,7 +9,7 @@ import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class InstanceController {
 
     private final ObjectMapper objectMapper;

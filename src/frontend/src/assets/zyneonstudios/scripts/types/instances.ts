@@ -47,7 +47,7 @@ export interface InstanceWrapper {
 
 export async function fetchInstances(): Promise<InstanceWrapper[]> {
     try {
-        const response = await fetch('/api/v1/instances');
+        const response = await fetch('/api/instances');
         if (!response.ok) throw new Error('Loading failed');
         return await response.json();
     } catch (error) {

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Menu from "@/components/Menu.vue";
 import Titlebar from "@/components/Titlebar.vue";
+import {useGlobalGamepadNavigation} from "@/assets/zyneonstudios/scripts/gamepad";
+useGlobalGamepadNavigation()
 </script>
 
 <template>

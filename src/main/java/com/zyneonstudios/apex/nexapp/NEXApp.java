@@ -14,6 +14,7 @@ public class NEXApp {
     private String versionName = "Unknown";
     private String versionType = "unstable";
     private String versionBuild = "000000000000";
+    private String curseforgeToken = "";
 
     public NEXApp() {
         window = new WebviewWindow();
@@ -39,6 +40,9 @@ public class NEXApp {
 
                     loadProperty(properties, "versionBuild")
                             .ifPresent(val -> this.versionBuild = val);
+
+                    loadProperty(properties, "curseforgeToken")
+                            .ifPresent(val -> this.curseforgeToken = val);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

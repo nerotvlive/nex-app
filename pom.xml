@@ -21,8 +21,9 @@
         <maven.compiler.source>25</maven.compiler.source>
         <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nex.name>Reditus Magnificus</nex.name>
-        <nex.type>alpha</nex.type>
+        <apex.vendor>Zyneon Apex</apex.vendor>
+        <apex.name>Reditus Magnificus</apex.name>
+        <apex.type>alpha</apex.type>
         <maven.build.timestamp.format>yyMMdd-HHmmss</maven.build.timestamp.format>
         <build.number>${maven.build.timestamp}</build.number>
     </properties>
@@ -166,6 +167,13 @@
                 </executions>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
     </build>
 
     <profiles>
@@ -184,6 +192,25 @@
                         <version>3.2.0</version>
                         <executions>
                             <execution>
+                                <id>remove-read-only-for-clean</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <exec executable="cmd" failonerror="false">
+                                            <arg value="/c"/>
+                                            <arg value="attrib"/>
+                                            <arg value="-R"/>
+                                            <arg value="${project.build.directory}\*.*"/>
+                                            <arg value="/S"/>
+                                            <arg value="/D"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>run</goal>
@@ -194,36 +221,214 @@
                                     </target>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>remove-read-only-for-appimage</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <exec executable="cmd" failonerror="true">
+                                            <arg value="/c"/>
+                                            <arg value="attrib"/>
+                                            <arg value="-R"/>
+                                            <arg value="${project.build.directory}\*.*"/>
+                                            <arg value="/S"/>
+                                            <arg value="/D"/>
+                                        </exec>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${name}" tofile="${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}" failonerror="false" quiet="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>remove-read-only-for-installer</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <exec executable="cmd" failonerror="true">
+                                            <arg value="/c"/>
+                                            <arg value="attrib"/>
+                                            <arg value="-R"/>
+                                            <arg value="${project.build.directory}\${name}-${project.version}.exe"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>move-zip-and-rename</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <zip destfile="${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}.zip" basedir="${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}"/>
+                                        <move file="${project.build.directory}/${project.artifactId}-${project.version}-windows-aarch_64.zip" tofile="${project.build.directory}/${project.artifactId}-${project.version}-windows-aarch64.zip" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/windows-aarch_64" tofile="${project.build.directory}/windows-aarch64" failonerror="false" quiet="true"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${name}-${project.version}.exe" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-${os.detected.arch}.exe" failonerror="false" quiet="true"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${name}-${project.version}.msi" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-${os.detected.arch}.msi" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch_64.exe" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch64.exe" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch_64.msi" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch64.msi" failonerror="false" quiet="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>remove-read-only-for-installer-msi</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <exec executable="cmd" failonerror="true">
+                                            <arg value="/c"/>
+                                            <arg value="attrib"/>
+                                            <arg value="-R"/>
+                                            <arg value="${project.build.directory}\${name}-${project.version}.msi"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.panteleyev</groupId>
                         <artifactId>jpackage-maven-plugin</artifactId>
                         <version>1.8.0</version>
                         <executions>
                             <execution>
-                                <id>jpackage</id>
+                                <id>jpackage-app-image</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>jpackage</goal>
                                 </goals>
                                 <configuration>
                                     <input>${project.build.directory}</input>
-                                    <destination>${project.build.directory}/jpackage</destination>
+                                    <destination>${project.build.directory}</destination>
                                     <name>${name}</name>
                                     <appVersion>${version}</appVersion>
-                                    <vendor>Zyneon Apex</vendor>
+                                    <vendor>${apex.vendor}</vendor>
+
+                                    <type>APP_IMAGE</type>
+
                                     <mainJar>${project.build.finalName}.jar</mainJar>
                                     <mainClass>org.springframework.boot.loader.launch.JarLauncher</mainClass>
                                     <icon>${project.basedir}/src/main/resources/icon.ico</icon>
-                                    <type>APP_IMAGE</type>
-                                    <winConsole>false</winConsole>
+
                                     <javaOptions>
                                         <option>--add-modules</option>
                                         <option>jdk.unsupported.desktop</option>
                                         <option>--add-exports</option>
                                         <option>java.desktop/jdk.swing.interop=ALL-UNNAMED</option>
                                     </javaOptions>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>jpackage-installer</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                                <configuration>
+                                    <appImage>${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}</appImage>
+                                    <destination>${project.build.directory}</destination>
+                                    <name>${name}</name>
+                                    <appVersion>${version}</appVersion>
+                                    <vendor>${apex.vendor}</vendor>
+
+                                    <type>EXE</type>
+
+                                    <resourceDir>${project.basedir}/build/Windows</resourceDir>
+                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
+
+                                    <winDirChooser>true</winDirChooser>
+                                    <winShortcut>true</winShortcut>
+                                    <winMenu>true</winMenu>
+                                    <winMenuGroup>${apex.vendor}</winMenuGroup>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>jpackage-installer-msi</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>jpackage</goal>
+                                </goals>
+                                <configuration>
+                                    <appImage>${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}</appImage>
+                                    <destination>${project.build.directory}</destination>
+                                    <name>${name}</name>
+                                    <appVersion>${version}</appVersion>
+                                    <vendor>${apex.vendor}</vendor>
+
+                                    <type>MSI</type>
+
+                                    <resourceDir>${project.basedir}/build/Windows</resourceDir>
+                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
+
+                                    <winDirChooser>true</winDirChooser>
+                                    <winShortcut>true</winShortcut>
+                                    <winMenu>true</winMenu>
+                                    <winMenuGroup>${apex.vendor}</winMenuGroup>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>net.jsign</groupId>
+                        <artifactId>jsign-maven-plugin</artifactId>
+                        <version>7.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-app-image</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}/${name}.exe</file>
+                                    <keystore>${project.basedir}/cert.pfx</keystore>
+                                    <storepass>${sign.cert.password}</storepass>
+                                    <tsaurl>http://timestamp.digicert.com</tsaurl>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>sign-installer</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.build.directory}/${name}-${project.version}.exe</file>
+                                    <keystore>${project.basedir}/cert.pfx</keystore>
+                                    <storepass>${sign.cert.password}</storepass>
+                                    <tsaurl>http://timestamp.digicert.com</tsaurl>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>sign-installer-msi</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.build.directory}/${name}-${project.version}.msi</file>
+                                    <keystore>${project.basedir}/cert.pfx</keystore>
+                                    <storepass>${sign.cert.password}</storepass>
+                                    <tsaurl>http://timestamp.digicert.com</tsaurl>
                                 </configuration>
                             </execution>
                         </executions>

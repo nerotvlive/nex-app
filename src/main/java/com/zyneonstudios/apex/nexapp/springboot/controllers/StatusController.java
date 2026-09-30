@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 public class StatusController {
 
-    @GetMapping("/status")
+    @GetMapping({"/status", "/state", "/", ""})
     public Map<String, Object> getStatus() {
         return Map.of(
                 "service", "NEX App API by Zyneon Apex, a Zyneon Studios Division",

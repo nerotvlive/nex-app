@@ -3,10 +3,8 @@ package com.zyneonstudios.apex.nexapp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.awt.*;
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
-import java.util.ArrayList;
 import java.util.Collections;
 
 @SpringBootApplication
@@ -16,7 +14,6 @@ public class Main {
     private static NEXApp nexApp;
     private static SpringApplication springApp;
     private static String url = "http://localhost:8274";
-    private static ArrayList<String> thingsToHandle = new ArrayList<>();
 
     static void main(String[] args) {
         Main.args = args;
@@ -34,13 +31,6 @@ public class Main {
         for(int i=0;i<args.length;i++) {
             switch (args[i]) {
                 case "-v", "--vite" -> url = "http://localhost:5173";
-                case "-m", "--mime" -> {
-                    if (args.length > i + 1) {
-                        thingsToHandle.add(args[i + 1]);
-                        args[i] = "";
-                        args[i + 1] = "";
-                    }
-                }
                 case "-u", "--url" -> {
                     if (args.length > i + 1) {
                         url = args[i + 1];
@@ -70,10 +60,6 @@ public class Main {
 
     public static void setBaseUrl(String url) {
         Main.url = url;
-    }
-
-    public static ArrayList<String> getThingsToHandle() {
-        return thingsToHandle;
     }
 
     private static void initNativeAppName() {
