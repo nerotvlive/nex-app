@@ -5,9 +5,9 @@ import '@/assets/zyneonstudios/styles/components/DashboardHome.css';
 import {onMounted, ref} from 'vue'
 import { useRouter } from 'vue-router'
 import {openExternal} from "@/assets/zyneonstudios/scripts/shared";
-import CommitHistory from "@/components/CommitHistory.vue";
+import GitHubCommitHistory from "@/components/third-party/GitHubCommitHistory.vue";
 import {getApplicationStatus} from "@/assets/zyneonstudios/scripts/types";
-import DiscordWidget from "@/components/DiscordWidget.vue";
+import DiscordWidget from "@/components/third-party/DiscordWidget.vue";
 
 const router = useRouter()
 const searchQuery = ref('')
@@ -85,8 +85,8 @@ onMounted(async () => {
       <div class="seperator"></div>
       <div class="dashboard-content bg-zinc-800 relative p-4">
         <div class="flex gap-4">
-          <CommitHistory @wheel="handleCommitWheel" class="p-4 w-full border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto"/>
-          <DiscordWidget class="border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto" />
+          <GitHubCommitHistory @wheel="handleCommitWheel" class="p-4 w-full border border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto"/>
+          <DiscordWidget class="border hidden border-zinc-700 bg-zinc-700/20 rounded-xl shadow-lg shadow-black/50 h-[81vh] overflow-hidden overflow-y-auto" />
         </div>
       </div>
     </div>

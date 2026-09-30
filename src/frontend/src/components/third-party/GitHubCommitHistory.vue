@@ -96,7 +96,7 @@ onMounted(() => {
         <div class="absolute -left-7.75 top-1 w-3 h-3 bg-zinc-700 rounded-full border-2 border-zinc-900 group-hover:bg-indigo-600 transition-colors"></div>
 
         <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-          <a rel="noopener noreferrer" class="text-sm text-zinc-100 transition-colors">
+          <a rel="noopener noreferrer" class="text-sm text-zinc-100 transition-colors line-clamp-8">
             {{ item.commit.message }}
           </a>
           <span class="text-xs font-mono text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded w-fit">
