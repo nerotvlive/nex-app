@@ -30,8 +30,6 @@ It integrates CurseForge, Modrinth and our own self-hostable content distributio
 > GitHub contributions, issue reports and feedback is highly welcome.<br>
 > If you are interested in joining the team, please get in touch via [our Discord server](https://discord.gg/g3ZwWugj9N) or message @nerotvlive directly.
 
-- - -
-
 This README is work in progress...
 
 - - -
