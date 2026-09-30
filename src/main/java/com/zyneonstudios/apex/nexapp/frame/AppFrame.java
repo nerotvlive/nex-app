@@ -468,7 +468,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
             getMaximizeButton().setBackground(color);
             getLabel().setBackground(color);
         } catch (Exception e) {
-            NEXApplication.getLogger().err(e.getMessage());
+            NEXApplication.getLogger().err(e.getMessage(),false);
         }
     }
 
@@ -515,7 +515,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
             getMaximizeButton().setForeground(color);
             getLabel().setForeground(color);
         } catch (Exception e) {
-            NEXApplication.getLogger().err(e.getMessage());
+            NEXApplication.getLogger().err(e.getMessage(),false);
         }
     }
 

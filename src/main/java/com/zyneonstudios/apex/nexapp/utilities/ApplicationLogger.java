@@ -13,7 +13,7 @@ public class ApplicationLogger extends NexusLogger {
 
     @Override
     public void err(String errorMessage) {
-        err(errorMessage,true);
+        err(errorMessage,false);
     }
 
     public void err(String errorMessage, boolean dialog) {

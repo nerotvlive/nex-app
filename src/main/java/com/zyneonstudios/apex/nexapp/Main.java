@@ -7,6 +7,7 @@ import com.zyneonstudios.nexus.utilities.file.FileGetter;
 import com.zyneonstudios.nexus.utilities.json.GsonUtility;
 import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
 import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,17 +21,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.lang.management.ManagementFactory;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Properties;
-import java.util.UUID;
+import java.nio.file.*;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -62,6 +58,8 @@ public class Main {
     private static int focusPort = -1;
     private static String skippedUpdate = "0";
 
+    private static String version = StringGenerator.generateAlphanumericString(12);
+
     /**
      * The main method, the entry point of the NEX App.
      *
@@ -71,6 +69,11 @@ public class Main {
         // Display the splash screen.
         ZyneonSplash splash = new ZyneonSplash();
         splash.setVisible(true);
+        loadVersion();
+        checkExecutable();
+
+        checkMigrate();
+        checkAndUninstallNexus();
 
         // Enforce single-instance execution with hung detection and focus.
         if (!ensureSingleInstance()) {
@@ -117,6 +120,29 @@ public class Main {
             // Stop the application if launching fails.
             NEXApplication.stop(1);
         }
+    }
+
+    /**
+     * Loads the application version from the nexus.json file.
+     */
+    private static void loadVersion() {
+        if(!getLogger().isDebugging()) {
+            try {
+                String data = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("nexus.json").readAllBytes());
+                JsonObject nexus = new Gson().fromJson(data, JsonObject.class);
+                version = nexus.get("version").getAsString();
+            } catch (Exception e) {
+                getLogger().err("Couldn't fetch version from nexus.json: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Returns the application version.
+     *
+     * */
+    public static String getVersion() {
+        return version;
     }
 
     /**
@@ -522,7 +548,7 @@ public class Main {
                     }
                 }
 
-                if(!latestVersion.equals(currentVersion)) {
+                if(!latestVersion.equals(currentVersion)&&!latestVersion.contains("-pre.")) {
                     int update = JOptionPane.showConfirmDialog(
                             parent,
                             "Do you want to update to the latest version?\n\nCurrent version: " + currentVersion+"\nLatest version: "+latestVersion,
@@ -582,5 +608,365 @@ public class Main {
 
     public static String skippedUpdate() {
         return skippedUpdate;
+    }
+
+    private static String executablePath = null;
+    private static boolean isWindowsEXE = false;
+    private static void checkExecutable() {
+        if(OperatingSystem.getType().equals(OperatingSystem.Type.Windows)) {
+            try {
+                String jpackagePath = System.getProperty("jpackage.app-path");
+                if (jpackagePath != null && !jpackagePath.isBlank()) {
+                    logger.log("Running as Windows executable...");
+                    isWindowsEXE = true;
+                    executablePath = jpackagePath;
+                }
+            } catch (Exception e) {
+                logger.err("Failed to get native windows executable path: " + e.getMessage(),false);
+            }
+        }
+        if(executablePath == null) {
+            try {
+                File jarFile = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                String fullPath = jarFile.getAbsolutePath();
+                if(!fullPath.isBlank() && fullPath.toLowerCase().endsWith(".jar")) {
+                    logger.log("Running as Java .jar executable...");
+                    executablePath = fullPath;
+                }
+            } catch (Exception e) {
+                logger.err("Failed to get java .jar executable path: " + e.getMessage(),false);
+            }
+        }
+        if(executablePath == null) {
+            try {
+                File target = new File("target");
+                if(target.exists()&&target.isDirectory()) {
+                    String targetPath = target.getAbsolutePath()+File.separator+"nex-app-"+version+".jar";
+                    if(new File(targetPath).exists()) {
+                        logger.log("Running as Java .jar executable (dev env)...");
+                        executablePath = targetPath;
+                    }
+                }
+            } catch (Exception e) {
+                logger.err("Failed to get executable path from target directory: " + e.getMessage(),false);
+            }
+        }
+        if(executablePath == null) {
+            logger.log("Running without executable...");
+            logger.err("Failed to get executable path. If you are running this application inside a development environment, first run \"mvn clean package\" and try again or skip migration.",false);
+        } else {
+            logger.log("Executable path: "+executablePath);
+        }
+    }
+
+    public static String getExecutablePath() {
+        return executablePath;
+    }
+
+    public static boolean isWindowsEXE() {
+        return isWindowsEXE;
+    }
+
+    private static boolean needAdmin = false;
+    private static boolean needMigration = false;
+    private static void checkMigrate() {
+        logger.log("Checking for migration...");
+        if(OperatingSystem.getType().equals(OperatingSystem.Type.Windows)&&executablePath!=null&&!executablePath.isBlank()) {
+            logger.log("OS: Windows | executable path found...");
+            try {
+                if(needMigration(Paths.get("C:\\Users","Public","Desktop"))) {
+                    needMigration = true;
+                    needAdmin = true;
+                }
+            } catch (Exception e) {
+                logger.err("Failed to check public desktop path for shortcut migration: "+e.getMessage(),false);
+            }
+            try {
+                if(needMigration(Paths.get("C:\\ProgramData","Microsoft","Windows","Start Menu","Programs"))) {
+                    needMigration = true;
+                    needAdmin = true;
+                }
+            } catch (Exception e) {
+                logger.err("Failed to check public start menu for shortcut migration: "+e.getMessage(),false);
+            }
+            try {
+                if(needMigration(Paths.get(System.getProperty("user.home"),"AppData","Roaming","Microsoft","Windows","Start Menu","Programs"))) {
+                    needMigration = true;
+                }
+            } catch (Exception e) {
+                logger.err("Failed to check private start menu path for shortcut migration: "+e.getMessage(),false);
+            }
+            try {
+                if(needMigration(Paths.get(System.getProperty("user.home"),"Desktop"))) {
+                    needMigration = true;
+                }
+            } catch (Exception e) {
+                logger.err("Failed to check private desktop path for shortcut migration: "+e.getMessage(),false);
+            }
+        }
+        if(needMigration) {
+            logger.log("Migration needed!");
+            try {
+                migrate(Paths.get(System.getProperty("user.home"),"Desktop"));
+            } catch (Exception e) {
+                logger.err("Failed to migrate private desktop shortcut: "+e.getMessage(),false);
+            }
+            try {
+                migrate(Paths.get(System.getProperty("user.home"),"AppData","Roaming","Microsoft","Windows","Start Menu","Programs"));
+            } catch (Exception e) {
+                logger.err("Failed to migrate private start menu shortcut: "+e.getMessage(),false);
+            }
+            try {
+                migrate(Paths.get(System.getProperty("user.home"),"AppData","Roaming","Microsoft","Windows","Start Menu","Programs","Zyneon Apex"));
+            } catch (Exception e) {
+                logger.err("Failed to migrate private start menu shortcut: "+e.getMessage(),false);
+            }
+            if(needAdmin&&isAdmin()) {
+                try {
+                    migrate(Paths.get("C:\\Users","Public","Desktop"));
+                } catch (Exception e) {
+                    logger.err("Failed to migrate private desktop shortcut: "+e.getMessage(),false);
+                }
+                try {
+                    try {
+                        FileUtils.forceDelete(Paths.get("C:\\ProgramData","Microsoft","Windows","Start Menu","Programs","NEXUS App.lnk").toFile());
+                    } catch ( Exception e) {
+                        FileUtils.forceDeleteOnExit(Paths.get("C:\\ProgramData","Microsoft","Windows","Start Menu","Programs","NEXUS App.lnk").toFile());
+                    }
+                } catch (Exception e) {
+                    logger.err("Failed to migrate private desktop shortcut: "+e.getMessage(),false);
+                }
+                try {
+                    migrate(Paths.get("C:\\ProgramData","Microsoft","Windows","Start Menu","Programs","Zyneon Apex"));
+                } catch (Exception e) {
+                    logger.err("Failed to migrate private desktop shortcut: "+e.getMessage(),false);
+                }
+            } else if(needAdmin&&!isAdmin()) {
+                logger.log("Admin rights needed for migration!");
+                logger.log("Requesting admin rights...");
+                requestAdmin();
+            }
+            restartAfterMigration();
+        } else {
+            logger.log("No migration needed!");
+        }
+    }
+
+    private static void requestAdmin() {
+        try {
+            String executablePath = getExecutablePath();
+            String command = "";
+            if(isWindowsEXE) {
+                command = "powershell -Command \"Start-Process -FilePath '"+executablePath+"' -Verb RunAs\"";
+            } else {
+                Optional<String> javaPath = ProcessHandle.current().info().command();
+                if (javaPath.isPresent()) {
+                    String java = javaPath.get();
+                    command = "powershell -Command \"Start-Process -FilePath '"+java+"' -ArgumentList '-jar \""+executablePath+"\"' -Verb RunAs\"";
+                } else {
+                    logger.err("Failed to retrieve Java executable path!",false);
+                    return;
+                }
+            }
+            Runtime.getRuntime().exec(command);
+            System.exit(0);
+        } catch (Exception e) {
+            logger.err("Failed to request admin privileges: "+e,false);
+            System.exit(1);
+        }
+        System.exit(-1);
+    }
+
+    private static void restartAfterMigration() {
+        try {
+            String executablePath = getExecutablePath();
+            String command = "";
+            if(isWindowsEXE) {
+                command = "powershell -Command \"Start-Process explorer.exe '"+executablePath+"'\"";
+            } else {
+                Optional<String> javaPath = ProcessHandle.current().info().command();
+                if (javaPath.isPresent()) {
+                    String java = javaPath.get().replace("java.exe","javaw.exe");
+                    command = "powershell -Command \"(New-Object -ComObject Shell.Application).ShellExecute('" + java + "', '-jar \"" + executablePath + "\"', '', 'open', 1)\"";                } else {
+                    logger.err("Failed to retrieve Java executable path!",false);
+                    return;
+                }
+            }
+            Runtime.getRuntime().exec(command);
+            System.exit(0);
+        } catch (Exception e) {
+            logger.err("Failed to drop admin privileges: "+e,false);
+            System.exit(1);
+        }
+        System.exit(-1);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean isAdmin() {
+        try {
+            Process process = Runtime.getRuntime().exec("net session");
+            process.waitFor();
+            return process.exitValue() == 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static void migrate(Path path) {
+        logger.log("Migrating "+path.toString()+"...");
+        if(path.toFile().exists()&&path.toFile().isDirectory()) {
+            File folder = path.toFile();
+            File oldShortcut = new File(folder.getAbsolutePath()+File.separator+"NEXUS App.lnk");
+            File shortcut = new File(folder.getAbsolutePath()+File.separator+"NEX App (Legacy).lnk");
+            File leveled_shortcut = new File(folder.getAbsolutePath()+File.separator+"Zyneon Apex"+File.separator+"NEX App (Legacy).lnk");
+            if(oldShortcut.exists()) {
+                if(shortcut.exists()||leveled_shortcut.exists()) {
+                    try {
+                        FileUtils.forceDelete(oldShortcut);
+                        if(oldShortcut.exists()) {
+                            FileUtils.forceDeleteOnExit(oldShortcut);
+                            logger.log("Trying to delete old shortcut on application exit...");
+                        } else {
+                            logger.log("Successfully migrated old shortcut by deleting it!");
+                        }
+                    } catch (Exception e) {
+                        logger.err("Failed to delete old shortcut: "+e.getMessage(),false);
+                    }
+                } else {
+                    try {
+                        String oldPath = oldShortcut.getAbsolutePath();
+                        String newPath = oldPath + File.separator + "Zyneon Apex" + File.separator + "NEX App (Legacy).lnk";
+                        try {
+                            if(new File(newPath).exists()) {
+                                FileUtils.forceDelete(oldShortcut);
+                                if(oldShortcut.exists()) {
+                                    FileUtils.forceDeleteOnExit(oldShortcut);
+                                    logger.log("Trying to delete old shortcut on application exit...");
+                                } else {
+                                    logger.log("Successfully migrated old shortcut by deleting it!");
+                                }
+                            }
+                            if(path.endsWith("Desktop")&&!path.toString().contains(File.separator+"Public"+File.separator+"Desktop")) {
+                                newPath = Paths.get("C:\\Users","Public","Desktop","NEX App (Legacy).lnk").toString();
+                                if(new File(newPath).exists()) {
+                                    FileUtils.forceDelete(oldShortcut);
+                                    if(oldShortcut.exists()) {
+                                        FileUtils.forceDeleteOnExit(oldShortcut);
+                                        logger.log("Trying to delete old shortcut on application exit...");
+                                    } else {
+                                        logger.log("Successfully migrated old shortcut by deleting it!");
+                                    }
+                                }
+                            } else if(path.endsWith("Programs")&&path.toString().contains(File.separator+"AppData"+File.separator+"Roaming")) {
+                                newPath = Paths.get("C:\\ProgramData","Microsoft","Windows","Start Menu","Programs","Zyneon Apex","NEX App (Legacy).lnk").toString();
+                                if(new File(newPath).exists()) {
+                                    FileUtils.forceDelete(oldShortcut);
+                                    if(oldShortcut.exists()) {
+                                        FileUtils.forceDeleteOnExit(oldShortcut);
+                                        logger.log("Trying to delete old shortcut on application exit...");
+                                    } else {
+                                        logger.log("Successfully migrated old shortcut by deleting it!");
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            logger.err("Failed to detect new shortcut: "+e.getMessage(),false);
+                        }
+                        FileUtils.moveFile(oldShortcut,shortcut);
+                        if(new File(oldPath).exists()) {
+                            throw new IOException("Failed to rename shortcut "+oldPath+" to "+shortcut.getAbsolutePath());
+                        } else {
+                            logger.log("Successfully migrated old shortcut by renaming it!");
+                        }
+                    } catch (Exception e) {
+                        logger.err("Failed to rename shortcut: "+e.getMessage(),false);
+                    }
+                }
+                logger.log(" ");
+            }
+        }
+    }
+
+    private static boolean needMigration(Path path) {
+        logger.log("Checking for migration need in "+path.toString()+"...");
+        if(path.toFile().exists()&&path.toFile().isDirectory()) {
+            logger.log("...path exists and is a directory...");
+            File folder = path.toFile();
+            File shortcut = new File(folder.getAbsolutePath()+File.separator+"NEXUS App.lnk");
+            boolean value =  shortcut.exists();
+            logger.log("...migration need check complete, needed: "+value);
+            logger.log(" ");
+            return value;
+        }
+        return false;
+    }
+
+    public static boolean checkAndUninstallNexus() {
+        String targetProgram = "NEXUS App Version";
+
+        String[] registryPaths = {
+                "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
+                "HKLM\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
+                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall"
+        };
+
+        String uninstallCommand = null;
+
+        for (String regPath : registryPaths) {
+            try {
+                Process process = new ProcessBuilder("reg", "query", regPath, "/s").start();
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    boolean matchFound = false;
+                    String currentUninstallString = null;
+
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim();
+
+                        if (line.contains("DisplayName") && line.contains(targetProgram)) {
+                            matchFound = true;
+                        }
+
+                        if (line.contains("UninstallString")) {
+                            String[] parts = line.split("REG_SZ", 2);
+                            if (parts.length > 1) {
+                                currentUninstallString = parts[1].trim();
+                            }
+                        }
+
+                        if (line.isEmpty()) {
+                            if (matchFound && currentUninstallString != null) {
+                                uninstallCommand = currentUninstallString;
+                                break;
+                            }
+                            matchFound = false;
+                            currentUninstallString = null;
+                        }
+                    }
+                }
+                if (uninstallCommand != null) break;
+            } catch (Exception e) {}
+        }
+
+        if (uninstallCommand == null) {
+            return false;
+        }
+
+        String silentArgs = "";
+        if (uninstallCommand.toLowerCase().contains("msiexec")) {
+            silentArgs = " /qn /norestart";
+        } else {
+            silentArgs = " /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /S";
+        }
+
+        String finalCommand = uninstallCommand + silentArgs;
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", finalCommand);
+            pb.start();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -90,7 +90,6 @@ public class NEXApplication {
     private final ApplicationSettings localSettings = new ApplicationSettings();
     private final boolean onlineUI;
     private boolean launched = false;
-    private String version = StringGenerator.generateAlphanumericString(12);
 
     /**
      * Constructor for the NexusApplication.
@@ -123,7 +122,6 @@ public class NEXApplication {
             this.uiPath = (uiPath != null) ? uiPath : workingDirFile.getAbsolutePath() + "/temp/ui";
         }
 
-        loadVersion();
         setupTempDirectory();
         setupWebEnvironment(workingDirFile);
         getLogger().log("Initializing application...");
@@ -258,21 +256,6 @@ public class NEXApplication {
     }
 
     /**
-     * Loads the application version from the nexus.json file.
-     */
-    private void loadVersion() {
-        if(!getLogger().isDebugging()) {
-            try {
-                String data = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("nexus.json").readAllBytes());
-                JsonObject nexus = fastGson.fromJson(data, JsonObject.class);
-                version = nexus.get("version").getAsString();
-            } catch (Exception e) {
-                getLogger().err("Couldn't fetch version from nexus.json: " + e.getMessage());
-            }
-        }
-    }
-
-    /**
      * Sets up the temporary directory for the application.
      */
     private void setupTempDirectory() {
@@ -348,7 +331,7 @@ public class NEXApplication {
         webSetup.getWebClient().addLoadHandler(new CefLoadHandlerAdapter() {
             @Override
             public void onLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode) {
-                frame.executeJavaScript("version = \""+version+"\";", browser.getURL() ,0);
+                frame.executeJavaScript("version = \""+getVersion()+"\";", browser.getURL() ,0);
             }
         });
 
@@ -384,7 +367,7 @@ public class NEXApplication {
             try {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                 applicationFrame = new AppFrame(webSetup, getBaseUrl()+"index.html?app=true", true);
-                applicationFrame.setTitlebar(version, Color.black, Color.white);
+                applicationFrame.setTitlebar(getVersion(), Color.black, Color.white);
                 applicationFrame.setSize(applicationFrame.getDefaultSize());
                 applicationFrame.setLocationRelativeTo(null);
                 applicationFrame.setVisible(true);
@@ -635,7 +618,7 @@ public class NEXApplication {
      * @return The version string.
      */
     public String getVersion() {
-        return version;
+        return Main.getVersion();
     }
 
     /**
