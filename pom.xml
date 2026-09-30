@@ -14,7 +14,7 @@
     <groupId>com.zyneonstudios.apex</groupId>
     <name>NEX App</name>
     <artifactId>NEX_App</artifactId>
-    <version>4.0.2</version>
+    <version>4.0.0</version>
 
     <properties>
         <java.version>25</java.version>
