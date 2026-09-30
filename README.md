@@ -1,3 +1,8 @@
+![Main branch (selected)](https://img.shields.io/badge/NEX_App_(4.0)-white.svg?style=for-the-badge)
+[![Legacy branch](https://img.shields.io/badge/NEX_App_(Legacy/3.0)-%2300000000.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/tree/legacy)
+
+- - -
+
 # NEX App
 
 by **Zyneon Apex**, a **Zyneon Studios** division
