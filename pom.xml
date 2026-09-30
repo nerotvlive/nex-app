@@ -380,6 +380,7 @@
                                     <winShortcut>true</winShortcut>
                                     <winMenu>true</winMenu>
                                     <winMenuGroup>${apex.vendor}</winMenuGroup>
+                                    <fileAssociations></fileAssociations>
                                 </configuration>
                             </execution>
                         </executions>
