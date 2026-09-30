@@ -7,4 +7,4 @@ Categories=Utility;
 Terminal=false
 StartupNotify=true
 StartupWMClass=nex-app
-MimeType=application/zip;application/x-modrinth-mrpack;x-scheme-handler/modrinth;x-scheme-handler/curseforge;x-scheme-handler/cfauth;x-scheme-handler/curseforge-checkout;
+MimeType=application/zip;application/x-modrinth-mrpack;x-scheme-handler/modrinth;x-scheme-handler/curseforge;x-scheme-handler/curseforge-checkout;
