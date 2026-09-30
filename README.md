@@ -10,6 +10,8 @@ by **Zyneon Apex**, a **Zyneon Studios** division
 The Legacy NEX App is a Minecraft: Java Edition installer, and launcher with some modding support. It integrates CurseForge, Modrinth and our platform "NEX".
 <br><br>
 
+[![Download](https://img.shields.io/badge/Download-blue.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/tag/v3.0.35)
+
 - - -
 
 > [!TIP]
@@ -20,7 +22,13 @@ The Legacy NEX App is a Minecraft: Java Edition installer, and launcher with som
 
 - - -
 
-### README is work in progress...
+This README is work in progress...
+
+- - -
+
+### Dependencies
+
+- Java 25, we recommend [Azul Zulu JDK](https://www.azul.com/downloads/?version=java-25-lts&package=jdk#zulu)
 
 - - -
 
