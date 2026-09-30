@@ -1,0 +1,5 @@
+#!/bin/bash
+exec /app/jre/bin/java \
+    --add-modules jdk.unsupported.desktop \
+    --add-exports java.desktop/jdk.swing.interop=ALL-UNNAMED \
+    -jar /app/share/nex-app/nex-app.jar "$@"

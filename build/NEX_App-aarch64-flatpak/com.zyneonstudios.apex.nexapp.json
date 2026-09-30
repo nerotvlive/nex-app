@@ -1,0 +1,44 @@
+{
+  "app-id": "com.zyneonstudios.apex.nexapp",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "24.08",
+  "sdk": "org.freedesktop.Sdk",
+  "command": "nex-app-launcher",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--device=dri",
+    "--share=network"
+  ],
+  "modules": [
+    {
+      "name": "nex-app",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -D nex-app.jar /app/share/nex-app/nex-app.jar",
+        "install -D -m755 nex-app-launcher /app/bin/nex-app-launcher",
+
+        "install -D com.zyneonstudios.apex.nexapp.desktop /app/share/applications/com.zyneonstudios.apex.nexapp.desktop",
+        "install -D com.zyneonstudios.apex.nexapp.png /app/share/icons/hicolor/256x256/apps/com.zyneonstudios.apex.nexapp.png",
+
+        "mkdir -p /app/jre",
+        "cp -r jre/* /app/jre/"
+      ],
+      "sources": [
+        {
+          "type": "file",
+          "path": "nex-app.jar"
+        },
+        {
+          "type": "file",
+          "path": "nex-app-launcher"
+        },
+        {
+          "type": "dir",
+          "path": "assets"
+        }
+      ]
+    }
+  ]
+}

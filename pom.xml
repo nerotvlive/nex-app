@@ -4,103 +4,49 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.1</version>
+        <relativePath/>
+    </parent>
+
     <groupId>com.zyneonstudios.apex</groupId>
-    <artifactId>nex-app</artifactId>
-    <version>3.0.35</version>
+    <name>NEX App</name>
+    <artifactId>NEX_App</artifactId>
+    <version>4.0.1</version>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nexus.name>Reformatio</nexus.name>
-        <nexus.type>stable</nexus.type>
-        <app.mainClass>com.zyneonstudios.apex.nexapp.Main</app.mainClass>
-        <app.name>NEX App (Legacy)</app.name>
-        <app.vendor>Zyneon Apex</app.vendor>
-        <app.version.jpackage>${version}</app.version.jpackage>
+        <apex.vendor>Zyneon Apex</apex.vendor>
+        <apex.name>Reditus Magnificus</apex.name>
+        <apex.type>alpha</apex.type>
+        <maven.build.timestamp.format>yyMMdd-HHmmss</maven.build.timestamp.format>
+        <build.number>${maven.build.timestamp}</build.number>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>nerofy-releases</id>
-            <url>https://maven.nrfy.net/releases</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
     <dependencies>
-        <!-- MAVEN CENTRAL REPOSITORY -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.5.16</version>
+            <version>4.1.1</version>
         </dependency>
         <dependency>
-            <groupId>com.starxg</groupId>
-            <artifactId>java-keytar</artifactId>
-            <version>1.0.0</version>
+            <groupId>io.avaje.webview</groupId>
+            <artifactId>avaje-webview</artifactId>
+            <version>0.29</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>fr.flowarg</groupId>
-            <artifactId>azuljavadownloader</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <!-- to fix dependency security issues -->
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.20.0</version>
-        </dependency>
-
-        <!-- NEROFY PUBLIC REPOSITORY -->
-        <dependency>
-            <groupId>live.nerotv</groupId>
-            <artifactId>a-minecraft-launcher</artifactId>
-            <version>2025.12.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.zyneonstudios.nexus</groupId>
-            <artifactId>base-desktop</artifactId>
-            <version>2025.9</version>
-        </dependency>
-        <dependency>
-            <groupId>com.zyneonstudios.nexus</groupId>
-            <artifactId>zyndex-java</artifactId>
-            <version>2025.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zyneonstudios.apex</groupId>
-            <artifactId>mojang-auth</artifactId>
-            <version>2025.12</version>
-        </dependency>
-
-        <!-- JITPACK.IO REPOSITORY -->
-        <dependency>
-            <groupId>com.github.steos</groupId>
-            <artifactId>jnafilechooser</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.MinnDevelopment</groupId>
-            <artifactId>java-discord-rpc</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.Querz</groupId>
-            <artifactId>NBT</artifactId>
-            <version>6.1</version>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.53.4.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <repository>
-            <id>nerofy-snapshots</id>
-            <name>Nerofy Network Maven repository</name>
-            <url>https://maven.nrfy.net/snapshots</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <resources>
@@ -112,62 +58,86 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.1</version>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.5.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.source}</target>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/src/frontend/dist</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/src/main/resources/static</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>clean-old-static-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.build.outputDirectory}/static</directory>
+                                </fileset>
+                                <fileset>
+                                    <directory>${project.basedir}/src/frontend/dist</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>4.1.1</version>
+                <configuration>
+                    <jvmArguments>
+                        --add-modules jdk.unsupported.desktop --add-exports java.desktop/jdk.swing.interop=ALL-UNNAMED
+                    </jvmArguments>
                 </configuration>
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.1</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                        <version>4.1.0</version>
-                    </dependency>
-                </dependencies>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <workingDirectory>src/frontend</workingDirectory>
+                    <nodeVersion>v24.20.0</nodeVersion>
+                    <pnpmVersion>11.22.0</pnpmVersion>
+                </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>install node and pnpm</id>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>install-node-and-pnpm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>pnpm install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pnpm</goal>
                         </goals>
                         <configuration>
-                            <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${app.mainClass}</mainClass>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.handlers</resource>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring.schemas</resource>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</resource>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/spring/org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration.imports</resource>
-                                </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pnpm run build</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>pnpm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -176,19 +146,39 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.4.0</version>
-                <configuration>
-                    <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>zip</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
-                </configuration>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-frontend-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/frontend/dist</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
     </build>
 
     <profiles>
         <profile>
-            <id>windows-exe</id>
+            <id>windows</id>
             <activation>
                 <os>
                     <family>Windows</family>
@@ -221,6 +211,17 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.original"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>remove-read-only-for-appimage</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
@@ -232,15 +233,17 @@
                                             <arg value="/c"/>
                                             <arg value="attrib"/>
                                             <arg value="-R"/>
-                                            <arg value="${project.build.directory}\jpackage\${app.name}\*.*"/>
+                                            <arg value="${project.build.directory}\*.*"/>
                                             <arg value="/S"/>
                                             <arg value="/D"/>
                                         </exec>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${name}" tofile="${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}" failonerror="false" quiet="true"/>
                                     </target>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>remove-read-only-for-installers</id>
+                                <id>remove-read-only-for-installer</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
                                     <goal>run</goal>
@@ -251,36 +254,85 @@
                                             <arg value="/c"/>
                                             <arg value="attrib"/>
                                             <arg value="-R"/>
-                                            <arg value="${project.build.directory}\jpackage\*.*"/>
+                                            <arg value="${project.build.directory}\${name}-${project.version}.exe"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>move-zip-and-rename</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <zip destfile="${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}.zip" basedir="${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}"/>
+                                        <move file="${project.build.directory}/${project.artifactId}-${project.version}-windows-aarch_64.zip" tofile="${project.build.directory}/${project.artifactId}-${project.version}-windows-aarch64.zip" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/windows-aarch_64" tofile="${project.build.directory}/windows-aarch64" failonerror="false" quiet="true"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${name}-${project.version}.exe" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-${os.detected.arch}.exe" failonerror="false" quiet="true"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${name}-${project.version}.msi" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-${os.detected.arch}.msi" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch_64.exe" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch64.exe" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch_64.msi" tofile="${project.build.directory}/Install ${project.artifactId}-${project.version}-aarch64.msi" failonerror="false" quiet="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>remove-read-only-for-installer-msi</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <exec executable="cmd" failonerror="true">
+                                            <arg value="/c"/>
+                                            <arg value="attrib"/>
+                                            <arg value="-R"/>
+                                            <arg value="${project.build.directory}\${name}-${project.version}.msi"/>
                                         </exec>
                                     </target>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.panteleyev</groupId>
                         <artifactId>jpackage-maven-plugin</artifactId>
-                        <version>1.7.4</version>
+                        <version>1.8.0</version>
                         <executions>
                             <execution>
-                                <id>jpackage</id>
+                                <id>jpackage-app-image</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>jpackage</goal>
                                 </goals>
                                 <configuration>
                                     <input>${project.build.directory}</input>
-                                    <destination>${project.build.directory}/jpackage</destination>
-                                    <name>${app.name}</name>
-                                    <appVersion>${app.version.jpackage}</appVersion>
-                                    <vendor>${app.vendor}</vendor>
-                                    <mainJar>${project.build.finalName}.jar</mainJar>
-                                    <mainClass>${app.mainClass}</mainClass>
-                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <destination>${project.build.directory}</destination>
+                                    <name>${name}</name>
+                                    <appVersion>${version}</appVersion>
+                                    <vendor>${apex.vendor}</vendor>
+
                                     <type>APP_IMAGE</type>
+
+                                    <mainJar>${project.build.finalName}.jar</mainJar>
+                                    <mainClass>org.springframework.boot.loader.launch.JarLauncher</mainClass>
+                                    <icon>${project.basedir}/src/main/resources/icon.ico</icon>
+
+                                    <javaOptions>
+                                        <option>--add-modules</option>
+                                        <option>jdk.unsupported.desktop</option>
+                                        <option>--add-exports</option>
+                                        <option>java.desktop/jdk.swing.interop=ALL-UNNAMED</option>
+                                    </javaOptions>
                                 </configuration>
                             </execution>
+
                             <execution>
                                 <id>jpackage-installer</id>
                                 <phase>integration-test</phase>
@@ -288,19 +340,24 @@
                                     <goal>jpackage</goal>
                                 </goals>
                                 <configuration>
-                                    <appImage>${project.build.directory}/jpackage/${app.name}</appImage>
-                                    <destination>${project.build.directory}/jpackage</destination>
-                                    <name>${app.name}</name>
-                                    <appVersion>${app.version.jpackage}</appVersion>
-                                    <vendor>${app.vendor}</vendor>
-                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <appImage>${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}</appImage>
+                                    <destination>${project.build.directory}</destination>
+                                    <name>${name}</name>
+                                    <appVersion>${version}</appVersion>
+                                    <vendor>${apex.vendor}</vendor>
+
                                     <type>EXE</type>
+
+                                    <resourceDir>${project.basedir}/build/Windows</resourceDir>
+                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
+
                                     <winDirChooser>true</winDirChooser>
                                     <winShortcut>true</winShortcut>
                                     <winMenu>true</winMenu>
-                                    <winMenuGroup>${app.vendor}</winMenuGroup>
+                                    <winMenuGroup>${apex.vendor}</winMenuGroup>
                                 </configuration>
                             </execution>
+
                             <execution>
                                 <id>jpackage-installer-msi</id>
                                 <phase>integration-test</phase>
@@ -308,21 +365,27 @@
                                     <goal>jpackage</goal>
                                 </goals>
                                 <configuration>
-                                    <appImage>${project.build.directory}/jpackage/${app.name}</appImage>
-                                    <destination>${project.build.directory}/jpackage</destination>
-                                    <name>${app.name}</name>
-                                    <appVersion>${app.version.jpackage}</appVersion>
-                                    <vendor>${app.vendor}</vendor>
-                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <appImage>${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}</appImage>
+                                    <destination>${project.build.directory}</destination>
+                                    <name>${name}</name>
+                                    <appVersion>${version}</appVersion>
+                                    <vendor>${apex.vendor}</vendor>
+
                                     <type>MSI</type>
+
+                                    <resourceDir>${project.basedir}/build/Windows</resourceDir>
+                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
+
                                     <winDirChooser>true</winDirChooser>
                                     <winShortcut>true</winShortcut>
                                     <winMenu>true</winMenu>
-                                    <winMenuGroup>${app.vendor}</winMenuGroup>
+                                    <winMenuGroup>${apex.vendor}</winMenuGroup>
+                                    <fileAssociations></fileAssociations>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>net.jsign</groupId>
                         <artifactId>jsign-maven-plugin</artifactId>
@@ -335,7 +398,7 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <file>${project.build.directory}/jpackage/${app.name}/${app.name}.exe</file>
+                                    <file>${project.build.directory}/${project.artifactId}-${project.version}-windows-${os.detected.arch}/${name}.exe</file>
                                     <keystore>${project.basedir}/cert.pfx</keystore>
                                     <storepass>${sign.cert.password}</storepass>
                                     <tsaurl>http://timestamp.digicert.com</tsaurl>
@@ -349,7 +412,7 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <file>${project.build.directory}/jpackage/${app.name}-${app.version.jpackage}.exe</file>
+                                    <file>${project.build.directory}/${name}-${project.version}.exe</file>
                                     <keystore>${project.basedir}/cert.pfx</keystore>
                                     <storepass>${sign.cert.password}</storepass>
                                     <tsaurl>http://timestamp.digicert.com</tsaurl>
@@ -363,7 +426,7 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <file>${project.build.directory}/jpackage/${app.name}-${app.version.jpackage}.msi</file>
+                                    <file>${project.build.directory}/${name}-${project.version}.msi</file>
                                     <keystore>${project.basedir}/cert.pfx</keystore>
                                     <storepass>${sign.cert.password}</storepass>
                                     <tsaurl>http://timestamp.digicert.com</tsaurl>
@@ -374,6 +437,161 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+        <profile>
+            <id>linux-x86_64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <appimage.arch>x86_64</appimage.arch>
+                <jre.source.folder>Azul_Zulu-JRE-x86_64</jre.source.folder>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.original"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre/bin" perm="755" includes="*"/>
 
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre/bin" perm="755" includes="*"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <chmod file="${project.basedir}/build/appimagetool-${appimage.arch}.AppImage" perm="755" />
+
+                                        <exec executable="./appimagetool-${appimage.arch}.AppImage" dir="${project.basedir}/build" failonerror="true">
+                                            <env key="ARCH" value="${appimage.arch}" />
+                                            <arg value="NEX_App-${appimage.arch}.AppDir" />
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.AppImage" />
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${project.version}-${appimage.arch}.AppImage" todir="${project.build.directory}" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/.DirIcon" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar" />
+                                        <exec executable="flatpak-builder" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="--repo=repo"/>
+                                            <arg value="--force-clean"/>
+                                            <arg value="build-dir"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp.json"/>
+                                        </exec>
+                                        <exec executable="flatpak" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="build-bundle"/>
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="repo"/>
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.flatpak"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp"/>
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/NEX_App-${project.version}-${appimage.arch}.flatpak" todir="${project.build.directory}"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/repo"/>
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>linux-aarch64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <appimage.arch>aarch64</appimage.arch>
+                <jre.source.folder>Azul_Zulu-JRE-aarch64</jre.source.folder>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.original"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre/bin" perm="755" includes="*"/>
+
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
+                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre">
+                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
+                                        </copy>
+                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre/bin" perm="755" includes="*"/>
+
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <chmod file="${project.basedir}/build/appimagetool-${appimage.arch}.AppImage" perm="755" />
+                                        <exec executable="./appimagetool-${appimage.arch}.AppImage" dir="${project.basedir}/build" failonerror="true">
+                                            <env key="ARCH" value="${appimage.arch}" />
+                                            <arg value="NEX_App-${appimage.arch}.AppDir" />
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.AppImage" />
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${project.version}-${appimage.arch}.AppImage" todir="${project.build.directory}" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/.DirIcon" />
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
+
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar" />
+                                        <exec executable="flatpak-builder" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="--repo=repo"/>
+                                            <arg value="--force-clean"/>
+                                            <arg value="build-dir"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp.json"/>
+                                        </exec>
+                                        <exec executable="flatpak" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
+                                            <arg value="build-bundle"/>
+                                            <arg value="--arch=${appimage.arch}"/>
+                                            <arg value="repo"/>
+                                            <arg value="NEX_App-${project.version}-${appimage.arch}.flatpak"/>
+                                            <arg value="com.zyneonstudios.apex.nexapp"/>
+                                        </exec>
+                                        <move file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/NEX_App-${project.version}-${appimage.arch}.flatpak" todir="${project.build.directory}"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/repo"/>
+                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar"/>
+                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
