@@ -65,7 +65,7 @@ onMounted(async () => {
         <div class="flex flex-col justify-between grow">
           <div>
             <strong>NEX App</strong><br>
-            <span class="text-lg">{{version}}-{{versionType}}.{{versionBuild}}<br><span class="text-sm opacity-50">{{versionName}}</span></span>
+            <span class="text-lg"><span :class="versionType === 'stable' ? 'hidden' : ''">{{version}}-{{versionType}}.{{versionBuild}}<br></span><span class="text-sm opacity-50">{{versionName}}</span></span>
           </div>
           <div class="flex gap-2">
             <button @click="openExternal('https://apex.zyneonstudios.com')" class="flex gap-2 bg-zinc-500/25 hover:bg-zinc-400/25 text-white h-fit font-bold py-2 px-4 rounded transition shadow-lg shadow-black/25 hover:cursor-pointer"><i class="bi bi-globe"></i> Website</button>
