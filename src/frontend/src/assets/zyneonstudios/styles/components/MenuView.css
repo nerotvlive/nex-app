@@ -26,7 +26,7 @@ div.flex.menuview {
             color: white;
         }
 
-        button, a, select, input {
+        button, a, select, input[type="text"] {
             -webkit-appearance: none;
             appearance: none;
             background: var(--zyn-bg-item-alt);
@@ -41,23 +41,23 @@ div.flex.menuview {
             transition: all 0.15s ease;
         }
 
-        button:hover, a:hover, select:hover, input:hover {
+        button:hover, a:hover, select:hover, input[type="text"]:hover {
             background: var(--zyn-bg-item);
             cursor: pointer;
             box-shadow: 0 0 0.4rem #00000050;
         }
 
-        input:hover {
+        input[type="text"]:hover {
             cursor: text;
         }
 
-        button.active, a.active, select.active, input.active {
+        button.active, a.active, select.active, input[type="text"].active {
             background: white;
             color: black;
             box-shadow: 0 0 0.4rem #00000050;
         }
 
-        button:disabled, a:disabled, button.disabled, a.disabled, select.disabled, input.disabled, input:disabled {
+        button:disabled, a:disabled, button.disabled, a.disabled, select.disabled, input[type="text"].disabled, input[type="text"]:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             color: #7c7c7c;

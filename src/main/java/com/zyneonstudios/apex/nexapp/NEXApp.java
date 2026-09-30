@@ -1,5 +1,6 @@
 package com.zyneonstudios.apex.nexapp;
 
+import com.zyneonstudios.apex.nexapp.springboot.controllers.CurseforgeController;
 import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
 
 import java.io.InputStream;
@@ -19,6 +20,7 @@ public class NEXApp {
     public NEXApp() {
         window = new WebviewWindow();
         initResourceData();
+        CurseforgeController.setApiKey(curseforgeToken);
     }
 
     private void initResourceData() {

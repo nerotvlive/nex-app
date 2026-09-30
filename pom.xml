@@ -18,8 +18,8 @@
 
     <properties>
         <java.version>25</java.version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <apex.vendor>Zyneon Apex</apex.vendor>
         <apex.name>Reditus Magnificus</apex.name>
@@ -380,7 +380,6 @@
                                     <winShortcut>true</winShortcut>
                                     <winMenu>true</winMenu>
                                     <winMenuGroup>${apex.vendor}</winMenuGroup>
-                                    <fileAssociations></fileAssociations>
                                 </configuration>
                             </execution>
                         </executions>
