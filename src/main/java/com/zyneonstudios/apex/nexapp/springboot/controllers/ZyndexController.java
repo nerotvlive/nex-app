@@ -16,15 +16,12 @@ import java.util.Collection;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping({"/api/zyndex", "/api/index", "/api/zyndexes", "/api/indexes"})
 public class ZyndexController {
 
-    private final ObjectMapper objectMapper;
     private static final HashMap<String, Zyndex> indexes = new HashMap<>();
 
-    public ZyndexController(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-
+    public ZyndexController() {
         LocalZyndex main = new LocalZyndex();
         main.setSlug("main");
         main.setId("0");
@@ -34,10 +31,10 @@ public class ZyndexController {
         addIndex(main);
     }
 
-    @GetMapping({"/zyndex", "/index", "/zyndexes", "/indexes"})
+    @GetMapping({"","/"})
     public ObjectNode getZyndex() {
-        ObjectNode zyndexes = objectMapper.createObjectNode();
-        ArrayNode zyndexArray = objectMapper.createArrayNode();
+        ObjectNode zyndexes = ApiController.getObjectMapper().createObjectNode();
+        ArrayNode zyndexArray = ApiController.getObjectMapper().createArrayNode();
         for(Zyndex test : indexes.values()) {
             zyndexArray.add(test.getJson());
         }
@@ -46,21 +43,16 @@ public class ZyndexController {
         return zyndexes;
     }
 
-    @GetMapping({"/zyndex/**", "/index/**", "/zyndexes/**", "/indexes/**"})
+    @GetMapping("**")
     public ObjectNode getZyndexById(HttpServletRequest request) {
-        ObjectNode debug = objectMapper.createObjectNode();
         String id = getPath(request.getServletPath());
         if(!id.isBlank()&&!id.equals("/")&&indexes.containsKey(id.replaceFirst("/",""))) {
             Zyndex zyndex = indexes.get(id.replaceFirst("/",""));
             return zyndex.getJson();
         } else {
-            debug.put("contextPath", request.getContextPath());
-            debug.put("queryString", request.getQueryString());
-            debug.put("servletPath", request.getServletPath());
-            debug.put("requestURI", request.getRequestURI());
-            debug.put("servletBasedPath", id);
-            debug.put("requestBasedPath", getPath(request.getRequestURI()));
-            return debug;
+            ObjectNode error = ApiController.error("404","Zyndex with identifier "+id+" not found...",request);
+            error.put("relativePath", id);
+            return error;
         }
     }
 
@@ -75,13 +67,6 @@ public class ZyndexController {
         } catch ( Exception e ) {
             return null;
         }
-    }
-
-    private ObjectNode error(String errorId, String errorMessage) {
-        ObjectNode error = objectMapper.createObjectNode();
-        error.put("errorId", errorId);
-        error.put("errorMessage", errorMessage);
-        return error;
     }
 
     public static HashMap<String, Zyndex> getIndexes() {
