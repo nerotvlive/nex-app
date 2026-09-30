@@ -1,5 +1,6 @@
 {
   "name": "${nexus.name}",
   "version": "${project.version}",
-  "type": "${nexus.type}"
+  "type": "${nexus.type}",
+  "curseforgeToken": "${curseforge.token}"
 }

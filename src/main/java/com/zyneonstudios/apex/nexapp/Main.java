@@ -139,7 +139,6 @@ public class Main {
 
     /**
      * Returns the application version.
-     *
      * */
     public static String getVersion() {
         return version;

@@ -3,6 +3,7 @@ package com.zyneonstudios.apex.nexapp.search.curseforge;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.nexus.instance.ZynstanceBuilder;
 import com.zyneonstudios.nexus.utilities.file.FileActions;
 import com.zyneonstudios.nexus.utilities.json.GsonUtility;
@@ -31,7 +32,26 @@ import java.util.zip.ZipInputStream;
 public class CurseForgeIntegration {
 
     private static final int BUFFER_SIZE = 8192;
-    private static final String API_KEY = "$2a$10$KasKOdKA23HXYEGVR5oml.T4cG.jFMZnLhpZLPH4sCMwiAkGd7BaK";
+    private static final String API_KEY = loadCurseForgeToken();
+
+    private static String loadCurseForgeToken() {
+        try {
+            String data = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("nexus.json").readAllBytes());
+            JsonObject nexus = NEXApplication.getInstance().getFastGson().fromJson(data, JsonObject.class);
+            String token = nexus.get("curseforgeToken").getAsString();
+            System.err.println("CurseForge API key loaded: " + token);
+            System.err.println("CurseForge API key loaded: " + token);
+            System.err.println("CurseForge API key loaded: " + token);
+            System.err.println("CurseForge API key loaded: " + token);
+            System.err.println("CurseForge API key loaded: " + token);
+            System.err.println("CurseForge API key loaded: " + token);
+            System.err.println("CurseForge API key loaded: " + token);
+            return token;
+        } catch (Exception e) {
+            Main.getLogger().err("Couldn't fetch curseforge token from nexus.json: " + e.getMessage());
+            return null;
+        }
+    }
 
     public static void installModpack(File installDir, int projectId, int versionId) {
         CurseForgeResource project = new CurseForgeResource(projectId);
