@@ -16,7 +16,7 @@ The Legacy NEX App is a Minecraft: Java Edition installer, and launcher with som
 > **"legacy"-Branch selected**<br>
 > You are seeing the **"legacy"-Branch**.<br>
 > This is the old 3.0 version of the NEX App which is no longer "actively" maintained (some small updates and fixes could be expected).<br>
-> [Click here to get back to the main branch](https://github.com/nerotvlive/nex-app)
+> [Click here to get back to the main branch for the new NEX App (4.0+)](https://github.com/nerotvlive/nex-app)
 
 - - -
 
