@@ -12,27 +12,6 @@ The Legacy NEX App is a Minecraft: Java Edition installer, and launcher with som
 
 - - -
 
-<div style="display: flex; gap: 10px;">
-<div>
-
-> [!TIP]
-> **This page is about the new NEX App**<br>
-> If you are searching for the README.md and source of the current stable build (legacy/3.0) you have to use the "legacy" branch of this repository.<br>
-> But if you are here to learn more about the new 4.0 is this the right place!<br>
-> [Click here to open the "legacy"/3.0 branch](https://github.com/nerotvlive/nex-app/tree/legacy)
-
-</div>
-<div>
-
-> [!IMPORTANT]
-> **We're searching for help**<br>
-> Currently, the NEX App effectively has only two developers who are working on it as a hobby and is entirely self-taught, so we are looking for support.<br>
-> GitHub contributions, issue reports and feedback is highly welcome.<br>
-> If you are interested in joining the team, please get in touch via [our Discord server](https://discord.gg/g3ZwWugj9N) or message @nerotvlive directly.
-
-</div>
-</div>
-
 > [!TIP]
 > **"legacy"-Branch selected**<br>
 > You are seeing the **"legacy"-Branch**.<br>
