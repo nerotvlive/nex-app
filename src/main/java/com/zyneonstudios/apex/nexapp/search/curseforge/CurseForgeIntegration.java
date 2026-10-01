@@ -38,15 +38,7 @@ public class CurseForgeIntegration {
         try {
             String data = new String(Thread.currentThread().getContextClassLoader().getResourceAsStream("nexus.json").readAllBytes());
             JsonObject nexus = NEXApplication.getInstance().getFastGson().fromJson(data, JsonObject.class);
-            String token = nexus.get("curseforgeToken").getAsString();
-            System.err.println("CurseForge API key loaded: " + token);
-            System.err.println("CurseForge API key loaded: " + token);
-            System.err.println("CurseForge API key loaded: " + token);
-            System.err.println("CurseForge API key loaded: " + token);
-            System.err.println("CurseForge API key loaded: " + token);
-            System.err.println("CurseForge API key loaded: " + token);
-            System.err.println("CurseForge API key loaded: " + token);
-            return token;
+            return nexus.get("curseforgeToken").getAsString();
         } catch (Exception e) {
             Main.getLogger().err("Couldn't fetch curseforge token from nexus.json: " + e.getMessage());
             return null;
