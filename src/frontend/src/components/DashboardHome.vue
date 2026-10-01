@@ -7,7 +7,6 @@ import { useRouter } from 'vue-router'
 import {openExternal} from "@/assets/zyneonstudios/scripts/shared";
 import GitHubCommitHistory from "@/components/third-party/GitHubCommitHistory.vue";
 import {getApplicationStatus} from "@/assets/zyneonstudios/scripts/types";
-import DiscordWidget from "@/components/third-party/DiscordWidget.vue";
 
 const router = useRouter()
 const searchQuery = ref('')

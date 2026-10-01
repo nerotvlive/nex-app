@@ -44,9 +44,20 @@ export interface SearchResultItem {
     license: string;
 }
 
+export interface CurseforgePagination {
+    index: number;
+    pageSize: number;
+    resultCount: number;
+    totalCount: number;
+}
+
 export interface SearchResponse {
     hits: SearchResultItem[];
+    data: SearchResultItem[];
     offset: number;
+    index: number;
     limit: number;
+    pageSize: number;
     total_hits: number;
+    pagination: CurseforgePagination;
 }

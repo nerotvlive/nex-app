@@ -2,7 +2,6 @@ package com.zyneonstudios.apex.nexapp;
 
 import com.zyneonstudios.apex.nexapp.springboot.controllers.CurseforgeController;
 import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
-
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
@@ -10,7 +9,7 @@ import java.util.Properties;
 public class NEXApp {
 
     private boolean launched = false;
-    private WebviewWindow window;
+    private final WebviewWindow window;
     private String version = "0.0.0";
     private String versionName = "Unknown";
     private String versionType = "unstable";
@@ -47,7 +46,7 @@ public class NEXApp {
                             .ifPresent(val -> this.curseforgeToken = val);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Failed to get properties from resource file: " + e.getMessage());
             }
         }
     }

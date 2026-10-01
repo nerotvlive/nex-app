@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import {openExternal} from "@/assets/zyneonstudios/scripts/shared";
-import '@/assets/zyneonstudios/styles/components/CommitHistory.css';
+import '@/assets/zyneonstudios/styles/components/third-party/CommitHistory.css';
 
 interface GitHubCommit {
   sha: string
