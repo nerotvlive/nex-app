@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
@@ -44,15 +45,29 @@ public class ZyndexController {
     }
 
     @GetMapping("**")
-    public ObjectNode getZyndexById(HttpServletRequest request) {
-        String id = getPath(request.getServletPath());
-        if(!id.isBlank()&&!id.equals("/")&&indexes.containsKey(id.replaceFirst("/",""))) {
-            Zyndex zyndex = indexes.get(id.replaceFirst("/",""));
-            return zyndex.getJson();
+    public JsonNode getZyndexById(HttpServletRequest request) {
+        String[] path_ = getPath(request.getServletPath()).split("/");
+        String id = path_[1];
+
+        StringBuilder path = null;
+        if(path_.length>2) {
+            path = new StringBuilder();
+            for(int i = 2; i < path_.length; i++) {
+                path.append("/").append(path_[i]);
+            }
+        }
+
+        if(path == null) {
+            if (!id.isBlank() && !id.equals("/") && indexes.containsKey(id.replaceFirst("/", ""))) {
+                Zyndex zyndex = indexes.get(id.replaceFirst("/", ""));
+                return zyndex.getJson();
+            } else {
+                ObjectNode error = ApiController.error("404", "Zyndex with identifier " + id + " not found...", request);
+                error.put("relativePath", id);
+                return error;
+            }
         } else {
-            ObjectNode error = ApiController.error("404","Zyndex with identifier "+id+" not found...",request);
-            error.put("relativePath", id);
-            return error;
+            return ApiController.getObjectMapper().createArrayNode();
         }
     }
 

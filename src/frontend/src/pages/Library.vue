@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import '@/assets/zyneonstudios/styles/pages/Library.css';
 import MenuView from "@/components/MenuView.vue";
 import LibraryInstanceView from "@/components/LibraryInstanceView.vue";
 import LibraryOverview from "@/components/LibraryOverview.vue";
-import { fetchInstances, type InstanceWrapper } from '@/assets/zyneonstudios/scripts/types';
+import {fetchInstances, type InstanceWrapper} from '@/assets/zyneonstudios/scripts/types';
 
 const isMenuDisabled = ref(false);
 const instances = ref<InstanceWrapper[]>([]);
@@ -46,8 +46,7 @@ const showOverview = () => {
 };
 
 const selectInstance = (item: InstanceWrapper) => {
-  const instanceId = item.instance.meta.id;
-  currentView.value = instanceId;
+  currentView.value = item.instance.meta.id;
   activeInstance.value = item;
 };
 
