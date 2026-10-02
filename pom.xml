@@ -6,7 +6,7 @@
 
     <groupId>com.zyneonstudios.apex</groupId>
     <artifactId>nex-app</artifactId>
-    <version>3.0.35</version>
+    <version>3.0.36</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -96,9 +96,9 @@
 
     <distributionManagement>
         <repository>
-            <id>nerofy-snapshots</id>
+            <id>nerofy-releases</id>
             <name>Nerofy Network Maven repository</name>
-            <url>https://maven.nrfy.net/snapshots</url>
+            <url>https://maven.nrfy.net/releases</url>
         </repository>
     </distributionManagement>
 

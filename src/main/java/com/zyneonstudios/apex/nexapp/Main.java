@@ -582,10 +582,7 @@ public class Main {
                         if (updater != null && updater.exists()) {
                             try {
                                 new ProcessBuilder(
-                                        updater.getAbsolutePath(),
-                                        "/SILENT",
-                                        "/SUPPRESSMSGBOXES",
-                                        "/MERGETASKS=runapp"
+                                        updater.getAbsolutePath()
                                 ).directory(updater.getParentFile()).start();
                                 System.exit(0);
                             } catch (IOException e) {
