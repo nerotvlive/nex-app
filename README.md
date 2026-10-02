@@ -30,4 +30,4 @@ This README is work in progress...
 
 - - -
 
-###### The Zyneon NEX App is an independent project and not affiliated with Minecraft, Mojang AB, Mojang Studios, XBOX, XBOX Game Studios, Microsoft, Rinth Inc., Spark Universe, Modrinth, Overwolf or CurseForge.
+###### The NEX App is an independent project and not affiliated with Minecraft, Mojang AB, Mojang Studios, XBOX, XBOX Game Studios, Microsoft, Rinth Inc., Spark Universe, Modrinth, Overwolf or CurseForge.

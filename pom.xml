@@ -6,7 +6,7 @@
 
     <groupId>com.zyneonstudios.apex</groupId>
     <artifactId>nex-app</artifactId>
-    <version>3.0.37</version>
+    <version>3.0.38</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

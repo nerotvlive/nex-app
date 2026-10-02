@@ -95,23 +95,17 @@
         <div id="general-settings" class="settings-card overflow-auto flex-column gap-3">
             <div class="settings-section">
                 <div class="card shadow position-relative" style="margin-bottom: 1rem;">
-                    <div class="card-body overflow-hidden position-relative d-flex">
-                        <div class="d-flex flex-grow-1">
-                            <img alt="NEX App icon" class="general-appIcon" src="assets/nexus/img/app-128.png">
-                            <div class="d-flex flex-column" style="padding: 0 0 0 1rem;">
-                                <h4 class="p-0 m-0"><strong class="general-appName">NEX App</strong></h4>
-                                <span style="opacity: 0.9;" class="d-flex position-relative flex-lg-row gap-1">by <strong>Zyneon Apex</strong></span>
-                                <span style="opacity: 0.9;" class="d-flex position-relative flex-lg-row gap-1">Version: <strong class="general-appVersion">Web</strong></span>
-                                <div style="height: 100%; white-space: nowrap; display: flex; gap: 0.5rem; align-items: flex-end;">
-                                    <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nex-app','_blank');"><i class="bi bi-box-arrow-up-right"></i> Source Code</button>
-                                    <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nex-app/blob/master/LICENSE.md','_blank');"><i class="bi bi-box-arrow-up-right"></i> License</button>
-                                </div>
-                            </div>
+                    <div class="card-body overflow-hidden position-relative d-flex flex-column">
+                        <div class="d-flex">
+                            <img alt="NEX App icon" class="general-appIcon" style="max-height: 8rem" src="assets/nexus/img/logo.png">
                         </div>
-                        <div class="flex-column gap-2 position-absolute align-items-end d-none d-lg-flex" style="right: 1rem; top: 1rem;">
-                            <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nex-app/blob/master/pom.xml','_blank');">Dependencies</button>
+                        <div class="flex gap-2 align-items-end d-none d-lg-flex flex-grow-1" style="right: 1rem; top: 1rem;">
+                            <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nex-app/blob/master/pom.xml','_blank');"><i class="bi bi-box-arrow-up-right"></i> Dependencies</button>
+                            <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nex-app','_blank');"><i class="bi bi-box-arrow-up-right"></i> Source Code</button>
                             <button type="button" class="btn btn-nex-glass d-none" style="width: fit-content" onclick="window.open('https://nerotvlive.github.io/apex-website/nex-app','_blank');"><i class="bi bi-globe-europe-africa m-0"></i></button>
+                            <button type="button" class="btn btn-nex-glass" onclick="window.open('https://github.com/nerotvlive/nex-app/blob/master/LICENSE.md','_blank');"><i class="bi bi-box-arrow-up-right"></i> License</button>
                             <button type="button" class="btn btn-nex-glass" style="width: fit-content" onclick="window.open('https://discord.gg/hbHDrqUjJ8','_blank');"><i class="bi bi-discord m-0"></i></button>
+                            <span style="opacity: 0.9;" class="d-flex position-relative flex-lg-row gap-1">Version: <strong class="general-appVersion">Web</strong></span>
                         </div>
                     </div>
                 </div>

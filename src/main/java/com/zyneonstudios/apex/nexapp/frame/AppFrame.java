@@ -419,7 +419,7 @@ public class AppFrame extends NexusWebFrame implements ComponentListener, WebFra
      * @param foreground The foreground color of the title bar text.
      */
     public void setTitlebar(String title, Color background, Color foreground) {
-        setTitle("Zyneon NEX App (" + title + ")");
+        setTitle("NEX App (" + title + ")");
         setTitleBackground(background);
         setTitleForeground(foreground);
     }
