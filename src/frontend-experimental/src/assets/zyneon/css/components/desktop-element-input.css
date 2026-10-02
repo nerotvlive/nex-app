@@ -1,0 +1,13 @@
+.input-element {
+    input {
+        padding: 0.2rem 00.4rem;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    input::placeholder {
+        color: var(--zyn-ov-brighter-400);
+    }
+}

@@ -61,10 +61,19 @@ public class NEXApp {
         return Optional.empty();
     }
 
-    public void launch() {
+    public void launch(String tool) {
         if(launched) {
             throw new IllegalStateException("NEX App already launched!");
         } else {
+            if(tool != null) {
+                String url = Main.getBaseUrl();
+                if(url.contains("?")) {
+                    url = url + "&" + tool + "=true";
+                } else {
+                    url = url + "?" + tool + "=true";
+                }
+                window.setUrl(url);
+            }
             launched = true;
             window.launchWindow();
         }

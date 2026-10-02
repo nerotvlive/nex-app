@@ -1,0 +1,68 @@
+.collapsable-card {
+    max-height: 2.5rem;
+    overflow: hidden;
+    border-radius: var(--zyn-br-md);
+
+    .header {
+        transition: all 0.15s ease;
+        padding-bottom: 0.5rem;
+        position: relative;
+        border-bottom: 1px solid transparent;
+
+        i {
+            transition: all 0.15s ease;
+            position: absolute;
+            right: 0.5rem;
+            font-size: 1.5rem;
+            top: 0.15rem;
+        }
+    }
+
+    .header:hover {
+        cursor: pointer;
+        background: var(--zyn-ov-brighter-200);
+    }
+
+    .content {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+.collapsable-card.active {
+    max-height: 100%;
+
+    .header {
+        border-radius: var(--zyn-br-md) var(--zyn-br-md) 0 0;
+        border-bottom: 1px solid var(--zyn-ov-brighter-100);
+        background: var(--zyn-ov-brighter-100);
+
+        i {
+            transform: rotate(180deg);
+        }
+    }
+
+    .header:hover {
+        background: var(--zyn-ov-brighter-200);
+    }
+}
+
+.collapsable-card.disabled {
+    opacity: 0.75;
+    max-height: 2.5rem;
+    overflow: hidden;
+    border-radius: var(--zyn-br-md);
+
+    .header {
+        background: transparent;
+        cursor: not-allowed;
+
+        i {
+            opacity: 0.75;
+            transform: rotate(0deg);
+        }
+    }
+
+    .header:hover {
+        background: transparent;
+    }
+}

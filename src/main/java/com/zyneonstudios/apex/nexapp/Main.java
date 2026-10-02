@@ -10,10 +10,12 @@ import java.util.Collections;
 @SpringBootApplication
 public class Main {
 
+    private static int port = 8274;
     private static String[] args;
     private static NEXApp nexApp;
     private static SpringApplication springApp;
-    private static String url = "http://localhost:8274";
+    private static String url = "http://localhost:"+port;
+    private static String tool = null;
 
     static void main(String[] args) {
         Main.args = args;
@@ -22,15 +24,15 @@ public class Main {
         springApp.setHeadless(false);
         initNativeAppName();
         nexApp = new NEXApp();
-        springApp.setDefaultProperties(Collections.singletonMap("server.port", "8274"));
+        springApp.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
         springApp.run(args);
-        nexApp.launch();
+        nexApp.launch(tool);
     }
 
     private static void resolveArgs() {
         for(int i=0;i<args.length;i++) {
             switch (args[i]) {
-                case "-v", "--vite" -> url = "http://localhost:5173";
+                case "-v", "--vite" -> url = "http://localhost:5278";
                 case "-u", "--url" -> {
                     if (args.length > i + 1) {
                         url = args[i + 1];
@@ -38,6 +40,15 @@ public class Main {
                         args[i + 1] = "";
                     }
                 }
+                case "-p", "--port" -> {
+                    if (args.length > i + 1) {
+                        port = Integer.parseInt(args[i + 1]);
+                        args[i] = "";
+                        args[i + 1] = "";
+                    }
+                }
+                case "-s", "--serwin" -> tool = "SerwiN";
+                case "-j", "--jsonexplorer", "--json-explorer", "--json_explorer" -> tool = "JSON-Explorer";
             }
         }
     }
@@ -60,6 +71,10 @@ public class Main {
 
     public static void setBaseUrl(String url) {
         Main.url = url;
+    }
+
+    public static int getPort() {
+        return port;
     }
 
     private static void initNativeAppName() {
