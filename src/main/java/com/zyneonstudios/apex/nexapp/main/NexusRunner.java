@@ -96,33 +96,33 @@ public class NexusRunner {
         }
 
         CompletableFuture.runAsync(()-> {
-            if(!NEXApplication.getInstance().getLocalSettings().useNewUI()) {
-                if (downloading != null) {
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = 'var(--nex-primary)';");
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.add('downloading');");
-                } else {
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = '';");
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '';");
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '';");
-                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.remove('downloading');");
-                }
+
+            if (downloading != null) {
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = 'var(--nex-primary)';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '0 0 0.3rem var(--nex-primary)';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.add('downloading');");
+            } else {
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').style.color = '';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('span').style.textShadow = '';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-button').querySelector('i').style.textShadow = '';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('downloads-icon').classList.remove('downloading');");
             }
+
 
             if (downloading != null) {
                 Download download = NEXApplication.getInstance().getDownloadManager().getDownloads().get(downloading);
                 double speed = download.getSpeedMbps();
                 addSample(download.getUuid(), speed);
-                if (download.isFinished()||download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
+                if (download.isFinished() || download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
                     downloading = null;
                 }
             } else {
                 NEXApplication.getInstance().getDownloadManager().getDownloads().forEach((uuid, download) -> {
-                    if (download.getState().equals(DownloadManager.DownloadState.WAITING)&&!download.isPreparing()) {
+                    if (download.getState().equals(DownloadManager.DownloadState.WAITING) && !download.isPreparing()) {
                         downloading = uuid;
                         download.start();
-                    } else if(download.getState().equals(DownloadManager.DownloadState.PAUSED)&&!download.isPreparing()) {
+                    } else if (download.getState().equals(DownloadManager.DownloadState.PAUSED) && !download.isPreparing()) {
                         downloading = uuid;
                         download.resume();
                     }

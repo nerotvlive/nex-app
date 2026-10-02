@@ -138,9 +138,6 @@ public class NEXApplication {
         settings.ensure("settings.window.minimizeOnStart",true);
         localSettings.setMinimizeApp(settings.getBool("settings.window.minimizeOnStart"));
 
-        settings.ensure("settings.window.useNewUI", false);
-        localSettings.setNewUI(settings.getBool("settings.window.useNewUI"));
-
         settings.ensure("settings.window.uiScale",0.0);
         localSettings.setUiScale(settings.getDoub("settings.window.uiScale"));
 
@@ -387,13 +384,7 @@ public class NEXApplication {
     }
 
     public String getBaseUrl() {
-        String url;
-        if(getLocalSettings().useNewUI()) {
-            url = onlineUI ? "https://nerotvlive.github.io/nex-app/src/main/html/new/" : "http://localhost:" + Main.getPort() + "/";
-        } else {
-            url = onlineUI ? "https://nerotvlive.github.io/nex-app/src/main/html/" : "http://localhost:" + Main.getPort() + "/";
-        }
-        return url;
+        return onlineUI ? "https://nerotvlive.github.io/nex-app/src/main/html/" : "http://localhost:" + Main.getPort() + "/";
     }
 
     /**

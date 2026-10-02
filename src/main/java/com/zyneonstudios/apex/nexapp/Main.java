@@ -47,7 +47,7 @@ public class Main {
     private static String path = getDefaultPath();
     private static String ui = null;
     private static int port = 8094;
-    private static final String INSTANCE_LOCK_FILE = ".nexus-app.instance";
+    private static final String INSTANCE_LOCK_FILE = ".nex-app.instance";
     private static final String INSTANCE_PING_OK = "OK";
     private static final String INSTANCE_PING_HUNG = "HUNG";
     private static final String INSTANCE_PING_STARTING = "STARTING";
@@ -578,7 +578,7 @@ public class Main {
 
                         frame.setVisible(true);
 
-                        File updater = FileGetter.downloadFile(jsonMeta.get("downloadUrl").getAsString(), getDefaultPath()+"temp/"+ StringGenerator.generateAlphanumericString(12) +"-NEXUS-App-"+latestVersion+"-setup.exe");
+                        File updater = FileGetter.downloadFile(jsonMeta.get("downloadUrl").getAsString(), getDefaultPath()+"temp/"+ StringGenerator.generateAlphanumericString(12) +"-nex-app-"+latestVersion+"-setup.exe");
                         if (updater != null && updater.exists()) {
                             try {
                                 new ProcessBuilder(

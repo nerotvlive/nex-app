@@ -29,7 +29,6 @@ public class ApplicationSettings {
     private ArrayList<String> defaultMinecraftPreLaunchCommands = new ArrayList<>();
     private ArrayList<String> defaultMinecraftOnLaunchCommands = new ArrayList<>();
     private ArrayList<String> defaultMinecraftOnExitCommands = new ArrayList<>();
-    private boolean newUI = false;
     private boolean mergeNavigation = false;
 
     public boolean useKillOnExit() {
@@ -75,15 +74,6 @@ public class ApplicationSettings {
 
     public void removeTemporarySetting(String path) {
         temporarySettings.remove(path);
-    }
-
-    public boolean useNewUI() {
-        return newUI;
-    }
-
-    public void setNewUI(boolean newUI) {
-        this.newUI = newUI;
-        NEXApplication.getInstance().getSettings().set("settings.window.useNewUI", this.newUI);
     }
 
     public boolean keepRunning() {

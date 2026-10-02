@@ -160,11 +160,7 @@ public class MicrosoftAuthenticator {
             if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=settings")) {
                 NEXApplication.getInstance().getApplicationFrame().getBrowser().loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=settings.html&st=account-settings&app=true");
             } else if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=library")|| NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=login")) {
-                if(NEXApplication.getInstance().getLocalSettings().useNewUI()) {
-                    NEXApplication.getInstance().getApplicationFrame().getBrowser().loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=library");
-                } else {
-                    NEXApplication.getInstance().getApplicationFrame().getBrowser().reload();
-                }
+                NEXApplication.getInstance().getApplicationFrame().getBrowser().reload();
             }
         }
     }

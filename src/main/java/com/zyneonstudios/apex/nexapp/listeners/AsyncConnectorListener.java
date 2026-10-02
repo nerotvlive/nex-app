@@ -77,12 +77,8 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.page.loaded")) {
             frame.rescale();
-            if(NEXApplication.getInstance().getLocalSettings().mergeNavigation()&&!NEXApplication.getInstance().getLocalSettings().useNewUI()) {
-                frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
-            }
-            if(!NEXApplication.getInstance().getLocalSettings().useNewUI()) {
-                evaluateTheme();
-            }
+            frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
+            evaluateTheme();
 
             for (PageLoadedEvent event : NEXApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
                 event.setUrl(frame.getBrowser().getURL());
@@ -511,10 +507,6 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                         frame.executeJavaScript("document.getElementById('main').classList.remove('windows');");
                         frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = false;");
                     }
-                } else if(s.startsWith("newui.")) {
-                    boolean newUI = Boolean.parseBoolean(s.replaceFirst("newui.", ""));
-                    NEXApplication.getInstance().getLocalSettings().setNewUI(newUI);
-                    frame.getBrowser().loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html");
                 } else if(s.startsWith("windowWidth.")) {
                     int width = Integer.parseInt(s.replace("windowWidth.", ""));
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftWindowWidth(width);
