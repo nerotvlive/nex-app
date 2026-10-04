@@ -1,5 +1,6 @@
 package com.zyneonstudios.apex.nexapp;
 
+import com.zyneonstudios.apex.nexapp.main.NEXApp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -15,6 +16,7 @@ public class Main {
     private static NEXApp nexApp;
     private static SpringApplication springApp;
     private static String url = "http://localhost:"+port;
+    private static String updateMetaUrl = null;
 
     static void main(String[] args) {
         Main.args = args;
@@ -46,6 +48,14 @@ public class Main {
                         args[i + 1] = "";
                     }
                 }
+                case "-uM", "--updateMeta" -> {
+                    if (args.length > i + 1) {
+                        updateMetaUrl = args[i + 1];
+                        args[i] = "";
+                        args[i + 1] = "";
+                    }
+                }
+
             }
         }
     }
@@ -94,5 +104,9 @@ public class Main {
                 System.err.println("Failed to initialize app name: " + e.getMessage());
             }
         }
+    }
+
+    public static String getUpdateMetaUrl() {
+        return updateMetaUrl;
     }
 }

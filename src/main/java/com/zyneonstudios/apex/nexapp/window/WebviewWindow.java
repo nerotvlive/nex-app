@@ -37,7 +37,6 @@ public class WebviewWindow {
 
     @SuppressWarnings("all")
     public void launchWindow() {
-        System.out.println("Launching webview window with URL: " + url);
         try {
             Thread.ofPlatform().start(() -> {
                 try {

@@ -1,5 +1,6 @@
-package com.zyneonstudios.apex.nexapp;
+package com.zyneonstudios.apex.nexapp.main;
 
+import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.springboot.controllers.CurseforgeController;
 import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
 import java.io.InputStream;
