@@ -37,12 +37,8 @@ const handleClassicMenu = (e: Event) => {
         <strong>Border radius base value </strong>
       </div>
       <div class="flex w-full justify-end align-middle items-center">
-        <input id="background-rounded-number" type="number" min="0" max="2" step="0.01"
-               :value="ZyneonSettings.getRoundedCorners()"
-               @input="e => handleRoundedCorners(false, e)" />
-        <input id="background-rounded-range" type="range" min="0" max="2" step="0.01"
-               :value="ZyneonSettings.getRoundedCorners()"
-               @input="e => handleRoundedCorners(true, e)" />
+        <input id="background-rounded-number" type="number" min="0" max="2" step="0.01" :value="ZyneonSettings.getRoundedCorners()" @input="e => handleRoundedCorners(false, e)" />
+        <input id="background-rounded-range" type="range" min="0" max="2" step="0.01" :value="ZyneonSettings.getRoundedCorners()" @input="e => handleRoundedCorners(true, e)" />
       </div>
     </div>
 
@@ -51,12 +47,8 @@ const handleClassicMenu = (e: Event) => {
         <strong>Background accent opacity </strong>
       </div>
       <div class="flex w-full justify-end align-middle items-center">
-        <input id="background-accOp-number" type="number" min="0" max="0.99" step="0.01"
-               :value="ZyneonSettings.getBackgroundAccentOpacity()"
-               @input="e => handleBgAccentOpacity(false, e)" />
-        <input id="background-accOp-range" type="range" min="0" max="0.99" step="0.01"
-               :value="ZyneonSettings.getBackgroundAccentOpacity()"
-               @input="e => handleBgAccentOpacity(true, e)" />
+        <input id="background-accOp-number" type="number" min="0" max="0.99" step="0.01" :value="ZyneonSettings.getBackgroundAccentOpacity()" @input="e => handleBgAccentOpacity(false, e)" />
+        <input id="background-accOp-range" type="range" min="0" max="0.99" step="0.01" :value="ZyneonSettings.getBackgroundAccentOpacity()" @input="e => handleBgAccentOpacity(true, e)" />
       </div>
     </div>
 
@@ -65,9 +57,7 @@ const handleClassicMenu = (e: Event) => {
         <strong>Background accent color</strong>
       </div>
       <div class="flex w-full justify-end align-middle items-center">
-        <input type="color" class="w-10 h-10 cursor-pointer rounded border-none bg-transparent"
-               :value="ZyneonSettings.getBackgroundAccent()"
-               @input="handleBgAccent" />
+        <input type="color" class="w-10 h-10 cursor-pointer rounded border-none bg-transparent" :value="ZyneonSettings.getBackgroundAccent()" @input="handleBgAccent" />
       </div>
     </div>
 
@@ -76,21 +66,16 @@ const handleClassicMenu = (e: Event) => {
         <strong>Background base color</strong>
       </div>
       <div class="flex w-full justify-end align-middle items-center">
-        <input type="color" class="w-10 h-10 cursor-pointer rounded border-none bg-transparent"
-               :value="ZyneonSettings.getBackgroundColor()"
-               @input="handleBgColor" />
+        <input type="color" class="w-10 h-10 cursor-pointer rounded border-none bg-transparent" :value="ZyneonSettings.getBackgroundColor()" @input="handleBgColor" />
       </div>
     </div>
 
-    <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2"
-         @click="(e) => (e.currentTarget as HTMLElement).querySelector('input')?.click()">
+    <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2" @click="(e) => (e.currentTarget as HTMLElement).querySelector('input')?.click()">
       <div class="flex w-full">
         <strong>Use Overlaying Contrast Menu & Titlebar</strong>
       </div>
       <div class="flex w-full justify-end align-middle items-center">
-        <input class="pointer-events-disabled mr-1" type="checkbox"
-               :checked="ZyneonSettings.useClassicMenu"
-               @change="handleClassicMenu" />
+        <input class="pointer-events-none mr-1" type="checkbox" :checked="ZyneonSettings.useClassicMenu" @change="handleClassicMenu" />
       </div>
     </div>
   </div>
