@@ -16,14 +16,6 @@
     <artifactId>NEX_App</artifactId>
     <version>4.0.1</version>
 
-    <repositories>
-        <repository>
-            <id>nerofy-snapshots</id>
-            <name>Nerofy Network Maven repository</name>
-            <url>https://maven.nrfy.net/snapshots</url>
-        </repository>
-    </repositories>
-
     <properties>
         <java.version>25</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -36,6 +28,14 @@
         <maven.build.timestamp.format>yyMMdd-HHmmss</maven.build.timestamp.format>
         <build.number>${maven.build.timestamp}</build.number>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>nerofy-snapshots</id>
+            <name>Nerofy Network Maven repository</name>
+            <url>https://maven.nrfy.net/snapshots</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -56,6 +56,14 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>nerofy-snapshots</id>
+            <name>Nerofy Network Maven repository</name>
+            <url>https://maven.nrfy.net/snapshots</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <resources>
