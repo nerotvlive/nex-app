@@ -97,12 +97,14 @@ tasks.register("dev") {
     finalizedBy("bootRun")
     doLast {
         val pnpmCmd = if (System.getProperty("os.name").lowercase().contains("win")) "pnpm.cmd" else "pnpm"
-        println("Starting vite via pnpm...")
-        val viteProcess = ProcessBuilder(pnpmCmd, "run", "dev")
+        val process = ProcessBuilder(pnpmCmd, "run", "dev")
             .directory(frontendDir)
             .inheritIO()
             .start()
-        Runtime.getRuntime().addShutdownHook(Thread { viteProcess.destroyForcibly() })
+        gradle.buildFinished {
+            process.descendants().forEach { it.destroyForcibly() }
+            process.destroyForcibly()
+        }
     }
 }
 
