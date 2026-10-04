@@ -17,6 +17,7 @@ target/*
 *.sln
 *.sw?
 
+src/frontend-old
 cert.pfx
 
 build/NEX_App-aarch64-flatpak/repo

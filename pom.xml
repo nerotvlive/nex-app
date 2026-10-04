@@ -21,7 +21,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <apex.frontend>frontend-experimental</apex.frontend>
+        <apex.frontend>frontend</apex.frontend>
         <apex.vendor>Zyneon Apex</apex.vendor>
         <apex.name>Reditus Magnificus</apex.name>
         <apex.type>alpha</apex.type>

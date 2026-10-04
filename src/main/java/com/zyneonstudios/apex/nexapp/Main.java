@@ -15,7 +15,6 @@ public class Main {
     private static NEXApp nexApp;
     private static SpringApplication springApp;
     private static String url = "http://localhost:"+port;
-    private static String tool = null;
 
     static void main(String[] args) {
         Main.args = args;
@@ -26,7 +25,7 @@ public class Main {
         nexApp = new NEXApp();
         springApp.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
         springApp.run(args);
-        nexApp.launch(tool);
+        nexApp.launch(null);
     }
 
     private static void resolveArgs() {
@@ -47,8 +46,6 @@ public class Main {
                         args[i + 1] = "";
                     }
                 }
-                case "-s", "--serwin" -> tool = "SerwiN";
-                case "-j", "--jsonexplorer", "--json-explorer", "--json_explorer" -> tool = "JSON-Explorer";
             }
         }
     }
