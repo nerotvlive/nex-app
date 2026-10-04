@@ -1,35 +1,52 @@
-target
-target/*
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+.kotlin
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store
+
 *.local
-.run
-.run/*
+.run/
 
 # Editor directories and files
-.vscode/*
-.vscode
-!.vscode/extensions.json
-.idea
-.idea/*
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-src/frontend-old
 cert.pfx
-
-build/NEX_App-aarch64-flatpak/repo
-build/NEX_App-aarch64-flatpak/repo/*
-build/NEX_App-aarch64-flatpak/.flatpak-builder
-build/NEX_App-aarch64-flatpak/.flatpak-builder/*
-build/NEX_App-aarch64-flatpak/build-dir
-build/NEX_App-aarch64-flatpak/build-dir/*
-
-build/NEX_App-x86_64-flatpak/repo
-build/NEX_App-x86_64-flatpak/repo/*
-build/NEX_App-x86_64-flatpak/.flatpak-builder
-build/NEX_App-x86_64-flatpak/.flatpak-builder/*
-build/NEX_App-x86_64-flatpak/build-dir
-build/NEX_App-x86_64-flatpak/build-dir/*
