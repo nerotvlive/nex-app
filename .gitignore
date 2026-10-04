@@ -50,3 +50,4 @@ bin/
 *.sw?
 
 cert.pfx
+.mvpom-bak.xml

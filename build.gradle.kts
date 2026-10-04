@@ -9,7 +9,7 @@ plugins {
 val certPassword = providers.gradleProperty("sign.cert.password").orElse("UNSET").get()
 val curseforgeToken = providers.gradleProperty("curseforge.token").orElse("UNSET").get()
 val apexName = "Reditus Magnificus"
-val apexType = "alpha"
+val apexType = "gradle"
 val apexVendor = "Zyneon Apex"
 val buildNumber: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd-HHmmss"))
 
