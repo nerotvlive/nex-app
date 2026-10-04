@@ -18,7 +18,7 @@ val certFile = file("cert.pfx")
 val certPassword = providers.gradleProperty("sign.cert.password").orElse("UNSET").get()
 val curseforgeToken = providers.gradleProperty("curseforge.token").orElse("UNSET").get()
 val apexName = "Reditus Magnificus"
-val apexType = "gradle"
+val apexType = "alpha"
 val apexVendor = "Zyneon Apex"
 val buildNumber: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd-HHmmss"))
 
