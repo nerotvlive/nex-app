@@ -2,6 +2,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.github.gradle.node.pnpm.task.PnpmTask
 import org.apache.tools.ant.filters.ReplaceTokens
+val jsign by configurations.creating
 
 plugins {
     java
@@ -13,6 +14,8 @@ plugins {
 group = "com.zyneonstudios.apex"
 version = "4.0.2"
 
+val certFile = file("cert.pfx")
+val certPassword = providers.gradleProperty("sign.cert.password").orElse("UNSET").get()
 val curseforgeToken = providers.gradleProperty("curseforge.token").orElse("UNSET").get()
 val apexName = "Reditus Magnificus"
 val apexType = "gradle"
@@ -59,6 +62,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:4.1.1")
     implementation("com.zyneonstudios.apex:jauri-webview:0.34")
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")
+
+    jsign("net.jsign:jsign:7.5")
 }
 
 tasks.jar {
@@ -107,6 +112,7 @@ val jpackagePath = javaToolchains.compilerFor {
 
 tasks.register<Exec>("buildWindowsBinary") {
     description = "Builds a native Windows binary using jpackage"
+    dependsOn("build")
     group = "distribution"
     executable = jpackagePath.get()
     args(
@@ -119,53 +125,69 @@ tasks.register<Exec>("buildWindowsBinary") {
         "--main-jar", tasks.bootJar.get().archiveFileName.get(),
         "--main-class", "org.springframework.boot.loader.launch.JarLauncher",
         "--icon", file("src/main/resources/icon.ico").absolutePath,
-        "--java-options", "--enable-native-access=ALL-UNNAMED"
+        "--java-options", "--enable-native-access=ALL-UNNAMED",
     )
 }
 
-tasks.register<Exec>("buildWindowsInstallerEXE") {
-    description = "Builds a native Windows .exe installer using jpackage"
-    group = "distribution"
-    dependsOn("buildWindowsBinary")
-    executable = jpackagePath.get()
-    args(
-        "--type", "exe",
-        "--app-image", layout.buildDirectory.dir("windows/NEX App").get().asFile.absolutePath,
-        "--dest", layout.buildDirectory.dir("windows/installers").get().asFile.absolutePath,
-        "--name", "NEX App",
-        "--app-version", project.version.toString(),
-        "--vendor", apexVendor,
-        "--resource-dir", file("files/Windows").absolutePath,
-        "--icon", file("src/main/resources/setup.ico").absolutePath,
-        "--win-dir-chooser",
-        "--win-shortcut",
-        "--win-menu",
-        "--win-menu-group", apexVendor
-    )
+val installerTasks = listOf("msi", "exe").map { type ->
+    tasks.register<Exec>("buildWindowsInstaller${type.uppercase()}") {
+        description = "Builds a native Windows .$type installer using jpackage"
+        group = "distribution"
+        dependsOn("buildWindowsBinary")
+        dependsOn("signWindowsBinary")
+        executable = jpackagePath.get()
+        args(
+            "--type", type,
+            "--app-image", layout.buildDirectory.dir("windows/NEX App").get().asFile.absolutePath,
+            "--dest", layout.buildDirectory.dir("windows/installers").get().asFile.absolutePath,
+            "--name", "NEX App",
+            "--app-version", project.version.toString(),
+            "--vendor", apexVendor,
+            "--resource-dir", file("files/Windows").absolutePath,
+            "--icon", file("src/main/resources/setup.ico").absolutePath,
+            "--win-dir-chooser",
+            "--win-shortcut",
+            "--win-menu",
+            "--win-menu-group", apexVendor
+        )
+    }
 }
 
-tasks.register<Exec>("buildWindowsInstallerMSI") {
-    description = "Builds a native Windows .msi installer using jpackage"
-    group = "distribution"
-    dependsOn("buildWindowsBinary")
-    executable = jpackagePath.get()
-    args(
-        "--type", "msi",
-        "--app-image", layout.buildDirectory.dir("windows/NEX App").get().asFile.absolutePath,
-        "--dest", layout.buildDirectory.dir("windows/installers").get().asFile.absolutePath,
-        "--name", "NEX App",
-        "--app-version", project.version.toString(),
-        "--vendor", apexVendor,
-        "--resource-dir", file("files/Windows").absolutePath,
-        "--icon", file("src/main/resources/setup.ico").absolutePath,
-        "--win-dir-chooser",
-        "--win-shortcut",
-        "--win-menu",
-        "--win-menu-group", apexVendor
-    )
-}
 tasks.register("buildWindowsInstallers") {
     group = "distribution"
-    description = "Builds both .exe and .msi native installers using jpackage"
-    dependsOn("buildWindowsInstallerEXE", "buildWindowsInstallerMSI")
+    description = "Builds both .msi and .exe native installers using jpackage"
+    dependsOn(installerTasks)
+}
+
+fun registerSignTask(taskName: String, dependsOnTask: Any, targetFiles: () -> List<File>) =
+    tasks.register<JavaExec>(taskName) {
+        group = "distribution"
+        description = "Signs specified binaries using Jsign"
+        dependsOn(dependsOnTask)
+        classpath = jsign
+        mainClass = "net.jsign.JsignCLI"
+        onlyIf { certFile.exists() && certPassword != "UNSET" }
+        doFirst {
+            val existingFiles = targetFiles().filter { it.exists() }
+            existingFiles.forEach { file ->
+                file.setWritable(true)
+            }
+            val files = existingFiles.map { it.absolutePath }
+            if (files.isNotEmpty()) {
+                args = listOf(
+                    "--keystore", certFile.absolutePath,
+                    "--storepass", certPassword,
+                    "--tsaurl", "http://timestamp.digicert.com"
+                ) + files
+            }
+        }
+    }
+
+val signWindowsBinary = registerSignTask("signWindowsBinary", "buildWindowsBinary") {
+    listOf(layout.buildDirectory.file("windows/NEX App/NEX App.exe").get().asFile)
+}
+
+val signWindowsInstallers = registerSignTask("signWindowsInstallers", installerTasks) {
+    layout.buildDirectory.dir("windows/installers").get().asFile
+        .listFiles { _, name -> name.endsWith(".msi") || name.endsWith(".exe") }?.toList() ?: emptyList()
 }
