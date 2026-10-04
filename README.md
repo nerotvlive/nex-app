@@ -47,7 +47,12 @@ This README is work in progress...
 - If you want to launch the .jar you have to install Java 25, we recommend [Azul Zulu JDK](https://www.azul.com/downloads/?version=java-25-lts&os=windows&package=jdk#zulu).
 
 #### Linux:
-##### Debian based (Ubuntu & Co):
+##### Arch based (Arch, CachyOS & Co)
+```bash
+sudo pacman -S gtk4 webkit2gtk-4.1 webkitgtk-6.0 jdk25-openjdk --needed
+```
+
+##### Debian based (Debian, Ubuntu, ZorinOS & Co):
 ```bash
 sudo apt-get install libgtk-4-1 libwebkit2gtk-4.1-0 libwebkitgtk-6.0-4 libjavascriptcoregtk-6.0-1 openjdk-25-jdk -y
 ```
