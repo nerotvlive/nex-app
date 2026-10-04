@@ -58,7 +58,6 @@ dependencies {
     //fix vulnerabilities of spring boot starter web 4.1.1
     implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.26")
     implementation("org.apache.tomcat.embed:tomcat-embed-websocket:11.0.26")
-    implementation("ch.qos.logback:logback-classic:1.6.5")
     implementation("tools.jackson.core:jackson-databind:3.2.3")
     implementation("tools.jackson.core:jackson-core:3.2.3")
 
