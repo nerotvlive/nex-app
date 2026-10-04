@@ -16,6 +16,7 @@ version = "4.0.2"
 val curseforgeToken = providers.gradleProperty("curseforge.token").orElse("UNSET").get()
 val apexName = "Reditus Magnificus"
 val apexType = "gradle"
+val apexVendor = "Zyneon Apex"
 val buildNumber: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd-HHmmss"))
 
 val frontendDir = file("src/frontend")
@@ -60,6 +61,10 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")
 }
 
+tasks.jar {
+    enabled = false
+}
+
 tasks.processResources {
     dependsOn(buildFrontend)
     into("static") { from(frontendDir.resolve("dist")) }
@@ -94,4 +99,73 @@ tasks.register("dev") {
             .start()
         Runtime.getRuntime().addShutdownHook(Thread { viteProcess.destroyForcibly() })
     }
+}
+
+val jpackagePath = javaToolchains.compilerFor {
+    languageVersion = JavaLanguageVersion.of(25)
+}.map { it.metadata.installationPath.file("bin/jpackage").asFile.absolutePath }
+
+tasks.register<Exec>("buildWindowsBinary") {
+    description = "Builds a native Windows binary using jpackage"
+    group = "distribution"
+    executable = jpackagePath.get()
+    args(
+        "--type", "app-image",
+        "--input", layout.buildDirectory.dir("libs").get().asFile.absolutePath,
+        "--dest", layout.buildDirectory.dir("windows").get().asFile.absolutePath,
+        "--name", "NEX App",
+        "--app-version", project.version.toString(),
+        "--vendor", apexVendor,
+        "--main-jar", tasks.bootJar.get().archiveFileName.get(),
+        "--main-class", "org.springframework.boot.loader.launch.JarLauncher",
+        "--icon", file("src/main/resources/icon.ico").absolutePath,
+        "--java-options", "--enable-native-access=ALL-UNNAMED"
+    )
+}
+
+tasks.register<Exec>("buildWindowsInstallerEXE") {
+    description = "Builds a native Windows .exe installer using jpackage"
+    group = "distribution"
+    dependsOn("buildWindowsBinary")
+    executable = jpackagePath.get()
+    args(
+        "--type", "exe",
+        "--app-image", layout.buildDirectory.dir("windows/NEX App").get().asFile.absolutePath,
+        "--dest", layout.buildDirectory.dir("windows/installers").get().asFile.absolutePath,
+        "--name", "NEX App",
+        "--app-version", project.version.toString(),
+        "--vendor", apexVendor,
+        "--resource-dir", file("files/Windows").absolutePath,
+        "--icon", file("src/main/resources/setup.ico").absolutePath,
+        "--win-dir-chooser",
+        "--win-shortcut",
+        "--win-menu",
+        "--win-menu-group", apexVendor
+    )
+}
+
+tasks.register<Exec>("buildWindowsInstallerMSI") {
+    description = "Builds a native Windows .msi installer using jpackage"
+    group = "distribution"
+    dependsOn("buildWindowsBinary")
+    executable = jpackagePath.get()
+    args(
+        "--type", "msi",
+        "--app-image", layout.buildDirectory.dir("windows/NEX App").get().asFile.absolutePath,
+        "--dest", layout.buildDirectory.dir("windows/installers").get().asFile.absolutePath,
+        "--name", "NEX App",
+        "--app-version", project.version.toString(),
+        "--vendor", apexVendor,
+        "--resource-dir", file("files/Windows").absolutePath,
+        "--icon", file("src/main/resources/setup.ico").absolutePath,
+        "--win-dir-chooser",
+        "--win-shortcut",
+        "--win-menu",
+        "--win-menu-group", apexVendor
+    )
+}
+tasks.register("buildWindowsInstallers") {
+    group = "distribution"
+    description = "Builds both .exe and .msi native installers using jpackage"
+    dependsOn("buildWindowsInstallerEXE", "buildWindowsInstallerMSI")
 }
