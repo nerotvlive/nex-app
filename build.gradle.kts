@@ -54,13 +54,6 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:4.1.1")
-
-    //fix vulnerabilities of spring boot starter web 4.1.1
-    implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.26")
-    implementation("org.apache.tomcat.embed:tomcat-embed-websocket:11.0.26")
-    implementation("tools.jackson.core:jackson-databind:3.2.3")
-    implementation("tools.jackson.core:jackson-core:3.2.3")
-
     implementation("com.zyneonstudios.apex:jauri-webview:0.34")
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")
 }
