@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.zyneonstudios.apex</groupId>
             <artifactId>jauri-webview</artifactId>
-            <version>0.31</version>
+            <version>0.32</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
