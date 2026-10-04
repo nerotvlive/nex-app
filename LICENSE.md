@@ -1,6 +1,9 @@
 MIT License
 
-Copyright (c) 2026 Daniel Niesmann, nerotvlive, Zyneon Apex, Zyneon Studios
+Copyright (c) 2026 Zyneon Studios
+Copyright (c) 2026 Zyneon Apex
+Copyright (c) 2026 Daniel Niesmann
+Copyright (c) 2026 nerotvlive
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
