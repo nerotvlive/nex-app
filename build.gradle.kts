@@ -2,7 +2,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.github.gradle.node.pnpm.task.PnpmTask
 import org.apache.tools.ant.filters.ReplaceTokens
-val jsign by configurations.creating
 
 plugins {
     java
@@ -14,6 +13,7 @@ plugins {
 group = "com.zyneonstudios.apex"
 version = "4.0.2"
 
+val jsign = configurations.create("jsign")
 val certFile = file("cert.pfx")
 val certPassword = providers.gradleProperty("sign.cert.password").orElse("UNSET").get()
 val curseforgeToken = providers.gradleProperty("curseforge.token").orElse("UNSET").get()
