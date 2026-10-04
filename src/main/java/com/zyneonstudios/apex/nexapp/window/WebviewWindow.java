@@ -55,11 +55,9 @@ public class WebviewWindow {
                     initBindings();
                     initIcon();
                     this.webview.run();
-
-                    if (!isToolWindow) {
+                    windows.remove(this.id);
+                    if(windows.isEmpty()) {
                         System.exit(0);
-                    } else {
-                        windows.remove(this.id);
                     }
                 } catch (Throwable e) {
                     throw new RuntimeException("Failed to launch native WebView", e);
@@ -100,6 +98,16 @@ public class WebviewWindow {
             return null;
         });
 
+        this.webview.bind("unminimizeWindow", (_) -> {
+            unminimize();
+            return null;
+        });
+
+        this.webview.bind("toggleMinimizeWindow", (_) -> {
+            toggleMinimize();
+            return null;
+        });
+
         this.webview.bind("maximizeWindow", (_) -> {
             maximize();
             return null;
@@ -126,6 +134,7 @@ public class WebviewWindow {
                     toolWindow.launchWindow();
                 } else {
                     WebviewWindow toolWindow = windows.get(tool);
+                    toolWindow.webview.showWindow();
                     toolWindow.unminimize();
                 }
                 return null;
@@ -217,25 +226,24 @@ public class WebviewWindow {
         }
     }
 
-    private boolean minimized = false;
     public void minimize() {
-        minimized = true;
         webview.minimizeWindow();
     }
 
-    public void unminimize() throws InterruptedException {
-        if (isMaximized()) {
-            webview.unmaximizeWindow();
-        } else {
-            webview.maximizeWindow();
-        }
-        Thread.sleep(1);
-        toggleMaximize();
-        minimized = false;
+    public void unminimize() {
+        webview.unminimizeWindow();
     }
 
     public boolean isMinimized() {
-        return minimized;
+        return webview.isMinimized();
+    }
+
+    public void toggleMinimize() {
+        if(isMinimized()) {
+            unminimize();
+        } else {
+            minimize();
+        }
     }
 
     public Webview getWebview() {

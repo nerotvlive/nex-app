@@ -11,6 +11,7 @@ dist
 dist-ssr
 *.local
 
+node
 .vscode/*
 !.vscode/extensions.json
 .idea

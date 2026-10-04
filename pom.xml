@@ -16,12 +16,20 @@
     <artifactId>NEX_App</artifactId>
     <version>4.0.1</version>
 
+    <repositories>
+        <repository>
+            <id>nerofy-snapshots</id>
+            <name>Nerofy Network Maven repository</name>
+            <url>https://maven.nrfy.net/snapshots</url>
+        </repository>
+    </repositories>
+
     <properties>
         <java.version>25</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <apex.frontend>frontend</apex.frontend>
+        <apex.frontend>frontend-experimental</apex.frontend>
         <apex.vendor>Zyneon Apex</apex.vendor>
         <apex.name>Reditus Magnificus</apex.name>
         <apex.type>alpha</apex.type>
@@ -36,9 +44,9 @@
             <version>4.1.1</version>
         </dependency>
         <dependency>
-            <groupId>io.avaje.webview</groupId>
-            <artifactId>avaje-webview</artifactId>
-            <version>0.29</version>
+            <groupId>com.zyneonstudios.apex</groupId>
+            <artifactId>jauri-webview</artifactId>
+            <version>0.31</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -109,9 +117,9 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>2.0.2</version>
                 <configuration>
-                    <workingDirectory>src/${apex.frontend}</workingDirectory>
+                    <workingDirectory>src/${apex.frontend}/node_modules</workingDirectory>
                     <nodeVersion>v24.20.0</nodeVersion>
-                    <pnpmVersion>11.22.0</pnpmVersion>
+                    <pnpmVersion>12.9.0</pnpmVersion>
                 </configuration>
                 <executions>
                     <execution>
@@ -470,11 +478,6 @@
                                         </copy>
                                         <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre/bin" perm="755" includes="*"/>
 
-                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
-                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre">
-                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
-                                        </copy>
-                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre/bin" perm="755" includes="*"/>
                                         <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
                                         <chmod file="${project.basedir}/build/appimagetool-${appimage.arch}.AppImage" perm="755" />
 
@@ -487,26 +490,6 @@
                                         <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/.DirIcon" />
                                         <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
                                         <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
-
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar" />
-                                        <exec executable="flatpak-builder" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
-                                            <arg value="--arch=${appimage.arch}"/>
-                                            <arg value="--repo=repo"/>
-                                            <arg value="--force-clean"/>
-                                            <arg value="build-dir"/>
-                                            <arg value="com.zyneonstudios.apex.nexapp.json"/>
-                                        </exec>
-                                        <exec executable="flatpak" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
-                                            <arg value="build-bundle"/>
-                                            <arg value="--arch=${appimage.arch}"/>
-                                            <arg value="repo"/>
-                                            <arg value="NEX_App-${project.version}-${appimage.arch}.flatpak"/>
-                                            <arg value="com.zyneonstudios.apex.nexapp"/>
-                                        </exec>
-                                        <move file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/NEX_App-${project.version}-${appimage.arch}.flatpak" todir="${project.build.directory}"/>
-                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/repo"/>
-                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar"/>
-                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -548,12 +531,6 @@
                                         </copy>
                                         <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre/bin" perm="755" includes="*"/>
 
-                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
-                                        <copy todir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre">
-                                            <fileset dir="${project.basedir}/build/${jre.source.folder}"/>
-                                        </copy>
-                                        <chmod dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre/bin" perm="755" includes="*"/>
-
                                         <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
                                         <chmod file="${project.basedir}/build/appimagetool-${appimage.arch}.AppImage" perm="755" />
                                         <exec executable="./appimagetool-${appimage.arch}.AppImage" dir="${project.basedir}/build" failonerror="true">
@@ -565,26 +542,6 @@
                                         <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/.DirIcon" />
                                         <delete file="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/bin/NEX_App.jar" />
                                         <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}.AppDir/usr/lib/jre" quiet="true"/>
-
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar" />
-                                        <exec executable="flatpak-builder" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
-                                            <arg value="--arch=${appimage.arch}"/>
-                                            <arg value="--repo=repo"/>
-                                            <arg value="--force-clean"/>
-                                            <arg value="build-dir"/>
-                                            <arg value="com.zyneonstudios.apex.nexapp.json"/>
-                                        </exec>
-                                        <exec executable="flatpak" dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak" failonerror="true">
-                                            <arg value="build-bundle"/>
-                                            <arg value="--arch=${appimage.arch}"/>
-                                            <arg value="repo"/>
-                                            <arg value="NEX_App-${project.version}-${appimage.arch}.flatpak"/>
-                                            <arg value="com.zyneonstudios.apex.nexapp"/>
-                                        </exec>
-                                        <move file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/NEX_App-${project.version}-${appimage.arch}.flatpak" todir="${project.build.directory}"/>
-                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/repo"/>
-                                        <delete file="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/nex-app.jar"/>
-                                        <delete dir="${project.basedir}/build/NEX_App-${appimage.arch}-flatpak/assets/jre" quiet="true"/>
                                     </target>
                                 </configuration>
                             </execution>

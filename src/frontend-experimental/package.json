@@ -11,27 +11,28 @@
   },
   "dependencies": {
     "bootstrap-icons": "^1.13.1",
-    "lucide-static": "^1.8.0",
+    "lucide-static": "^1.51.0",
     "monaco-editor": "^0.55.1",
     "monaco-editor-vue3": "^1.0.5",
-    "vue": "^3.5.32"
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.2",
-    "@tailwindcss/vite": "^4.2.4",
-    "@types/node": "^24.12.2",
-    "@vitejs/plugin-vue": "^6.0.5",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.19.1",
+    "@vitejs/plugin-vue": "^6.0.9",
     "@vue/tsconfig": "^0.9.1",
-    "autoprefixer": "^10.5.0",
-    "postcss": "^8.5.10",
-    "tailwindcss": "^4.2.2",
-    "typescript": "~6.0.2",
-    "vite": "^8.0.4",
-    "vue-tsc": "^3.2.6"
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.2",
+    "vue-tsc": "^3.3.12"
   },
-  "packageManager": "pnpm@11.22.0",
+  "packageManager": "pnpm@12.9.0",
   "engines": {
     "npm": "please_use_pnpm",
-    "pnpm": ">=11.22.0"
+    "pnpm": ">=12.9.0"
   }
 }
