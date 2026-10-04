@@ -28,7 +28,8 @@ node {
     nodeProjectDir = frontendDir
 }
 
-val installFrontend by tasks.registering(PnpmTask::class) {
+val installFrontend = tasks.register<PnpmTask>("installFrontend") {
+    description = "Initializes the frontend dependencies"
     dependsOn("pnpmSetup")
     args = listOf("install")
     onlyIf { packageJson.exists() }
@@ -37,7 +38,8 @@ val installFrontend by tasks.registering(PnpmTask::class) {
     outputs.dir(frontendDir.resolve("node_modules"))
 }
 
-val buildFrontend by tasks.registering(PnpmTask::class) {
+val buildFrontend = tasks.register<PnpmTask>("buildFrontend") {
+    description = "Builds and bundles the frontend"
     dependsOn(installFrontend)
     args = listOf("run", "build")
     onlyIf { packageJson.exists() }
