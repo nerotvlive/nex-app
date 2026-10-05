@@ -6,7 +6,7 @@
 
     <groupId>com.zyneonstudios.apex</groupId>
     <artifactId>nex-app</artifactId>
-    <version>3.0.40</version>
+    <version>3.0.41</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -282,7 +282,7 @@
                                         <move file="${project.build.directory}/${app.name}-${project.version}.msi" tofile="${project.build.directory}/Install ${app.name}-${project.version}-${os.detected.arch}.msi" failonerror="false" quiet="true"/>
                                         <move file="${project.build.directory}/Install ${app.name}-${project.version}-aarch_64.exe" tofile="${project.build.directory}/Install ${app.name}-${project.version}-aarch64.exe" failonerror="false" quiet="true"/>
                                         <move file="${project.build.directory}/Install ${app.name}-${project.version}-aarch_64.msi" tofile="${project.build.directory}/Install ${app.name}-${project.version}-aarch64.msi" failonerror="false" quiet="true"/>
-                                        <move file="${project.build.directory}/${project.artifactId}-${project.version}.jar" tofile="${project.build.directory}/${app.name}-${project.version}-static.jar" failonerror="false" quiet="true"/>
+                                        <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar" tofile="${project.build.directory}/${app.name}-${project.version}-static.jar" failonerror="false" quiet="true"/>
                                         <delete file="${project.build.directory}/original-${project.artifactId}-${project.version}.jar"/>
                                     </target>
                                 </configuration>
@@ -308,7 +308,7 @@
                                     <vendor>${app.vendor}</vendor>
                                     <mainJar>${project.build.finalName}.jar</mainJar>
                                     <mainClass>${app.mainClass}</mainClass>
-                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
+                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
                                     <type>APP_IMAGE</type>
                                 </configuration>
                             </execution>
@@ -345,7 +345,7 @@
                                     <name>${app.name}</name>
                                     <appVersion>${app.version.jpackage}</appVersion>
                                     <vendor>${app.vendor}</vendor>
-                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
                                     <type>MSI</type>
                                     <winDirChooser>false</winDirChooser>
                                     <winShortcut>true</winShortcut>
