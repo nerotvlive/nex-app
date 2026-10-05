@@ -21,7 +21,7 @@ It integrates CurseForge, Modrinth and our own self-hostable content distributio
 <br><br>
 
 [![Download Stable](https://img.shields.io/badge/Download_Stable-blue.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/latest)
-[![Download Prerelease](https://img.shields.io/badge/Download_New_App_Alpha-red.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/tag/v4.0.0)
+[![Download Prerelease](https://img.shields.io/badge/Download_New_App_Alpha-red.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/tag/v4.0.1)
 
 - - -
 
