@@ -1,1 +1,7 @@
 cert.pfx
+build/
+out/
+target/
+.run/
+.idea/
+.vscode/

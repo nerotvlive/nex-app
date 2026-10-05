@@ -6,7 +6,7 @@
 
     <groupId>com.zyneonstudios.apex</groupId>
     <artifactId>nex-app</artifactId>
-    <version>3.0.39</version>
+    <version>3.0.40</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -184,6 +184,13 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
     </build>
 
     <profiles>
@@ -232,7 +239,7 @@
                                             <arg value="/c"/>
                                             <arg value="attrib"/>
                                             <arg value="-R"/>
-                                            <arg value="${project.build.directory}\jpackage\${app.name}\*.*"/>
+                                            <arg value="${project.build.directory}\${app.name}\*.*"/>
                                             <arg value="/S"/>
                                             <arg value="/D"/>
                                         </exec>
@@ -251,8 +258,32 @@
                                             <arg value="/c"/>
                                             <arg value="attrib"/>
                                             <arg value="-R"/>
-                                            <arg value="${project.build.directory}\jpackage\*.*"/>
+                                            <arg value="${project.build.directory}\*.*"/>
                                         </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>move-zip-and-rename</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${app.name}" tofile="${project.build.directory}/${app.name}-${project.version}-windows-${os.detected.arch}" failonerror="false" quiet="true"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <zip destfile="${project.build.directory}/${app.name}-${project.version}-windows-${os.detected.arch}.zip" basedir="${project.build.directory}/${app.name}-${project.version}-windows-${os.detected.arch}"/>
+                                        <move file="${project.build.directory}/${app.name}-${project.version}-windows-aarch_64.zip" tofile="${project.build.directory}/${app.name}-${project.version}-windows-aarch64.zip" failonerror="false" quiet="true"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${app.name}-${project.version}.exe" tofile="${project.build.directory}/Install ${app.name}-${project.version}-${os.detected.arch}.exe" failonerror="false" quiet="true"/>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <move file="${project.build.directory}/${app.name}-${project.version}.msi" tofile="${project.build.directory}/Install ${app.name}-${project.version}-${os.detected.arch}.msi" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/Install ${app.name}-${project.version}-aarch_64.exe" tofile="${project.build.directory}/Install ${app.name}-${project.version}-aarch64.exe" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/Install ${app.name}-${project.version}-aarch_64.msi" tofile="${project.build.directory}/Install ${app.name}-${project.version}-aarch64.msi" failonerror="false" quiet="true"/>
+                                        <move file="${project.build.directory}/${project.artifactId}-${project.version}.jar" tofile="${project.build.directory}/${app.name}-${project.version}-static.jar" failonerror="false" quiet="true"/>
+                                        <delete file="${project.build.directory}/original-${project.artifactId}-${project.version}.jar"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -271,13 +302,13 @@
                                 </goals>
                                 <configuration>
                                     <input>${project.build.directory}</input>
-                                    <destination>${project.build.directory}/jpackage</destination>
+                                    <destination>${project.build.directory}</destination>
                                     <name>${app.name}</name>
                                     <appVersion>${app.version.jpackage}</appVersion>
                                     <vendor>${app.vendor}</vendor>
                                     <mainJar>${project.build.finalName}.jar</mainJar>
                                     <mainClass>${app.mainClass}</mainClass>
-                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
                                     <type>APP_IMAGE</type>
                                 </configuration>
                             </execution>
@@ -288,17 +319,18 @@
                                     <goal>jpackage</goal>
                                 </goals>
                                 <configuration>
-                                    <appImage>${project.build.directory}/jpackage/${app.name}</appImage>
-                                    <destination>${project.build.directory}/jpackage</destination>
+                                    <appImage>${project.build.directory}/${app.name}</appImage>
+                                    <destination>${project.build.directory}</destination>
                                     <name>${app.name}</name>
                                     <appVersion>${app.version.jpackage}</appVersion>
                                     <vendor>${app.vendor}</vendor>
-                                    <icon>${project.basedir}/src/main/html/favicon.ico</icon>
+                                    <icon>${project.basedir}/src/main/resources/setup.ico</icon>
                                     <type>EXE</type>
-                                    <winDirChooser>true</winDirChooser>
+                                    <winDirChooser>false</winDirChooser>
                                     <winShortcut>true</winShortcut>
                                     <winMenu>true</winMenu>
                                     <winMenuGroup>${app.vendor}</winMenuGroup>
+                                    <winUpgradeUuid>${nexapp.installer.legacy}</winUpgradeUuid>
                                 </configuration>
                             </execution>
                             <execution>
@@ -308,17 +340,18 @@
                                     <goal>jpackage</goal>
                                 </goals>
                                 <configuration>
-                                    <appImage>${project.build.directory}/jpackage/${app.name}</appImage>
-                                    <destination>${project.build.directory}/jpackage</destination>
+                                    <appImage>${project.build.directory}/${app.name}</appImage>
+                                    <destination>${project.build.directory}</destination>
                                     <name>${app.name}</name>
                                     <appVersion>${app.version.jpackage}</appVersion>
                                     <vendor>${app.vendor}</vendor>
                                     <icon>${project.basedir}/src/main/html/favicon.ico</icon>
                                     <type>MSI</type>
-                                    <winDirChooser>true</winDirChooser>
+                                    <winDirChooser>false</winDirChooser>
                                     <winShortcut>true</winShortcut>
                                     <winMenu>true</winMenu>
                                     <winMenuGroup>${app.vendor}</winMenuGroup>
+                                    <winUpgradeUuid>${nexapp.installer.legacy}</winUpgradeUuid>
                                 </configuration>
                             </execution>
                         </executions>
@@ -335,7 +368,7 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <file>${project.build.directory}/jpackage/${app.name}/${app.name}.exe</file>
+                                    <file>${project.build.directory}/${app.name}/${app.name}.exe</file>
                                     <keystore>${project.basedir}/cert.pfx</keystore>
                                     <storepass>${sign.cert.password}</storepass>
                                     <tsaurl>http://timestamp.digicert.com</tsaurl>
@@ -349,7 +382,7 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <file>${project.build.directory}/jpackage/${app.name}-${app.version.jpackage}.exe</file>
+                                    <file>${project.build.directory}/${app.name}-${app.version.jpackage}.exe</file>
                                     <keystore>${project.basedir}/cert.pfx</keystore>
                                     <storepass>${sign.cert.password}</storepass>
                                     <tsaurl>http://timestamp.digicert.com</tsaurl>
@@ -363,7 +396,7 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <file>${project.build.directory}/jpackage/${app.name}-${app.version.jpackage}.msi</file>
+                                    <file>${project.build.directory}/${app.name}-${app.version.jpackage}.msi</file>
                                     <keystore>${project.basedir}/cert.pfx</keystore>
                                     <storepass>${sign.cert.password}</storepass>
                                     <tsaurl>http://timestamp.digicert.com</tsaurl>

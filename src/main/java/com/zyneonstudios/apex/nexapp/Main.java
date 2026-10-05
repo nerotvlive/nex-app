@@ -547,7 +547,7 @@ public class Main {
                     }
                 }
 
-                if(!latestVersion.equals(currentVersion)&&!latestVersion.contains("-pre.")) {
+                if(!latestVersion.equals(currentVersion)&&isWindowsEXE()) {
                     int update = JOptionPane.showConfirmDialog(
                             parent,
                             "Do you want to update to the latest version?\n\nCurrent version: " + currentVersion+"\nLatest version: "+latestVersion,
@@ -581,9 +581,38 @@ public class Main {
                         File updater = FileGetter.downloadFile(jsonMeta.get("downloadUrl").getAsString(), getDefaultPath()+"temp/"+ StringGenerator.generateAlphanumericString(12) +"-nex-app-"+latestVersion+"-setup.exe");
                         if (updater != null && updater.exists()) {
                             try {
-                                new ProcessBuilder(
-                                        updater.getAbsolutePath()
-                                ).directory(updater.getParentFile()).start();
+                                Path installerPath = updater.toPath();
+                                String fileName = installerPath.getFileName().toString();
+
+                                String extension = "";
+                                int lastDot = fileName.lastIndexOf('.');
+                                if (lastDot > 0) {
+                                    extension = fileName.substring(lastDot + 1).toLowerCase();
+                                }
+
+                                ProcessBuilder pb;
+                                boolean forceOldUpdateBehavior = false;
+                                if ("msi".equals(extension)&&!forceOldUpdateBehavior) {
+                                    pb = new ProcessBuilder(
+                                            "msiexec.exe",
+                                            "/i", installerPath.toAbsolutePath().toString(),
+                                            "/passive",
+                                            "/norestart"
+                                    );
+                                } else if ("exe".equals(extension)&&!forceOldUpdateBehavior) {
+                                    pb = new ProcessBuilder(
+                                            installerPath.toAbsolutePath().toString(),
+                                            "/passive",
+                                            "/norestart"
+                                    );
+                                } else {
+                                    pb = new ProcessBuilder(
+                                            updater.getAbsolutePath()
+                                    ).directory(updater.getParentFile());
+                                }
+
+                                pb.start();
+                                System.exit(0);
                                 System.exit(0);
                             } catch (IOException e) {
                                 logger.err(e.getMessage());
