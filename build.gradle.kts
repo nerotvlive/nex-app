@@ -2,6 +2,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.github.gradle.node.pnpm.task.PnpmTask
 import org.apache.tools.ant.filters.ReplaceTokens
+import java.util.UUID
 
 plugins {
     java
@@ -17,6 +18,7 @@ val jsign = configurations.create("jsign")
 val certFile = file("cert.pfx")
 val certPassword = providers.gradleProperty("sign.cert.password").orElse("UNSET").get()
 val curseforgeToken = providers.gradleProperty("curseforge.token").orElse("UNSET").get()
+val installerUUID = providers.gradleProperty("nexapp.installer.uuid").orElse(UUID.randomUUID().toString()).get()
 val apexName = "Reditus Magnificus"
 val apexType = "alpha"
 val apexVendor = "Zyneon Apex"
@@ -150,7 +152,8 @@ val installerTasks = listOf("msi", "exe").map { type ->
             "--win-dir-chooser",
             "--win-shortcut",
             "--win-menu",
-            "--win-menu-group", apexVendor
+            "--win-menu-group", apexVendor,
+            "--win-upgrade-uuid", installerUUID
         )
     }
 }

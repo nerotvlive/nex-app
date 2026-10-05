@@ -9,7 +9,7 @@
 by **Zyneon Apex**, a **Zyneon Studios** division
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/nerotvlive/nex-app/blob/master/LICENSE)
-[![Latest stable version](https://img.shields.io/badge/Stable_Version-3.0.39-blue.svg)](https://github.com/nerotvlive/nex-app/releases/tag/v3.0.39)
+[![Latest stable version](https://img.shields.io/badge/Stable_Version-3.0.40-blue.svg)](https://github.com/nerotvlive/nex-app/releases/latest)
 [![Latest alpha version](https://img.shields.io/badge/Unstable_Version-4.0.1_Alpha-red.svg)](https://github.com/nerotvlive/nex-app/releases/tag/v4.0.1)
 
 - - -
@@ -20,8 +20,8 @@ The NEX App is a modern and cross-platform Minecraft: Java Edition modding utili
 It integrates CurseForge, Modrinth and our own self-hostable content distribution system Zyndex.
 <br><br>
 
-[![Download Stable](https://img.shields.io/badge/Download_Stable-blue.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/tag/v3.0.35)
-[![Download Prerelease](https://img.shields.io/badge/Download_4.0.0_Alpha-red.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/tag/v4.0.0)
+[![Download Stable](https://img.shields.io/badge/Download_Stable-blue.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/latest)
+[![Download Prerelease](https://img.shields.io/badge/Download_New_App_Alpha-red.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/tag/v4.0.0)
 
 - - -
 
