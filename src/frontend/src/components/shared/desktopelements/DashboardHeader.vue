@@ -2,16 +2,22 @@
 import Card from "./Card.vue";
 import {getApiStatus, openExternal} from "../../../assets/zyneon/scripts";
 import Badge from "./Badge.vue";
+import InputBar from "./InputBar.vue";
 </script>
 
 <template>
   <div class="dashboard-header zyn-br-md mb-3 shadow-lg shadow-black/25">
     <Card class="zyn-ov-darker relative overflow-hidden" border="1px solid var(--zyn-ov-brighter-200)">
+      <div class="zyn-ov-brighter-200 p-2 px-4 border rounded-t-xl shadow-lg shadow-black/10" style="border-color: var(--zyn-ov-brighter-200)">
+          <div class="flex justify-between">
+            <strong class="text-white">NEX App</strong>
+            <input-bar background="var(--zyn-ov-brighter-200)" placeholder="Search resources..."/>
+          </div>
+      </div>
       <div class="flex flex-col gap-3 p-3 relative">
         <div class="flex w-full h-full gap-3">
           <div class="w-full">
             <slot name="top-left">
-              <strong class="text-white line-clamp-1 text-xl">NEX App</strong>
               <span><span :class="getApiStatus().version.type === 'stable' ? 'hidden' : ''" class="text-lg text-nowrap">{{getApiStatus().version.number}}-{{getApiStatus().version.type}}.{{getApiStatus().version.build}}<br></span><span class="text-md opacity-50">{{getApiStatus().version.name}}</span></span>
             </slot>
           </div>
