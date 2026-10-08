@@ -5,15 +5,6 @@ import java.nio.file.Path;
 
 public class NEXUpdater {
 
-    static void main() {
-        try {
-            updateWindows();
-        } catch (Exception e) {
-            System.err.println("Could not update: " + e.getMessage());
-        }
-        System.exit(-1);
-    }
-
     private static void updateWindows() throws IOException {
         Path installerPath = Path.of("C:\\Users\\nerotvlive\\Desktop\\NEX App-4.0.2.exe");
         String fileName = installerPath.getFileName().toString();
