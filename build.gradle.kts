@@ -149,7 +149,6 @@ val installerTasks = listOf("msi", "exe").map { type ->
             "--vendor", apexVendor,
             "--resource-dir", file("files/Windows").absolutePath,
             "--icon", file("src/main/resources/setup.ico").absolutePath,
-            "--win-dir-chooser",
             "--win-shortcut",
             "--win-menu",
             "--win-menu-group", apexVendor,
