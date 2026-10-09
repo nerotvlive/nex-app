@@ -45,46 +45,46 @@
     </DesktopTitlebar>
     <DesktopRootView class="zyneon-desktop-view">
       <template #left>
-       <DesktopSideMenu id="navigation" class="desktop-side-menu">
+       <DesktopSideMenu id="navigation" class="desktop-side-menu" :class="ZyneonSettings.isBorderless ? 'rounded-border' : ''">
          <template #top>
-           <a class="btn" @mousedown.stop @click="ZyneonSettings.toggleMenuExpanded">
+           <a class="btn flex" @mousedown.stop @click="ZyneonSettings.toggleMenuExpanded">
              <i class="icon-text-align-justify"></i>
              <span>{{ t('menu.toggle') }}</span>
            </a>
          </template>
          <template #center>
-           <router-link to="/" id="dashboard-button" class="btn" active-class="active" @mousedown.stop>
+           <router-link to="/" id="dashboard-button" class="btn flex" active-class="active" @mousedown.stop>
              <i class="icon-gallery-vertical-end"></i>
              <span>{{ t('menu.dashboard') }}</span>
            </router-link>
-           <router-link to="/discover" id="discover-button" class="btn" active-class="active" @mousedown.stop>
+           <router-link to="/discover" id="discover-button" class="btn flex" active-class="active" @mousedown.stop>
              <i class="icon-search"></i>
              <span>{{ t('menu.discover') }}</span>
            </router-link>
-           <router-link to="/library" id="library-button" class="btn" active-class="active" @mousedown.stop>
+           <router-link to="/library" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
              <i class="icon-library"></i>
              <span>{{ t('menu.library') }}</span>
            </router-link>
-           <!--router-link to="/tools" id="library-button" class="btn" active-class="active" @mousedown.stop>
+           <!--router-link to="/tools" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
              <i class="icon-wrench"></i>
              <span>{{ t('menu.tools') }}</span>
            </router-link-->
          </template>
          <template #bottom>
-           <a class="btn hover:background-color-blue-400" onclick="window.location.reload();" @mousedown.stop>
+           <a class="btn hover:background-color-blue-400" :class="ZyneonSettings.isDev ? 'flex' : 'hidden'" onclick="window.location.reload();" @mousedown.stop>
              <i class="icon-rotate-cw"></i>
              <span>{{ t('menu.reload') }}</span>
            </a>
-           <router-link to="/error" class="btn disabled" @mousedown.stop>
+           <router-link to="/error" class="btn flex disabled" @mousedown.stop>
              <i class="icon-bell"></i>
              <span>{{ t('menu.notifications') }}</span>
            </router-link>
            <hr class="opacity-20 mb-2" @mousedown.stop>
-           <router-link to="/downloads" id="downloads-button" class="btn" active-class="active" @mousedown.stop>
+           <router-link to="/downloads" id="downloads-button" class="flex btn" active-class="active" @mousedown.stop>
              <i class="icon-download"></i>
              <span>{{ t('menu.downloads') }}</span>
            </router-link>
-           <router-link to="/settings" id="settings-button" class="btn" active-class="active" @mousedown.stop>
+           <router-link to="/settings" id="settings-button" class="flex btn" active-class="active" @mousedown.stop>
              <i class="icon-bolt"></i>
              <span>{{ t('menu.settings') }}</span>
            </router-link>
@@ -92,7 +92,7 @@
        </DesktopSideMenu>
       </template>
       <template #center>
-        <DesktopPane class="zyneon-desktop-content">
+        <DesktopPane class="zyneon-desktop-content" :class="ZyneonSettings.isBorderless ? 'rounded-border' : ''">
           <div class="zyneon-desktop-content-background" />
           <div class="zyneon-desktop-content-pages">
             <router-view />
@@ -114,11 +114,20 @@
 
       .zyneon-desktop-view {
 
+        .desktop-side-menu {
+          height: 100vh;
+          padding-top: 0.5rem;
+        }
+
+        .desktop-side-menu.rounded-border {
+          height: 100%;
+          padding-top: 0;
+        }
+
         .zyneon-desktop-content {
           background: var(--zyn-background);
-          border-top-left-radius: var(--zyn-br-lg);
           width: 100%;
-          border-top: 1px solid var(--zyn-ov-brighter-200);
+          height: 100vh;
           border-left: 1px solid var(--zyn-ov-brighter-200);
           position: relative;
           overflow: hidden;
@@ -155,6 +164,12 @@
             background: var(--zyn-background-body);
             opacity: 0.5;
           }
+        }
+
+        .zyneon-desktop-content.rounded-border {
+          border-top-left-radius: var(--zyn-br-lg);
+          border-top: 1px solid var(--zyn-ov-brighter-200);
+          height: 100%;
         }
       }
     }

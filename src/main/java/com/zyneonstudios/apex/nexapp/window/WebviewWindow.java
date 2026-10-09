@@ -4,7 +4,6 @@ import com.zyneonstudios.apex.nexapp.Main;
 import io.avaje.webview.Webview;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +19,7 @@ public class WebviewWindow {
     private int width;
     private int height;
     private boolean isToolWindow = false;
+    private final boolean isBorderless =  !Main.useNativeFrame();
 
     public WebviewWindow() {
         this("main");
@@ -32,6 +32,14 @@ public class WebviewWindow {
         if(!this.id.equals("main")) {
             this.isToolWindow = true;
         }
+        if(!url.toLowerCase().contains("borderless="+isBorderless)) {
+            if (url.contains("?")) {
+                this.url = url + "&borderless="+isBorderless;
+            } else {
+                this.url = url + "?borderless="+isBorderless;
+            }
+        }
+        System.out.println("Setting URL to: " + this.url);
         windows.put(this.id, this);
     }
 
@@ -41,13 +49,13 @@ public class WebviewWindow {
             Thread.ofPlatform().start(() -> {
                 try {
                     this.webview = Webview.builder()
-                            .title("nex-app")
-                            .minSize(800, 480)
+                            .title("NEX App")
+                            .minSize(1024, 576)
                             .width(width)
                             .height(height)
-                            .enableDeveloperTools(true)
+                            .enableDeveloperTools(Main.isDev())
                             .navigate(url)
-                            .borderless(true, true)
+                            .borderless(isBorderless, isBorderless)
                             .build();
 
                     initWindowControls();
@@ -83,6 +91,9 @@ public class WebviewWindow {
 
     private void initWindowControls() {
         this.webview.bind("startWindowDrag", (_) -> {
+            if(Main.useNativeFrame()) {
+                return null;
+            }
             this.webview.startWindowDrag();
             return null;
         });
@@ -163,9 +174,16 @@ public class WebviewWindow {
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        if(!url.toLowerCase().contains("borderless="+isBorderless)) {
+            if (url.contains("?")) {
+                this.url = url + "&borderless="+isBorderless;
+            } else {
+                this.url = url + "?borderless="+isBorderless;
+            }
+        }
+        System.out.println("Setting URL to: " + this.url);
         if(webview != null) {
-            webview.navigate(url);
+            webview.navigate(this.url);
         }
     }
 

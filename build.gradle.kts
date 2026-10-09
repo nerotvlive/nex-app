@@ -90,6 +90,7 @@ tasks.processResources {
 
 tasks.bootRun {
     args("-v")
+    args("-d")
 }
 
 tasks.register("dev") {

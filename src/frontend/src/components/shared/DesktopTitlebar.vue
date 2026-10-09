@@ -2,6 +2,7 @@
   import '../../assets/zyneon/css/components/desktop-titlebar.css';
   import DesktopTitlebarButtons from "./DesktopTitlebarButtons.vue";
   import {WindowControls} from "../../assets/zyneon/scripts/windowControls.ts";
+  import {ZyneonSettings} from "../../assets/zyneon/scripts";
 
   withDefaults(
       defineProps<{
@@ -15,7 +16,7 @@
 </script>
 
 <template>
-  <div class="titlebar min-h-10 max-h-10 w-full" @mousedown="WindowControls.startDrag()">
+  <div class="titlebar min-h-10 max-h-10 w-full" :class="ZyneonSettings.isBorderless ? 'flex' : 'hidden'" @mousedown="WindowControls.startDrag()">
     <div class="content min-h-10 max-h-10 w-full">
       <div class="start">
         <slot name="start"></slot>

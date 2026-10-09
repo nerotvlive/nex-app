@@ -409,7 +409,6 @@ body {
     padding: 0 0 0 0.5rem;
     border-radius: var(--zyn-br-sm);
     margin: 0.25rem;
-    display: flex;
 
     i,span {
       margin: 0.25rem 0.5rem 0.25rem 0;

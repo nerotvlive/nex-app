@@ -2,6 +2,8 @@ export class settings {
 
     private classicMenu = false;
     private menuExpanded = false;
+    private dev = false;
+    private borderless = false;
 
     private theme = "dark";
     private roundedCorners = 1.00;
@@ -14,6 +16,16 @@ export class settings {
         if(localStorage.getItem("useClassicMenu") === "true") {
             this.classicMenu = true;
         }
+
+        const params = new URLSearchParams(window.location.search);
+        if(params.has("borderless")) {
+            this.setBorderless(params.get("borderless") === "true");
+        } else {
+            if(localStorage.getItem("isBorderless") === "true") {
+                this.borderless = true;
+            }
+        }
+
         const savedBgAccent = localStorage.getItem("backgroundAccent");
         if (savedBgAccent !== null) {
             this.backgroundAccent = savedBgAccent || "#FF00FF";
@@ -43,6 +55,14 @@ export class settings {
 
     public get isMenuExpanded(): boolean {
         return this.menuExpanded;
+    }
+
+    public get isDev(): boolean {
+        return this.dev;
+    }
+
+    public get isBorderless(): boolean {
+        return this.borderless;
     }
 
     public getTheme(): string {
@@ -79,6 +99,10 @@ export class settings {
                 body.classList.remove("classic-menu");
             }
         }
+    }
+
+    public setDev(value: boolean) {
+        this.dev = value;
     }
 
     private getOpacity(): string {
@@ -154,6 +178,11 @@ export class settings {
 
     public toggleMenuExpanded() {
         this.setMenuExpanded(!this.isMenuExpanded);
+    }
+
+    public setBorderless(value: boolean) {
+        this.borderless = value;
+        localStorage.setItem("isBorderless", value.toString());
     }
 }
 

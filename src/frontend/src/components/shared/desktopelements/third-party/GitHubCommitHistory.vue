@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import {openExternal} from "../../../../assets/zyneon/scripts";
 import CardCollapsable from "../CardCollapsable.vue";
 import Badge from "../Badge.vue";
+import {useI18n} from "vue-i18n";
+const { t } = useI18n();
 
 interface GitHubCommit {
   sha: string
@@ -52,7 +54,7 @@ const fetchCommits = async () => {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  return new Date(dateString).toLocaleDateString(t('languages.auto.key'), {
     day: '2-digit',
     month: 'long',
     year: 'numeric',

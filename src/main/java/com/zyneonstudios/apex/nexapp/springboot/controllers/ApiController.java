@@ -21,6 +21,7 @@ public class ApiController {
         return Map.of(
                 "service", "NEX App API by Zyneon Apex, a Zyneon Studios Division",
                 "status", "online",
+                "dev", Main.isDev(),
                 "system", Map.of(
                         "os", Map.of(
                                 "name", System.getProperty("os.name"),

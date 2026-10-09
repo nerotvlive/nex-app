@@ -16,6 +16,8 @@ public class Main {
     private static SpringApplication springApp;
     private static String url = "http://localhost:"+port;
     private static String updateMetaUrl = null;
+    private static boolean dev = false;
+    private static boolean nativeFrame = false;
 
     static void main(String[] args) {
         Main.args = args;
@@ -33,6 +35,7 @@ public class Main {
         for(int i=0;i<args.length;i++) {
             switch (args[i]) {
                 case "-v", "--vite" -> url = "http://localhost:5278";
+                case "-d", "--dev" -> dev = true;
                 case "-u", "--url" -> {
                     if (args.length > i + 1) {
                         url = args[i + 1];
@@ -47,6 +50,7 @@ public class Main {
                         args[i + 1] = "";
                     }
                 }
+                case "-nF", "--nativeFrame" -> nativeFrame = true;
                 case "-uM", "--updateMeta" -> {
                     if (args.length > i + 1) {
                         updateMetaUrl = args[i + 1];
@@ -106,5 +110,13 @@ public class Main {
 
     public static String getUpdateMetaUrl() {
         return updateMetaUrl;
+    }
+
+    public static boolean isDev() {
+        return dev;
+    }
+
+    public static boolean useNativeFrame() {
+        return nativeFrame;
     }
 }

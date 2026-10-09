@@ -1,8 +1,10 @@
 import {ref} from "vue";
+import {ZyneonSettings} from "../settings.ts";
 
 export interface ApplicationStatus {
   service: string
   status: string
+  dev: boolean;
   system: {
     os: {
       name: string;
@@ -22,6 +24,7 @@ export interface ApplicationStatus {
 const dummyApplicationStatus = {
   service: 'NEX App UI (offline)',
   status: 'error',
+  dev: true,
   system: {
     os: {
       name: '/',
@@ -48,12 +51,17 @@ export async function getApplicationStatus(): Promise<ApplicationStatus> {
 
 
 async function fetchApplicationStatus(): Promise<ApplicationStatus> {
+  let applicationStatus_: ApplicationStatus = dummyApplicationStatus;
   try {
     const response = await fetch('/api/status');
     if (!response.ok) throw new Error('Could not get application status');
-    return await response.json();
+    applicationStatus_ = await response.json();
   } catch (error) {
     console.error('Could not load application status:', error);
-    return dummyApplicationStatus;
   }
+  console.log('Application status:', applicationStatus_);
+  if(applicationStatus_.dev) {
+    ZyneonSettings.setDev(true);
+  }
+  return applicationStatus_;
 }
