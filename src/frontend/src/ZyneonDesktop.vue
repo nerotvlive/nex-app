@@ -112,6 +112,12 @@
       width: 100%;
       height: 100%;
 
+      .desktop-side-menu {
+        max-height: 0;
+        min-height: 0;
+        animation: growInMenu 0.5s ease-in-out forwards;
+      }
+
       .zyneon-desktop-view {
 
         .zyneon-desktop-content {
@@ -126,12 +132,14 @@
           box-shadow: 0 0 1rem #00000099;
 
           .zyneon-desktop-content-pages {
+            transform: translateX(100%);
             position: absolute;
             height: 100%;
             width: 100%;
             overflow: hidden;
             overflow-y: auto;
             z-index: 2;
+            animation: comeInRight 0.5s ease-in-out forwards;
           }
 
           .zyneon-desktop-content-background {
@@ -166,6 +174,17 @@
           box-shadow: inset 0.334rem 0.334rem 0.75rem black;
         }
       }
+    }
+  }
+
+  @keyframes growInMenu {
+    0% {
+      max-height: 0;
+      height: 0;
+    }
+    100% {
+      max-height: 100%;
+      height: 100%;
     }
   }
 </style>

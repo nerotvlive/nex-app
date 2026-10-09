@@ -119,40 +119,4 @@ if(urlParams.get('errmessage')) {
 .header.active {
   animation: fadeIn 1s ease-in-out forwards;
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes textIn {
-  from {
-    transform: translateY(2rem);
-  }
-
-  to {
-    transform: translateY(0);
-  }
-}
-
-@keyframes specialIn {
-  0% {
-    filter: blur(32px) grayscale(100%);
-    opacity: 0;
-  }
-  33% {
-    filter: blur(4px) grayscale(100%);
-  }
-  66% {
-    filter: blur(0) grayscale(100%);
-  }
-  100% {
-    filter: blur(0) grayscale(0);
-    opacity: 1;
-  }
-}
 </style>

@@ -355,10 +355,12 @@
 }
 
 body {
+  opacity: 0;
   background: var(--zyn-background);
   color: var(--zyn-foreground);
   user-select: none;
   -webkit-user-select: none;
+  animation: fadeIn 1s ease-in-out forwards;
 
   * {
     scroll-behavior: smooth;
@@ -465,4 +467,58 @@ body.classic-menu {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 100, 100, 0.8);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes textIn {
+  from {
+    transform: translateY(2rem);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes comeInLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes comeInRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes specialIn {
+  0% {
+    filter: blur(32px) grayscale(100%);
+    opacity: 0;
+  }
+  33% {
+    filter: blur(4px) grayscale(100%);
+  }
+  66% {
+    filter: blur(0) grayscale(100%);
+  }
+  100% {
+    filter: blur(0) grayscale(0);
+    opacity: 1;
+  }
 }
