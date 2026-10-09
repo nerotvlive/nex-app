@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/tools.css';
+import {onMounted} from "vue";
+import {ZyneonSettings} from "../assets/zyneon/scripts";
+
+onMounted(()=>{
+  ZyneonSettings.setMenuExpanded(false);
+})
 </script>
 
 <template>

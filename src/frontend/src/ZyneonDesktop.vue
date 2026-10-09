@@ -3,49 +3,19 @@
   import DesktopRootView from "./components/shared/DesktopRootView.vue";
   import DesktopPane from "./components/shared/DesktopPane.vue";
   import DesktopSideMenu from "./components/shared/DesktopSideMenu.vue";
-  import DesktopDashboard from "./pages/DesktopDashboard.vue";
-  import DesktopDiscover from "./pages/DesktopDiscover.vue";
-  import DesktopDownloads from "./pages/DesktopDownloads.vue";
-  import DesktopLibrary from "./pages/DesktopLibrary.vue";
-  import DesktopTools from "./pages/DesktopTools.vue";
-  import DesktopSearch from "./pages/DesktopSearch.vue";
-  import DesktopSettings from "./pages/DesktopSettings.vue";
-  import { WindowControls } from "./assets/zyneon/scripts"
   import Badge from "./components/shared/desktopelements/Badge.vue";
   import { onMounted } from 'vue'
   import {ZyneonSettings} from "./assets/zyneon/scripts";
   import {getApiStatus} from "./assets/zyneon/scripts";
+  import {useI18n} from "vue-i18n";
 
-  function showPage(page: string) {
-    document.getElementById("dashboard")?.classList.remove("active");
-    document.getElementById("discover")?.classList.remove("active");
-    document.getElementById("downloads")?.classList.remove("active");
-    document.getElementById("library")?.classList.remove("active");
-    document.getElementById("tools")?.classList.remove("active");
-    document.getElementById("search")?.classList.remove("active");
-    document.getElementById("settings")?.classList.remove("active");
-    document.getElementById("dashboard-button")?.classList.remove("active");
-    document.getElementById("discover-button")?.classList.remove("active");
-    document.getElementById("downloads-button")?.classList.remove("active");
-    document.getElementById("library-button")?.classList.remove("active");
-    document.getElementById("tools-button")?.classList.remove("active");
-    document.getElementById("search-button")?.classList.remove("active");
-    document.getElementById("settings-button")?.classList.remove("active");
-    document.getElementById(page)?.classList.add("active");
-    document.getElementById(page+"-button")?.classList.add("active");
-    if(page === "dashboard") {
-      WindowControls.openMenu("navigation");
-    } else {
-      WindowControls.closeMenu("navigation");
-    }
-  }
+  const { t } = useI18n();
 
   document.addEventListener('contextmenu', (e) => {
     e.preventDefault()
   })
 
   onMounted(() => {
-    showPage("dashboard");
     ZyneonSettings.setClassicMenu(ZyneonSettings.useClassicMenu);
     ZyneonSettings.setBackgroundColor(ZyneonSettings.getBackgroundColor());
     ZyneonSettings.setBackgroundAccent(ZyneonSettings.getBackgroundAccent());
@@ -77,47 +47,47 @@
       <template #left>
        <DesktopSideMenu id="navigation" class="desktop-side-menu">
          <template #top>
-           <a class="btn" onclick="this.parentElement.parentElement.classList.toggle('active')" @mousedown.stop>
+           <a class="btn" @mousedown.stop @click="ZyneonSettings.toggleMenuExpanded">
              <i class="icon-text-align-justify"></i>
-             <span>Toggle menu</span>
+             <span>{{ t('menu.toggle') }}</span>
            </a>
          </template>
          <template #center>
-           <a id="dashboard-button" class="btn active" @click="showPage('dashboard')" @mousedown.stop>
+           <router-link to="/" id="dashboard-button" class="btn" active-class="active" @mousedown.stop>
              <i class="icon-gallery-vertical-end"></i>
-             <span>Dashboard</span>
-           </a>
-           <a id="discover-button" class="btn" @click="showPage('discover')" @mousedown.stop>
+             <span>{{ t('menu.dashboard') }}</span>
+           </router-link>
+           <router-link to="/discover" id="discover-button" class="btn" active-class="active" @mousedown.stop>
              <i class="icon-search"></i>
-             <span>Discover</span>
-           </a>
-           <a id="library-button" class="btn" @click="showPage('library')" @mousedown.stop>
+             <span>{{ t('menu.discover') }}</span>
+           </router-link>
+           <router-link to="/library" id="library-button" class="btn" active-class="active" @mousedown.stop>
              <i class="icon-library"></i>
-             <span>Library</span>
-           </a>
-           <!--a id="tools-button" class="btn" @click="showPage('tools')" @mousedown.stop>
+             <span>{{ t('menu.library') }}</span>
+           </router-link>
+           <!--router-link to="/tools" id="library-button" class="btn" active-class="active" @mousedown.stop>
              <i class="icon-wrench"></i>
-             <span>Tools & Experiments</span>
-           </a-->
+             <span>{{ t('menu.tools') }}</span>
+           </router-link-->
          </template>
          <template #bottom>
            <a class="btn hover:background-color-blue-400" onclick="window.location.reload();" @mousedown.stop>
              <i class="icon-rotate-cw"></i>
-             <span>Reload (F5/CTRL + R)</span>
+             <span>{{ t('menu.reload') }}</span>
            </a>
            <a class="btn disabled" @mousedown.stop>
              <i class="icon-bell"></i>
-             <span>Notifications</span>
+             <span>{{ t('menu.notifications') }}</span>
            </a>
            <hr class="opacity-20 mb-2" @mousedown.stop>
-           <a id="downloads-button" class="btn" @click="showPage('downloads')">
+           <router-link to="/downloads" id="downloads-button" class="btn" active-class="active" @mousedown.stop>
              <i class="icon-download"></i>
-             <span>Downloads</span>
-           </a>
-           <a id="settings-button" class="btn" @click="showPage('settings')" @mousedown.stop>
+             <span>{{ t('menu.downloads') }}</span>
+           </router-link>
+           <router-link to="/settings" id="settings-button" class="btn" active-class="active" @mousedown.stop>
              <i class="icon-bolt"></i>
-             <span>Settings</span>
-           </a>
+             <span>{{ t('menu.settings') }}</span>
+           </router-link>
          </template>
        </DesktopSideMenu>
       </template>
@@ -125,13 +95,7 @@
         <DesktopPane class="zyneon-desktop-content zyn-shadow-xl">
           <div class="zyneon-desktop-content-background" />
           <div class="zyneon-desktop-content-pages">
-            <DesktopDashboard id="dashboard" class="zyneon-desktop-page active" />
-            <DesktopDiscover id="discover" class="zyneon-desktop-page" />
-            <DesktopDownloads id="downloads" class="zyneon-desktop-page" />
-            <DesktopLibrary id="library" class="zyneon-desktop-page" />
-            <DesktopTools id="tools" class="zyneon-desktop-page" />
-            <DesktopSearch id="search" class="zyneon-desktop-page" />
-            <DesktopSettings id="settings" class="zyneon-desktop-page" />
+            <router-view />
           </div>
         </DesktopPane>
       </template>
@@ -186,14 +150,6 @@
           height: 100%;
           background: var(--zyn-background-body);
           opacity: 0.5;
-        }
-
-        .zyneon-desktop-page {
-          display: none;
-        }
-
-        .zyneon-desktop-page.active {
-          display: block;
         }
       }
     }

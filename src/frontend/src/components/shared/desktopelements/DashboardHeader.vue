@@ -3,6 +3,9 @@ import Card from "./Card.vue";
 import {getApiStatus, openExternal} from "../../../assets/zyneon/scripts";
 import Badge from "./Badge.vue";
 import InputBar from "./InputBar.vue";
+import {useI18n} from "vue-i18n";
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -11,7 +14,7 @@ import InputBar from "./InputBar.vue";
       <div class="zyn-ov-brighter-200 p-2 px-4 border rounded-t-xl shadow-lg shadow-black/10" style="border-color: var(--zyn-ov-brighter-200)">
           <div class="flex justify-between">
             <strong class="text-white">NEX App</strong>
-            <input-bar background="var(--zyn-ov-brighter-200)" placeholder="Search resources..."/>
+            <input-bar background="var(--zyn-ov-brighter-200)" :placeholder="t('pages.dashboard.header.search')"/>
           </div>
       </div>
       <div class="flex flex-col gap-3 p-3 relative">
@@ -25,7 +28,7 @@ import InputBar from "./InputBar.vue";
             <slot name="top-right">
               <Badge background="var(--color-yellow-300)" class="text-black shadow-lg shadow-black/25" :class="getApiStatus().version.type === 'stable' ? 'hidden' : ''">
                 <strong class="text-xs sm:text-sm md:text-md lg:text-lg">
-                  UNSTABLE BUILD
+                  {{ t('pages.dashboard.header.unstable') }}
                 </strong>
               </Badge>
             </slot>
@@ -39,15 +42,15 @@ import InputBar from "./InputBar.vue";
               <div class="flex gap-2 mt-8 text-md xl:text-lg">
                 <button @click="openExternal('https://www.zyneonapex.com');" class="shadow-lg shadow-black/25">
                   <i class="bi bi-globe mr-1 hidden lg:inline"></i>
-                  Website
+                  {{ t('pages.dashboard.header.website') }}
                 </button>
                 <button @click="openExternal('https://discord.com/invite/hbHDrqUjJ8');" class="shadow-lg shadow-black/25">
                   <i class="bi bi-discord mr-1 hidden lg:inline"></i>
-                  Discord
+                  {{ t('pages.dashboard.header.discord') }}
                 </button>
                 <button @click="openExternal('https://github.com/nerotvlive/nex-app');" class="shadow-lg shadow-black/25">
                   <i class="bi bi-github mr-1 hidden lg:inline"></i>
-                  GitHub
+                  {{ t('pages.dashboard.header.github') }}
                 </button>
               </div>
             </slot>

@@ -1,0 +1,78 @@
+{
+  "languages": {
+    "auto": {
+      "key": "de",
+      "name": "Automatisch"
+    },
+    "en": {
+      "key": "en",
+      "name": "English"
+    },
+    "de": {
+      "key": "de",
+      "name": "Deutsch"
+    }
+  },
+  "menu": {
+    "toggle": "Menü umschalten",
+    "dashboard": "Dashboard",
+    "discover": "Entdecken",
+    "library": "Bibliothek",
+    "search": "Suche",
+    "tools": "Werkzeuge & Experimente",
+    "reload": "Neu laden",
+    "notifications": "Benachrichtigungen",
+    "downloads": "Downloads",
+    "settings": "Einstellungen"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "header": {
+        "search": "Durchsuchen...",
+        "unstable": "INSTABILER BUILD",
+        "website": "Webseite",
+        "discord": "Discord",
+        "github": "GitHub"
+      },
+      "important": {
+        "title": "Wichtig",
+        "warning": {
+          "title": "Warnung",
+          "line1": "Die Entwicklung dieser App ist in einem sehr frühen Stadium - Benutze die Anwendung mit Vorsicht.",
+          "line2": "Melde alle Fehler und Probleme die du entdeckst bitte umgehend auf GitHub um uns dabei zu unterstützen, diese zu beheben.",
+          "button": "Klicke hier um einen Fehler zu melden"
+        },
+        "note": {
+          "title": "Hinweis",
+          "line1": "Dieses Projekt wird stetig weiterentwickelt, wir begrüßen jede Hilfe dabei, vorallem in Form von Feedback und Contributions.",
+          "line2": "Falls du ein fester Teil der Entwicklung dieser App werden willst, kontaktiere uns auf GitHub oder Discord."
+        }
+      },
+      "changelogs": {
+        "title": "GitHub Commits (Englisch)"
+      },
+      "todos": {
+        "title": "Geplantes (Englisch)"
+      }
+    },
+    "settings": {
+      "border": {
+        "radius": "Basiswert für die Abrundung"
+      },
+      "background": {
+        "color": "Hintergrund Basisfarbe",
+        "accent": {
+          "opacity": "Hintergrund Akzentfarbe Sichtbarkeit",
+          "color": "Hintergrund Akzentfarbe"
+        }
+      },
+      "menu": {
+        "classic": "Klassisches Menüdesign aktivieren"
+      },
+      "language": {
+        "select": "Sprache"
+      }
+    }
+  }
+}

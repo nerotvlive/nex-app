@@ -4,8 +4,15 @@ import CardStructured from "../components/shared/desktopelements/CardStructured.
 import SpacerHorizontalTitled from "../components/shared/desktopelements/SpacerHorizontalTitled.vue";
 import CardCollapsable from "../components/shared/desktopelements/CardCollapsable.vue";
 import DashboardHeader from "../components/shared/desktopelements/DashboardHeader.vue";
-import {openExternal} from "../assets/zyneon/scripts";
+import {openExternal, ZyneonSettings} from "../assets/zyneon/scripts";
 import GitHubCommitHistory from "../components/shared/desktopelements/third-party/GitHubCommitHistory.vue";
+import {onMounted} from "vue";
+import {useI18n} from "vue-i18n";
+const { t } = useI18n();
+
+onMounted(()=>{
+  ZyneonSettings.setMenuExpanded(true);
+})
 </script>
 
 <template>
@@ -19,36 +26,36 @@ import GitHubCommitHistory from "../components/shared/desktopelements/third-part
         </a>
       </template>
     </DashboardHeader>
-    <SpacerHorizontalTitled title="Important" id="dashboard-important"/>
+    <SpacerHorizontalTitled id="dashboard-important">{{ t('pages.dashboard.important.title') }}</SpacerHorizontalTitled>
     <div class="flex flex-col lg:flex-row gap-3 pb-3">
       <CardStructured @click="openExternal('https://github.com/nerotvlive/nexus-nex/issues/new')" class="bg-red-900 w-full opacity-75 hover:opacity-100 transition-all cursor-pointer text-white" border="1px solid var(--zyn-ov-brighter-200)">
         <template #header>
           <strong>
             <i class="icon-message-square-warning absolute"></i>
-            <span class="ml-6">Warning</span>
+            <span class="ml-6">{{ t('pages.dashboard.important.warning.title') }}</span>
           </strong>
         </template>
         <template #content>
           <p>
-            This application is in a very early stage of development – please use it with caution.<br>
-            Report any issues you encounter to the developers on GitHub to support the project and help improve it.<br>
+            {{ t('pages.dashboard.important.warning.line1') }}<br>
+            {{ t('pages.dashboard.important.warning.line2') }}<br>
           </p>
         </template>
         <template #footer>
-          <strong class="zyn-ov-darker-400 px-3 zyn-br-sm">Click here to report an issue on GitHub</strong>
+          <strong class="zyn-ov-darker-400 px-3 zyn-br-sm">{{ t('pages.dashboard.important.warning.button') }}</strong>
         </template>
       </CardStructured>
       <CardStructured class="bg-blue-900 w-full opacity-65 text-white" border="1px solid var(--zyn-ov-brighter-200)">
         <template #header>
           <strong>
             <i class="icon-info absolute"></i>
-            <span class="ml-6">Note</span>
+            <span class="ml-6">{{ t('pages.dashboard.important.note.title') }}</span>
           </strong>
         </template>
         <template #content>
           <p>
-            We are actively working on this project and welcome any feedback or contributions.<br>
-            If you want to join this project, please contact us via GitHub or on our Discord.<br>
+            {{ t('pages.dashboard.important.note.line1') }}<br>
+            {{ t('pages.dashboard.important.note.line2') }}<br>
           </p>
         </template>
       </CardStructured>
@@ -56,13 +63,13 @@ import GitHubCommitHistory from "../components/shared/desktopelements/third-part
 
     <div class="flex flex-col lg:flex-row gap-3 pb-4">
       <div class="w-full lg:flex-1 min-w-0">
-        <SpacerHorizontalTitled title="Changelogs (GitHub Commit history)" />
+        <SpacerHorizontalTitled>{{t('pages.dashboard.changelogs.title')}}</SpacerHorizontalTitled>
         <div class="flex flex-col gap-2">
           <GitHubCommitHistory/>
         </div>
       </div>
       <div class="w-full lg:flex-1 min-w-0">
-        <SpacerHorizontalTitled title="To-do's" />
+        <SpacerHorizontalTitled>{{t('pages.dashboard.todos.title')}}</SpacerHorizontalTitled>
         <div class="flex flex-col gap-2">
           <CardCollapsable class="zyn-ov-brighter-200" border="1px solid var(--zyn-ov-brighter-200)">
             <template #header>

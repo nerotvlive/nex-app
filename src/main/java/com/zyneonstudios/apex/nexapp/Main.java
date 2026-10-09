@@ -3,7 +3,6 @@ package com.zyneonstudios.apex.nexapp;
 import com.zyneonstudios.apex.nexapp.main.NEXApp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
 import java.util.Collections;
@@ -55,7 +54,6 @@ public class Main {
                         args[i + 1] = "";
                     }
                 }
-
             }
         }
     }

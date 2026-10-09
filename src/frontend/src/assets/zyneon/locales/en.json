@@ -1,0 +1,78 @@
+{
+  "languages": {
+    "auto": {
+      "key": "en",
+      "name": "Automatic"
+    },
+    "en": {
+      "key": "en",
+      "name": "English"
+    },
+    "de": {
+      "key": "de",
+      "name": "Deutsch"
+    }
+  },
+  "menu": {
+    "toggle": "Toggle menu",
+    "dashboard": "Dashboard",
+    "discover": "Discover",
+    "library": "Library",
+    "search": "Search",
+    "tools": "Tools & Experiments",
+    "reload": "Reload",
+    "notifications": "Notifications",
+    "downloads": "Downloads",
+    "settings": "Settings"
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "header": {
+        "search": "Search resources...",
+        "unstable": "UNSTABLE BUILD",
+        "website": "Website",
+        "discord": "Discord",
+        "github": "GitHub"
+      },
+      "important": {
+        "title": "Important",
+        "warning": {
+          "title": "Warning",
+          "line1": "This application is in a very early stage of development – please use it with caution.",
+          "line2": "Report any issues you encounter to the developers on GitHub to support the project and help improve it.",
+          "button": "Click here to report an issue on GitHub"
+        },
+        "note": {
+          "title": "Note",
+          "line1": "We are actively working on this project and welcome any feedback or contributions.",
+          "line2": "If you want to join this project, please contact us via GitHub or on our Discord."
+        }
+      },
+      "changelogs": {
+        "title": "GitHub Commit-History"
+      },
+      "todos": {
+        "title": "Todo's"
+      }
+    },
+    "settings": {
+      "border": {
+        "radius": "Border radius base value"
+      },
+      "background": {
+        "color": "Background base color",
+        "accent": {
+          "opacity": "Background accent opacity",
+          "color": "Background accent color"
+        }
+      },
+      "menu": {
+        "classic": "Use classic menu design"
+      },
+      "language": {
+        "select": "Language"
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 export class settings {
 
     private classicMenu = false;
+    private menuExpanded = false;
 
     private theme = "dark";
     private roundedCorners = 1.00;
@@ -38,6 +39,10 @@ export class settings {
 
     public get useClassicMenu(): boolean {
         return this.classicMenu;
+    }
+
+    public get isMenuExpanded(): boolean {
+        return this.menuExpanded;
     }
 
     public getTheme(): string {
@@ -133,6 +138,22 @@ export class settings {
             }
         }
         this.setBackgroundAccent(this.getBackgroundAccent());
+    }
+
+    public setMenuExpanded(value: boolean) {
+        this.menuExpanded = value;
+        const menu = document.getElementById("navigation");
+        if(menu) {
+            if(value) {
+                menu.classList.add("active");
+            } else {
+                menu.classList.remove("active");
+            }
+        }
+    }
+
+    public toggleMenuExpanded() {
+        this.setMenuExpanded(!this.isMenuExpanded);
     }
 }
 
