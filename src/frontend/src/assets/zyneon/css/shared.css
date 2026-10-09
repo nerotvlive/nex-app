@@ -362,6 +362,11 @@ body {
   -webkit-user-select: none;
   animation: fadeIn 1s ease-in-out forwards;
 
+  #main {
+    transition: all 1s ease;
+    background: #00000000;
+  }
+
   * {
     scroll-behavior: smooth;
     user-select: none;
@@ -444,10 +449,6 @@ body.classic-menu {
   }
 }
 
-.body.classic-menu {
-    background: var(--zyn-background-alt);
-}
-
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -475,6 +476,7 @@ body.classic-menu {
   }
   to {
     opacity: 1;
+    transition: all 1s ease;
   }
 }
 
