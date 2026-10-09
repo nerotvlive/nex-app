@@ -13,8 +13,7 @@ if(url.toLowerCase().endsWith('.html')) {
 
 <template>
     <ErrorPage>
-      <template #error>{{ t('errors.error') }}</template>
       <template #error-code>404</template>
-      <template #message>{{ t('errors.notFound') }}</template>
+      <template #message>{{ t('pages.error.notfound') }}</template>
     </ErrorPage>
 </template>

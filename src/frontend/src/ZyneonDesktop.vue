@@ -75,10 +75,10 @@
              <i class="icon-rotate-cw"></i>
              <span>{{ t('menu.reload') }}</span>
            </a>
-           <a class="btn disabled" @mousedown.stop>
+           <router-link to="/error" class="btn disabled" @mousedown.stop>
              <i class="icon-bell"></i>
              <span>{{ t('menu.notifications') }}</span>
-           </a>
+           </router-link>
            <hr class="opacity-20 mb-2" @mousedown.stop>
            <router-link to="/downloads" id="downloads-button" class="btn" active-class="active" @mousedown.stop>
              <i class="icon-download"></i>

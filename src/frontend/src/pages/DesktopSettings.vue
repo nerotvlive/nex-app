@@ -38,7 +38,7 @@ onMounted(()=>{
 
 <template>
   <div class="w-full h-full p-3">
-    <h1 class="text-2xl font-bold">{{ t("menu.settings") }}</h1>
+    <h1 class="text-2xl font-bold">{{ t("pages.settings.title") }}</h1>
 
     <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2">
       <div class="flex w-full">

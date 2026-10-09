@@ -8,6 +8,7 @@ import DesktopSearch from "../../../pages/DesktopSearch.vue";
 import DesktopSettings from "../../../pages/DesktopSettings.vue";
 import DesktopTools from "../../../pages/DesktopTools.vue";
 import Error404 from "../../../pages/errors/Error404.vue";
+import ErrorPage from "../../../pages/errors/ErrorPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -51,6 +52,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Tools',
         meta: { title: 'Tools' },
         component: DesktopTools
+    },
+    {
+        path: '/error',
+        name: 'Unknown Error',
+        meta: { title: 'Unknown Error' },
+        component: ErrorPage
     },
     {
         path: '/:pathMatch(.*)*',

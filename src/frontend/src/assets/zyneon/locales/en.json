@@ -50,13 +50,23 @@
         }
       },
       "changelogs": {
-        "title": "GitHub Commit-History"
+        "title": "GitHub Commit History"
       },
       "todos": {
         "title": "Todo's"
       }
     },
+    "error": {
+      "title": "Error",
+      "unknown": "An unexpected error occurred.",
+      "notfound": "We could not find this page.",
+      "injection": "This error was caused by third-party content. Be careful when following instructions from this page.",
+      "buttons": {
+        "home": "Back to home"
+      }
+    },
     "settings": {
+      "title": "Settings",
       "border": {
         "radius": "Border radius base value"
       },

@@ -56,7 +56,17 @@
         "title": "Geplantes (Englisch)"
       }
     },
+    "error": {
+      "title": "Fehler",
+      "unknown": "Es ist ein unerwarteter Fehler aufgetreten.",
+      "notfound": "Wir konnten diese Seite leider nicht finden.",
+      "injection": "Dies ist ein Fehler der durch Drittanbieter-Inhalte erzeugt wurde. Sei vorsichtig beim Befolgen von Anweisungen dieser Seite.",
+      "buttons": {
+        "home": "Zurück zur Startseite"
+      }
+    },
     "settings": {
+      "title": "Einstellungen",
       "border": {
         "radius": "Basiswert für die Abrundung"
       },
