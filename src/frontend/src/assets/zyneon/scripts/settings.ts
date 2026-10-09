@@ -5,8 +5,8 @@ export class settings {
 
     private theme = "dark";
     private roundedCorners = 1.00;
-    private backgroundColor = "#0f0f0f"
-    private backgroundAccent = "#4f42ff"
+    private backgroundColor = "#131316"
+    private backgroundAccent = "#2e5ff5"
     private backgroundAccentOpacity = 0.25;
     private language = "en";
 
