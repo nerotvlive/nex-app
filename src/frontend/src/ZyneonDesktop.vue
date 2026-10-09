@@ -92,7 +92,7 @@
        </DesktopSideMenu>
       </template>
       <template #center>
-        <DesktopPane class="zyneon-desktop-content zyn-shadow-xl">
+        <DesktopPane class="zyneon-desktop-content">
           <div class="zyneon-desktop-content-background" />
           <div class="zyneon-desktop-content-pages">
             <router-view />
@@ -104,52 +104,66 @@
 </template>
 
 <style scoped>
-  .zyneon-desktop {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
+  body {
+    .zyneon-desktop {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
 
-    .zyneon-desktop-view {
+      .zyneon-desktop-view {
 
-      .zyneon-desktop-content {
-        background: var(--zyn-background);
-        border-top-left-radius: var(--zyn-br-lg);
-        width: 100%;
-        border-top: 1px solid var(--zyn-ov-brighter-200);
-        border-left: 1px solid var(--zyn-ov-brighter-200);
-        position: relative;
-        overflow: hidden;
-
-        .zyneon-desktop-content-pages {
-          position: absolute;
-          height: 100%;
+        .zyneon-desktop-content {
+          background: var(--zyn-background);
+          border-top-left-radius: var(--zyn-br-lg);
           width: 100%;
+          border-top: 1px solid var(--zyn-ov-brighter-200);
+          border-left: 1px solid var(--zyn-ov-brighter-200);
+          position: relative;
           overflow: hidden;
-          overflow-y: auto;
-          z-index: 2;
-        }
 
-        .zyneon-desktop-content-background {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          z-index: 1;
-          background: var(--zyn-background-app);
-          overflow: hidden;
-        }
+          box-shadow: 0 0 1rem #00000099;
 
-        .zyneon-desktop-content-background::after {
-          content: "";
-          position: absolute;
-          z-index: 0;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: var(--zyn-background-body);
-          opacity: 0.5;
+          .zyneon-desktop-content-pages {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            overflow-y: auto;
+            z-index: 2;
+          }
+
+          .zyneon-desktop-content-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: var(--zyn-background-app);
+            overflow: hidden;
+          }
+
+          .zyneon-desktop-content-background::after {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--zyn-background-body);
+            opacity: 0.5;
+          }
+        }
+      }
+    }
+  }
+
+  body.classic-menu {
+    .zyneon-desktop {
+      .zyneon-desktop-view {
+        .zyneon-desktop-content {
+          box-shadow: inset 0.334rem 0.334rem 0.75rem black;
         }
       }
     }
