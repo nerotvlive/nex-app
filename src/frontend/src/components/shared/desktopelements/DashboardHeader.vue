@@ -13,7 +13,7 @@ const { t } = useI18n();
     <Card class="zyn-ov-darker relative overflow-hidden" border="1px solid var(--zyn-ov-brighter-200)">
       <div class="zyn-ov-brighter-200 p-2 px-4 border-b rounded-t-xl shadow-lg shadow-black/10" style="border-color: var(--zyn-ov-brighter-100)">
           <div class="flex justify-between">
-            <strong class="text-white">NEX App</strong>
+            <strong class="text-white">{{ t("pages.dashboard.title") }}</strong>
             <input-bar background="var(--zyn-ov-darker-300)" :placeholder="t('pages.dashboard.header.search')"/>
           </div>
       </div>

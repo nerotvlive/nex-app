@@ -27,7 +27,7 @@
   },
   "pages": {
     "dashboard": {
-      "title": "Dashboard",
+      "title": "NEX App",
       "header": {
         "search": "Search resources...",
         "unstable": "UNSTABLE BUILD",
@@ -64,6 +64,9 @@
       "buttons": {
         "home": "Back to home"
       }
+    },
+    "tools": {
+      "title": "Tools & Experiments"
     },
     "settings": {
       "title": "Settings",

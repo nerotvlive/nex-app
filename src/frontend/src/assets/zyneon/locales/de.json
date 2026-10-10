@@ -27,7 +27,7 @@
   },
   "pages": {
     "dashboard": {
-      "title": "Dashboard",
+      "title": "NEX App",
       "header": {
         "search": "Durchsuchen...",
         "unstable": "INSTABILER BUILD",
@@ -64,6 +64,9 @@
       "buttons": {
         "home": "Zurück zur Startseite"
       }
+    },
+    "tools": {
+      "title": "Werkzeuge & Experimente"
     },
     "settings": {
       "title": "Einstellungen",

@@ -5,7 +5,7 @@
   import DesktopSideMenu from "./components/shared/DesktopSideMenu.vue";
   import Badge from "./components/shared/desktopelements/Badge.vue";
   import { onMounted } from 'vue'
-  import {ZyneonSettings} from "./assets/zyneon/scripts";
+  import {openExternal, ZyneonSettings} from "./assets/zyneon/scripts";
   import {getApiStatus} from "./assets/zyneon/scripts";
   import {useI18n} from "vue-i18n";
 
@@ -53,22 +53,24 @@
            </a>
          </template>
          <template #center>
-           <router-link to="/" id="dashboard-button" class="btn flex" active-class="active" @mousedown.stop>
-             <i class="icon-gallery-vertical-end"></i>
-             <span>{{ t('menu.dashboard') }}</span>
-           </router-link>
-           <router-link to="/discover" id="discover-button" class="btn flex" active-class="active" @mousedown.stop>
-             <i class="icon-search"></i>
-             <span>{{ t('menu.discover') }}</span>
-           </router-link>
-           <router-link to="/library" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
-             <i class="icon-library"></i>
-             <span>{{ t('menu.library') }}</span>
-           </router-link>
-           <!--router-link to="/tools" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
-             <i class="icon-wrench"></i>
-             <span>{{ t('menu.tools') }}</span>
-           </router-link-->
+           <div @dblclick="openExternal('https://google.com')">
+             <router-link to="/" id="dashboard-button" class="btn flex" active-class="active" @mousedown.stop>
+               <i class="icon-gallery-vertical-end"></i>
+               <span>{{ t('menu.dashboard') }}</span>
+             </router-link>
+             <router-link to="/discover" id="discover-button" class="btn flex" active-class="active" @mousedown.stop>
+               <i class="icon-search"></i>
+               <span>{{ t('menu.discover') }}</span>
+             </router-link>
+             <router-link to="/library" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
+               <i class="icon-library"></i>
+               <span>{{ t('menu.library') }}</span>
+             </router-link>
+             <router-link to="/tools" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
+               <i class="icon-wrench"></i>
+               <span>{{ t('menu.tools') }}</span>
+             </router-link>
+           </div>
          </template>
          <template #bottom>
            <a class="btn hover:background-color-blue-400" :class="ZyneonSettings.isDev ? 'flex' : 'hidden'" onclick="window.location.reload();" @mousedown.stop>
@@ -131,7 +133,7 @@
           border-left: 1px solid var(--zyn-ov-brighter-200);
           position: relative;
           overflow: hidden;
-          box-shadow: 0 0 1rem #00000099;
+          box-shadow: 0 0 1rem #00000075;
 
           .zyneon-desktop-content-pages {
             transform: translateX(100%);
