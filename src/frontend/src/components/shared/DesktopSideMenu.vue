@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import '../../assets/zyneon/css/components/desktop-side-menu.css';
-import {WindowControls} from "../../assets/zyneon/scripts/windowControls.ts";
+import {WindowControls} from "../../assets/zyneon/scripts";
+import {useI18n} from "vue-i18n";
+const { t } = useI18n();
 </script>
 
 <template>
@@ -14,9 +16,9 @@ import {WindowControls} from "../../assets/zyneon/scripts/windowControls.ts";
 
     <div class="center">
       <slot name="center">
-        <a class="btn" onclick="this.parentElement.parentElement.classList.toggle('active')" @mousedown.stop>
-          <i class="bi bi-list"></i>
-          <span>Toggle menu</span>
+        <a class="zyn-btn compact transparent" @mousedown.stop onclick="this.parentElement.parentElement.classList.toggle('active')">
+          <i class="icon-text-align-justify"></i>
+          <span class="grow">{{ t('menu.toggle') }}</span>
         </a>
       </slot>
     </div>

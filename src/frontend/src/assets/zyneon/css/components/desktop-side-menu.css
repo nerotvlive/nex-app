@@ -13,6 +13,7 @@
         border-bottom: 1px solid var(--zyn-ov-brighter-200);
         overflow: hidden;
         overflow-y: auto;
+        min-height: fit-content;
     }
 
     .center, .bottom {
@@ -21,8 +22,13 @@
         height: fit-content;
     }
 
-    .bottom {
+    .center {
         flex-grow: 1;
+        display: flex;
+        min-height: 0;
+    }
+
+    .bottom {
         justify-content: flex-end;
     }
 
@@ -51,6 +57,12 @@
             display: inline;
         }
     }
+}
+
+.side-menu.active.small {
+    min-width: 12rem;
+    max-width: 14rem;
+    width: fit-content;
 }
 
 body.classic-menu {

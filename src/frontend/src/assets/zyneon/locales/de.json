@@ -70,6 +70,13 @@
         "retry": "Erneut versuchen"
       }
     },
+    "library": {
+      "title": "Bibliothek",
+      "menu": {
+        "add": "Neue Instanz",
+        "search": "Durchsuchen..."
+      }
+    },
     "tools": {
       "title": "Werkzeuge & Experimente",
       "secondary": {
@@ -98,6 +105,9 @@
         }
       },
       "menu": {
+        "search": "Durchsuchen...",
+        "general": "Generelles",
+        "appearance": "App Aussehen",
         "classic": "Klassisches Menüdesign aktivieren"
       },
       "language": {

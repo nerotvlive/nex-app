@@ -482,8 +482,10 @@ body {
   }
 
   .zyn-btn.compact {
+    box-shadow: 0 0 0 transparent;
     padding: 0.25rem 0.5rem;
     justify-content: center;
+    gap: 0.5rem;
   }
 
   .zyn-btn:hover {

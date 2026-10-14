@@ -66,17 +66,9 @@
                <i class="icon-library"></i>
                <span class="grow">{{ t('menu.library') }}</span>
              </router-link>
-             <router-link to="/tools" id="library-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
-               <i class="icon-wrench"></i>
-               <span class="grow">{{ t('menu.tools') }}</span>
-             </router-link>
            </div>
          </template>
          <template #bottom>
-           <a class="zyn-btn compact transparent" :class="ZyneonSettings.isDev ? '' : 'hidden'" onclick="window.location.reload();" @mousedown.stop>
-             <i class="icon-rotate-cw"></i>
-             <span class="grow">{{ t('menu.reload') }}</span>
-           </a>
            <router-link to="/notifications" class="zyn-btn compact transparent disabled" @mousedown.stop>
              <i class="icon-bell"></i>
              <span class="grow">{{ t('menu.notifications') }}</span>

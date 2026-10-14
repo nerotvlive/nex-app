@@ -70,6 +70,13 @@
         "retry": "Retry"
       }
     },
+    "library": {
+      "title": "Library",
+      "menu": {
+        "add": "New Instance",
+        "search": "Search instances..."
+      }
+    },
     "tools": {
       "title": "Tools & Experiments",
       "secondary": {
@@ -98,6 +105,9 @@
         }
       },
       "menu": {
+        "search": "Search settings...",
+        "general": "General settings",
+        "appearance": "Appearance settings",
         "classic": "Use classic menu design"
       },
       "language": {
