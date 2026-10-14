@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/settings.css';
-import { ZyneonSettings } from "../assets/zyneon/scripts";
+import {WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
 import LanguageSwitcher from "../components/shared/desktopelements/LanguageSwitcher.vue";
 import {onMounted} from "vue";
 import {useI18n} from "vue-i18n";
@@ -38,7 +38,7 @@ onMounted(()=>{
 const resetSettings = () => {
   localStorage.clear();
   ZyneonSettings.reloadMain(true);
-  window.location.reload();
+  WindowControls.reload();
 }
 
 </script>
