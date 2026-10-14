@@ -13,6 +13,9 @@
       "name": "Deutsch"
     }
   },
+  "titlebar": {
+    "back": "Zurück"
+  },
   "menu": {
     "toggle": "Menü umschalten",
     "dashboard": "Dashboard",
@@ -60,13 +63,20 @@
       "title": "Fehler",
       "unknown": "Es ist ein unerwarteter Fehler aufgetreten.",
       "notfound": "Wir konnten diese Seite leider nicht finden.",
+      "notimplemented": "Diese Funktion oder Ansicht ist noch nicht implementiert.",
       "injection": "Dies ist ein Fehler der durch Drittanbieter-Inhalte erzeugt wurde. Sei vorsichtig beim Befolgen von Anweisungen dieser Seite.",
       "buttons": {
-        "home": "Zurück zur Startseite"
+        "home": "Zurück zur Startseite",
+        "retry": "Erneut versuchen"
       }
     },
     "tools": {
-      "title": "Werkzeuge & Experimente"
+      "title": "Werkzeuge & Experimente",
+      "secondary": {
+        "title": "Sekundäres Fenster Öffnen",
+        "description": "Startet ein sekundäres Fenster zu Testzwecken. Du kannst die Seite aus dem Dropdown-Menü auswählen, die du herausziehen möchtest.",
+        "launch": "Öffnen"
+      }
     },
     "settings": {
       "title": "Einstellungen",

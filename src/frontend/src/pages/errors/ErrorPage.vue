@@ -2,6 +2,7 @@
 import {onMounted} from "vue";
 import {useI18n} from "vue-i18n";
 import {ZyneonSettings} from "../../assets/zyneon/scripts";
+
 const { t } = useI18n()
 onMounted(() => {
   ZyneonSettings.setMenuExpanded(false);
@@ -34,6 +35,19 @@ if(urlParams.get('errmessage')) {
   injectedError = t('pages.error.injection');
 }
 
+withDefaults(defineProps<{
+  showHomeButton?: boolean
+  showRetryButton?: boolean
+}>(), {
+  showHomeButton: false,
+  showRetryButton: false
+})
+
+const redirect = (url:string) => {
+  const urlParamsString = urlParams.toString();
+  window.location.href = url + "?" + urlParamsString;
+}
+
 </script>
 
 <template>
@@ -47,10 +61,14 @@ if(urlParams.get('errmessage')) {
           <p class="py-4 text-xl"><slot name="message">{{ errorMessage }}</slot></p>
         </div>
         <div class="flex gap-4 p-4 pt-8">
-          <router-link to="/" class="rounded-full text-black px-4 py-2 border border-zinc-300 bg-zinc-400 hover:transition-all shadow-lg shadow-black hover:bg-zinc-300 hover:shadow-zinc-300 hover:shadow-sm">
+          <a @click="redirect('/')" class="cursor-pointer rounded-full text-black px-4 py-2 border border-zinc-300 bg-zinc-400 hover:transition-all shadow-lg shadow-black hover:bg-zinc-300 hover:shadow-zinc-300 hover:shadow-sm" v-if="showHomeButton">
             <i class="bi bi-caret-left-fill mr-0.5"></i>
             {{ t('pages.error.buttons.home') }}
-          </router-link>
+          </a>
+          <a @click="redirect('/')" class="cursor-pointer rounded-full text-black px-4 py-2 border border-zinc-300 bg-zinc-400 hover:transition-all shadow-lg shadow-black hover:bg-zinc-300 hover:shadow-zinc-300 hover:shadow-sm" v-if="showRetryButton">
+            <i class="bi bi-arrow-clockwise mr-0.5"></i>
+            {{ t('pages.error.buttons.retry') }}
+          </a>
           <slot name="buttons"></slot>
         </div>
       </div>

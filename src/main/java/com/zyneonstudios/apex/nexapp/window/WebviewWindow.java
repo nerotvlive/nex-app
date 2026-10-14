@@ -11,14 +11,14 @@ import java.util.HashMap;
 
 public class WebviewWindow {
 
-    private static HashMap<String,WebviewWindow> windows = new HashMap<>();
+    private static final HashMap<String,WebviewWindow> windows = new HashMap<>();
     private Webview webview = null;
 
     private final String id;
     private String url = Main.getBaseUrl();
     private int width;
     private int height;
-    private boolean isToolWindow = false;
+    private boolean secondary = false;
     private final boolean isBorderless =  !Main.useNativeFrame();
 
     public WebviewWindow() {
@@ -30,17 +30,32 @@ public class WebviewWindow {
         this.height = 720;
         this.id = id;
         if(!this.id.equals("main")) {
-            this.isToolWindow = true;
+            this.secondary = true;
         }
-        if(!url.toLowerCase().contains("borderless="+isBorderless)) {
-            if (url.contains("?")) {
-                this.url = url + "&borderless="+isBorderless;
-            } else {
-                this.url = url + "?borderless="+isBorderless;
-            }
-        }
-        System.out.println("Setting URL to: " + this.url);
         windows.put(this.id, this);
+    }
+
+    private String buildUrl() {
+        return buildUrl(null);
+    }
+
+    private String buildUrl(String targetUrl) {
+        String url = (targetUrl == null || targetUrl.isBlank()) ? this.url : targetUrl;
+        if (url == null) return "";
+
+        String lowerUrl = url.toLowerCase();
+
+        if (!lowerUrl.contains("?borderless=") && !lowerUrl.contains("&borderless=")) {
+            url += (url.contains("?") ? "&" : "?") + "borderless=" + isBorderless;
+            lowerUrl = url.toLowerCase();
+        }
+
+        if (!lowerUrl.contains("?mode=") && !lowerUrl.contains("&mode=")) {
+            String mode = (id == null || id.isBlank() || id.equals("main")) ? "primary" : "secondary";
+            url += (url.contains("?") ? "&" : "?") + "mode=" + mode;
+        }
+
+        return url;
     }
 
     @SuppressWarnings("all")
@@ -54,7 +69,7 @@ public class WebviewWindow {
                             .width(width)
                             .height(height)
                             .enableDeveloperTools(Main.isDev())
-                            .navigate(url)
+                            .navigate(buildUrl())
                             .borderless(isBorderless, isBorderless)
                             .build();
 
@@ -86,7 +101,11 @@ public class WebviewWindow {
                 }
                 this.webview.setIcon(tempIcon);
             }
-        } catch (IOException e) {e.printStackTrace();}
+        } catch (IOException e) {
+            if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+                System.err.println("Failed to load icon: " + e.getMessage());
+            }
+        }
     }
 
     private void initWindowControls() {
@@ -132,18 +151,60 @@ public class WebviewWindow {
             toggleMaximize();
             return null;
         });
+
+        this.webview.bind("hideWindow", (_) -> {
+            hide();
+            return null;
+        });
+
+        this.webview.bind("showWindow", (_) -> {
+            show();
+            return null;
+        });
+
+        this.webview.bind("toggleHideWindow", (_) -> {
+            toggleHidden();
+            return null;
+        });
     }
 
     private void initBindings() {
-        if (!isToolWindow) {
-            this.webview.bind("openTool", (tool) -> {
-                tool = tool.replace("[\"","").replace("\"]","");
-                if(!windows.containsKey(tool)) {
-                    WebviewWindow toolWindow = new WebviewWindow(tool);
-                    toolWindow.setUrl(Main.getBaseUrl() + "?" + tool + "=true");
-                    toolWindow.launchWindow();
+        this.webview.bind("openSecondaryFrame", (path) -> {
+            path = path.replace("[\"","").replace("\"]","");
+            if(!windows.containsKey(path)) {
+                WebviewWindow toolWindow = new WebviewWindow(path);
+                toolWindow.setSize(1024, 576);
+                toolWindow.loadUrl(Main.getBaseUrl() + path);
+                toolWindow.launchWindow();
+            } else {
+                WebviewWindow toolWindow = windows.get(path);
+                toolWindow.webview.showWindow();
+                toolWindow.unminimize();
+            }
+            return null;
+        });
+
+        webview.bind("getUrl", href -> {
+            href = href.replace("[\"","").replace("\"]","");
+            this.url = href;
+            awaitGet = false;
+            return null;
+        });
+
+        if(secondary) {
+            this.webview.bind("reloadMain", (_) -> {
+                if(windows.containsKey("main")) {
+                    windows.get("main").reload();
+                }
+                return null;
+            });
+
+            this.webview.bind("openMain", (_) -> {
+                if(!windows.containsKey("main")) {
+                    WebviewWindow mainWindow = new WebviewWindow();
+                    mainWindow.launchWindow();
                 } else {
-                    WebviewWindow toolWindow = windows.get(tool);
+                    WebviewWindow toolWindow = windows.get("main");
                     toolWindow.webview.showWindow();
                     toolWindow.unminimize();
                 }
@@ -173,18 +234,34 @@ public class WebviewWindow {
         });
     }
 
+    @Deprecated
     public void setUrl(String url) {
-        if(!url.toLowerCase().contains("borderless="+isBorderless)) {
-            if (url.contains("?")) {
-                this.url = url + "&borderless="+isBorderless;
-            } else {
-                this.url = url + "?borderless="+isBorderless;
+        this.url = url;
+    }
+
+    boolean awaitGet = false;
+    public void getUrl_() {
+        awaitGet = true;
+        webview.eval("window.getUrl(window.location.href);");
+        while (awaitGet) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        System.out.println("Setting URL to: " + this.url);
+    }
+
+    public void loadUrl(String url) {
+        this.url = url;
         if(webview != null) {
-            webview.navigate(this.url);
+            webview.navigate(buildUrl());
         }
+    }
+
+    public void reload() {
+        getUrl_();
+        webview.navigate(buildUrl());
     }
 
     public String getUrl() {
@@ -248,6 +325,8 @@ public class WebviewWindow {
     }
 
     public void unminimize() {
+        minimize();
+        webview.showWindow();
         webview.unminimizeWindow();
     }
 
@@ -261,6 +340,35 @@ public class WebviewWindow {
         } else {
             minimize();
         }
+    }
+
+    public void hide() {
+        webview.hideWindow();
+    }
+
+    public void show() {
+        unminimize();
+    }
+
+    public boolean isHidden() {
+        return webview.isHidden();
+    }
+
+    public boolean toggleHidden() {
+        if(isHidden()) {
+            show();
+        } else {
+            hide();
+        }
+        return isHidden();
+    }
+
+    public boolean isSecondary() {
+        return secondary;
+    }
+
+    public boolean isBorderless() {
+        return isBorderless;
     }
 
     public Webview getWebview() {

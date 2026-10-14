@@ -28,7 +28,7 @@ public class Main {
         nexApp = new NEXApp();
         springApp.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
         springApp.run(args);
-        nexApp.launch(null);
+        nexApp.launch();
     }
 
     private static void resolveArgs() {

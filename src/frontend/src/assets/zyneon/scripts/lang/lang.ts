@@ -1,4 +1,5 @@
 import { useI18n } from 'vue-i18n'
+import {ZyneonSettings} from "../settings.ts";
 
 export const useLang = () => {
     const { locale } = useI18n()
@@ -15,6 +16,7 @@ export const useLang = () => {
             localStorage.removeItem('user-lang')
             window.location.reload()
         }
+        ZyneonSettings.reloadMain()
     }
 
     return {

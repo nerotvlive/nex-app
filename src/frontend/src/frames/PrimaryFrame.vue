@@ -1,19 +1,15 @@
 <script setup lang="ts">
-  import DesktopTitlebar from "./components/shared/DesktopTitlebar.vue";
-  import DesktopRootView from "./components/shared/DesktopRootView.vue";
-  import DesktopPane from "./components/shared/DesktopPane.vue";
-  import DesktopSideMenu from "./components/shared/DesktopSideMenu.vue";
-  import Badge from "./components/shared/desktopelements/Badge.vue";
+  import DesktopTitlebar from "../components/shared/DesktopTitlebar.vue";
+  import DesktopRootView from "../components/shared/DesktopRootView.vue";
+  import DesktopPane from "../components/shared/DesktopPane.vue";
+  import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
+  import Badge from "../components/shared/desktopelements/Badge.vue";
   import { onMounted } from 'vue'
-  import {openExternal, ZyneonSettings} from "./assets/zyneon/scripts";
-  import {getApiStatus} from "./assets/zyneon/scripts";
+  import {openExternal, ZyneonSettings} from "../assets/zyneon/scripts";
+  import {getApiStatus} from "../assets/zyneon/scripts";
   import {useI18n} from "vue-i18n";
 
   const { t } = useI18n();
-
-  document.addEventListener('contextmenu', (e) => {
-    e.preventDefault()
-  })
 
   onMounted(() => {
     ZyneonSettings.setClassicMenu(ZyneonSettings.useClassicMenu);
@@ -21,15 +17,17 @@
     ZyneonSettings.setBackgroundAccent(ZyneonSettings.getBackgroundAccent());
     ZyneonSettings.setRoundedCorners(false,ZyneonSettings.getRoundedCorners());
     ZyneonSettings.setBackgroundAccentOpacity(false,ZyneonSettings.getBackgroundAccentOpacity());
+    ZyneonSettings.setSecondaryFrame(false);
   })
+
 </script>
 
 <template>
   <div class="zyneon-desktop zyn-background-body" id="main">
-    <DesktopTitlebar class="zyneon-desktop-titlebar" title="Zyneon Desktop" id="titlebar">
+    <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar">
       <template #start>
         <div class="w-full h-full gap-2 flex justify-start items-center">
-          <img alt="" class="z-n1 h-4 ml-3" src="./assets/zyneon/img/nex-app-title.png">
+          <img alt="" class="z-n1 h-4 ml-3" src="../assets/zyneon/img/nex-app-title.png">
         </div>
       </template>
       <template #title>
@@ -45,7 +43,7 @@
     </DesktopTitlebar>
     <DesktopRootView class="zyneon-desktop-view">
       <template #left>
-       <DesktopSideMenu id="navigation" class="desktop-side-menu" :class="ZyneonSettings.isBorderless ? 'rounded-border' : ''">
+       <DesktopSideMenu id="navigation" class="desktop-side-menu flex-col" :class="ZyneonSettings.isBorderless ? 'rounded-border' : ''">
          <template #top>
            <a class="btn flex" @mousedown.stop @click="ZyneonSettings.toggleMenuExpanded">
              <i class="icon-text-align-justify"></i>
@@ -77,7 +75,7 @@
              <i class="icon-rotate-cw"></i>
              <span>{{ t('menu.reload') }}</span>
            </a>
-           <router-link to="/error" class="btn flex disabled" @mousedown.stop>
+           <router-link to="/notifications" class="btn flex disabled" @mousedown.stop>
              <i class="icon-bell"></i>
              <span>{{ t('menu.notifications') }}</span>
            </router-link>

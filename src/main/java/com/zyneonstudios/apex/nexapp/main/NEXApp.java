@@ -1,8 +1,8 @@
 package com.zyneonstudios.apex.nexapp.main;
 
-import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.springboot.controllers.CurseforgeController;
 import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
+
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.Properties;
@@ -62,19 +62,10 @@ public class NEXApp {
         return Optional.empty();
     }
 
-    public void launch(String tool) {
+    public void launch() {
         if(launched) {
             throw new IllegalStateException("NEX App already launched!");
         } else {
-            if(tool != null) {
-                String url = Main.getBaseUrl();
-                if(url.contains("?")) {
-                    url = url + "&" + tool + "=true";
-                } else {
-                    url = url + "?" + tool + "=true";
-                }
-                window.setUrl(url);
-            }
             launched = true;
             window.launchWindow();
         }

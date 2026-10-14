@@ -12,7 +12,7 @@ if(url.toLowerCase().endsWith('.html')) {
 </script>
 
 <template>
-    <ErrorPage>
+    <ErrorPage showHomeButton>
       <template #error-code>404</template>
       <template #message>{{ t('pages.error.notfound') }}</template>
     </ErrorPage>

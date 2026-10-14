@@ -5,8 +5,16 @@ declare global {
         toggleMaximizeWindow?: () => void;
         maximizeWindow?: () => void;
         unmaximizeWindow?: () => void;
+        toggleMinimizeWindow?: () => void;
         minimizeWindow?: () => void;
-        openTool?: (tool: string) => void;
+        unminimizeWindow?: () => void;
+        toggleHideWindow?: () => void;
+        hideWindow?: () => void;
+        showWindow?: () => void;
+        reloadMain?: () => void;
+        openMain?: () => void;
+        getUrl?: (href: string) => void;
+        openSecondaryFrame?: (tool: any) => void;
     }
 }
 
@@ -22,9 +30,63 @@ export class windowControls {
         }
     };
 
+    getUrl(): void {
+        if(window.getUrl) {
+            window.getUrl(window.location.href);
+        }
+    }
+
+    openSecondaryFrame(tool: any): void {
+        if(window.openSecondaryFrame) {
+            window.openSecondaryFrame(tool);
+        }
+    }
+
+    reloadMain(): void {
+        if(window.reloadMain) {
+            window.reloadMain();
+        }
+    }
+
+    openMain(): void {
+        if(window.openMain) {
+            window.openMain();
+        }
+    }
+
     async minimize(): Promise<void> {
         if (window.minimizeWindow) {
             window.minimizeWindow();
+        }
+    }
+
+    async unminimize(): Promise<void> {
+        if (window.unminimizeWindow) {
+            window.unminimizeWindow();
+        }
+    }
+
+    async toggleMinimize(): Promise<void> {
+        if (window.toggleMinimizeWindow) {
+            window.toggleMinimizeWindow();
+        }
+    }
+
+    async hide(): Promise<void> {
+        if (window.hideWindow) {
+            window.hideWindow();
+        }
+    }
+
+    async show(): Promise<void> {
+        if (window.showWindow) {
+            window.showWindow();
+        }
+    }
+
+    async toggleHidden(): Promise<void> {
+        if (window.toggleHideWindow) {
+            window.toggleHideWindow();
         }
     }
 

@@ -6,10 +6,11 @@
 
   withDefaults(
       defineProps<{
-        title: string
+        title?: string
         hideInsteadClose?: boolean
       }>(),
       {
+        title: "NEX App",
         hideInsteadClose: false
       }
   )
@@ -21,7 +22,7 @@
       <div class="start">
         <slot name="start"></slot>
       </div>
-      <div class="title w-full flex-1">
+      <div class="title w-full absolute flex items-center justify-center pointer-events-none">
         <slot name="title">
           {{ title }}
         </slot>

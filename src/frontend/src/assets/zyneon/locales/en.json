@@ -13,6 +13,9 @@
       "name": "Deutsch"
     }
   },
+  "titlebar": {
+    "back": "Back"
+  },
   "menu": {
     "toggle": "Toggle menu",
     "dashboard": "Dashboard",
@@ -60,13 +63,20 @@
       "title": "Error",
       "unknown": "An unexpected error occurred.",
       "notfound": "We could not find this page.",
+      "notimplemented": "This feature or frame is not implemented yet.",
       "injection": "This error was caused by third-party content. Be careful when following instructions from this page.",
       "buttons": {
-        "home": "Back to home"
+        "home": "Back to home",
+        "retry": "Retry"
       }
     },
     "tools": {
-      "title": "Tools & Experiments"
+      "title": "Tools & Experiments",
+      "secondary": {
+        "title": "Launch Secondary Frame",
+        "description": "Launches a secondary frame to debug and test features. You can select the page you want to pop out from the dropdown menu.",
+        "launch": "Launch"
+      }
     },
     "settings": {
       "title": "Settings",

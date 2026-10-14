@@ -1,9 +1,13 @@
+import {WindowControls} from "./windowControls.ts";
+
 export class settings {
 
     private classicMenu = false;
     private menuExpanded = false;
     private dev = false;
     private borderless = false;
+    private secondaryFrame = false;
+    private canReloadMain = false;
 
     private theme = "dark";
     private roundedCorners = 1.00;
@@ -47,6 +51,10 @@ export class settings {
                 this.roundedCorners = parseFloat(savedRoundedCorners) || 1.00;
             }
         }
+    }
+
+    public get isSecondaryFrame(): boolean {
+        return this.secondaryFrame;
     }
 
     public get useClassicMenu(): boolean {
@@ -99,6 +107,11 @@ export class settings {
                 body.classList.remove("classic-menu");
             }
         }
+        this.reloadMain();
+    }
+
+    public setSecondaryFrame(value: boolean) {
+        this.secondaryFrame = value;
     }
 
     public setDev(value: boolean) {
@@ -132,12 +145,14 @@ export class settings {
             }
         }
         document.documentElement.style.setProperty("--zyn-br", value+"rem");
+        this.reloadMain();
     }
 
     public setBackgroundColor(value: string) {
         this.backgroundColor = value;
         localStorage.setItem("backgroundColor", value);
         document.documentElement.style.setProperty("--zyn-background-color", value);
+        this.reloadMain();
     }
 
     public setBackgroundAccent(value: string) {
@@ -145,6 +160,7 @@ export class settings {
         localStorage.setItem("backgroundAccent", value);
         value = value + this.getOpacity();
         document.documentElement.style.setProperty("--zyn-background-body", "radial-gradient(circle at bottom right, "+value+" 0%, var(--zyn-background-color) 90%)");
+        this.reloadMain();
     }
 
     public setBackgroundAccentOpacity(changedViaRange:boolean,value: number) {
@@ -183,6 +199,28 @@ export class settings {
     public setBorderless(value: boolean) {
         this.borderless = value;
         localStorage.setItem("isBorderless", value.toString());
+        this.reloadMain();
+    }
+
+    public setCanReloadMain(value: boolean) {
+        this.canReloadMain = value;
+    }
+
+    private reloadTimer: any = null;
+
+    public reloadMain() {
+        if(this.canReloadMain) {
+            if (this.reloadTimer) {
+                clearTimeout(this.reloadTimer);
+            }
+
+            this.reloadTimer = setTimeout(() => {
+                if (this.secondaryFrame) {
+                    WindowControls.reloadMain();
+                }
+                this.reloadTimer = null;
+            }, 500);
+        }
     }
 }
 
