@@ -81,7 +81,8 @@
         "title": "Extended Controls",
         "description": "Additional controls to debug and test the webview/frame.",
         "reload": "Reload",
-        "restart": "Restart"
+        "restart": "Restart",
+        "native": "Toggle Native Window"
       }
     },
     "settings": {

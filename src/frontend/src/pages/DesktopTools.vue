@@ -66,6 +66,10 @@ onMounted(()=>{
               <i class="bi bi-play"/>
               {{ t('pages.tools.controls.restart') }}
             </a>
+            <a @click="WindowControls.toggleNative" class="bg-zinc-400/25 h-fit text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+              <i class="bi bi-play"/>
+              {{ t('pages.tools.controls.native') }}
+            </a>
           </div>
         </template>
       </CardStructured>

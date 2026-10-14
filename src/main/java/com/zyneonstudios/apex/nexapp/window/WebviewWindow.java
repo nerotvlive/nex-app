@@ -7,6 +7,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WebviewWindow {
@@ -49,11 +50,15 @@ public class WebviewWindow {
         if (!lowerUrl.contains("?borderless=") && !lowerUrl.contains("&borderless=")) {
             url += (url.contains("?") ? "&" : "?") + "borderless=" + isBorderless;
             lowerUrl = url.toLowerCase();
+        } else {
+            url = url.replaceFirst("(\\?|&)borderless=[^&]+", "$1borderless=" + isBorderless);
         }
 
+        String mode = (id == null || id.isBlank() || id.equals("main")) ? "primary" : "secondary";
         if (!lowerUrl.contains("?mode=") && !lowerUrl.contains("&mode=")) {
-            String mode = (id == null || id.isBlank() || id.equals("main")) ? "primary" : "secondary";
             url += (url.contains("?") ? "&" : "?") + "mode=" + mode;
+        } else {
+            url = url.replaceFirst("(\\?|&)mode=[^&]+", "$1mode=" + mode);
         }
 
         return url;
@@ -203,6 +208,15 @@ public class WebviewWindow {
         webview.bind("getUrl", href -> {
             href = href.replace("[\"","").replace("\"]","");
             this.url = href;
+            return null;
+        });
+
+        webview.bind("toggleNativeWindow", (_) -> {
+            Main.setUseNativeFrame(!Main.useNativeFrame());
+            ArrayList<WebviewWindow> windows = new ArrayList<>(WebviewWindow.windows.values());
+            for(WebviewWindow window : windows) {
+                window.restart();
+            }
             return null;
         });
 

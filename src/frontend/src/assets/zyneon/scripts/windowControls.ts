@@ -15,6 +15,7 @@ declare global {
         showWindow?: () => void;
         reloadMain?: () => void;
         openMain?: () => void;
+        toggleNativeWindow?: () => void;
         getUrl?: (href: string) => void;
         openSecondaryFrame?: (tool: any) => void;
     }
@@ -118,6 +119,12 @@ export class windowControls {
 
     async toggleFullscreen(): Promise<void> {
 
+    }
+
+    async toggleNative(): Promise<void> {
+        if (window.toggleNativeWindow) {
+            window.toggleNativeWindow();
+        }
     }
 
     async reload(): Promise<void> {

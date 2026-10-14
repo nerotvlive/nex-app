@@ -81,7 +81,8 @@
         "title": "Erweiterte Kontrollen",
         "description": "Erweiterte Aktionen für das Debuggen und Testen des Webviews/Frames.",
         "reload": "Neu laden",
-        "restart": "Neu starten"
+        "restart": "Neu starten",
+        "native": "Natives Fenster umschalten"
       }
     },
     "settings": {
