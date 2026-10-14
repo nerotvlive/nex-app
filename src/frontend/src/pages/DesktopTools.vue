@@ -35,10 +35,8 @@ onMounted(()=>{
         <template #footer>
           <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
             <select ref="secondarySelect" class="zyn-btn">
-              <option class="bg-black text-white" value="/">/</option>
+              <option class="bg-black text-white" value="/">/ (501)</option>
               <option class="bg-black text-white" value="/library">{{ t('menu.library') }}</option>
-              <option class="bg-black text-white" value="/tools">{{ t('menu.tools') }}</option>
-              <option class="bg-black text-white" value="/notifications">{{ t('menu.notifications') }}</option>
               <option class="bg-black text-white" value="/downloads">{{ t('menu.downloads') }}</option>
               <option class="bg-black text-white" value="/settings">{{ t('menu.settings') }}</option>
             </select>
@@ -86,6 +84,19 @@ onMounted(()=>{
               <i class="bi bi-play"/>
               {{ t('pages.tools.old.open') }}
             </a>
+          </div>
+        </template>
+      </CardStructured>
+      <CardStructured background="var(--zyn-ov-brighter-100)" border="1px solid var(--zyn-ov-brighter-200)" v-if="ZyneonSettings.isSecondaryFrame">
+        <template #header>
+          <strong class="text-white">{{ t('menu.settings') }}</strong>
+        </template>
+        <template #footer>
+          <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
+            <router-link to="/settings" class="zyn-btn">
+              <i class="bi bi-play"/>
+              {{ t('pages.tools.old.open') }}
+            </router-link>
           </div>
         </template>
       </CardStructured>
