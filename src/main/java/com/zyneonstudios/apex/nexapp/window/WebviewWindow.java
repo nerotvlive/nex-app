@@ -220,6 +220,15 @@ public class WebviewWindow {
             return null;
         });
 
+        this.webview.bind("reloadAll", (_) -> {
+            for(WebviewWindow window : windows.values()) {
+                if(window != this) {
+                    window.reload();
+                }
+            }
+            return null;
+        });
+
         if(secondary) {
             this.webview.bind("reloadMain", (_) -> {
                 if(windows.containsKey("main")) {

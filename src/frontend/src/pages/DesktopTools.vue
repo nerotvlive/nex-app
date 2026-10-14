@@ -33,8 +33,8 @@ onMounted(()=>{
           {{ t('pages.tools.secondary.description') }}<br>
         </template>
         <template #footer>
-          <div class="flex gap-2 mb-1">
-            <select ref="secondarySelect" class="bg-zinc-400/25 text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+          <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
+            <select ref="secondarySelect" class="zyn-btn">
               <option class="bg-black text-white" value="/">/</option>
               <option class="bg-black text-white" value="/library">{{ t('menu.library') }}</option>
               <option class="bg-black text-white" value="/tools">{{ t('menu.tools') }}</option>
@@ -42,7 +42,7 @@ onMounted(()=>{
               <option class="bg-black text-white" value="/downloads">{{ t('menu.downloads') }}</option>
               <option class="bg-black text-white" value="/settings">{{ t('menu.settings') }}</option>
             </select>
-            <a @click="launchSecondary" class="bg-zinc-400/25 text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+            <a @click="launchSecondary" class="zyn-btn">
               <i class="bi bi-play"/>
               {{ t('pages.tools.secondary.launch') }}
             </a>
@@ -57,19 +57,19 @@ onMounted(()=>{
           {{ t('pages.tools.controls.description') }}<br>
         </template>
         <template #footer>
-          <div class="flex gap-2 mb-1 items-bottom h-full flex-1 items-end">
-            <a @click="WindowControls.reload" class="bg-zinc-400/25 h-fit text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+          <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
+            <a @click="WindowControls.reload" class="zyn-btn">
               <i class="bi bi-play"/>
               {{ t('pages.tools.controls.reload') }}
             </a>
-            <a @click="WindowControls.restart" class="bg-zinc-400/25 h-fit text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+            <a @click="WindowControls.restart" class="zyn-btn">
               <i class="bi bi-play"/>
               {{ t('pages.tools.controls.restart') }}
             </a>
-            <a @click="WindowControls.toggleNative" class="bg-zinc-400/25 h-fit text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+            <button @click="WindowControls.toggleNative" class="zyn-btn">
               <i class="bi bi-play"/>
               {{ t('pages.tools.controls.native') }}
-            </a>
+            </button>
           </div>
         </template>
       </CardStructured>

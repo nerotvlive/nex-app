@@ -40,15 +40,15 @@ const { t } = useI18n();
           <div class="w-full">
             <slot name="bottom-left">
               <div class="flex gap-2 mt-8 text-md xl:text-lg">
-                <button @click="openExternal('https://www.zyneonapex.com');" class="shadow-lg shadow-black/25">
+                <button @click="openExternal('https://www.zyneonapex.com');" class="zyn-btn">
                   <i class="bi bi-globe mr-1 hidden lg:inline"></i>
                   {{ t('pages.dashboard.header.website') }}
                 </button>
-                <button @click="openExternal('https://discord.com/invite/hbHDrqUjJ8');" class="shadow-lg shadow-black/25">
+                <button @click="openExternal('https://discord.com/invite/hbHDrqUjJ8');" class="zyn-btn">
                   <i class="bi bi-discord mr-1 hidden lg:inline"></i>
                   {{ t('pages.dashboard.header.discord') }}
                 </button>
-                <button @click="openExternal('https://github.com/nerotvlive/nex-app');" class="shadow-lg shadow-black/25">
+                <button @click="openExternal('https://github.com/nerotvlive/nex-app');" class="zyn-btn">
                   <i class="bi bi-github mr-1 hidden lg:inline"></i>
                   {{ t('pages.dashboard.header.github') }}
                 </button>

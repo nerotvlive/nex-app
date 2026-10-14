@@ -219,9 +219,7 @@ export class settings {
             }
 
             this.reloadTimer = setTimeout(() => {
-                if (this.secondaryFrame) {
-                    WindowControls.reloadMain();
-                }
+                WindowControls.reloadAll();
                 this.reloadTimer = null;
             }, 500);
         }

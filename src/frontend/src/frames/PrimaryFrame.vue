@@ -5,7 +5,7 @@
   import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
   import Badge from "../components/shared/desktopelements/Badge.vue";
   import { onMounted } from 'vue'
-  import {openExternal, ZyneonSettings} from "../assets/zyneon/scripts";
+  import {ZyneonSettings} from "../assets/zyneon/scripts";
   import {getApiStatus} from "../assets/zyneon/scripts";
   import {useI18n} from "vue-i18n";
 
@@ -18,13 +18,15 @@
     ZyneonSettings.setRoundedCorners(false,ZyneonSettings.getRoundedCorners());
     ZyneonSettings.setBackgroundAccentOpacity(false,ZyneonSettings.getBackgroundAccentOpacity());
     ZyneonSettings.setSecondaryFrame(false);
+
+    ZyneonSettings.setCanReloadMain(true);
   })
 
 </script>
 
 <template>
   <div class="zyneon-desktop zyn-background-body" id="main">
-    <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar">
+    <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar" :class="ZyneonSettings.isBorderless ? '' : 'hidden'">
       <template #start>
         <div class="w-full h-full gap-2 flex justify-start items-center">
           <img alt="" class="z-n1 h-4 ml-3" src="../assets/zyneon/img/nex-app-title.png">
@@ -45,48 +47,48 @@
       <template #left>
        <DesktopSideMenu id="navigation" class="desktop-side-menu flex-col" :class="ZyneonSettings.isBorderless ? 'rounded-border' : ''">
          <template #top>
-           <a class="btn flex" @mousedown.stop @click="ZyneonSettings.toggleMenuExpanded">
+           <a class="zyn-btn compact transparent" @mousedown.stop @click="ZyneonSettings.toggleMenuExpanded">
              <i class="icon-text-align-justify"></i>
-             <span>{{ t('menu.toggle') }}</span>
+             <span class="grow">{{ t('menu.toggle') }}</span>
            </a>
          </template>
          <template #center>
-           <div @dblclick="openExternal('https://google.com')">
-             <router-link to="/" id="dashboard-button" class="btn flex" active-class="active" @mousedown.stop>
+           <div class="flex flex-col">
+             <router-link to="/" id="dashboard-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
                <i class="icon-gallery-vertical-end"></i>
-               <span>{{ t('menu.dashboard') }}</span>
+               <span class="grow">{{ t('menu.dashboard') }}</span>
              </router-link>
-             <router-link to="/discover" id="discover-button" class="btn flex" active-class="active" @mousedown.stop>
+             <router-link to="/discover" id="discover-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
                <i class="icon-search"></i>
-               <span>{{ t('menu.discover') }}</span>
+               <span class="grow">{{ t('menu.discover') }}</span>
              </router-link>
-             <router-link to="/library" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
+             <router-link to="/library" id="library-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
                <i class="icon-library"></i>
-               <span>{{ t('menu.library') }}</span>
+               <span class="grow">{{ t('menu.library') }}</span>
              </router-link>
-             <router-link to="/tools" id="library-button" class="btn flex" active-class="active" @mousedown.stop>
+             <router-link to="/tools" id="library-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
                <i class="icon-wrench"></i>
-               <span>{{ t('menu.tools') }}</span>
+               <span class="grow">{{ t('menu.tools') }}</span>
              </router-link>
            </div>
          </template>
          <template #bottom>
-           <a class="btn hover:background-color-blue-400" :class="ZyneonSettings.isDev ? 'flex' : 'hidden'" onclick="window.location.reload();" @mousedown.stop>
+           <a class="zyn-btn compact transparent" :class="ZyneonSettings.isDev ? '' : 'hidden'" onclick="window.location.reload();" @mousedown.stop>
              <i class="icon-rotate-cw"></i>
-             <span>{{ t('menu.reload') }}</span>
+             <span class="grow">{{ t('menu.reload') }}</span>
            </a>
-           <router-link to="/notifications" class="btn flex disabled" @mousedown.stop>
+           <router-link to="/notifications" class="zyn-btn compact transparent disabled" @mousedown.stop>
              <i class="icon-bell"></i>
-             <span>{{ t('menu.notifications') }}</span>
+             <span class="grow">{{ t('menu.notifications') }}</span>
            </router-link>
            <hr class="opacity-20 mb-2" @mousedown.stop>
-           <router-link to="/downloads" id="downloads-button" class="flex btn" active-class="active" @mousedown.stop>
+           <router-link to="/downloads" id="downloads-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
              <i class="icon-download"></i>
-             <span>{{ t('menu.downloads') }}</span>
+             <span class="grow">{{ t('menu.downloads') }}</span>
            </router-link>
-           <router-link to="/settings" id="settings-button" class="flex btn" active-class="active" @mousedown.stop>
+           <router-link to="/settings" id="settings-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
              <i class="icon-bolt"></i>
-             <span>{{ t('menu.settings') }}</span>
+             <span class="grow">{{ t('menu.settings') }}</span>
            </router-link>
          </template>
        </DesktopSideMenu>

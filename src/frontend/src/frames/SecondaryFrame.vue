@@ -27,7 +27,7 @@ const back = () => {
   <div class="zyneon-desktop zyn-background-body" id="main">
     <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar">
       <template #start>
-        <button class="ml-2" @click="back" @mousedown.stop>
+        <button class="titlebar-back-button" @click="back" @mousedown.stop>
           <i class="bi bi-caret-left-fill"></i>
           {{ t('titlebar.back') }}
         </button>
@@ -41,6 +41,15 @@ const back = () => {
 body {
   .zyneon-desktop-titlebar {
     background: #0005;
+
+    .titlebar-back-button {
+      height: 40px;
+      padding: 0 1rem;
+    }
+
+    .titlebar-back-button:hover {
+      background: var(--zyn-background-brighter);
+    }
   }
 
   .zyneon-desktop {

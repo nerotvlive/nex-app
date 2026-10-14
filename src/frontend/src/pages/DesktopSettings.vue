@@ -37,8 +37,7 @@ onMounted(()=>{
 
 const resetSettings = () => {
   localStorage.clear();
-  ZyneonSettings.reloadMain(true);
-  WindowControls.reload();
+  WindowControls.reloadAll();
 }
 
 </script>
@@ -103,7 +102,7 @@ const resetSettings = () => {
       </div>
     </div>
     <div class="flex">
-      <a @click="resetSettings" class="bg-zinc-400/25 text-white px-4 py-2 rounded-lg hover:bg-red-400/50 hover:cursor-pointer">Reset all settings & reload</a>
+      <a @click="resetSettings" class="zyn-btn hover-danger">{{ t("pages.settings.reset") }}</a>
     </div>
   </div>
 </template>

@@ -14,6 +14,7 @@ declare global {
         hideWindow?: () => void;
         showWindow?: () => void;
         reloadMain?: () => void;
+        reloadAll?: () => void;
         openMain?: () => void;
         toggleNativeWindow?: () => void;
         getUrl?: (href: string) => void;
@@ -130,6 +131,12 @@ export class windowControls {
     async reload(): Promise<void> {
         if (window.reloadWindow) {
             window.reloadWindow();
+        }
+    }
+
+    async reloadAll(): Promise<void> {
+        if (window.reloadAll) {
+            window.reloadAll();
         }
     }
 

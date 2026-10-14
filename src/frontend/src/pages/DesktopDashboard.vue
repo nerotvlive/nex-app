@@ -20,8 +20,8 @@ onMounted(()=>{
     <DashboardHeader border="1px solid var(--zyn-ov-brighter-200)">
       <template #bottom-right>
         <a href="#dashboard-important" class="absolute bottom-0 text-md xl:text-lg">
-          <button class="shadow-lg shadow-black/25">
-            <i class="bi bi-caret-down-fill"></i>
+          <button class="zyn-btn compact transparent">
+            <i class="bi bi-caret-down-fill text-white"></i>
           </button>
         </a>
       </template>

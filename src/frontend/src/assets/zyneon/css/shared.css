@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 :root {
+  --zyn-accent: var(--color-blue-600);
+  --zyn-accent-alt: var(--color-blue-500);
+
   /*
   background variables & classes
   */
@@ -58,6 +61,46 @@
   --zyn-background-brightest: var(--zyn-ov-brighter-200);
   .zyn-background-brightest {
     background: var(--zyn-background-brightest);
+  }
+
+  --zyn-bg-accent: var(--zyn-accent);
+  .zyn-bg-accent {
+    background: var(--zyn-accent);
+  }
+
+  --zyn-bg-accent-alt: var(--zyn-accent-alt);
+  .zyn-bg-accent-alt {
+    background: var(--zyn-accent-alt);
+  }
+
+  --zyn-bg-danger: var(--color-red-400);
+  .zyn-bg-danger {
+    background: var(--zyn-bg-danger);
+  }
+
+  --zyn-bg-danger-alt: var(--color-red-500);
+  .zyn-bg-danger-alt {
+    background: var(--zyn-bg-danger-alt);
+  }
+
+  --zyn-bg-warning: var(--color-yellow-300);
+  .zyn-bg-warning {
+    background: var(--zyn-bg-warning);
+  }
+
+  --zyn-bg-warning-alt: var(--color-yellow-500);
+  .zyn-bg-warning-alt {
+    background: var(--zyn-bg-warning-alt);
+  }
+
+  --zyn-bg-success: var(--color-green-400);
+  .zyn-bg-success {
+    background: var(--zyn-bg-success);
+  }
+
+  --zyn-bg-success-alt: var(--color-green-500);
+  .zyn-bg-success-alt {
+    background: var(--zyn-bg-success-alt);
   }
 
 
@@ -313,7 +356,7 @@
 
 
   /*
-  foreground variables & classes
+  border variables & classes
   */
 
   --zyn-border: #3e3e3e;
@@ -329,6 +372,54 @@
   --zyn-foreground: #ffffff99;
   .zyn-foreground {
     color: var(--zyn-foreground);
+  }
+
+  --zyn-foreground-alt: #ffffff;
+  .zyn-foreground-alt {
+    color: var(--zyn-foreground-alt);
+  }
+
+
+
+  /*accent color foreground variables & classes*/
+  --zyn-fg-accent: var(--zyn-foreground-alt);
+  .zyn-fg-accent {
+    color: var(--zyn-fg-accent);
+  }
+
+  --zyn-fg-accent-alt: var(--zyn-foreground-alt);
+  .zyn-fg-accent-alt {
+    color: var(--zyn-fg-accent-alt);
+  }
+
+  --zyn-fg-danger: black;
+  .zyn-fg-danger {
+    color: var(--zyn-fg-danger);
+  }
+
+  --zyn-fg-danger-alt: var(--zyn-foreground-alt);
+  .zyn-fg-danger-alt {
+    color: var(--zyn-fg-danger-alt);
+  }
+
+  --zyn-fg-warning: black;
+  .zyn-fg-warning {
+    color: var(--zyn-fg-warning);
+  }
+
+  --zyn-fg-warning-alt: var(--zyn-fg-warning);
+  .zyn-fg-warning-alt {
+    color: var(--zyn-fg-warning-alt);
+  }
+
+  --zyn-fg-success: var(--zyn-foreground-alt);
+  .zyn-fg-success {
+    color: var(--zyn-fg-success);
+  }
+
+  --zyn-fg-success-alt: var(--zyn-foreground-alt);
+  .zyn-fg-success-alt {
+    color: var(--zyn-fg-success-alt);
   }
 
 
@@ -372,68 +463,105 @@ body {
     -webkit-user-select: none;
   }
 
-  button {
+  .zyn-btn {
+    display: flex;
+    align-items: center;
+    border-radius: var(--zyn-br-sm);
     background: var(--zyn-ov-brighter-200);
-    border: 1px solid var(--zyn-ov-brighter-200);
-    padding: 0 1rem;
-    border-radius: var(--zyn-br-md);
-    transition: all 0.1s ease;
+    padding: 0.5rem 1rem;
+    color: var(--zyn-foreground-alt);
+    box-shadow: var(--drop-shadow-md);
+    backdrop-filter: blur(12px);
+    gap: 0.25rem;
   }
 
-  button:hover {
-    transition: all 0.15s ease;
+  .zyn-btn.transparent {
+    box-shadow: 0 0 0 transparent;
+    background: transparent;
+    color: var(--zyn-foreground);
+  }
+
+  .zyn-btn.compact {
+    padding: 0.25rem 0.5rem;
+    justify-content: center;
+  }
+
+  .zyn-btn:hover {
+    transition: background-color 0.15s ease;
+    color: var(--zyn-foreground-alt);
     background: var(--zyn-ov-brighter-300);
-    border: 1px solid var(--zyn-ov-brighter-200);
+    box-shadow: var(--drop-shadow-lg);
     cursor: pointer;
   }
 
-  button:active {
-    background: var(--zyn-ov-brighter-400);
-    transition: all 0.05s ease;
-    scale: 0.975;
+  /*accent colored buttons*/
+  .zyn-btn.accent, .zyn-btn.hover-accent:hover, .zyn-btn.accent-alt:hover {
+    background: var(--zyn-bg-accent);
+    color: var(--zyn-fg-accent);
   }
 
-  button.disabled {
-    background: var(--zyn-ov-brighter-100);
-    border: 1px solid var(--zyn-ov-brighter-100);
-    cursor: default;
+  .zyn-btn.accent-alt, .zyn-btn.hover-accent-alt:hover, .zyn-btn.accent:hover {
+    background: var(--zyn-bg-accent-alt);
+    color: var(--zyn-fg-accent-alt);
+  }
+
+
+  /*danger colored buttons*/
+  .zyn-btn.danger, .zyn-btn.hover-danger:hover, .zyn-btn.danger-alt:hover {
+    background: var(--zyn-bg-danger);
+    color: var(--zyn-fg-danger);
+  }
+
+  .zyn-btn.danger-alt, .zyn-btn.hover-danger-alt:hover, .zyn-btn.danger:hover {
+    background: var(--zyn-bg-danger-alt);
+    color: var(--zyn-fg-danger-alt);
+  }
+
+
+
+  /*warning colored buttons*/
+  .zyn-btn.warning, .zyn-btn.hover-warning:hover, .zyn-btn.warning-alt:hover {
+    background: var(--zyn-bg-warning);
+    color: var(--zyn-fg-warning);
+  }
+
+  .zyn-btn.warning-alt, .zyn-btn.hover-warning-alt:hover, .zyn-btn.warning:hover {
+    background: var(--zyn-bg-warning-alt);
+    color: var(--zyn-fg-warning-alt);
+  }
+
+
+
+  /*success colored buttons*/
+  .zyn-btn.success, .zyn-btn.hover-success:hover, .zyn-btn.success-alt:hover {
+    background: var(--zyn-bg-success);
+    color: var(--zyn-fg-success);
+  }
+
+  .zyn-btn.success-alt, .zyn-btn.hover-success-alt:hover, .zyn-btn.success:hover {
+    background: var(--zyn-bg-success-alt);
+    color: var(--zyn-fg-success-alt);
+  }
+
+
+
+  /*disabled & active buttons*/
+  .zyn-btn.active {
+    box-shadow: 0 0 0.4rem var(--zyn-bg-accent);
+    background: var(--zyn-bg-accent);
+    color: var(--zyn-fg-accent);
+  }
+
+  .zyn-btn.disabled, .zyn-btn:disabled {
+    opacity: 0.5;
+    color: var(--zyn-foreground);
+    background: transparent;
+    cursor: not-allowed;
+    box-shadow: 0 0 0 transparent;
   }
 
   .zyneon-desktop-view {
     max-height: calc(100vh - 2.5rem);
-  }
-
-  .zyn-btn, .button, .btn {
-    text-align: start;
-    padding: 0 0 0 0.5rem;
-    border-radius: var(--zyn-br-sm);
-    margin: 0.25rem;
-
-    i,span {
-      margin: 0.25rem 0.5rem 0.25rem 0;
-    }
-  }
-
-  .zyn-btn:hover, .button:hover, .btn:hover {
-    background: var(--zyn-ov-brighter-100);
-    transition: var(--zyn-transition);
-    cursor: pointer;
-    outline: none;
-  }
-
-  .zyn-btn:focus, .button:focus, .btn:focus {
-    outline: none; /*revisit*/
-  }
-
-  .zyn-btn.active, .button.active, .btn.active {
-    background: var(--zyn-ov-brighter-300);
-    cursor: default;
-  }
-
-  .zyn-btn:disabled, .button:disabled, .btn:disabled, .zyn-btn.disabled, .button.disabled, .btn.disabled {
-    background: transparent;
-    cursor: not-allowed;
-    opacity: 0.5;
   }
 
   i.icon-loader {

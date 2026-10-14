@@ -93,8 +93,8 @@
       "background": {
         "color": "Hintergrund Basisfarbe",
         "accent": {
-          "opacity": "Hintergrund Akzentfarbe Sichtbarkeit",
-          "color": "Hintergrund Akzentfarbe"
+          "opacity": "Sichtbarkeit der Hintergrundakzentfarbe",
+          "color": "Hintergrundakzentfarbe"
         }
       },
       "menu": {
@@ -102,7 +102,8 @@
       },
       "language": {
         "select": "Sprache"
-      }
+      },
+      "reset": "Einstellungen löschen & neu laden"
     }
   }
 }

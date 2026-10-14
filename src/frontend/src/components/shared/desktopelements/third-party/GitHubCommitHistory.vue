@@ -138,7 +138,7 @@ onMounted(() => {
                 {{ formatDate(item.commit.author.date) }}
               </span>
               <div class="grow flex justify-end">
-                <button class="btn" @click="openExternal(item.html_url)">
+                <button class="zyn-btn text-sm" @click="openExternal(item.html_url)">
                   <i class="bi bi-github"></i>
                   <span>View</span>
                 </button>

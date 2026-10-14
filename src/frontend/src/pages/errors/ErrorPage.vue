@@ -61,11 +61,11 @@ const redirect = (url:string) => {
           <p class="py-4 text-xl"><slot name="message">{{ errorMessage }}</slot></p>
         </div>
         <div class="flex gap-4 p-4 pt-8">
-          <a @click="redirect('/')" class="cursor-pointer rounded-full text-black px-4 py-2 border border-zinc-300 bg-zinc-400 hover:transition-all shadow-lg shadow-black hover:bg-zinc-300 hover:shadow-zinc-300 hover:shadow-sm" v-if="showHomeButton">
+          <a @click="redirect('/')" class="zyn-btn" v-if="showHomeButton">
             <i class="bi bi-caret-left-fill mr-0.5"></i>
             {{ t('pages.error.buttons.home') }}
           </a>
-          <a @click="redirect('/')" class="cursor-pointer rounded-full text-black px-4 py-2 border border-zinc-300 bg-zinc-400 hover:transition-all shadow-lg shadow-black hover:bg-zinc-300 hover:shadow-zinc-300 hover:shadow-sm" v-if="showRetryButton">
+          <a onclick="window.location.reload()" class="zyn-btn" v-if="showRetryButton">
             <i class="bi bi-arrow-clockwise mr-0.5"></i>
             {{ t('pages.error.buttons.retry') }}
           </a>
