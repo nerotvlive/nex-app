@@ -34,6 +34,13 @@ const handleClassicMenu = (e: Event) => {
 onMounted(()=>{
   ZyneonSettings.setMenuExpanded(false);
 })
+
+const resetSettings = () => {
+  localStorage.clear();
+  ZyneonSettings.reloadMain(true);
+  window.location.reload();
+}
+
 </script>
 
 <template>
@@ -94,6 +101,9 @@ onMounted(()=>{
       <div class="flex w-full justify-end align-middle items-center">
         <LanguageSwitcher/>
       </div>
+    </div>
+    <div class="flex">
+      <a @click="resetSettings" class="bg-zinc-400/25 text-white px-4 py-2 rounded-lg hover:bg-red-400/50 hover:cursor-pointer">Reset all settings & reload</a>
     </div>
   </div>
 </template>

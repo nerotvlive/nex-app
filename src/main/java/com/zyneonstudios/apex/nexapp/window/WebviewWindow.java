@@ -71,6 +71,7 @@ public class WebviewWindow {
                             .enableDeveloperTools(Main.isDev())
                             .navigate(buildUrl())
                             .borderless(isBorderless, isBorderless)
+                            .transparent(true)
                             .build();
 
                     initWindowControls();

@@ -208,7 +208,11 @@ export class settings {
 
     private reloadTimer: any = null;
 
-    public reloadMain() {
+    public reloadMain(force?: boolean) {
+        if(force) {
+            WindowControls.reloadMain();
+            return;
+        }
         if(this.canReloadMain) {
             if (this.reloadTimer) {
                 clearTimeout(this.reloadTimer);
