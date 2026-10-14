@@ -27,7 +27,7 @@
           {{ title }}
         </slot>
       </div>
-      <div class="end">
+      <div class="end grow">
         <slot name="end"></slot>
         <div class="window-controls-placeholder"></div>
       </div>
