@@ -187,7 +187,6 @@ public class WebviewWindow {
         webview.bind("getUrl", href -> {
             href = href.replace("[\"","").replace("\"]","");
             this.url = href;
-            awaitGet = false;
             return null;
         });
 
@@ -239,19 +238,6 @@ public class WebviewWindow {
         this.url = url;
     }
 
-    boolean awaitGet = false;
-    public void getUrl_() {
-        awaitGet = true;
-        webview.eval("window.getUrl(window.location.href);");
-        while (awaitGet) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void loadUrl(String url) {
         this.url = url;
         if(webview != null) {
@@ -260,7 +246,6 @@ public class WebviewWindow {
     }
 
     public void reload() {
-        getUrl_();
         webview.navigate(buildUrl());
     }
 

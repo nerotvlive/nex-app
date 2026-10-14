@@ -6,6 +6,7 @@ import DesktopSettings from "../../../../pages/DesktopSettings.vue";
 import DesktopLibrary from "../../../../pages/DesktopLibrary.vue";
 import DesktopTools from "../../../../pages/DesktopTools.vue";
 import DesktopDownloads from "../../../../pages/DesktopDownloads.vue";
+import {WindowControls} from "../windowControls.ts";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -62,6 +63,7 @@ export function createSecondaryRouter() {
         const defaultTitle = 'NEX App';
         const title = to.meta.title as string | undefined;
         document.title = title ? `${title} (secondary) - ${defaultTitle}` : defaultTitle;
+        WindowControls.getUrl();
     })
 
     return router;

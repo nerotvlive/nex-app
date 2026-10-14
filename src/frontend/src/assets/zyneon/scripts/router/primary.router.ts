@@ -10,6 +10,7 @@ import DesktopTools from "../../../../pages/DesktopTools.vue";
 import Error404 from "../../../../pages/errors/Error404.vue";
 import ErrorPage from "../../../../pages/errors/ErrorPage.vue";
 import Error501 from "../../../../pages/errors/Error501.vue";
+import {WindowControls} from "../windowControls.ts";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -84,6 +85,7 @@ export function createPrimaryRouter() {
         const defaultTitle = 'NEX App';
         const title = to.meta.title as string | undefined;
         document.title = title ? `${title} (primary) - ${defaultTitle}` : defaultTitle;
+        WindowControls.getUrl();
     })
 
     return router;
