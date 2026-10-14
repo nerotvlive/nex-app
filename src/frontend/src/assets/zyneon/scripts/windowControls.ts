@@ -2,6 +2,8 @@ declare global {
     interface Window {
         startWindowDrag?: () => void;
         closeWindow?: () => void;
+        reloadWindow?: () => void;
+        restartWindow?: () => void;
         toggleMaximizeWindow?: () => void;
         maximizeWindow?: () => void;
         unmaximizeWindow?: () => void;
@@ -116,6 +118,18 @@ export class windowControls {
 
     async toggleFullscreen(): Promise<void> {
 
+    }
+
+    async reload(): Promise<void> {
+        if (window.reloadWindow) {
+            window.reloadWindow();
+        }
+    }
+
+    async restart(): Promise<void> {
+        if (window.restartWindow) {
+            window.restartWindow();
+        }
     }
 
     async close(): Promise<void> {

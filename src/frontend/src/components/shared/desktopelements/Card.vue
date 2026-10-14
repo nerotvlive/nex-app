@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <div class="card zyn-br-md shadow-lg backdrop-blur-lg" :style="{backgroundImage: backgroundImage, background: background, border: border}">
-    <DesktopElement>
+    <DesktopElement class="h-full flex-1 grow">
       <slot></slot>
     </DesktopElement>
   </div>

@@ -116,6 +116,10 @@ public class Main {
         return dev;
     }
 
+    public static void setUseNativeFrame(boolean useNativeFrame) {
+        Main.nativeFrame = useNativeFrame;
+    }
+
     public static boolean useNativeFrame() {
         return nativeFrame;
     }

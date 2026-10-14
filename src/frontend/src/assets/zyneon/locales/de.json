@@ -76,6 +76,12 @@
         "title": "Sekundäres Fenster Öffnen",
         "description": "Startet ein sekundäres Fenster zu Testzwecken. Du kannst die Seite aus dem Dropdown-Menü auswählen, die du herausziehen möchtest.",
         "launch": "Öffnen"
+      },
+      "controls": {
+        "title": "Erweiterte Kontrollen",
+        "description": "Erweiterte Aktionen für das Debuggen und Testen des Webviews/Frames.",
+        "reload": "Neu laden",
+        "restart": "Neu starten"
       }
     },
     "settings": {

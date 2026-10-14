@@ -49,6 +49,26 @@ onMounted(()=>{
           </div>
         </template>
       </CardStructured>
+      <CardStructured background="var(--zyn-ov-brighter-100)" border="1px solid var(--zyn-ov-brighter-200)">
+        <template #header>
+          <strong class="text-white">{{ t('pages.tools.controls.title') }}</strong>
+        </template>
+        <template #content>
+          {{ t('pages.tools.controls.description') }}<br>
+        </template>
+        <template #footer>
+          <div class="flex gap-2 mb-1 items-bottom h-full flex-1 items-end">
+            <a @click="WindowControls.reload" class="bg-zinc-400/25 h-fit text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+              <i class="bi bi-play"/>
+              {{ t('pages.tools.controls.reload') }}
+            </a>
+            <a @click="WindowControls.restart" class="bg-zinc-400/25 h-fit text-white px-4 py-2 rounded-lg hover:bg-zinc-400/50 hover:cursor-pointer">
+              <i class="bi bi-play"/>
+              {{ t('pages.tools.controls.restart') }}
+            </a>
+          </div>
+        </template>
+      </CardStructured>
     </div>
   </div>
 </template>

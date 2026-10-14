@@ -76,6 +76,12 @@
         "title": "Launch Secondary Frame",
         "description": "Launches a secondary frame to debug and test features. You can select the page you want to pop out from the dropdown menu.",
         "launch": "Launch"
+      },
+      "controls": {
+        "title": "Extended Controls",
+        "description": "Additional controls to debug and test the webview/frame.",
+        "reload": "Reload",
+        "restart": "Restart"
       }
     },
     "settings": {

@@ -20,6 +20,7 @@ public class WebviewWindow {
     private int height;
     private boolean secondary = false;
     private final boolean isBorderless =  !Main.useNativeFrame();
+    private boolean restart = false;
 
     public WebviewWindow() {
         this("main");
@@ -77,10 +78,14 @@ public class WebviewWindow {
                     initWindowControls();
                     initBindings();
                     initIcon();
+
                     this.webview.run();
-                    windows.remove(this.id);
-                    if(windows.isEmpty()) {
-                        System.exit(0);
+
+                    if(!restart) {
+                        windows.remove(this.id);
+                        if (windows.isEmpty()) {
+                            System.exit(0);
+                        }
                     }
                 } catch (Throwable e) {
                     throw new RuntimeException("Failed to launch native WebView", e);
@@ -119,7 +124,7 @@ public class WebviewWindow {
         });
 
         this.webview.bind("closeWindow", (_) -> {
-            this.webview.close();
+            close();
             return null;
         });
 
@@ -165,6 +170,16 @@ public class WebviewWindow {
 
         this.webview.bind("toggleHideWindow", (_) -> {
             toggleHidden();
+            return null;
+        });
+
+        this.webview.bind("reloadWindow", (_) -> {
+            reload();
+            return null;
+        });
+
+        this.webview.bind("restartWindow", (_) -> {
+            restart();
             return null;
         });
     }
@@ -246,8 +261,24 @@ public class WebviewWindow {
         }
     }
 
+    public void close() {
+        webview.close();
+    }
+
     public void reload() {
         webview.navigate(buildUrl());
+    }
+
+    public void restart() {
+        restart = true;
+        windows.remove(this.id);
+
+        WebviewWindow window = new WebviewWindow(this.id);
+        window.loadUrl(this.url);
+        window.setSize(this.width, this.height);
+        window.launchWindow();
+
+        close();
     }
 
     public String getUrl() {

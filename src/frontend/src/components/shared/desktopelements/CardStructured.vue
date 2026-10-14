@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <Card :background="background" :border="border">
-    <div class="structured-card flex flex-col h-full">
+    <div class="structured-card flex flex-col h-full items-between">
       <div class="header px-3 pt-2">
         <slot name="header"></slot>
         <SpacerHorizontal></SpacerHorizontal>
@@ -18,7 +18,7 @@ defineProps<{
       <div class="content px-3 py-2">
         <slot name="content"></slot>
       </div>
-      <div class="footer mt-auto px-3 pb-2 pt-2 flex">
+      <div class="footer mt-auto px-3 pb-2 pt-2 flex h-full flex-1 grow items-end">
         <slot name="footer"></slot>
       </div>
     </div>
