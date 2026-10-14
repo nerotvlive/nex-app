@@ -19,6 +19,7 @@ declare global {
         toggleNativeWindow?: () => void;
         getUrl?: (href: string) => void;
         openSecondaryFrame?: (tool: any) => void;
+        openOldWindow?: () => void;
     }
 }
 
@@ -55,6 +56,12 @@ export class windowControls {
     openMain(): void {
         if(window.openMain) {
             window.openMain();
+        }
+    }
+
+    openOld(): void {
+        if(window.openOldWindow) {
+            window.openOldWindow();
         }
     }
 

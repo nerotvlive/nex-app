@@ -181,7 +181,7 @@
   }
 
   /*brighter overlays*/
-  --zyn-ov-brighter: var(--zyn-ov-brighter-010);
+  --zyn-ov-brighter: #ffffff05;
   .zyn-ov-brighter {
     background: var(--zyn-ov-brighter);
   }
@@ -489,11 +489,22 @@ body {
   }
 
   .zyn-btn:hover {
-    transition: background-color 0.15s ease;
+    transition: color 0.15s ease, background-color 0.15s ease;
     color: var(--zyn-foreground-alt);
     background: var(--zyn-ov-brighter-300);
     box-shadow: var(--drop-shadow-lg);
     cursor: pointer;
+  }
+
+  /*darker colored buttons*/
+  .zyn-btn.darker, .zyn-btn.hover-darker:hover, .zyn-btn.darker-alt:hover {
+    background: var(--zyn-ov-brighter-100);
+    color: var(--zyn-foreground);
+  }
+
+  .zyn-btn.darker-alt, .zyn-btn.hover-darker-alt:hover, .zyn-btn.darker:hover {
+    background: var(--zyn-ov-brighter-100);
+    color: var(--zyn-foreground-alt);
   }
 
   /*accent colored buttons*/
@@ -556,8 +567,8 @@ body {
 
   .zyn-btn.disabled, .zyn-btn:disabled {
     opacity: 0.5;
-    color: var(--zyn-foreground);
-    background: transparent;
+    color: var(--zyn-foreground) !important;
+    background: transparent !important;
     cursor: not-allowed;
     box-shadow: 0 0 0 transparent;
   }

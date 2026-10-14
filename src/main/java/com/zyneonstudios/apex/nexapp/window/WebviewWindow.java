@@ -229,6 +229,19 @@ public class WebviewWindow {
             return null;
         });
 
+        this.webview.bind("openOldWindow", (_) -> {
+            if(windows.containsKey("old")) {
+                WebviewWindow toolWindow = windows.get("old");
+                toolWindow.webview.showWindow();
+                toolWindow.unminimize();
+            } else {
+                WebviewWindow oldWindow = new WebviewWindow("old");
+                oldWindow.setUrl("https://cnad.pages.dev");
+                oldWindow.launchWindow();
+            }
+            return null;
+        });
+
         if(secondary) {
             this.webview.bind("reloadMain", (_) -> {
                 if(windows.containsKey("main")) {

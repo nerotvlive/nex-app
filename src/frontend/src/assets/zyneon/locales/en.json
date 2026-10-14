@@ -90,6 +90,11 @@
         "reload": "Reload",
         "restart": "Restart",
         "native": "Toggle Native Window"
+      },
+      "old": {
+        "title": "Launch Old Frame",
+        "description": "Launches the discontinued UI. (Requires internet connection)",
+        "open": "Launch"
       }
     },
     "settings": {

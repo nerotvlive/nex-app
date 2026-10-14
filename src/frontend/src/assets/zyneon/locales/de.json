@@ -90,6 +90,11 @@
         "reload": "Neu laden",
         "restart": "Neu starten",
         "native": "Natives Fenster umschalten"
+      },
+      "old": {
+        "title": "Altes Fenster starten",
+        "description": "Startet ein Fenster mit der alten UI. (Benötigt Internetverbindung)",
+        "open": "Öffnen"
       }
     },
     "settings": {

@@ -56,26 +56,26 @@ const resetSettings = () => {
       </template>
       <template #center>
         <div class="flex flex-col h-full w-full overflow-hidden overflow-y-auto" @mousedown.stop>
-          <a class="zyn-btn compact">
+          <a class="zyn-btn darker compact">
             <i class="bi bi-gear-wide-connected"></i>
             <span class="grow">{{ t("pages.settings.menu.general") }}</span>
           </a>
-          <a class="zyn-btn compact">
+          <a class="zyn-btn darker compact">
             <i class="bi bi-palette"></i>
             <span class="grow">{{ t("pages.settings.menu.appearance") }}</span>
           </a>
         </div>
       </template>
       <template #bottom>
-        <router-link to="/tools" class="zyn-btn compact" @mousedown.stop>
+        <router-link to="/tools" class="zyn-btn darker compact" @mousedown.stop>
           <i class="bi bi-wrench"></i>
           <span class="grow">{{ t("menu.tools") }}</span>
         </router-link>
         <div class="flex pt-2" style="margin-right: 0; border-top: 1px solid var(--zyn-ov-brighter-200);" @mousedown.stop>
-          <a class="zyn-btn compact max-w-fit" @click="WindowControls.reload(); WindowControls.reloadAll();">
+          <a class="zyn-btn darker compact max-w-fit" @click="WindowControls.reload(); WindowControls.reloadAll();">
             <i class="bi bi-arrow-clockwise"></i>
           </a>
-          <a class="zyn-btn compact hover-danger" style="margin-left: 0;" @click="resetSettings">
+          <a class="zyn-btn darker compact hover-danger" style="margin-left: 0;" @click="resetSettings">
             <i class="bi bi-trash"></i>
             <span class="grow">{{ t("pages.settings.reset") }}</span>
           </a>
