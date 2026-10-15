@@ -68,6 +68,22 @@
       "buttons": {
         "home": "Back to home",
         "retry": "Retry"
+      },
+      "game": {
+        "resize": "Don't resize the window while the game is running!",
+        "start": "START",
+        "restart": "TRY AGAIN",
+        "controls": {
+          "select": "SELECT CONTROLS",
+          "classic": {
+            "title": "CLASSIC",
+            "description": "WASD / Arrow keys to move and space / click to shoot"
+          },
+          "cool": {
+            "title": "COOL (rec)",
+            "description": "Mouse to move and click to shoot"
+          }
+        }
       }
     },
     "library": {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-
+import {useI18n} from "vue-i18n";
+const { t } = useI18n()
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 let ctx: CanvasRenderingContext2D | null = null
 
@@ -12,8 +13,8 @@ const selectedControl = ref<'classic' | 'cool'>('cool')
 
 const controlInfoText = computed(() => {
   return selectedControl.value === 'classic'
-      ? 'WASD / Arrow keys to move and click or space to shoot'
-      : 'Mouse to move and click to shoot'
+      ? t("pages.error.game.controls.classic.description")
+      : t("pages.error.game.controls.cool.description")
 })
 
 const playerImage = new Image()
@@ -313,25 +314,25 @@ onUnmounted(() => {
         HIGHSCORE: <span>{{ highscore }}</span>
       </div>
       <div v-if="!gameRunning" id="startScreen" class="center-message">
-        <h1 id="screenTitle" :style="{ color: isGameOver ? 'red' : '#5111b8', margin: '0' }">
+        <p class="text-sm opacity-50 text-red-200">{{ t("pages.error.game.resize") }}</p>
+        <strong class="text-4xl" id="screenTitle" :style="{ color: isGameOver ? 'red' : '#5111b8', margin: '0' }">
           {{ isGameOver ? 'GAME OVER!!!' : 'LEGACY DEFENDER' }}
-        </h1>
-        <p>Don't resize while the game is running!</p>
+        </strong>
         <p v-if="isGameOver" style="margin: 0;">SCORE: <span>{{ score }}</span></p>
-        <p style="margin: 5px 0;">SELECT INPUT METHOD:</p>
+        <p style="margin: 5px 0;">{{t("pages.error.game.controls.select")}}:</p>
         <div class="control-options">
           <button class="control-btn" :class="{ active: selectedControl === 'classic' }" @click="selectControl('classic')">
-            CLASSIC
+            {{t("pages.error.game.controls.classic.title")}}
           </button>
           <button class="control-btn" :class="{ active: selectedControl === 'cool' }" @click="selectControl('cool')">
-            COOL (rec)
+            {{t("pages.error.game.controls.cool.title")}}
           </button>
         </div>
         <p style="font-size: 16px; color: #aaa; margin: 0;">
           {{ controlInfoText }}
         </p>
         <button id="startBtn" @click="init">
-          {{ isGameOver ? 'TRY AGAIN' : 'STARTEN' }}
+          {{ isGameOver ? t("pages.error.game.restart") : t("pages.error.game.start") }}
         </button>
       </div>
     </div>

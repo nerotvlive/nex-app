@@ -68,6 +68,22 @@
       "buttons": {
         "home": "Zurück zur Startseite",
         "retry": "Erneut versuchen"
+      },
+      "game": {
+        "resize": "Fenstergröße nicht während des Spielens ändern!",
+        "start": "STARTEN",
+        "restart": "ERNEUT VERSUCHEN",
+        "controls": {
+          "select": "STEUERUNGSMODUS WÄHLEN",
+          "classic": {
+            "title": "KLASSISCH",
+            "description": "WASD/Pfeiltasten: Bewegen, Leertaste/Klicken: Schießen"
+          },
+          "cool": {
+            "title": "COOL (empf)",
+            "description": "Maus zum Bewegen und Klicken zum Schießen"
+          }
+        }
       }
     },
     "library": {
