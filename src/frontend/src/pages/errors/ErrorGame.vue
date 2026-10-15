@@ -318,6 +318,7 @@ onUnmounted(() => {
         <strong class="text-4xl" id="screenTitle" :style="{ color: isGameOver ? 'red' : '#5111b8', margin: '0' }">
           {{ isGameOver ? 'GAME OVER!!!' : 'LEGACY DEFENDER' }}
         </strong>
+        <p class="text-sm opacity-50">0.1</p>
         <p v-if="isGameOver" style="margin: 0;">SCORE: <span>{{ score }}</span></p>
         <p style="margin: 5px 0;">{{t("pages.error.game.controls.select")}}:</p>
         <div class="control-options">
