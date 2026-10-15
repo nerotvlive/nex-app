@@ -7,6 +7,7 @@ import DesktopLibrary from "../../../../pages/DesktopLibrary.vue";
 import DesktopTools from "../../../../pages/DesktopTools.vue";
 import DesktopDownloads from "../../../../pages/DesktopDownloads.vue";
 import {WindowControls} from "../windowControls.ts";
+import ErrorGame from "../../../../pages/errors/ErrorGame.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -44,6 +45,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Unknown Error',
         meta: { title: 'Unknown Error' },
         component: ErrorPage
+    },
+    {
+        path: '/errorgame',
+        name: 'LEGACY DEFENDER',
+        meta: { title: 'LEGACY DEFENDER' },
+        component: ErrorGame
     },
     {
         path: '/:pathMatch(.*)*',

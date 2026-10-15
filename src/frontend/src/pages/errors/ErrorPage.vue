@@ -73,7 +73,9 @@ const redirect = (url:string) => {
         </div>
       </div>
       <div>
-        <i class="bi bi-emoji-tear text-2xl"></i>
+        <router-link to="/errorgame" class="cursor-crosshair">
+          <i class="bi bi-emoji-tear text-2xl cursor-crosshair"></i>
+        </router-link>
       </div>
     </div>
   </div>

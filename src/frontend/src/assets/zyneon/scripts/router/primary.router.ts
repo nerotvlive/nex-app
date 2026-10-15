@@ -11,6 +11,7 @@ import Error404 from "../../../../pages/errors/Error404.vue";
 import ErrorPage from "../../../../pages/errors/ErrorPage.vue";
 import Error501 from "../../../../pages/errors/Error501.vue";
 import {WindowControls} from "../windowControls.ts";
+import ErrorGame from "../../../../pages/errors/ErrorGame.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -66,6 +67,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Unknown Error',
         meta: { title: 'Unknown Error' },
         component: ErrorPage
+    },
+    {
+        path: '/errorgame',
+        name: 'LEGACY DEFENDER',
+        meta: { title: 'LEGACY DEFENDER' },
+        component: ErrorGame
     },
     {
         path: '/:pathMatch(.*)*',
