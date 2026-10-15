@@ -1,7 +1,6 @@
 package com.zyneonstudios.apex.nexapp;
 
 import com.zyneonstudios.apex.nexapp.main.NEXApp;
-import com.zyneonstudios.apex.nexapp.window.ZyneonSplash;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -20,11 +19,8 @@ public class Main {
     private static String updateMetaUrl = null;
     private static boolean dev = false;
     private static boolean nativeFrame = false;
-    private static ZyneonSplash splash;
 
     static void main(String[] args) {
-        splash = new ZyneonSplash();
-        splash.setVisible(true);
         Main.args = args;
         resolveArgs();
         springApp = new SpringApplication(Main.class);
@@ -34,7 +30,6 @@ public class Main {
         springApp.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
         springApp.run(args);
         nexApp.launch();
-        splash.dispose();
     }
 
     private static void resolveArgs() {
