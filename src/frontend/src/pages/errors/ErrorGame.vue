@@ -8,10 +8,10 @@ const score = ref(0)
 const highscore = ref(0)
 const gameRunning = ref(false)
 const isGameOver = ref(false)
-const selectedControl = ref<'klassisch' | 'maus'>('klassisch')
+const selectedControl = ref<'classic' | 'cool'>('cool')
 
 const controlInfoText = computed(() => {
-  return selectedControl.value === 'klassisch'
+  return selectedControl.value === 'classic'
       ? 'WASD / Arrow keys to move and click or space to shoot'
       : 'Mouse to move and click to shoot'
 })
@@ -56,10 +56,10 @@ class Player {
 
   update() {
     const canvas = canvasRef.value!
-    if (selectedControl.value === 'klassisch') {
+    if (selectedControl.value === 'classic') {
       if (keys.ArrowLeft || keys.a) this.x -= this.speed
       if (keys.ArrowRight || keys.d) this.x += this.speed
-    } else if (selectedControl.value === 'maus') {
+    } else if (selectedControl.value === 'cool') {
       this.x = mouseX - this.width / 2
     }
 
@@ -163,7 +163,7 @@ function onKeyDown(e: KeyboardEvent) {
 
 function onKeyUp(e: KeyboardEvent) {
   if (keys.hasOwnProperty(e.key)) keys[e.key] = false
-  if (e.key === ' ' && gameRunning.value && selectedControl.value === 'klassisch') shoot()
+  if (e.key === ' ' && gameRunning.value && selectedControl.value === 'classic') shoot()
 }
 
 function onMouseMove(e: MouseEvent) {
@@ -197,7 +197,7 @@ function gameOver() {
 
     if (score.value > highscore.value) {
       highscore.value = score.value
-      localStorage.setItem('spaceDefenderHighscore', highscore.value.toString())
+      localStorage.setItem('legacyDefenderHighscore', highscore.value.toString())
     }
   }
 }
@@ -274,13 +274,19 @@ function animate() {
   animationFrameId = requestAnimationFrame(animate)
 }
 
-function selectControl(type: 'klassisch' | 'maus') {
+function selectControl(type: 'classic' | 'cool') {
   selectedControl.value = type
+  localStorage.setItem('legacyDefenderControl', type)
 }
 
 onMounted(() => {
-  const savedHighscore = localStorage.getItem('spaceDefenderHighscore')
+  const savedHighscore = localStorage.getItem('legacyDefenderHighscore')
   if (savedHighscore) highscore.value = parseInt(savedHighscore, 10)
+
+  const savedControl = localStorage.getItem('legacyDefenderControl')
+  if (savedControl === 'classic' || savedControl === 'cool') {
+    selectedControl.value = savedControl
+  }
 
   window.addEventListener('resize', handleResizeGameOver)
   window.addEventListener('keydown', onKeyDown)
@@ -302,12 +308,10 @@ onUnmounted(() => {
   <div class="game-wrapper" @mousemove="onMouseMove" @mousedown="onMouseDown">
     <div id="gameContainer">
       <canvas ref="canvasRef" id="gameCanvas"></canvas>
-
       <div class="ui-layer">
         SCORE: <span>{{ score }}</span><br>
         HIGHSCORE: <span>{{ highscore }}</span>
       </div>
-
       <div v-if="!gameRunning" id="startScreen" class="center-message">
         <h1 id="screenTitle" :style="{ color: isGameOver ? 'red' : '#5111b8', margin: '0' }">
           {{ isGameOver ? 'GAME OVER!!!' : 'LEGACY DEFENDER' }}
@@ -316,18 +320,10 @@ onUnmounted(() => {
         <p v-if="isGameOver" style="margin: 0;">SCORE: <span>{{ score }}</span></p>
         <p style="margin: 5px 0;">SELECT INPUT METHOD:</p>
         <div class="control-options">
-          <button
-              class="control-btn"
-              :class="{ active: selectedControl === 'klassisch' }"
-              @click="selectControl('klassisch')"
-          >
+          <button class="control-btn" :class="{ active: selectedControl === 'classic' }" @click="selectControl('classic')">
             CLASSIC
           </button>
-          <button
-              class="control-btn"
-              :class="{ active: selectedControl === 'maus' }"
-              @click="selectControl('maus')"
-          >
+          <button class="control-btn" :class="{ active: selectedControl === 'cool' }" @click="selectControl('cool')">
             COOL (rec)
           </button>
         </div>
@@ -367,7 +363,7 @@ canvas {
   background: radial-gradient(#080b17, black);
   width: 100%;
   height: 100%;
-}a
+}
 
 .ui-layer {
   position: absolute;
