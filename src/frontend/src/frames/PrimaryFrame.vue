@@ -69,10 +69,10 @@
            </div>
          </template>
          <template #bottom>
-           <router-link to="/notifications" class="zyn-btn compact transparent disabled" @mousedown.stop>
+           <a class="zyn-btn compact transparent disabled" @mousedown.stop>
              <i class="icon-bell"></i>
              <span class="grow">{{ t('menu.notifications') }}</span>
-           </router-link>
+           </a>
            <hr class="opacity-20 mb-2" @mousedown.stop>
            <router-link to="/downloads" id="downloads-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
              <i class="icon-download"></i>
