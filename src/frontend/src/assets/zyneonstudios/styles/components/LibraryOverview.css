@@ -1,0 +1,3 @@
+.overview-bg {
+    background: linear-gradient(to bottom, transparent, var(--zyn-bg-alt));
+}

@@ -206,8 +206,8 @@ public class ModrinthIntegration {
                                     JsonStorage instanceContents = new JsonStorage(finalInstallDir + "/zyneonContents.json");
                                     instanceContents.set("contents", contents);
 
-                                    if (NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
-                                        NEXApplication.getInstance().getApplicationFrame().getBrowser().reload();
+                                    if (NEXApplication.getInstance().getApplicationFrame().getURL().toLowerCase().contains("page=library")) {
+                                        NEXApplication.getInstance().getApplicationFrame().reload();
                                     }
                                     return false;
                                 }

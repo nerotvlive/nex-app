@@ -16,7 +16,7 @@ public class ConnectorCommand extends NexusConsoleCommand {
     public boolean run(String[] args) {
         if(args.length > 0) {
             String command = Arrays.toString(args).replace("[", "").replace("]", "").replace(", ", " ");
-            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("console.log(\"[CONNECTOR] " + command+"\");");
+            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("connector(\""+command+"\");");
             return true;
         }
         return false;

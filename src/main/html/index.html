@@ -16,10 +16,58 @@
         <link href="assets/nexus/css/shared.css" rel="stylesheet">
         <!-- Shared JavaScript for the NEX App -->
         <script src="assets/nexus/js/shared.js"></script>
+        <style>
+            .hidden {
+                display: none !important;
+            }
+
+            #nexapp-titlebar {
+                .buttons {
+                    button {
+                        border: none;
+                        background: #0000;
+                        color: #fff;
+                        min-height: 40px;
+                        max-height: 40px;
+                        min-width: 40px;
+                        max-width: 40px;
+                        height: 40px;
+                        width: 40px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        i {
+                            padding: 0;
+                            margin: 0;
+                        }
+                    }
+
+                    button:hover {
+                        background: #fff2;
+                    }
+
+                    button.close:hover {
+                        background: #f00;
+                    }
+                }
+            }
+
+            .bg-fix {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: black !important;
+                pointer-events: none;
+                z-index: -1;
+            }
+        </style>
     </head>
     <!-- For sub-page specific scripts and more -->
     <div class="d-none" id="page-specific"></div>
-
+    <div class="bg-fix"></div>
     <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="notifications" aria-labelledby="notificationsLabel">
         <div class="offcanvas-header" style="background: var(--nex-bg);">
             <h5 class="offcanvas-title" id="notificationsLabel">Notification center</h5>
@@ -34,7 +82,7 @@
 
     <div id="context-menu"></div>
     <!-- Body of the application -->
-    <body data-bs-theme="dark" class="d-flex flex-column h-100 w-100 position-absolute" style="background: var(--nex-sys-bg);">
+    <body data-bs-theme="dark" class="d-flex flex-column h-100 w-100 position-absolute">
         <!-- Login overlay-->
         <div id="login-overlay">
             <p>
@@ -44,8 +92,23 @@
         </div>
         <!-- Screen saver-->
         <div id="screensaver"></div>
-        <!-- Title bar (likely for custom window controls) -->
-        <div id="titlebar" style="height: 2rem;"></div>
+        <!-- Title bar -->
+        <div id="nexapp-titlebar" style="min-height: 40px; max-height: 40px; height: 40px; overflow: hidden;" class="d-flex justify-content-between">
+            <div class="title p-1">
+                <span style="font-size: 1.2rem; margin-left: 0.5rem;"><strong>NEX </strong>App</span>
+            </div>
+            <div class="d-flex buttons">
+                <button onclick="window.minimizeWindow();">
+                    <i class="bi bi-dash-lg"></i>
+                </button>
+                <button onclick="window.toggleMaximizeWindow();" class="fullscreen">
+                    <i class="bi bi-fullscreen"></i>
+                </button>
+                <button onclick="window.closeWindow();" class="close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
         <!-- Main content area -->
         <p class="light-mode-warning" style="padding: 0; margin: 0 1rem 0.5rem 1rem; display: none; color: var(--bs-red);">Warning: The light mode isn't finished yet. We strongly recommend using the dark mode. <a onclick="loadPage('settings.html',true);" style="color: var(--bs-danger-text-emphasis); cursor: pointer; &&:hover { text-decoration: underline !important; }">Go to settings</a> <a onclick="this.parentNode.remove();" style="margin-left: 0.5rem; color: var(--bs-danger-text-emphasis); cursor: pointer; &&:hover { text-decoration: underline !important; }">Close warning</a></p>
         <div id="main" class="d-flex position-relative h-100">
@@ -126,5 +189,20 @@
         <!-- Bootstrap JavaScript -->
         <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="assets/marked/marked.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const titlebar = document.getElementById('nexapp-titlebar');
+                if (titlebar) {
+                    titlebar.addEventListener('mousedown', (e) => {
+                        if (e.target.closest('button') || e.target.closest('.no-drag')) {
+                            return;
+                        }
+                        if (window.startWindowDrag) {
+                            window.startWindowDrag();
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

@@ -24,7 +24,7 @@ function addInstance(id,name,icon,group) {
             if (id && name) {
                 button.id = id;
                 button.onclick = function () {
-                    console.log("[CONNECTOR] library.showInstance."+id);
+                    connector("library.showInstance."+id);
                 }
                 button.querySelector("span").innerText = name;
 
@@ -60,11 +60,11 @@ function addInstanceToOverview(id,name,icon,group) {
             const row = template.cloneNode(true);
             const button = row.querySelector('.instance-show');
             button.onclick = function () {
-                console.log("[CONNECTOR] library.showInstance."+id);
+                connector("library.showInstance."+id);
             }
             const button2 = row.querySelector('.instance-launch');
             button2.onclick = function () {
-                console.log("[CONNECTOR] library.start."+id);
+                connector("library.start."+id);
             }
             row.id = elementId;
             row.classList.remove("d-none");
@@ -117,7 +117,7 @@ function addInstanceGroup(id,name,colorName) {
 }
 
 function initLibrary() {
-    console.log("[CONNECTOR] library.init");
+    connector("library.init");
     initArrayBoxes();
 
     const toggle = document.querySelector(".instanceGroupingToggle");
@@ -199,7 +199,7 @@ function showInstance(id,name,version,summary,description,tagsString,bg) {
 
     document.getElementById("launch-button").innerHTML = "<i class=\"bi bi-play-fill\"></i> RUN";
     document.getElementById("launch-button").onclick = function () {
-        console.log('[CONNECTOR] library.start.'+activeInstance);
+        connector('library.start.'+activeInstance);
         document.getElementById("launch-button").innerText = "UPDATING..."
     }
 
@@ -229,15 +229,15 @@ function showInstance(id,name,version,summary,description,tagsString,bg) {
     }
 
     document.getElementById("update-button").onclick = function () {
-        console.log('[CONNECTOR] library.update.'+activeInstance);
+        connector('library.update.'+activeInstance);
     }
     document.getElementById("folder-button").classList.remove("d-none");
     document.getElementById("folder-button").onclick = function () {
-        console.log('[CONNECTOR] library.folder.'+activeInstance);
+        connector('library.folder.'+activeInstance);
     }
     document.getElementById("library-settings-button").classList.remove("d-none");
     document.getElementById("library-settings-button").onclick = function () {
-        console.log('[CONNECTOR] library.settings.'+activeInstance);
+        connector('library.settings.'+activeInstance);
     }
 }
 
@@ -259,7 +259,7 @@ function requestInstanceCreation() {
         const crtype = encodeURIComponent(document.getElementById("creator-mc-type").value.replaceAll(".","#DOT%"));
         const crversion = encodeURIComponent(document.getElementById("creator-mc-versions").value.replaceAll(".","#DOT%"));
         const crmlversion = encodeURIComponent(document.getElementById("creator-ml-versions").value.replaceAll(".","#DOT%"));
-        console.log("[CONNECTOR] library.creator.create."+crversion+"."+crtype+"."+crmlversion+"."+crname);
+        connector("library.creator.create."+crversion+"."+crtype+"."+crmlversion+"."+crname);
     } else {
         if(document.getElementById('creator-name-warning').classList.contains('d-none')) {document.getElementById('creator-name-warning').classList.remove('d-none');}
     }

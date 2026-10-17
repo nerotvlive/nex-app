@@ -5,6 +5,8 @@
 // --- Global Variables ---
 let instanceGrouping = true;
 
+let nativeApp = false;
+
 /**
  * The currently active instance of the application.
  *
@@ -187,6 +189,17 @@ function reloadApp() {
     location.href = location.protocol+"//"+location.host+"?page="+landing;
 }
 
+async function connector(s) {
+    console.log("[CONNECTOR] "+s);
+    if(window.resolve) {
+        window.resolve(s);
+    }
+}
+
+function open(s) {
+
+}
+
 // --- Appearance Settings Initialization ---
 
 /**
@@ -270,7 +283,7 @@ let panelMode = "click";
  * Initializes the panel based on stored preferences or default values.
  */
 function initPanel() {
-    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nex-app`,`_blank`);' class='bi bi-github'></i><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
+    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nex-app/tree/legacy`,`_blank`);' class='bi bi-github'></i><i onclick='connector(`exit`)' class='bi bi-door-open'></i>";
     const panel = document.querySelector(".menu-panel");
     if (!panel) return; // Exit if panel doesn't exist
 
@@ -471,7 +484,7 @@ function updateTheme() {
     let style = theme;
 
     root.style.setProperty('--nex-bg', style === "light" ? 'white' : 'black');
-    console.log(`[CONNECTOR] event.theme.changed.${theme}`);
+    connector(`event.theme.changed.${theme}`);
     document.body.setAttribute('data-bs-theme', style);
 }
 
@@ -618,7 +631,7 @@ function setBorderRadius_dev(r) {
  * @param {number} r - The uiScale value.
  */
 function setUIScale_dev(r) {
-    console.log("[CONNECTOR] settings.set.uiScale."+r);
+    connector("settings.set.uiScale."+r);
 }
 
 /**
@@ -713,7 +726,7 @@ async function loadPage(page, menu, params = "") {
     } else {
         disableMenu(true);
     }
-    console.log("[CONNECTOR] event.page.loaded");
+    connector("event.page.loaded");
 }
 
 /**
@@ -848,9 +861,9 @@ addEventListener("contextmenu", (event) => {
                     contextMenu.innerHTML += "<li><hr class=\"dropdown-divider\"></li>";
                 }
                 content = true;
-                contextMenu.innerHTML += "<li><a class='dropdown-item' onclick=\"console.log('[CONNECTOR] library.start."+targetId+"');\"><i class=\"bi bi-rocket-takeoff-fill\"></i> Launch instance</a></li>";
+                contextMenu.innerHTML += "<li><a class='dropdown-item' onclick=\"connector('library.start."+targetId+"');\"><i class=\"bi bi-rocket-takeoff-fill\"></i> Launch instance</a></li>";
                 contextMenu.innerHTML += "<li><a class='dropdown-item' onclick=\"navigator.clipboard.writeText('"+targetId+"');\"><i class=\"bi bi-copy\"></i> Copy instance path</a></li>";
-                contextMenu.innerHTML += "<li><a class='dropdown-item' onclick=\"console.log('[CONNECTOR] library.folder."+targetId+"');\"><i class=\"bi bi-box-arrow-up-right\"></i> Open instance folder</a></li>";
+                contextMenu.innerHTML += "<li><a class='dropdown-item' onclick=\"connector('library.folder."+targetId+"');\"><i class=\"bi bi-box-arrow-up-right\"></i> Open instance folder</a></li>";
             }
         }
 
@@ -907,7 +920,7 @@ function initArrayBoxes() {
 
 function initArrayBox(box) {
     if(box.id) {
-        box.innerHTML = "<input type='text' class='tag-input' placeholder='Write here to add...' onkeydown='if (event.key === `Enter`) { event.preventDefault(); if(this.value&&this.value.replaceAll(` `,``)) { console.log(`[CONNECTOR] settings.add."+box.id+".`+this.value+``); this.value = ``; }}' style='outline: none !important;'>";
+        box.innerHTML = "<input type='text' class='tag-input' placeholder='Write here to add...' onkeydown='if (event.key === `Enter`) { event.preventDefault(); if(this.value&&this.value.replaceAll(` `,``)) { connector(`settings.add."+box.id+".`+this.value+``); this.value = ``; }}' style='outline: none !important;'>";
     }
 }
 
@@ -921,7 +934,7 @@ function appendSafeTag(boxElement, value, onclick_) {
     const tempElement = document.createElement('div');
     tempElement.textContent = value;
     const safeValue = tempElement.innerHTML;
-    boxElement.innerHTML += `<div><span data-value="${safeValue.replace(/"/g, '&quot;')}" onmouseover="startScrolling(this)" onmouseout="stopScrolling(this)">${safeValue}</span><i onclick="console.log('[CONNECTOR] `+onclick_+`');" class='bi bi-x-lg'></i></div>`;
+    boxElement.innerHTML += `<div><span data-value="${safeValue.replace(/"/g, '&quot;')}" onmouseover="startScrolling(this)" onmouseout="stopScrolling(this)">${safeValue}</span><i onclick="connector('`+onclick_+`');" class='bi bi-x-lg'></i></div>`;
 }
 
 let scrollInterval;

@@ -11,12 +11,12 @@
                             <table class="w-100">
                                 <tr class="p-0 m-0">
                                     <td class="nohover bg-transparent p-2 m-0">
-                                        <strong class="p-0 m-0 position-absolute" style="left: 1rem; top: 0.3rem;">Library</strong>
+                                        <strong class="p-0 m-0 position-absolute" style="left: 1rem; top: 0.5rem;">Library</strong>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="nohover p-0 m-0 py-1 bg-transparent">
-                                        <button onclick="showOverview();" id="overview-button" type="button" class="btn btn-nex-glass">
+                                    <td class="nohover p-0 m-0 pt-2 py-1 bg-transparent">
+                                        <button onclick="showOverview();" id="overview-button" type="button" class="btn btn-nex-glass d-none">
                                             <i class="bi bi-house"></i>
                                             <span>Home & Overview</span>
                                         </button>
@@ -108,7 +108,7 @@
                             </tr>
                             <tr>
                                 <td class="first">
-                                    <label><input class="opacity-0 z-n1" type="checkbox" disabled></label>
+                                    <label><input class="opacity-0 z-n1 d-none" type="checkbox" disabled></label>
                                 </td>
                                 <td class="nohover position-relative menu">
                                     <div class="p-0 m-0 d-flex position-relative">
@@ -123,7 +123,7 @@
                                         <div class="position-absolute buttons w-100 d-flex gap-2 flex-row align-self-start justify-content-end">
                                             <a id="update-button" type="button" class="btn btn-nex-primary btn-nex-glass"><i class="bi bi-download"></i></a>
                                             <a id="folder-button" type="button" class="btn btn-nex-primary btn-nex-glass"><i class="bi bi-folder2"></i></a>
-                                            <a id="library-settings-button" type="button" class="btn btn-nex-primary btn-nex-glass" onclick="console.log('[CONNECTOR] library.settings.'+activeInstance)"><i class="bi bi-gear"></i></a>
+                                            <a id="library-settings-button" type="button" class="btn btn-nex-primary btn-nex-glass" onclick="connector('library.settings.'+activeInstance)"><i class="bi bi-gear"></i></a>
                                         </div>
                                     </div>
                                     <button id="launch-button" type="button" class="btn btn-nex-primary text-nowrap overflow-hidden"></button>
@@ -156,7 +156,7 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="tab-content">
+                    <div class="tab-content" style="max-height: calc(100vh - 17.35rem); overflow: hidden; overflow-y: auto; border-radius: var(--bs-border-radius);">
                         <div class="tab-pane m-0 p-0 show active" id="tab-about-content" aria-labelledby="tab-about">
                             <div class="content-table shadow">
                             <table class="w-100">
@@ -444,7 +444,7 @@
                             <div>
                                 Game Type
                                 <label>
-                                    <select id="creator-mc-type" onchange="document.getElementById('creator-mc-versions').innerHTML = ''; document.getElementById('creator-ml-versions').innerHTML = ''; console.log('[CONNECTOR] library.creator.init.'+this.value);">
+                                    <select id="creator-mc-type" onchange="document.getElementById('creator-mc-versions').innerHTML = ''; document.getElementById('creator-ml-versions').innerHTML = ''; connector('library.creator.init.'+this.value);">
                                         <option value="vanilla">Vanilla</option>
                                         <option value="experimental">Experimental</option>
                                         <option value="fabric">Fabric</option>
@@ -457,7 +457,7 @@
                             <div>
                                 Minecraft Version
                                 <label>
-                                    <select id="creator-mc-versions" onchange="document.getElementById('creator-ml-versions').innerHTML = ''; console.log('[CONNECTOR] library.creator.init.version.'+document.getElementById('creator-mc-type').value+'.'+this.value);">
+                                    <select id="creator-mc-versions" onchange="document.getElementById('creator-ml-versions').innerHTML = ''; connector('library.creator.init.version.'+document.getElementById('creator-mc-type').value+'.'+this.value);">
 
                                     </select>
                                 </label>

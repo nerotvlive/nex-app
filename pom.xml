@@ -6,13 +6,13 @@
 
     <groupId>com.zyneonstudios.apex</groupId>
     <artifactId>nex-app-legacy</artifactId>
-    <version>3.0.41</version>
+    <version>3.0.42</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus.name>Reformatio</nexus.name>
-        <nexus.type>stable</nexus.type>
+        <nexus.type>experimental</nexus.type>
         <app.mainClass>com.zyneonstudios.apex.nexapp.Main</app.mainClass>
         <app.name>NEX App (Legacy)</app.name>
         <app.vendor>Zyneon Apex</app.vendor>
@@ -74,6 +74,11 @@
             <groupId>org.zyneonstudios.apex</groupId>
             <artifactId>mojang-auth</artifactId>
             <version>2025.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zyneonstudios.apex</groupId>
+            <artifactId>jauri-webview</artifactId>
+            <version>0.30</version>
         </dependency>
 
         <!-- JITPACK.IO REPOSITORY -->

@@ -22,7 +22,7 @@ public class LaunchCommand extends NexusConsoleCommand {
         if(args.length>0) {
             String identifier = Arrays.toString(args).replace("[","").replace("]","").replace(", "," ");
             if(searchInstance(identifier)!=null) {
-                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("console.log(\"[CONNECTOR] library.start."+searchInstance(identifier).getPath()+"\");");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("connector(\"library.start."+searchInstance(identifier).getPath()+"\");");
                 return true;
             } else {
                 NEXApplication.getLogger().err("Instance not found: "+identifier);

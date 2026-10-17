@@ -1,6 +1,5 @@
 package com.zyneonstudios.apex.nexapp.utilities;
 
-import com.zyneonstudios.apex.nexapp.main.NEXApplication;
 import com.zyneonstudios.nexus.utilities.logger.NexusLogger;
 
 import javax.swing.*;
@@ -69,10 +68,6 @@ public class ApplicationLogger extends NexusLogger {
     }
 
     private JFrame getParent() {
-        JFrame parent = null;
-        try {
-            parent = NEXApplication.getInstance().getApplicationFrame();
-        } catch (Exception ignore) {}
-        return parent;
+        return null;
     }
 }

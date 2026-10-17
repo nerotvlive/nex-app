@@ -81,7 +81,7 @@ public class JavaUtilities {
                 fixPermissions(path);
             }
 
-            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("console.log('[CONNECTOR] settings.init.java');");
+            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("connector('settings.init.java');");
             System.gc();
             return true;
         } catch (Exception e) {

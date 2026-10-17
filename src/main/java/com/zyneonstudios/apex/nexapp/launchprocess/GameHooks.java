@@ -5,8 +5,6 @@ import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.main.NEXApplication;
 import com.zyneonstudios.apex.nexapp.search.zyndex.local.LocalInstance;
 
-import java.awt.*;
-
 public class GameHooks {
 
     public static InstanceLauncherHook getPreLaunchHook(MinecraftLauncher launcher, LocalInstance instance) {
@@ -31,7 +29,7 @@ public class GameHooks {
             public void run() {
                 NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById(\"launch-button\").innerHTML = \"<i class='bi bi-check-lg'></i> RUNNING\";");
                 if(NEXApplication.getInstance().getLocalSettings().minimizeApp()) {
-                    NEXApplication.getInstance().getApplicationFrame().setState(Frame.ICONIFIED);
+                    NEXApplication.getInstance().getApplicationFrame().minimize();
                 }
                 for(String cmd: getLocalInstance().getOnLaunchHook()) {
                     if(cmd.startsWith("napp ")) {
@@ -49,11 +47,11 @@ public class GameHooks {
             @Override
             public void run() {
                 NEXApplication.getInstance().getInstanceManager().removeRunningInstance(launcher.getGameProcess());
-                if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=library")) {
-                    NEXApplication.getInstance().getApplicationFrame().getBrowser().reload();
+                if(NEXApplication.getInstance().getApplicationFrame().getURL().contains("page=library")) {
+                    NEXApplication.getInstance().getApplicationFrame().reload();
                 }
                 if(NEXApplication.getInstance().getLocalSettings().minimizeApp()) {
-                    NEXApplication.getInstance().getApplicationFrame().setState(Frame.NORMAL);
+                    NEXApplication.getInstance().getApplicationFrame().setVisible(true);
                 }
                 for(String cmd: getLocalInstance().getOnExitHook()) {
                     if(cmd.startsWith("napp ")) {

@@ -2,11 +2,12 @@ package com.zyneonstudios.apex.nexapp.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.starxg.keytar.Keytar;
 import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.downloads.DownloadManager;
 import com.zyneonstudios.apex.nexapp.frame.AppFrame;
+import com.zyneonstudios.apex.nexapp.frame.LegacyAppFrame;
+import com.zyneonstudios.apex.nexapp.frame.NativeAppFrame;
 import com.zyneonstudios.apex.nexapp.listeners.PageLoadListener;
 import com.zyneonstudios.apex.nexapp.main.console.NexusConsoleHandler;
 import com.zyneonstudios.apex.nexapp.main.console.commands.*;
@@ -17,12 +18,12 @@ import com.zyneonstudios.apex.nexapp.utilities.ApplicationLogger;
 import com.zyneonstudios.apex.nexapp.utilities.DiscordRichPresence;
 import com.zyneonstudios.apex.nexapp.utilities.MicrosoftAuthenticator;
 import com.zyneonstudios.apex.nexapp.web.RootController;
+import com.zyneonstudios.nexus.desktop.NexusDesktop;
 import com.zyneonstudios.nexus.desktop.frame.web.NexusWebSetup;
 import com.zyneonstudios.nexus.index.ReadableZyndex;
 import com.zyneonstudios.nexus.utilities.file.FileActions;
 import com.zyneonstudios.nexus.utilities.file.FileExtractor;
 import com.zyneonstudios.nexus.utilities.storage.JsonStorage;
-import com.zyneonstudios.nexus.utilities.strings.StringGenerator;
 import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
 import fr.theshark34.openlauncherlib.minecraft.AuthInfos;
 import live.nerotv.aminecraftlauncher.launcher.*;
@@ -30,25 +31,17 @@ import org.cef.CefApp;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.callback.CefBeforeDownloadCallback;
-import org.cef.callback.CefCommandLine;
 import org.cef.callback.CefDownloadItem;
-import org.cef.handler.CefAppHandlerAdapter;
 import org.cef.handler.CefDownloadHandlerAdapter;
 import org.cef.handler.CefLoadHandlerAdapter;
 import org.cef.network.CefRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 /**
  * The {@code NexusApplication} class is the main object and core component of the NEX App.
@@ -126,14 +119,14 @@ public class NEXApplication {
         setupWebEnvironment(workingDirFile);
         getLogger().log("Initializing application...");
 
-        settings.ensure("settings.window.mergeNavigation", (operatingSystem.equals(OperatingSystem.Type.Windows)));
+        settings.ensure("settings.window.mergeNavigation", operatingSystem.equals(OperatingSystem.Type.Windows));
         localSettings.setMergeNavigation(settings.getBool("settings.window.mergeNavigation"));
+
+        settings.ensure("settings.window.useFallback", !operatingSystem.equals(OperatingSystem.Type.Windows));
+        localSettings.setUseFallbackWindow(settings.getBool("settings.window.useFallback"));
 
         settings.ensure("settings.behavior.killOnExit",false);
         localSettings.setKillOnExit(settings.getBool("settings.behavior.killOnExit"));
-
-        settings.ensure("settings.behavior.keepRunning",true);
-        localSettings.setKeepRunning(settings.getBool("settings.behavior.keepRunning"));
 
         settings.ensure("settings.window.minimizeOnStart",true);
         localSettings.setMinimizeApp(settings.getBool("settings.window.minimizeOnStart"));
@@ -307,7 +300,7 @@ public class NEXApplication {
             public void onLoadStart(CefBrowser browser, CefFrame frame, CefRequest.TransitionType transitionType) {
                 if(!RootController.isAllowedRequest(browser.getURL())) {
                     if(NEXApplication.getInstance().isOnlineUI()) {
-                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=error601&url="+browser.getURL());
+                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"?page=error601&url="+browser.getURL());
                     } else {
                         browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"601?url="+browser.getURL());
                     }
@@ -318,17 +311,26 @@ public class NEXApplication {
             public void onLoadingStateChange(CefBrowser browser, boolean isLoading, boolean canGoBack, boolean canGoForward) {
                 if(!RootController.isAllowedRequest(browser.getURL())) {
                     if(NEXApplication.getInstance().isOnlineUI()) {
-                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=error601&url="+browser.getURL());
+                        browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"?page=error601&url="+browser.getURL());
                     } else {
                         browser.loadURL(NEXApplication.getInstance().getBaseUrl()+"601?url="+browser.getURL());
                     }
+                }
+                if(applicationFrame!=null) {
+                    applicationFrame.executeJavaScript("version = \""+getVersion()+"\";");
+                    applicationFrame.executeJavaScript("document.getElementById('nexapp-titlebar').classList.add('hidden');");
+                    applicationFrame.executeJavaScript("document.getElementById('nexapp-content').classList.remove('rounded-tl-2xl'); document.getElementById('nexapp-content').classList.remove('border-t'); document.getElementById('nexapp-content').classList.remove('border-l');");
                 }
             }
         });
         webSetup.getWebClient().addLoadHandler(new CefLoadHandlerAdapter() {
             @Override
             public void onLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode) {
-                frame.executeJavaScript("version = \""+getVersion()+"\";", browser.getURL() ,0);
+                if(applicationFrame!=null) {
+                    applicationFrame.executeJavaScript("version = \""+getVersion()+"\";");
+                    applicationFrame.executeJavaScript("document.getElementById('nexapp-titlebar').classList.add('hidden');");
+                    applicationFrame.executeJavaScript("document.getElementById('nexapp-content').classList.remove('rounded-tl-2xl'); document.getElementById('nexapp-content').classList.remove('border-t'); document.getElementById('nexapp-content').classList.remove('border-l');");
+                }
             }
         });
 
@@ -361,20 +363,18 @@ public class NEXApplication {
      */
     public boolean launch() {
         if (!launched) {
-            try {
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                applicationFrame = new AppFrame(webSetup, getBaseUrl()+"index.html?app=true", true);
-                applicationFrame.setTitlebar(getVersion(), Color.black, Color.white);
-                applicationFrame.setSize(applicationFrame.getDefaultSize());
-                applicationFrame.setLocationRelativeTo(null);
-                applicationFrame.setVisible(true);
-                launched = true;
-            } catch (Exception e) {
-                getLogger().err("Couldn't launch application: " + e.getMessage());
+            String url = getBaseUrl()+"?app=true";
+            if(!Main.useFallbackFrame()&&!getLocalSettings().useFallbackWindow()) {
+                launched = launchNativeFrame(url);
+            }
+            if (!launched) {
+                if(launchFallbackFrame(url)) {
+                    launched = true;
+                } else {
+                    throw new RuntimeException("Couldn't launch application (even with legacy frame)");
+                }
             }
         }
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> CefApp.getInstance().dispose()));
 
         runner.start();
         moduleLoader = new ModuleLoader(this);
@@ -383,7 +383,33 @@ public class NEXApplication {
         return launched;
     }
 
+    private boolean launchNativeFrame(String url) {
+        try {
+            applicationFrame = new NativeAppFrame(url);
+            return true;
+        } catch (Exception e) {
+            getLogger().err("Failed to use native frame: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private boolean launchFallbackFrame(String url) {
+        try {
+            NexusDesktop.init();
+            applicationFrame = new LegacyAppFrame(webSetup, url, true);
+            applicationFrame.setVisible(true);
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> CefApp.getInstance().dispose()));
+            return true;
+        } catch (Exception e) {
+            getLogger().err("Failed to use fallback frame: " + e.getMessage());
+        }
+        return false;
+    }
+
     public String getBaseUrl() {
+        if(Main.getAdress() != null && !Main.getAdress().isBlank() && Main.getAdress().startsWith("http://")) {
+            return Main.getAdress();
+        }
         return onlineUI ? "https://nerotvlive.github.io/nex-app/src/main/html/" : "http://localhost:" + Main.getPort() + "/";
     }
 
@@ -394,9 +420,10 @@ public class NEXApplication {
      */
     public static void stop(int exitCode) {
         if(getInstance().getLocalSettings().useKillOnExit()) {
+            getInstance().getApplicationFrame().close();
             System.exit(-10);
         } else {
-            SwingUtilities.invokeLater(() -> end(exitCode));
+            CompletableFuture.runAsync(() -> end(exitCode));
         }
     }
 
@@ -410,6 +437,7 @@ public class NEXApplication {
         disposeCef();
         forceKillJcefHelpers();
         FileActions.deleteFolder(new File((NEXApplication.getInstance().getWorkingPath()+"/temp/").replace("\\","/").replace("//","/")));
+        getInstance().getApplicationFrame().close();
         System.exit(exitCode);
     }
 
@@ -503,7 +531,7 @@ public class NEXApplication {
             if(getInstance()!=null) {
                 if(getInstance().getApplicationFrame()!=null) {
                     getInstance().getApplicationFrame().setVisible(false);
-                    getInstance().getApplicationFrame().executeJavaScript("location.href = 'index.html?app=true'");
+                    getInstance().getApplicationFrame().executeJavaScript("location.href = '/?app=true'");
                     getInstance().getApplicationFrame().setVisible(true);
                 }
             }

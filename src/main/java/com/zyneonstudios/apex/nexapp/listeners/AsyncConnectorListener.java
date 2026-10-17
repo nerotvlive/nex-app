@@ -4,26 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.starxg.keytar.Keytar;
 import com.zyneonstudios.apex.nexapp.Main;
-import com.zyneonstudios.apex.nexapp.utilities.*;
-import com.zyneonstudios.nexus.desktop.events.AsyncWebFrameConnectorEvent;
-import com.zyneonstudios.nexus.desktop.frame.web.WebFrame;
-import com.zyneonstudios.nexus.instance.ReadableZynstance;
-import com.zyneonstudios.nexus.instance.Zynstance;
-import com.zyneonstudios.nexus.instance.ZynstanceBuilder;
-import com.zyneonstudios.nexus.utilities.file.FileActions;
-import com.zyneonstudios.nexus.utilities.system.OperatingSystem;
-import com.zyneonstudios.verget.Verget;
-import com.zyneonstudios.verget.minecraft.MinecraftVerget;
-import jnafilechooser.api.JnaFileChooser;
-import live.nerotv.aminecraftlauncher.launcher.*;
-import net.querz.nbt.io.NBTUtil;
-import net.querz.nbt.io.NamedTag;
-import net.querz.nbt.tag.CompoundTag;
-import net.querz.nbt.tag.ListTag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.zyneonstudios.apex.nexapp.events.PageLoadedEvent;
-import com.zyneonstudios.apex.nexapp.frame.AppFrame;
 import com.zyneonstudios.apex.nexapp.launchprocess.GameHooks;
 import com.zyneonstudios.apex.nexapp.main.NEXApplication;
 import com.zyneonstudios.apex.nexapp.search.CombinedSearch;
@@ -35,8 +16,20 @@ import com.zyneonstudios.apex.nexapp.search.modrinth.search.facets.categories.Mo
 import com.zyneonstudios.apex.nexapp.search.zyndex.ZyndexIntegration;
 import com.zyneonstudios.apex.nexapp.search.zyndex.local.LocalInstance;
 import com.zyneonstudios.apex.nexapp.search.zyndex.local.LocalInstanceContent;
+import com.zyneonstudios.apex.nexapp.utilities.*;
+import com.zyneonstudios.nexus.instance.ReadableZynstance;
+import com.zyneonstudios.nexus.instance.Zynstance;
+import com.zyneonstudios.nexus.instance.ZynstanceBuilder;
+import com.zyneonstudios.nexus.utilities.file.FileActions;
+import com.zyneonstudios.verget.Verget;
+import com.zyneonstudios.verget.minecraft.MinecraftVerget;
+import jnafilechooser.api.JnaFileChooser;
+import live.nerotv.aminecraftlauncher.launcher.*;
+import net.querz.nbt.io.NBTUtil;
+import net.querz.nbt.io.NamedTag;
+import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.ListTag;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -47,55 +40,42 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Objects;
 
-public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
+public class AsyncConnectorListener {
 
-    private static final Logger log = LoggerFactory.getLogger(AsyncConnectorListener.class);
-    private final AppFrame frame;
     private boolean initialized = false;
 
-    public AsyncConnectorListener(WebFrame frame, String message) {
-        super(frame, message);
-        this.frame = (AppFrame)frame;
-    }
-
-    private void evaluateTheme() {
-        frame.executeJavaScript("setSystemForeground('#ffffff');");
-        frame.executeJavaScript("setSystemBackground('#000000');");
-        frame.setTitleForeground(Color.WHITE);
-        frame.setTitleBackground(Color.BLACK);
+    public AsyncConnectorListener() {
 
     }
 
-    @Override
-    protected void resolveMessage(String s) {
+    public void resolveMessage(String s) {
         NEXApplication.getLogger().deb("[CONNECTOR] Resolving "+s);
-        if(s.equals("devtools")) {
-            getFrame().getBrowser().openDevTools();
-        } else if (s.equals("download.pauseRunning")) {
+        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("getUrl(window.location.href);");
+        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("nativeApp = "+!(Main.useFallbackFrame()||NEXApplication.getInstance().getLocalSettings().useFallbackWindow())+";");
+        if (s.equals("download.pauseRunning")) {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).pause();
         } else if (s.equals("download.cancelRunning")) {
             NEXApplication.getInstance().getDownloadManager().getDownloads().get(NEXApplication.getInstance().getRunner().getDownloadingId()).cancel();
         } else if (s.startsWith("event.page.loaded")) {
-            frame.rescale();
-            frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
-            evaluateTheme();
+            NEXApplication.getInstance().getApplicationFrame().rescale();
+            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('main').classList.add('windows');");
 
             for (PageLoadedEvent event : NEXApplication.getInstance().getEventHandler().getPageLoadedEvents()) {
-                event.setUrl(frame.getBrowser().getURL());
+                event.setUrl(NEXApplication.getInstance().getApplicationFrame().getURL());
                 event.execute();
             }
 
             if(!initialized) {
                 initialized = true;
-                frame.getBrowser().reload();
+                NEXApplication.getInstance().getApplicationFrame().reload();
             }
         } else if(s.startsWith("discover.search.")) {
             s = s.replace("discover.search.", "");
 
             if(s.equals("init")) {
-                frame.executeJavaScript("document.getElementById('search-source').querySelector('.nex').querySelector('input').checked = "+ NEXApplication.getInstance().getLocalSettings().isDiscoverSearchNEX()+";");
-                frame.executeJavaScript("document.getElementById('search-source').querySelector('.modrinth').querySelector('input').checked = "+ NEXApplication.getInstance().getLocalSettings().isDiscoverSearchModrinth()+";");
-                frame.executeJavaScript("document.getElementById('search-source').querySelector('.curseforge').querySelector('input').checked = "+ NEXApplication.getInstance().getLocalSettings().isDiscoverSearchCurseForge()+";");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('search-source').querySelector('.nex').querySelector('input').checked = "+ NEXApplication.getInstance().getLocalSettings().isDiscoverSearchNEX()+";");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('search-source').querySelector('.modrinth').querySelector('input').checked = "+ NEXApplication.getInstance().getLocalSettings().isDiscoverSearchModrinth()+";");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('search-source').querySelector('.curseforge').querySelector('input').checked = "+ NEXApplication.getInstance().getLocalSettings().isDiscoverSearchCurseForge()+";");
             } else if(s.startsWith("enable.")) {
                 String[] cmd = s.replace("enable.", "").split("\\.", 2);
                 String p = cmd[0].toLowerCase();
@@ -105,7 +85,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     case "modrinth" -> NEXApplication.getInstance().getLocalSettings().setDiscoverSearchModrinth(e);
                     case "curseforge" -> NEXApplication.getInstance().getLocalSettings().setDiscoverSearchCurseForge(e);
                 }
-                frame.executeJavaScript("startSearch(0);");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("startSearch(0);");
             }
         } else if(s.startsWith("search.")) {
             String[] query = (s.replace("search.","")).split("\\.",3);
@@ -132,7 +112,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 String connector = result.get("connector").getAsString();
 
                 String cmd = "addSearchResult(\""+serachId+"\",\""+id.replace("\"","''")+"\",\""+iconUrl.replace("\"","''")+"\",\""+name.replace("\"","''")+"\",\""+downloads+"\",\""+followers+"\",\""+ authors.replace("\"","''") +"\",\""+summary.replace("\"","''")+"\",\""+url.replace("\"","''")+"\",\""+source.replace("\"","''")+"\",\""+connector.replace("\"","''")+"\");";
-                frame.executeJavaScript(cmd);
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript(cmd);
             }
         } else if (s.equals("exit")) {
             NEXApplication.stop(0);
@@ -158,42 +138,43 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
         } else if(s.startsWith("settings.")) {
             s = s.replace("settings.", "");
             if(s.equals("init")) {
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('#ver').innerText = '" + NEXApplication.getInstance().getVersion() + "';");
                 if(!NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPath().equals(NEXApplication.getInstance().getWorkingPath()+"/instances/")) {
-                    frame.executeJavaScript("document.querySelector('.instance-default-path').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.instance-default-path').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                 }
 
                 long maxMemoryInMegabytes = ((com.sun.management.OperatingSystemMXBean) java.lang.management.ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize() / (1024 * 1024);
-                frame.executeJavaScript("document.querySelector('.instance-default-path-value').innerText = '" + NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPath() + "';");
-                frame.executeJavaScript("document.querySelector('.instance-JavaMemoryDisplay').min = 1024; document.querySelector('.instance-JavaMemoryDisplay').max = " + maxMemoryInMegabytes + "; document.querySelector('.instance-JavaMemoryDisplay').value = " + NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftMemory() + ";");
-                frame.executeJavaScript("document.querySelector('.instance-JavaMemory').min = 1024; document.querySelector('.instance-JavaMemory').max = " + maxMemoryInMegabytes + "; document.querySelector('.instance-JavaMemory').value = " + NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftMemory() + ";");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.instance-default-path-value').innerText = '" + NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPath() + "';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.instance-JavaMemoryDisplay').min = 1024; document.querySelector('.instance-JavaMemoryDisplay').max = " + maxMemoryInMegabytes + "; document.querySelector('.instance-JavaMemoryDisplay').value = " + NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftMemory() + ";");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.instance-JavaMemory').min = 1024; document.querySelector('.instance-JavaMemory').max = " + maxMemoryInMegabytes + "; document.querySelector('.instance-JavaMemory').value = " + NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftMemory() + ";");
             } else if(s.startsWith("init.")) {
                 s = s.replace("init.", "");
                 if(s.equals("defaultInstanceSettings")) {
-                    frame.executeJavaScript("initArrayBox(document.getElementById('pre-launch-hook-array-box'));","initArrayBox(document.getElementById('on-launch-hook-array-box'));","initArrayBox(document.getElementById('on-exit-hook-array-box'));","initArrayBox(document.getElementById('jvm-args-array-box'));","initArrayBox(document.getElementById('env-args-array-box'));","document.querySelector('.instance-useFullscreen').checked = "+ NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftFullscreen()+";","document.querySelector('.instance-windowWidth').value = "+ NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftWindowWidth()+";","document.querySelector('.instance-windowHeight').value = "+ NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftWindowHeight()+";");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('pre-launch-hook-array-box'));","initArrayBox(document.getElementById('on-launch-hook-array-box'));","initArrayBox(document.getElementById('on-exit-hook-array-box'));","initArrayBox(document.getElementById('jvm-args-array-box'));","initArrayBox(document.getElementById('env-args-array-box'));","document.querySelector('.instance-useFullscreen').checked = "+ NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftFullscreen()+";","document.querySelector('.instance-windowWidth').value = "+ NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftWindowWidth()+";","document.querySelector('.instance-windowHeight').value = "+ NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftWindowHeight()+";");
 
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().get(i);
-                        frame.executeJavaScript("addToArrayBox('jvm-args-array-box',\""+arg+"\",'settings.remove.jvm-args-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('jvm-args-array-box',\""+arg+"\",'settings.remove.jvm-args-array-box."+i+"');");
                     }
 
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().get(i);
-                        frame.executeJavaScript("addToArrayBox('env-args-array-box',\""+arg+"\",'settings.remove.env-args-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('env-args-array-box',\""+arg+"\",'settings.remove.env-args-array-box."+i+"');");
                     }
 
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('pre-launch-hook-array-box',\""+arg+"\",'settings.remove.pre-launch-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('pre-launch-hook-array-box',\""+arg+"\",'settings.remove.pre-launch-hook-array-box."+i+"');");
                     }
 
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('on-launch-hook-array-box',\""+arg+"\",'settings.remove.on-launch-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('on-launch-hook-array-box',\""+arg+"\",'settings.remove.on-launch-hook-array-box."+i+"');");
                     }
 
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('on-exit-hook-array-box',\""+arg+"\",'settings.remove.on-exit-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('on-exit-hook-array-box',\""+arg+"\",'settings.remove.on-exit-hook-array-box."+i+"');");
                     }
                 } else if(s.equals("java")) {
                     String p25 = NEXApplication.getInstance().getLocalSettings().getJava25Path();
@@ -201,193 +182,193 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     String p17 = NEXApplication.getInstance().getLocalSettings().getJava17Path();
                     String p8 = NEXApplication.getInstance().getLocalSettings().getJava8Path();
                     if(!p25.equals(NEXApplication.getInstance().getWorkingPath()+"/libs/java-25")) {
-                        frame.executeJavaScript("document.querySelector('.java-25-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.java-25-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
                     if(!p21.equals(NEXApplication.getInstance().getWorkingPath()+"/libs/java-21")) {
-                        frame.executeJavaScript("document.querySelector('.java-21-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.java-21-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
                     if(!p17.equals(NEXApplication.getInstance().getWorkingPath()+"/libs/java-17")) {
-                        frame.executeJavaScript("document.querySelector('.java-17-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.java-17-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
                     if(!p8.equals(NEXApplication.getInstance().getWorkingPath()+"/libs/java-8")) {
-                        frame.executeJavaScript("document.querySelector('.java-8-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.java-8-path-value').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
                     }
-                    frame.executeJavaScript("document.querySelector('.jre-25-path-value').innerText = '" + p25.replace("\\","/") + "';","document.querySelector('.jre-21-path-value').innerText = '" + p21.replace("\\","/") + "';","document.querySelector('.jre-17-path-value').innerText = '" + p17.replace("\\","/") + "';","document.querySelector('.jre-8-path-value').innerText = '" + p8.replace("\\","/") + "';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-path-value').innerText = '" + p25.replace("\\","/") + "';","document.querySelector('.jre-21-path-value').innerText = '" + p21.replace("\\","/") + "';","document.querySelector('.jre-17-path-value').innerText = '" + p17.replace("\\","/") + "';","document.querySelector('.jre-8-path-value').innerText = '" + p8.replace("\\","/") + "';");
 
                     if(JavaUtilities.getJavaVersion(p8)==null) {
-                        frame.executeJavaScript("document.querySelector('.jre-8-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-notInstalled').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-install-button').innerText = 'Install';");
-                        frame.executeJavaScript("document.querySelector('.jre-8-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-notInstalled').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-install-button').innerText = 'Install';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-warning').innerText = '';");
                     } else if(Objects.equals(JavaUtilities.getJavaVersion(p8), "8")) {
-                        frame.executeJavaScript("document.querySelector('.jre-8-installed').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-install-button').innerText = 'Reinstall';");
-                        frame.executeJavaScript("document.querySelector('.jre-8-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-installed').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-install-button').innerText = 'Reinstall';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-warning').innerText = '';");
                     } else {
-                        frame.executeJavaScript("document.querySelector('.jre-8-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p8)+" is installed.';");
-                        frame.executeJavaScript("document.querySelector('.jre-8-warning').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-8-install-button').innerText = 'Fix';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p8)+" is installed.';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-warning').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-8-install-button').innerText = 'Fix';");
                     }
 
                     if(JavaUtilities.getJavaVersion(p17)==null) {
-                        frame.executeJavaScript("document.querySelector('.jre-17-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-notInstalled').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-warning').innerText = '';");
-                        frame.executeJavaScript("document.querySelector('.jre-17-install-button').innerText = 'Install';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-notInstalled').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-install-button').innerText = 'Install';");
                     } else if(Objects.equals(JavaUtilities.getJavaVersion(p17), "17")) {
-                        frame.executeJavaScript("document.querySelector('.jre-17-installed').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-install-button').innerText = 'Reinstall';");
-                        frame.executeJavaScript("document.querySelector('.jre-17-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-installed').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-install-button').innerText = 'Reinstall';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-warning').innerText = '';");
                     } else {
-                        frame.executeJavaScript("document.querySelector('.jre-17-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p17)+" is installed.';");
-                        frame.executeJavaScript("document.querySelector('.jre-17-warning').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-17-install-button').innerText = 'Fix';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p17)+" is installed.';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-warning').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-17-install-button').innerText = 'Fix';");
                     }
 
                     if(JavaUtilities.getJavaVersion(p21)==null) {
-                        frame.executeJavaScript("document.querySelector('.jre-21-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-notInstalled').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-warning').innerText = '';");
-                        frame.executeJavaScript("document.querySelector('.jre-21-install-button').innerText = 'Install';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-notInstalled').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-install-button').innerText = 'Install';");
                     } else if(Objects.equals(JavaUtilities.getJavaVersion(p21), "21")) {
-                        frame.executeJavaScript("document.querySelector('.jre-21-installed').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-install-button').innerText = 'Reinstall';");
-                        frame.executeJavaScript("document.querySelector('.jre-21-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-installed').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-install-button').innerText = 'Reinstall';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-warning').innerText = '';");
                     } else {
-                        frame.executeJavaScript("document.querySelector('.jre-21-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p21)+" is installed.';");
-                        frame.executeJavaScript("document.querySelector('.jre-21-warning').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-21-install-button').innerText = 'Fix';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p21)+" is installed.';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-warning').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-21-install-button').innerText = 'Fix';");
                     }
 
                     if(JavaUtilities.getJavaVersion(p25)==null) {
-                        frame.executeJavaScript("document.querySelector('.jre-25-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-warning').innerText = '';");
-                        frame.executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Install';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Install';");
                     } else if(Objects.equals(JavaUtilities.getJavaVersion(p25), "25")) {
-                        frame.executeJavaScript("document.querySelector('.jre-25-installed').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Reinstall';");
-                        frame.executeJavaScript("document.querySelector('.jre-25-warning').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-warning').innerText = '';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-installed').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Reinstall';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-warning').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-warning').innerText = '';");
                     } else {
-                        frame.executeJavaScript("document.querySelector('.jre-25-installed').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.add('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p25)+" is installed.';");
-                        frame.executeJavaScript("document.querySelector('.jre-25-warning').classList.remove('d-none');");
-                        frame.executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Fix';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-installed').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-notInstalled').classList.add('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-warning').innerText = 'Wrong Java version installed! Java "+ JavaUtilities.getJavaVersion(p25)+" is installed.';");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-warning').classList.remove('d-none');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.jre-25-install-button').innerText = 'Fix';");
                     }
                 }
             } else if(s.startsWith("add.")) {
                 s = s.replaceFirst("add.","");
                 if(s.startsWith("jvm-args-array-box.")) {
                     s = s.replaceFirst("jvm-args-array-box.","");
-                    frame.executeJavaScript("initArrayBox(document.getElementById('jvm-args-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('jvm-args-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().add(s);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftJVMArgs(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().get(i);
-                        frame.executeJavaScript("addToArrayBox('jvm-args-array-box',\""+arg+"\",'settings.remove.jvm-args-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('jvm-args-array-box',\""+arg+"\",'settings.remove.jvm-args-array-box."+i+"');");
                     }
                 } else if(s.startsWith("env-args-array-box.")) {
                     s = s.replaceFirst("env-args-array-box.","");
-                    frame.executeJavaScript("initArrayBox(document.getElementById('env-args-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('env-args-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().add(s);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftEnvArgs(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().get(i);
-                        frame.executeJavaScript("addToArrayBox('env-args-array-box',\""+arg+"\",'settings.remove.env-args-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('env-args-array-box',\""+arg+"\",'settings.remove.env-args-array-box."+i+"');");
                     }
                 } else if(s.startsWith("pre-launch-hook-array-box.")) {
                     s = s.replaceFirst("pre-launch-hook-array-box.","");
-                    frame.executeJavaScript("initArrayBox(document.getElementById('pre-launch-hook-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('pre-launch-hook-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().add(s);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftPreLaunchCommands(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('pre-launch-hook-array-box',\""+arg+"\",'settings.remove.pre-launch-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('pre-launch-hook-array-box',\""+arg+"\",'settings.remove.pre-launch-hook-array-box."+i+"');");
                     }
                 } else if(s.startsWith("on-launch-hook-array-box.")) {
                     s = s.replaceFirst("on-launch-hook-array-box.","");
-                    frame.executeJavaScript("initArrayBox(document.getElementById('on-launch-hook-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('on-launch-hook-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().add(s);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftOnLaunchCommands(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('on-launch-hook-array-box',\""+arg+"\",'settings.remove.on-launch-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('on-launch-hook-array-box',\""+arg+"\",'settings.remove.on-launch-hook-array-box."+i+"');");
                     }
                 } else if(s.startsWith("on-exit-hook-array-box.")) {
                     s = s.replaceFirst("on-exit-hook-array-box.","");
-                    frame.executeJavaScript("initArrayBox(document.getElementById('on-exit-hook-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('on-exit-hook-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().add(s);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftOnExitCommands(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('on-exit-hook-array-box',\""+arg+"\",'settings.remove.on-exit-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('on-exit-hook-array-box',\""+arg+"\",'settings.remove.on-exit-hook-array-box."+i+"');");
                     }
                 }
             } else if(s.startsWith("remove.")) {
                 s = s.replaceFirst("remove.","");
                 if(s.startsWith("jvm-args-array-box.")) {
                     int index = Integer.parseInt(s.replaceFirst("jvm-args-array-box.",""));
-                    frame.executeJavaScript("initArrayBox(document.getElementById('jvm-args-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('jvm-args-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().remove(index);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftJVMArgs(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftJVMArgs().get(i);
-                        frame.executeJavaScript("addToArrayBox('jvm-args-array-box',\""+arg+"\",'settings.remove.jvm-args-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('jvm-args-array-box',\""+arg+"\",'settings.remove.jvm-args-array-box."+i+"');");
                     }
                 } else if(s.startsWith("env-args-array-box.")) {
                     int index = Integer.parseInt(s.replaceFirst("env-args-array-box.",""));
-                    frame.executeJavaScript("initArrayBox(document.getElementById('env-args-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('env-args-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().remove(index);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftEnvArgs(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftEnvArgs().get(i);
-                        frame.executeJavaScript("addToArrayBox('env-args-array-box',\""+arg+"\",'settings.remove.env-args-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('env-args-array-box',\""+arg+"\",'settings.remove.env-args-array-box."+i+"');");
                     }
                 } else if(s.startsWith("pre-launch-hook-array-box.")) {
                     int index = Integer.parseInt(s.replaceFirst("pre-launch-hook-array-box.",""));
-                    frame.executeJavaScript("initArrayBox(document.getElementById('pre-launch-hook-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('pre-launch-hook-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().remove(index);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftPreLaunchCommands(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPreLaunchCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('pre-launch-hook-array-box',\""+arg+"\",'settings.remove.pre-launch-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('pre-launch-hook-array-box',\""+arg+"\",'settings.remove.pre-launch-hook-array-box."+i+"');");
                     }
                 } else if(s.startsWith("on-launch-hook-array-box.")) {
                     int index = Integer.parseInt(s.replaceFirst("on-launch-hook-array-box.",""));
-                    frame.executeJavaScript("initArrayBox(document.getElementById('on-launch-hook-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('on-launch-hook-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().remove(index);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftOnLaunchCommands(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnLaunchCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('on-launch-hook-array-box',\""+arg+"\",'settings.remove.on-launch-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('on-launch-hook-array-box',\""+arg+"\",'settings.remove.on-launch-hook-array-box."+i+"');");
                     }
                 } else if(s.startsWith("on-exit-hook-array-box.")) {
                     int index = Integer.parseInt(s.replaceFirst("on-exit-hook-array-box.",""));
-                    frame.executeJavaScript("initArrayBox(document.getElementById('on-exit-hook-array-box'));");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("initArrayBox(document.getElementById('on-exit-hook-array-box'));");
                     NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().remove(index);
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftOnExitCommands(NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands());
                     for(int i = 0; i < NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().size(); i++) {
                         String arg = NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftOnExitCommands().get(i);
-                        frame.executeJavaScript("addToArrayBox('on-exit-hook-array-box',\""+arg+"\",'settings.remove.on-exit-hook-array-box."+i+"');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addToArrayBox('on-exit-hook-array-box',\""+arg+"\",'settings.remove.on-exit-hook-array-box."+i+"');");
                     }
                 }
             } else if(s.startsWith("installJava.")) {
@@ -413,51 +394,87 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 } else if(s.equals("instancePath")) {
                     String path = NEXApplication.getInstance().getWorkingPath()+"/instances/";
                     NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftPath(path);
-                    frame.executeJavaScript("document.querySelector('.instance-default-path-value').innerText = '" + path + "';");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.instance-default-path-value').innerText = '" + path + "';");
                 }
             } else if(s.startsWith("select.")) {
                 s = s.replace("select.", "");
-                if(s.equals("instancePath")) {
-                    JnaFileChooser fc = new JnaFileChooser();
-                    fc.setMode(JnaFileChooser.Mode.Directories);
-                    if (fc.showOpenDialog(frame)) {
-                        File path = fc.getSelectedFile();
-                        if(path.isDirectory()) {
-                            String pathString = path.getAbsolutePath().replace("\\","/");
-                            if(!pathString.endsWith("/")) {
-                                pathString += "/";
-                            }
-                            NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftPath(pathString);
-                            frame.executeJavaScript("document.querySelector('.instance-default-path-value').innerText = '" + pathString + "';");
-                            if(!pathString.equals(NEXApplication.getInstance().getWorkingPath()+"/instances/")) {
-                                frame.executeJavaScript("document.querySelector('.instance-default-path').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
-                            }
+                if (s.equals("instancePath")) {
+                    new Thread(() -> {
+                        JnaFileChooser fc = new JnaFileChooser();
+                        fc.setMode(JnaFileChooser.Mode.Directories);
+                        java.awt.Window parentWindow = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+
+                        boolean success;
+                        if (parentWindow != null) {
+                            success = fc.showOpenDialog(parentWindow);
                         } else {
-                            NEXApplication.getLogger().err("[NEXUS] The selected path is not a directory: " + path.getAbsolutePath());
+                            javax.swing.JFrame dummyFrame = new javax.swing.JFrame();
+                            dummyFrame.setUndecorated(true);
+                            dummyFrame.setLocationRelativeTo(null);
+                            dummyFrame.setVisible(true);
+                            success = fc.showOpenDialog(dummyFrame);
+                            dummyFrame.dispose();
                         }
-                    }
+
+                        if (success) {
+                            File path = fc.getSelectedFile();
+                            if (path != null && path.isDirectory()) {
+                                String pathString = path.getAbsolutePath().replace("\\", "/");
+                                if (!pathString.endsWith("/")) {
+                                    pathString += "/";
+                                }
+                                NEXApplication.getInstance().getLocalSettings().setDefaultMinecraftPath(pathString);
+                                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.instance-default-path-value').innerText = '" + pathString + "';");
+                                if (!pathString.equals(NEXApplication.getInstance().getWorkingPath() + "/instances/")) {
+                                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.instance-default-path').querySelector('.right').querySelector('.d-none').classList.remove('d-none');");
+                                }
+                            } else if (path != null) {
+                                NEXApplication.getLogger().err("[NEXUS] The selected path is not a directory: " + path.getAbsolutePath());
+                            }
+                        }
+                    }, "JnaFileChooser-InstancePath-Thread").start();
                 } else if(s.startsWith("javaPath.")) {
-                    s = s.replaceFirst("javaPath.","");
-                    JnaFileChooser fc = new JnaFileChooser();
-                    fc.setMode(JnaFileChooser.Mode.Directories);
-                    if (fc.showOpenDialog(frame)) {
-                        File path = fc.getSelectedFile();
-                        if(path.isDirectory()) {
-                            String pathString = path.getAbsolutePath().replace("\\","/");
-                            if(!pathString.endsWith("/")) {
-                                pathString += "/";
-                            }
-                            switch (s) {
-                                case "25" -> NEXApplication.getInstance().getLocalSettings().setJre25path(pathString);
-                                case "21" -> NEXApplication.getInstance().getLocalSettings().setJre21path(pathString);
-                                case "17" -> NEXApplication.getInstance().getLocalSettings().setJre17path(pathString);
-                                case "8" -> NEXApplication.getInstance().getLocalSettings().setJre8path(pathString);
-                            }
-                            resolveMessage("settings.init.java");
+                    s = s.replaceFirst("javaPath.", "");
+
+                    String finalS = s;
+                    new Thread(() -> {
+                        JnaFileChooser fc = new JnaFileChooser();
+                        fc.setMode(JnaFileChooser.Mode.Directories);
+                        java.awt.Window parentWindow = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+                        boolean success;
+                        if (parentWindow != null) {
+                            success = fc.showOpenDialog(parentWindow);
                         } else {
-                            NEXApplication.getLogger().err("[NEXUS] The selected path is not a directory: " + path.getAbsolutePath());
+                            javax.swing.JFrame dummyFrame = new javax.swing.JFrame();
+                            dummyFrame.setUndecorated(true);
+                            dummyFrame.setLocationRelativeTo(null);
+                            dummyFrame.setVisible(true);
+                            success = fc.showOpenDialog(dummyFrame);
+                            dummyFrame.dispose();
                         }
-                    }
+
+                        if (success) {
+                            File path = fc.getSelectedFile();
+                            if (path != null && path.isDirectory()) {
+                                String pathString = path.getAbsolutePath().replace("\\", "/");
+                                if (!pathString.endsWith("/")) {
+                                    pathString += "/";
+                                }
+
+                                switch (finalS) {
+                                    case "25" -> NEXApplication.getInstance().getLocalSettings().setJre25path(pathString);
+                                    case "21" -> NEXApplication.getInstance().getLocalSettings().setJre21path(pathString);
+                                    case "17" -> NEXApplication.getInstance().getLocalSettings().setJre17path(pathString);
+                                    case "8" -> NEXApplication.getInstance().getLocalSettings().setJre8path(pathString);
+                                }
+
+                                resolveMessage("settings.init.java");
+
+                            } else if (path != null) {
+                                NEXApplication.getLogger().err("[NEXUS] The selected path is not a directory: " + path.getAbsolutePath());
+                            }
+                        }
+                    }, "JnaFileChooser-Thread").start();
                 }
             } else if(s.startsWith("open.")) {
                 s = s.replace("open.", "");
@@ -501,11 +518,11 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     boolean merge = Boolean.parseBoolean(s.replaceFirst("mergeNavigation.", ""));
                     NEXApplication.getInstance().getLocalSettings().setMergeNavigation(merge);
                     if(merge) {
-                        frame.executeJavaScript("document.getElementById('main').classList.add('windows');");
-                        frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = true;");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('main').classList.add('windows');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = true;");
                     } else {
-                        frame.executeJavaScript("document.getElementById('main').classList.remove('windows');");
-                        frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = false;");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('main').classList.remove('windows');");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = false;");
                     }
                 } else if(s.startsWith("windowWidth.")) {
                     int width = Integer.parseInt(s.replace("windowWidth.", ""));
@@ -519,24 +536,24 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 } else if(s.startsWith("uiScale.")) {
                     double uiScale = Double.parseDouble(s.replace("uiScale.", ""));
                     NEXApplication.getInstance().getLocalSettings().setUiScale(uiScale);
-                    frame.rescale();
+                    NEXApplication.getInstance().getApplicationFrame().rescale();
                 }
             }
         } else if(s.equals("initAccountSettings")) {
             if(MicrosoftAuthenticator.isLoggedIn()) {
-                frame.executeJavaScript("document.querySelector('.account-activeSkin').src = 'https://cravatar.eu/helmhead/"+MicrosoftAuthenticator.getUUID()+"/128.png'; document.querySelector('.account-activeName').innerText = '"+MicrosoftAuthenticator.getUsername()+"'; document.querySelector('.account-activeUUID').innerText = '"+MicrosoftAuthenticator.getUUID()+"'; document.querySelector('.account-activeProfileCard').style.display = 'flex';");
-                frame.executeJavaScript("document.querySelector('.account-activeRow').style.display = ''; document.querySelector('.account-activeRow').id = '"+MicrosoftAuthenticator.getUUID()+"'; document.querySelector('.account-activeRowName').innerText = '"+MicrosoftAuthenticator.getUsername()+"';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.account-activeSkin').src = 'https://cravatar.eu/helmhead/"+MicrosoftAuthenticator.getUUID()+"/128.png'; document.querySelector('.account-activeName').innerText = '"+MicrosoftAuthenticator.getUsername()+"'; document.querySelector('.account-activeUUID').innerText = '"+MicrosoftAuthenticator.getUUID()+"'; document.querySelector('.account-activeProfileCard').style.display = 'flex';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.account-activeRow').style.display = ''; document.querySelector('.account-activeRow').id = '"+MicrosoftAuthenticator.getUUID()+"'; document.querySelector('.account-activeRowName').innerText = '"+MicrosoftAuthenticator.getUsername()+"';");
                 for(String uuid : MicrosoftAuthenticator.getDecryptedAuthenticatedUUIDs()) {
-                    frame.executeJavaScript("addAccountToAccountList('"+MicrosoftAuthenticator.getDecryptedAuthenticatedUsername(uuid)+"','"+uuid+"');");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addAccountToAccountList('"+MicrosoftAuthenticator.getDecryptedAuthenticatedUsername(uuid)+"','"+uuid+"');");
                 }
             }
         } else if(s.equals("initAppearanceAndGeneralValues")) {
             if(NEXApplication.getInstance().getLocalSettings().mergeNavigation()) {
-                frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = true;");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = true;");
             } else {
-                frame.executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = false;");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('mergeNavigationSwitch').checked = false;");
             }
-            frame.executeJavaScript("document.querySelector('.general-keepRunning').checked = "+ NEXApplication.getInstance().getLocalSettings().keepRunning()+"; document.querySelector('.general-appVersion').innerText=\""+ NEXApplication.getInstance().getVersion()+"\";","document.querySelector('.appearance-hideApp').checked = "+ NEXApplication.getInstance().getLocalSettings().minimizeApp()+";");
+            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.general-keepRunning').checked = "+ NEXApplication.getInstance().getLocalSettings().keepRunning()+"; document.querySelector('.general-appVersion').innerText=\""+ NEXApplication.getInstance().getVersion()+"\";","document.querySelector('.appearance-hideApp').checked = "+ NEXApplication.getInstance().getLocalSettings().minimizeApp()+";");
         } else if(s.equals("initDiscordRPC")) {
             boolean rpc = true;
             if(NEXApplication.getInstance().getSettings().has("settings.discord.rpc")) {
@@ -544,9 +561,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     rpc = NEXApplication.getInstance().getSettings().getBool("settings.discord.rpc");
                 } catch (Exception ignore) {}
             }
-            frame.executeJavaScript("document.querySelector('.privacy-enableDiscordRPC').checked = "+rpc+";");
-        } else if(s.startsWith("keepRunning.")) {
-            NEXApplication.getInstance().getLocalSettings().setKeepRunning(s.replace("keepRunning.", "").equals("true"));
+            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.querySelector('.privacy-enableDiscordRPC').checked = "+rpc+";");
         } else if(s.startsWith("discordrpc.")) {
             if (s.replace("discordrpc.", "").equals("true")) {
                 DiscordRichPresence.startRPC();
@@ -563,7 +578,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             String[] cmd = s.replace("install.minecraft.", "").split("\\.",2);
             String source = cmd[0].toLowerCase();
             String id = cmd[1];
-            frame.executeJavaScript("document.getElementById(\""+id+"\").querySelector(\".result-install\").innerText = \"Installing...\";");
+            NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById(\""+id+"\").querySelector(\".result-install\").innerText = \"Installing...\";");
             switch (source) {
                 case "nex" ->
                         ZyndexIntegration.install(NEXApplication.getInstance().getNEX().getInstancesById().get(id), NEXApplication.getInstance().getLocalSettings().getDefaultMinecraftPath());
@@ -581,9 +596,9 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
             s = s.replace("library.", "");
             if(s.equals("authenticate")) {
                 if(MicrosoftAuthenticator.isLoggedIn()) {
-                    frame.executeJavaScript("setActivePage('library');");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("setActivePage('library');");
                 } else {
-                    frame.executeJavaScript("document.getElementById('microsoft-card').classList.remove('d-none'); document.getElementById('login').querySelector('button').classList.remove('disabled'); document.getElementById('login').querySelector('button').classList.remove('opacity-50'); document.getElementById('login').querySelector('button').querySelector('span').innerText = 'SIGN IN'; document.getElementById('login').querySelector('button').disabled = false;");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('microsoft-card').classList.remove('d-none'); document.getElementById('login').querySelector('button').classList.remove('disabled'); document.getElementById('login').querySelector('button').classList.remove('opacity-50'); document.getElementById('login').querySelector('button').querySelector('span').innerText = 'SIGN IN'; document.getElementById('login').querySelector('button').disabled = false;");
                 }
             } else if(s.equals("init")) {
                 NEXApplication.getInstance().getInstanceManager().reload();
@@ -620,9 +635,9 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                         iconUrl = i.getIconUrl();
                     }
                     if(!tagId.isEmpty()) {
-                        frame.executeJavaScript("addInstanceGroup(\"" + tagId + "\",\"" + tag + "\",\"" + color + "\");");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addInstanceGroup(\"" + tagId + "\",\"" + tag + "\",\"" + color + "\");");
                     }
-                    frame.executeJavaScript("addInstance(\""+ StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(i.getName())+"\",\""+StringUtility.encodeData(iconUrl)+"\",\""+tagId+"\");");
+                    NEXApplication.getInstance().getApplicationFrame().executeJavaScript("addInstance(\""+ StringUtility.encodeData(lI.getPath())+"\",\""+StringUtility.encodeData(i.getName())+"\",\""+StringUtility.encodeData(iconUrl)+"\",\""+tagId+"\");");
                     if(showId == null) {
                         showId = lI.getPath();
                     }
@@ -636,7 +651,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
                 resolveMessage("library.creator.init.vanilla");
             } else if(s.startsWith("creator.")) {
-                frame.executeJavaScript("if(!document.getElementById('creator-ml-versions').classList.contains('d-none')) { document.getElementById('creator-ml-versions').classList.add('d-none'); }","if(!document.getElementById('creator-name-warning').classList.contains('d-none')) {document.getElementById('creator-name-warning').classList.add('d-none');}");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("if(!document.getElementById('creator-ml-versions').classList.contains('d-none')) { document.getElementById('creator-ml-versions').classList.add('d-none'); }","if(!document.getElementById('creator-name-warning').classList.contains('d-none')) {document.getElementById('creator-name-warning').classList.add('d-none');}");
                 s = s.replaceFirst("creator.", "");
                 if(s.startsWith("init.version.")) {
                     s = s.replace("init.version.","");
@@ -652,7 +667,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     }
                     String option = "<option value='%ver%'>%ver%</option>";
                     for(String v:versions) {
-                        frame.executeJavaScript("document.getElementById('creator-ml-versions').innerHTML += \""+option.replace("%ver%",v)+"\";","if(document.getElementById('creator-ml-versions').classList.contains('d-none')) { document.getElementById('creator-ml-versions').classList.remove('d-none'); }");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('creator-ml-versions').innerHTML += \""+option.replace("%ver%",v)+"\";","if(document.getElementById('creator-ml-versions').classList.contains('d-none')) { document.getElementById('creator-ml-versions').classList.remove('d-none'); }");
                     }
                 } else if(s.startsWith("init.")) {
                     s = s.replace("init.","");
@@ -667,7 +682,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     }
                     String option = "<option value='%ver%'>%ver%</option>";
                     for(String v:versions) {
-                        frame.executeJavaScript("document.getElementById('creator-mc-versions').innerHTML += \""+option.replace("%ver%",v)+"\";");
+                        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById('creator-mc-versions').innerHTML += \""+option.replace("%ver%",v)+"\";");
                     }
                     resolveMessage("library.creator.init.version."+s+"."+versions.getFirst());
                 } else if(s.startsWith("create.")) {
@@ -699,7 +714,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                         case "quilt" -> builder.setQuiltVersion(crmlversion);
                     }
                     builder.create();
-                    frame.getBrowser().reload();
+                    NEXApplication.getInstance().getApplicationFrame().reload();
                 }
             } else if(s.startsWith("showInstance.")) {
                 String showId = s.replace("showInstance.", "");
@@ -728,7 +743,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 if(NEXApplication.getInstance().getInstanceManager().hasRunningInstance(showId)) {
                     button = "document.getElementById(\"launch-button\").innerHTML = \"<i class='bi bi-check-lg'></i> RUNNING\";";
                 }
-                frame.executeJavaScript(cmd,button);
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript(cmd,button);
 
                 resolvePackMods(lI,"mods");
                 resolvePackMaps(lI.getPath()+"/saves");
@@ -744,7 +759,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 NEXApplication.getInstance().getInstanceManager().reload();
                 lI = null; System.gc();
                 lI = NEXApplication.getInstance().getInstanceManager().getInstance(id);
-                frame.executeJavaScript("console.log('[CONNECTOR] library.showInstance."+id+"');");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("connector('library.showInstance."+id+"');");
                 ReadableZynstance instance = NEXApplication.getInstance().getInstanceManager().getInstance(id).getInstance();
                 if(instance != null) {
                     String mc = instance.getMinecraftVersion();
@@ -841,7 +856,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                     }
                 }
             } else if(s.startsWith("delete.")) {
-                frame.executeJavaScript("document.body.querySelector('.settings-deletion-delete').innerHTML = 'Deleting instance...';");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.body.querySelector('.settings-deletion-delete').innerHTML = 'Deleting instance...';");
                 String id = s.replace("delete.", "");
                 NEXApplication.getInstance().getInstanceManager().removeInstance(id);
                 String absolutePath = new File(id).getAbsolutePath();
@@ -853,7 +868,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                             throw new RuntimeException("Couldn't delete instance folder: "+absolutePath);
                         }
                     }
-                    frame.getBrowser().reload();
+                    NEXApplication.getInstance().getApplicationFrame().reload();
                 } catch (Exception e) {
                     NEXApplication.getLogger().err(e.getMessage());
                 }
@@ -861,7 +876,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 String id = s.replace("settings.", "");
                 LocalInstance instance = NEXApplication.getInstance().getInstanceManager().getInstance(id);
                 String path = new File(instance.getPath()).getAbsolutePath().replace("\\","\\\\");
-                frame.executeJavaScript("document.body.querySelector('.settings-deletion-delete').onclick = function () { console.log('[CONNECTOR] library.delete."+id+"'); }","document.body.querySelector('.settings-deletion-folder').onclick = function () { console.log('[CONNECTOR] library.folder."+id+"'); }","document.body.querySelector('.settings-deletion-id').innerText = \""+instance.getInstance().getId()+"\";","document.body.querySelector('.settings-deletion-name').innerText = \""+instance.getInstance().getName()+"\";","document.body.querySelector('.settings-deletion-version').innerText = \""+instance.getInstance().getVersion()+"\";","document.body.querySelector('.settings-deletion-path').innerText = \""+path+"\";","document.body.querySelector('.settings-instance-title').innerText = \""+instance.getInstance().getName()+"\";","showSettingsPane('General');");
+                NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.body.querySelector('.settings-deletion-delete').onclick = function () { connector('library.delete."+id+"'); }","document.body.querySelector('.settings-deletion-folder').onclick = function () { connector('library.folder."+id+"'); }","document.body.querySelector('.settings-deletion-id').innerText = \""+instance.getInstance().getId()+"\";","document.body.querySelector('.settings-deletion-name').innerText = \""+instance.getInstance().getName()+"\";","document.body.querySelector('.settings-deletion-version').innerText = \""+instance.getInstance().getVersion()+"\";","document.body.querySelector('.settings-deletion-path').innerText = \""+path+"\";","document.body.querySelector('.settings-instance-title').innerText = \""+instance.getInstance().getName()+"\";","showSettingsPane('General');");
             } else if(s.startsWith("folder.")) {
                 String id = s.replace("folder.", "");
                 LocalInstance instance = NEXApplication.getInstance().getInstanceManager().getInstance(id);
@@ -884,7 +899,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 com.append("<tr><td class='first'><label><input disabled type='checkbox'></label></td><td><strong>").append(content.name()).append("</strong><br>by ").append(content.author()).append("</td><td>").append(content.version()).append("<br>").append(content.path()).append("</td><td class='last'>-</td></tr>");
             }
         }
-        frame.executeJavaScript("document.getElementById(\"instance-"+modType.replace("shaderpacks","shaders")+"\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-"+modType.replace("shaderpacks","shaders")+"').querySelector('input.search').oninput = function() { filterTable('instance-"+modType.replace("shaderpacks","shaders")+"'); };");
+        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById(\"instance-"+modType.replace("shaderpacks","shaders")+"\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-"+modType.replace("shaderpacks","shaders")+"').querySelector('input.search').oninput = function() { filterTable('instance-"+modType.replace("shaderpacks","shaders")+"'); };");
     }
 
     private void resolvePackServers(String contentPath) {
@@ -905,7 +920,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 }
             }
         } catch (Exception ignore) {}
-        frame.executeJavaScript("document.getElementById(\"instance-servers\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-servers').querySelector('input.search').oninput = function() { filterTable('instance-servers'); };");
+        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById(\"instance-servers\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-servers').querySelector('input.search').oninput = function() { filterTable('instance-servers'); };");
     }
 
     private void resolvePackMaps(String contentPath) {
@@ -932,7 +947,7 @@ public class AsyncConnectorListener extends AsyncWebFrameConnectorEvent {
                 com.append(code);
             }
         }
-        frame.executeJavaScript("document.getElementById(\"instance-maps\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-maps').querySelector('input.search').oninput = function() { filterTable('instance-maps'); };");
+        NEXApplication.getInstance().getApplicationFrame().executeJavaScript("document.getElementById(\"instance-maps\").innerHTML = \"<tbody>" + com + "</tbody>\"","document.getElementById('instance-maps').querySelector('input.search').oninput = function() { filterTable('instance-maps'); };");
     }
 }
 

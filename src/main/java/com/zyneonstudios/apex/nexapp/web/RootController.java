@@ -1,6 +1,6 @@
 package com.zyneonstudios.apex.nexapp.web;
 
-import com.zyneonstudios.apex.nexapp.Main;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zyneonstudios.apex.nexapp.main.NEXApplication;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.InputStreamResource;
@@ -9,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * The {@code RootController} class is a REST controller responsible for handling HTTP requests
@@ -18,6 +21,8 @@ import java.io.*;
  */
 @RestController
 public class RootController {
+
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @GetMapping("/601*")
     public ResponseEntity<Object> handleExternalRequest(HttpServletRequest request) {

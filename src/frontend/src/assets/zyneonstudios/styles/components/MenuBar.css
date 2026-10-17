@@ -1,0 +1,14 @@
+.menubar {
+    min-height: 3.5rem;
+    max-height: 3.5rem;
+    border-color: #ffffff25;
+    box-shadow: 0 0 0.5rem #0004;
+
+    button,input {
+        background: var(--zyn-bg-item);
+    }
+
+    button:hover,input:hover {
+        background: var(--zyn-bg-item-accent);
+    }
+}

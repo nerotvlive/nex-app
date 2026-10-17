@@ -130,7 +130,7 @@ public class NexusRunner {
             }
         });
 
-        if (NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=downloads")) {
+        if (NEXApplication.getInstance().getApplicationFrame().getURL().contains("page=downloads")) {
             NEXApplication.getInstance().getDownloadManager().getDownloads().forEach((uuid, download) -> {
                 if (download.getState().equals(DownloadManager.DownloadState.WAITING)||download.getState().equals(DownloadManager.DownloadState.PREPARING)||download.getState().equals(DownloadManager.DownloadState.PAUSED)) {
                     String id = download.getUuid()+"";

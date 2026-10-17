@@ -2,7 +2,6 @@ package com.zyneonstudios.apex.nexapp.utilities;
 
 import com.google.gson.JsonArray;
 import com.starxg.keytar.Keytar;
-import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.main.NEXApplication;
 import fr.theshark34.openlauncherlib.minecraft.AuthInfos;
 import live.nerotv.zyneon.auth.ZyneonAuth;
@@ -157,10 +156,10 @@ public class MicrosoftAuthenticator {
 
     private static void refreshBrowser() {
         if(NEXApplication.getInstance().getApplicationFrame() != null) {
-            if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=settings")) {
-                NEXApplication.getInstance().getApplicationFrame().getBrowser().loadURL(NEXApplication.getInstance().getBaseUrl()+"index.html?page=settings.html&st=account-settings&app=true");
-            } else if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=library")|| NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().contains("page=login")) {
-                NEXApplication.getInstance().getApplicationFrame().getBrowser().reload();
+            if(NEXApplication.getInstance().getApplicationFrame().getURL().contains("page=settings")) {
+                NEXApplication.getInstance().getApplicationFrame().loadURL(NEXApplication.getInstance().getBaseUrl()+"?page=settings.html&st=account-settings&app=true");
+            } else if(NEXApplication.getInstance().getApplicationFrame().getURL().contains("page=library")|| NEXApplication.getInstance().getApplicationFrame().getURL().contains("page=login")) {
+                NEXApplication.getInstance().getApplicationFrame().reload();
             }
         }
     }

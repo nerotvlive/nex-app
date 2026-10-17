@@ -56,8 +56,8 @@ function initAppearanceAndGeneralValues() {
     } else {
         resetAccentColorButton.style.display = "none";
     }
-    console.log("[CONNECTOR] initAppearanceAndGeneralValues");
-    console.log("[CONNECTOR] initDiscordRPC");
+    connector("initAppearanceAndGeneralValues");
+    connector("initDiscordRPC");
 } initAppearanceAndGeneralValues();
 
 function initSettings() {
@@ -67,9 +67,9 @@ function initSettings() {
         document.getElementById(urlParams.get("st")+"-button").click();
     }
     initArrayBoxes();
-    console.log("[CONNECTOR] settings.init");
+    connector("settings.init");
 
-    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nex-app`,`_blank`);' class='bi bi-github'></i><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
+    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nex-app/tree/legacy`,`_blank`);' class='bi bi-github'></i><i onclick='connector(`exit`)' class='bi bi-door-open'></i>";
 
 
     sleep(10).then(() => {
@@ -131,7 +131,7 @@ function setAnimations(bool) {
 }
 
 function setWindows(bool) {
-    console.log("[CONNECTOR] settings.set.mergeNavigation."+bool);
+    connector("settings.set.mergeNavigation."+bool);
 }
 
 /**
@@ -240,7 +240,7 @@ function debouncedSetUIScale(value) {
     document.querySelector(".appearance-uiScale").value = value;
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-        console.log("[CONNECTOR] settings.set.uiScale."+value);
+        connector("settings.set.uiScale."+value);
         setUIScale(parseFloat(value),true);
     }, 500);
 }
@@ -350,7 +350,7 @@ function copyUUID(element) {
 function setDefaultMemory(mem) {
     document.body.querySelector('.instance-JavaMemoryDisplay').value = mem;
     document.body.querySelector('.instance-JavaMemory').value = mem;
-    console.log("[CONNECTOR] settings.set.defaultMemory." + mem);
+    connector("settings.set.defaultMemory." + mem);
 }
 
 try {

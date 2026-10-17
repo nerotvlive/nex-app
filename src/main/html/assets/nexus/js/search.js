@@ -2,9 +2,9 @@ resetResults();
 
 function initSearch() {
     highlight(document.getElementById("discover-button"));
-    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nex-app`,`_blank`);' class='bi bi-github'></i><i onclick='console.log(`[CONNECTOR] exit`)' class='bi bi-door-open'></i>";
+    document.querySelector(".menu-panel").querySelector(".card-body").innerHTML = "<i onclick='window.open(`https://discord.gg/hbHDrqUjJ8`,`_blank`);' class='bi bi-discord'></i><i onclick='window.open(`https://github.com/nerotvlive/nex-app/tree/legacy`,`_blank`);' class='bi bi-github'></i><i onclick='connector(`exit`)' class='bi bi-door-open'></i>";
     const urlParams = new URLSearchParams(window.location.search);
-    console.log("[CONNECTOR] discover.search.init");
+    connector("discover.search.init");
     disableMenu(true);
     document.getElementById("search").classList.add("active");
     document.getElementById("search-label").querySelector("input").focus();
@@ -38,7 +38,7 @@ function initSearch() {
  * @param connector The connector of the result project
  */
 
-function addSearchResult(searchId_,id,iconUrl,name,downloads,followers,authors,summary,url,source,connector) {
+function addSearchResult(searchId_,id,iconUrl,name,downloads,followers,authors,summary,url,source,connector_) {
     if(searchId_&&searchId_===searchId) {
         if (!document.getElementById(id)) {
             const template = document.querySelector(".search-result-template");
@@ -72,7 +72,7 @@ function addSearchResult(searchId_,id,iconUrl,name,downloads,followers,authors,s
                 result.querySelector(".result-url").remove();
             }
             result.querySelector(".result-install").onclick = function () {
-                console.log("[CONNECTOR] " + decodeURIComponent(connector));
+                connector("" + decodeURIComponent(connector_));
             };
             result.classList.add(source.toLowerCase());
             template.parentNode.insertBefore(result, template);
@@ -93,6 +93,6 @@ function startSearch(offset) {
         resetResults();
     }
     document.getElementById('loadmore').style.display = 'none';
-    console.log("[CONNECTOR] search."+searchId+"."+offset+"."+document.getElementById('search-label').querySelector('input').value);
+    connector("search."+searchId+"."+offset+"."+document.getElementById('search-label').querySelector('input').value);
     window.history.pushState({}, document.title, window.location.pathname + "?page=discover.html&q=" + encodeURIComponent(document.getElementById('search-label').querySelector('input').value));
 }

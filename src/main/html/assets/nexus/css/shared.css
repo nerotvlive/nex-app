@@ -1,5 +1,5 @@
 :root,[data-bs-theme="light"],[data-bs-theme="dark"] {
-    --nex-bg: var(--nex-sys-bg);
+    --nex-bg: black !important;
     --nex-fg: "#f7f7f7";
     --nex-iv: white;
 
@@ -86,7 +86,7 @@
 }
 
 :root {
-    --nex-sys-bg: var(--nex-bg);
+    --nex-sys-bg: black !important;
     --nex-sys-fg: var(--nex-fg);
 }
 
@@ -303,7 +303,7 @@ menu .popover {
 
 body {
     transition: all var(--nex-animation-speed) ease;
-    background: var(--nex-bg);
+    background: black !important;
 
     #titlebar {
         display: none !important;

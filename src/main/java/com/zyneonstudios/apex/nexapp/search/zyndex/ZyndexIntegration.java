@@ -80,8 +80,8 @@ public class ZyndexIntegration {
                 return FileGetter.downloadFile(instance.getLocation(),installDir.getAbsolutePath()+"/zyneonInstance.json").exists();
             }
             zip.delete();
-            if(NEXApplication.getInstance().getApplicationFrame().getBrowser().getURL().toLowerCase().contains("page=library")) {
-                NEXApplication.getInstance().getApplicationFrame().getBrowser().reload();
+            if(NEXApplication.getInstance().getApplicationFrame().getURL().toLowerCase().contains("page=library")) {
+                NEXApplication.getInstance().getApplicationFrame().reload();
             }
         } catch (Exception e) {
             NEXApplication.getLogger().err("[Minecraft] (ZyndexIntegration) Couldn't install instance "+instance.getId()+" v"+instance.getVersion()+": "+e.getMessage());
