@@ -34,6 +34,12 @@ const handleClassicMenu = (e: Event) => {
 
 onMounted(()=>{
   ZyneonSettings.setMenuExpanded(false);
+
+  const header = document.querySelector('.settings-menu');
+  if(header) {
+    header.classList.add('animates');
+    header.classList.add('active');
+  }
 })
 
 const resetSettings = () => {
@@ -46,7 +52,7 @@ const resetSettings = () => {
 
 <template>
   <div class="flex w-full h-full">
-    <DesktopSideMenu class="h-full active small zyn-ov-brighter" style="border-right: 1px solid var(--zyn-ov-brighter-200);">
+    <DesktopSideMenu class="h-full settings-menu small zyn-ov-brighter" style="border-right: 1px solid var(--zyn-ov-brighter-200);">
       <template #top>
         <div class="flex items-center" @mousedown.stop>
           <strong class="zyn-foreground-alt" style="padding: 0.475rem 1rem;">
@@ -126,7 +132,12 @@ const resetSettings = () => {
           <strong>{{ t("pages.settings.menu.classic") }}</strong>
         </div>
         <div class="flex w-full justify-end align-middle items-center">
-          <input class="pointer-events-none mr-1" type="checkbox" :checked="ZyneonSettings.useClassicMenu" @change="handleClassicMenu" />
+          <div class="relative inline-block w-11 h-5">
+            <input :checked="ZyneonSettings.useClassicMenu" @change="handleClassicMenu" type="checkbox" class="pointer-events-none peer appearance-none w-9 h-5 bg-zinc-500 rounded-full checked:bg-blue-400 cursor-pointer transition-colors duration-300" />
+            <label for="switch-component" class="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm pointer-events-none transition-transform duration-300 peer-checked:translate-x-4 peer-checked:border-slate-800 cursor-pointer">
+            </label>
+            <input :checked="ZyneonSettings.useClassicMenu" @change="handleClassicMenu" type="checkbox" class="zyn-switch pointer-events-none"/>
+          </div>
         </div>
       </div>
 

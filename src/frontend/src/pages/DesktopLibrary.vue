@@ -9,12 +9,18 @@ import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
 
 onMounted(()=>{
   ZyneonSettings.setMenuExpanded(false);
+
+  const header = document.querySelector('.library-menu');
+  if(header) {
+    header.classList.add('animates');
+    header.classList.add('active');
+  }
 })
 </script>
 
 <template>
   <div class="flex w-full h-full">
-    <DesktopSideMenu class="h-full active small zyn-ov-brighter" style="border-right: 1px solid var(--zyn-ov-brighter-200);">
+    <DesktopSideMenu class="h-full library-menu small zyn-ov-brighter" style="border-right: 1px solid var(--zyn-ov-brighter-200);">
       <template #top>
         <div class="flex items-center" @mousedown.stop>
           <strong class="zyn-foreground-alt" style="padding: 0.475rem 1rem;">
