@@ -9,8 +9,8 @@
 by **Zyneon Apex**, a **Zyneon Studios** division
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/nerotvlive/nex-app/blob/master/LICENSE)
-[![Latest stable version](https://img.shields.io/badge/Stable_Version-3.0.42-blue.svg)](https://github.com/nerotvlive/nex-app/releases/latest)
-[![Latest alpha version](https://img.shields.io/badge/Unstable_Version-4.0.1_Alpha-red.svg)](https://github.com/nerotvlive/nex-app/releases/tag/v4.0.1)
+[![Latest stable version](https://img.shields.io/badge/Stable_Version-3.0.43-blue.svg)](https://github.com/nerotvlive/nex-app-legacy/releases/latest)
+[![Latest alpha version](https://img.shields.io/badge/Unstable_Version-4.0.1_Alpha-red.svg)](https://github.com/nerotvlive/nex-app/releases/latest)
 
 - - -
 
@@ -20,8 +20,8 @@ The NEX App is a modern and cross-platform Minecraft: Java Edition modding utili
 It integrates CurseForge, Modrinth and our own self-hostable content distribution system Zyndex.
 <br><br>
 
-[![Download Stable](https://img.shields.io/badge/Download_Stable-blue.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/latest)
-[![Download Prerelease](https://img.shields.io/badge/Download_New_App_Alpha-red.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/tag/v4.0.1)
+[![Download Stable](https://img.shields.io/badge/Download_Stable-blue.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app-legacy/releases/latest)
+[![Download Prerelease](https://img.shields.io/badge/Download_New_App_Alpha-red.svg?style=for-the-badge)](https://github.com/nerotvlive/nex-app/releases/latest)
 
 - - -
 
@@ -30,8 +30,6 @@ It integrates CurseForge, Modrinth and our own self-hostable content distributio
 > Currently, the NEX App effectively has only two developers who are working on it as a hobby and is entirely self-taught, so we are looking for support.<br>
 > GitHub contributions, issue reports and feedback is highly welcome.<br>
 > If you are interested in joining the team, please get in touch via [our Discord server](https://discord.gg/g3ZwWugj9N) or message @nerotvlive directly.
-
-This README is work in progress...
 
 - - -
 
