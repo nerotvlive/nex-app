@@ -11,7 +11,7 @@ by **Zyneon Apex**, a **Zyneon Studios** division
 [![Bluesky](https://img.shields.io/badge/Discord_Server-7289da?style=for-the-badge&logo=discord&logoColor=%23FFFFFF)](https://discord.gg/Q2AEWfesZW)
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/nerotvlive/nex-app/blob/master/LICENSE)
-[![Latest stable version](https://img.shields.io/badge/Stable_Version-3.0.43-blue.svg)](https://github.com/nerotvlive/nex-app-legacy/releases/latest)
+[![Latest stable version](https://img.shields.io/badge/Stable_Version-3.0.44-blue.svg)](https://github.com/nerotvlive/nex-app-legacy/releases/latest)
 [![Latest alpha version](https://img.shields.io/badge/Unstable_Version-4.0.1_Alpha-red.svg)](https://github.com/nerotvlive/nex-app/releases/latest)
 
 - - -
