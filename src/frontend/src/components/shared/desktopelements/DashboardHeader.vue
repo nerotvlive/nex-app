@@ -44,7 +44,7 @@ const { t } = useI18n();
                   <i class="bi bi-globe mr-1 hidden lg:inline"></i>
                   {{ t('pages.dashboard.header.website') }}
                 </button>
-                <button @click="openExternal('https://discord.com/invite/hbHDrqUjJ8');" class="zyn-btn">
+                <button @click="openExternal('https://discord.com/invite/Q2AEWfesZW');" class="zyn-btn">
                   <i class="bi bi-discord mr-1 hidden lg:inline"></i>
                   {{ t('pages.dashboard.header.discord') }}
                 </button>

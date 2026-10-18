@@ -23,7 +23,7 @@ interface GitHubCommit {
 
 const owner = 'nerotvlive'
 const repo = 'nex-app'
-const branch = 'master'
+const branch = 'main'
 
 const commits = ref<GitHubCommit[]>([])
 const loading = ref<boolean>(true)

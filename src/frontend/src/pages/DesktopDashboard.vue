@@ -28,7 +28,7 @@ onMounted(()=>{
     </DashboardHeader>
     <SpacerHorizontalTitled id="dashboard-important">{{ t('pages.dashboard.important.title') }}</SpacerHorizontalTitled>
     <div class="flex flex-col lg:flex-row gap-3 pb-3">
-      <CardStructured @click="openExternal('https://github.com/nerotvlive/nexus-nex/issues/new')" class="bg-red-900 w-full opacity-75 hover:opacity-100 transition-all cursor-pointer text-white" border="1px solid var(--zyn-ov-brighter-200)">
+      <CardStructured @click="openExternal('https://github.com/nerotvlive/nex-app/issues/new')" class="bg-red-900 w-full opacity-75 hover:opacity-100 transition-all cursor-pointer text-white" border="1px solid var(--zyn-ov-brighter-200)">
         <template #header>
           <strong>
             <i class="icon-message-square-warning absolute"></i>
