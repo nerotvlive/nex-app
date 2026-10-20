@@ -280,6 +280,11 @@ public class WebviewWindow {
             return null;
         });
 
+        this.webview.bind("setup", (_) -> {
+            webview.eval("finishIntro();");
+            return null;
+        });
+
         if(secondary) {
             this.webview.bind("reloadMain", (_) -> {
                 if(windows.containsKey("main")) {

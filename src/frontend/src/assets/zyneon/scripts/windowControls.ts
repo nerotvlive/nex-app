@@ -20,6 +20,8 @@ declare global {
         pageLoadEvent?: (href: string) => void;
         openSecondaryFrame?: (tool: any) => void;
         openOldWindow?: () => void;
+        finishIntro?: () => void;
+        setup?: () => void;
     }
 }
 

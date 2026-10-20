@@ -147,14 +147,12 @@
           box-shadow: 0 0 1rem #00000075;
 
           .zyneon-desktop-content-pages {
-            transform: translateX(100%);
             position: absolute;
             height: 100%;
             width: 100%;
             overflow: hidden;
             overflow-y: auto;
             z-index: 2;
-            animation: comeInRight 0.5s ease-in-out forwards;
           }
 
           .zyneon-desktop-content-background {

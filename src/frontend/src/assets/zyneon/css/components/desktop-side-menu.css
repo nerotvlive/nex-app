@@ -59,6 +59,10 @@
     }
 }
 
+.side-menu.disabled {
+    width: 0;
+}
+
 .side-menu.animates {
     animation: comeInLeft 0.25s ease-in-out forwards;
 }

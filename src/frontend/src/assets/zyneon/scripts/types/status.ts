@@ -59,7 +59,6 @@ async function fetchApplicationStatus(): Promise<ApplicationStatus> {
   } catch (error) {
     console.error('Could not load application status:', error);
   }
-  console.log('Application status:', applicationStatus_);
   if(applicationStatus_.dev) {
     ZyneonSettings.setDev(true);
   }

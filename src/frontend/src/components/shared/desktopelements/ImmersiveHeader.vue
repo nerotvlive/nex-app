@@ -9,7 +9,7 @@ const { t } = useI18n();
 
 <template>
       <div class="header-overlay">
-        <div class="zyn-ov-brighter-200 p-2 px-2 border shadow-lg shadow-black/25 rounded-xl" style="border-color: var(--zyn-ov-brighter-100)">
+        <div class="zyn-ov-brighter-200 px p-2 px-2 border shadow-lg shadow-black/25 rounded-xl" style="border-color: var(--zyn-ov-brighter-100)">
           <div class="flex justify-between">
             <strong class="text-white text-xl p-0.5"><slot name="title">{{ t("pages.dashboard.title") }}</slot></strong>
             <input-bar background="var(--zyn-ov-darker-300)" :placeholder="t('pages.dashboard.header.search')"/>

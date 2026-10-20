@@ -34,15 +34,23 @@
       "intro": {
         "welcome": "WILLKOMMEN",
         "tothe": "ZU DER",
-        "allnew": "ZU NEUEN",
-        "replay": "Intro wiederholen"
+        "allnew": "VIEL ZU NEUEN",
+        "replay": "Von vorne"
       },
       "setup": {
-        "title": "Fangen wir an...",
+        "title": "Einrichtung",
         "description": "Beginne damit, folgende Einstellungen für dich zu optimieren:",
         "skip": "Überspringen",
         "continue": "Weiter",
-        "restart": "Zurücksetzen"
+        "restart": "Zurücksetzen",
+        "language": {
+          "title": "Sprache",
+          "description": "Wähle deine bevorzugte Sprache:"
+        },
+        "appearance": {
+          "title": "Aussehen",
+          "description": "Wie soll das Programm aussehen?"
+        }
       }
     },
     "dashboard": {

@@ -13,7 +13,7 @@ import Error501 from "../../../../pages/errors/Error501.vue";
 import {WindowControls} from "../windowControls.ts";
 import ErrorGame from "../../../../pages/errors/ErrorGame.vue";
 import DesktopIndex from "../../../../pages/DesktopIndex.vue";
-import DesktopIntro from "../../../../pages/DesktopIntro.vue";
+import DesktopIntro from "../../../../components/shared/DesktopIntro.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {

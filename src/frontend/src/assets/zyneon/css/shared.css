@@ -3,6 +3,12 @@
 :root {
   --zyn-accent: #8400ff;
   --zyn-accent-alt: #9c44ff;
+  --zyn-danger: var(--color-red-400);
+  --zyn-danger-alt: var(--color-red-500);
+  --zyn-warning: var(--color-yellow-300);
+  --zyn-warning-alt: var(--color-yellow-500);
+  --zyn-success: var(--color-green-400);
+  --zyn-success-alt: var(--color-green-500);
 
   /*
   background variables & classes
@@ -73,32 +79,32 @@
     background: var(--zyn-accent-alt);
   }
 
-  --zyn-bg-danger: var(--color-red-400);
+  --zyn-bg-danger: var(--zyn-danger);
   .zyn-bg-danger {
     background: var(--zyn-bg-danger);
   }
 
-  --zyn-bg-danger-alt: var(--color-red-500);
+  --zyn-bg-danger-alt: var(--zyn-danger-alt);
   .zyn-bg-danger-alt {
     background: var(--zyn-bg-danger-alt);
   }
 
-  --zyn-bg-warning: var(--color-yellow-300);
+  --zyn-bg-warning: var(--zyn-warning);
   .zyn-bg-warning {
     background: var(--zyn-bg-warning);
   }
 
-  --zyn-bg-warning-alt: var(--color-yellow-500);
+  --zyn-bg-warning-alt: var(--zyn-warning-alt);
   .zyn-bg-warning-alt {
     background: var(--zyn-bg-warning-alt);
   }
 
-  --zyn-bg-success: var(--color-green-400);
+  --zyn-bg-success: var(--zyn-success);
   .zyn-bg-success {
     background: var(--zyn-bg-success);
   }
 
-  --zyn-bg-success-alt: var(--color-green-500);
+  --zyn-bg-success-alt: var(--zyn-success-alt);
   .zyn-bg-success-alt {
     background: var(--zyn-bg-success-alt);
   }
@@ -320,6 +326,46 @@
   --zyn-br: 1rem;
   .zyn-br {
     border-radius: var(--zyn-br);
+  }
+
+  --zyn-text-accent: var(--zyn-accent);
+  .zyn-text-accent {
+    color: var(--zyn-accent);
+  }
+
+  --zyn-text-accent-alt: var(--zyn-accent-alt);
+  .zyn-text-accent-alt {
+    color: var(--zyn-accent-alt);
+  }
+
+  --zyn-text-danger: var(--zyn-danger);
+  .zyn-text-danger {
+    color: var(--zyn-text-danger);
+  }
+
+  --zyn-text-danger-alt: var(--zyn-danger-alt);
+  .zyn-text-danger-alt {
+    color: var(--zyn-text-danger-alt);
+  }
+
+  --zyn-text-warning: var(--zyn-warning);
+  .zyn-text-warning {
+    color: var(--zyn-text-warning);
+  }
+
+  --zyn-text-warning-alt: var(--zyn-warning-alt);
+  .zyn-text-warning-alt {
+    color: var(--zyn-text-warning-alt);
+  }
+
+  --zyn-text-success: var(--zyn-success);
+  .zyn-text-success {
+    color: var(--zyn-text-success);
+  }
+
+  --zyn-text-success-alt: var(--zyn-success-alt);
+  .zyn-text-success-alt {
+    color: var(--zyn-text-success-alt);
   }
 
 

@@ -132,7 +132,6 @@ export class settings {
     public setRoundedCorners(changedViaRange:boolean,value: number) {
         this.roundedCorners = value;
         localStorage.setItem("roundedCorners", value.toString());
-        console.log(value+" Saved: "+localStorage.getItem("roundedCorners"));
         if (changedViaRange) {
             const numberInput = document.getElementById("background-rounded-number") as HTMLInputElement;
             if (numberInput) {
