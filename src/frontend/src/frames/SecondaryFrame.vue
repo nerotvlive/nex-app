@@ -27,10 +27,13 @@ const back = () => {
   <div class="zyneon-desktop zyn-background-body" id="main">
     <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar">
       <template #start>
-        <button class="titlebar-back-button" @click="back" @mousedown.stop>
-          <i class="bi bi-caret-left-fill"></i>
-          {{ t('titlebar.back') }}
-        </button>
+        <span class="p-3 text-white">NEX App</span>
+      </template>
+      <template #title>
+        <div/>
+      </template>
+      <template #additional-buttons>
+        <button type="button" style="padding: 0 0.75rem 0 0.7rem;" @click="back" id="titlebar-replay-intro"><i class="bi bi-caret-left-fill mr-1"></i> {{ t('titlebar.back') }}</button>
       </template>
     </DesktopTitlebar>
     <router-view />

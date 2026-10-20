@@ -45,7 +45,7 @@ onMounted(()=>{
 const resetSettings = () => {
   localStorage.clear();
   WindowControls.reloadAll();
-  WindowControls.reload();
+  window.location.href = "/";
 }
 
 </script>
@@ -92,7 +92,7 @@ const resetSettings = () => {
         </div>
       </template>
     </DesktopSideMenu>
-    <div class="w-full p-4 py-2">
+    <div class="w-full p-3 py-2">
       <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2">
         <div class="flex w-full">
           <strong>{{ t("pages.settings.border.radius") }}</strong>

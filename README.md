@@ -12,7 +12,7 @@ by **Zyneon Apex**, a **Zyneon Studios** division
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/nerotvlive/nex-app/blob/master/LICENSE)
 [![Latest stable version](https://img.shields.io/badge/Stable_Version-3.1.0-blue.svg)](https://github.com/nerotvlive/nex-app-legacy/releases/latest)
-[![Latest alpha version](https://img.shields.io/badge/Unstable_Version-4.0.1_Alpha-red.svg)](https://github.com/nerotvlive/nex-app/releases/latest)
+[![Latest alpha version](https://img.shields.io/badge/Unstable_Version-4.0.0_Alpha-red.svg)](https://github.com/nerotvlive/nex-app/releases/latest)
 
 - - -
 

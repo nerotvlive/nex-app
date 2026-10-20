@@ -5,18 +5,20 @@ import SpacerHorizontal from "./SpacerHorizontal.vue";
 
 const props = withDefaults(
     defineProps<{
-      background?: string
-      border?: string
+      backgroundOverride?: string
+      borderOverride?: string
+      disabled?: boolean
     }>(),
     {
-      background: "var(--zyn-ov-brighter-200)",
-      border: "1px solid var(--zyn-ov-brighter-200)"
+      backgroundOverride: "var(--zyn-ov-brighter-200)",
+      borderOverride: "1px solid var(--zyn-ov-brighter-200)",
+      disabled: false
     }
 )
 </script>
 
 <template>
-  <Card :background="background" :border="border">
+  <Card :backgroundOverride="backgroundOverride" :borderOverride="borderOverride" :disabled="disabled">
     <div class="structured-card flex flex-col h-full items-between">
       <div class="header px-3 pt-2">
         <slot name="header"></slot>

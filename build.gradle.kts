@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.zyneonstudios.apex"
-version = "4.0.2"
+version = "4.0.0"
 
 val jsign = configurations.create("jsign")
 val certFile = file("cert.pfx")

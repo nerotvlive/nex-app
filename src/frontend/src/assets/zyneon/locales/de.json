@@ -53,27 +53,10 @@
         "website": "Webseite",
         "discord": "Discord",
         "github": "GitHub"
-      },
-      "important": {
-        "title": "Wichtig",
-        "warning": {
-          "title": "Warnung",
-          "line1": "Die Entwicklung dieser App ist in einem sehr frühen Stadium - Benutze die Anwendung mit Vorsicht.",
-          "line2": "Melde alle Fehler und Probleme die du entdeckst bitte umgehend auf GitHub um uns dabei zu unterstützen, diese zu beheben.",
-          "button": "Klicke hier um einen Fehler zu melden"
-        },
-        "note": {
-          "title": "Hinweis",
-          "line1": "Dieses Projekt wird stetig weiterentwickelt, wir begrüßen jede Hilfe dabei, vorallem in Form von Feedback und Contributions.",
-          "line2": "Falls du ein fester Teil der Entwicklung dieser App werden willst, kontaktiere uns auf GitHub oder Discord."
-        }
-      },
-      "changelogs": {
-        "title": "GitHub Commits (Englisch)"
-      },
-      "todos": {
-        "title": "Geplantes (Englisch)"
       }
+    },
+    "discover": {
+      "title": "Entdecken"
     },
     "error": {
       "title": "Fehler",

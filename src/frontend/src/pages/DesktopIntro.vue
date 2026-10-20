@@ -18,7 +18,7 @@ onMounted(() => {
         intro: 'skip'
       }
     });
-  }, 10000);
+  }, 9000);
 });
 
 onUnmounted(() => {
