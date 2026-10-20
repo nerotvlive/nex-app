@@ -12,7 +12,7 @@ export class settings {
     private theme = "dark";
     private roundedCorners = 1.00;
     private backgroundColor = "#131316"
-    private backgroundAccent = "#2e5ff5"
+    private backgroundAccent = "#8400ff"
     private backgroundAccentOpacity = 0.25;
     private language = "en";
 

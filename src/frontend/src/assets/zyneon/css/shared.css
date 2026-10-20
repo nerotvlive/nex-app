@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --zyn-accent: var(--color-blue-600);
-  --zyn-accent-alt: var(--color-blue-500);
+  --zyn-accent: #8400ff;
+  --zyn-accent-alt: #9c44ff;
 
   /*
   background variables & classes

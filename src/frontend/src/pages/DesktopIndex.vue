@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {WindowControls} from "../assets/zyneon/scripts";
-import {useRoute} from "vue-router";
+import {useLang, WindowControls} from "../assets/zyneon/scripts";
+import {useRoute, useRouter} from "vue-router";
 import DesktopTitlebarButtons from "../components/shared/DesktopTitlebarButtons.vue";
 import {useI18n} from "vue-i18n";
 import CardStructured from "../components/shared/desktopelements/CardStructured.vue";
@@ -9,7 +9,9 @@ import LanguageSwitcher from "../components/shared/desktopelements/LanguageSwitc
 
 const urlParams = new URLSearchParams(window.location.search);
 const { t } = useI18n();
+const router = useRouter();
 const route = useRoute();
+const { setLang } = useLang()
 
 const start = async () => {
   localStorage.setItem("nexapp.neo.settings.setup.finished","true")
@@ -41,6 +43,10 @@ const withControls = computed(() => {
   return (route.path === '/');
 });
 
+const isEnglish = computed(() => {
+  return t("languages.auto.key") === "en";
+})
+
 onMounted(() => {
   if (localStorage.getItem("nexapp.neo.settings.setup.finished") === "true") {
     if(window.location.pathname === "/") {
@@ -56,7 +62,7 @@ onMounted(() => {
   <div class="main" @mousedown="WindowControls.startDrag()">
     <DesktopTitlebarButtons class="absolute z-10 controls" @mousedown.stop :class="{ 'hidden': !withControls }">
       <template #additional-buttons>
-        <button type="button" style="padding: 0 1rem;" @click="restart()" id="titlebar-replay-intro"><i class="bi-arrow-clockwise mr-2"></i> {{ t('pages.start.intro.replay') }}</button>
+        <button type="button" style="padding: 0 1rem;" @click="router.push('/intro')" id="titlebar-replay-intro"><i class="bi-arrow-clockwise mr-2"></i> {{ t('pages.start.intro.replay') }}</button>
       </template>
     </DesktopTitlebarButtons>
     <div class="northern-aurora absolute inset-0 z-0 pointer-events-none" />
@@ -82,8 +88,11 @@ onMounted(() => {
         </template>
         <template #footer>
           <div class="flex w-full justify-between">
-            <button @click="start()" class="zyn-btn hover-warning-alt compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': !withControls }">{{ t('pages.start.setup.skip') }}</button>
-            <button @click="restart()" class="zyn-btn hover-danger-alt compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': withControls }">{{ t('pages.start.setup.restart') }}</button>
+            <div class="flex gap-1">
+              <button @click="start()" class="zyn-btn hover-warning-alt compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': !withControls }">{{ t('pages.start.setup.skip') }}</button>
+              <button @click="restart()" class="zyn-btn hover-danger-alt compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': withControls }">{{ t('pages.start.setup.restart') }}</button>
+              <button @click="setLang('en'); router.push('/intro');" class="zyn-btn compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': isEnglish }">Use English</button>
+            </div>
             <button @click="start()" class="zyn-btn compact">{{ t('pages.start.setup.continue') }}</button>
           </div>
         </template>
