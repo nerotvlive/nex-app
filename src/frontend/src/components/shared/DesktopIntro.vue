@@ -132,7 +132,7 @@ onUnmounted(() => {
 
   .northern-aurora {
     opacity: 0;
-    animation: fadeInGradient 8s ease-in-out forwards;
+    animation: fadeInGradient 12s ease-in-out forwards;
     background: center
     radial-gradient(ellipse 70% 55% at 50% 50%, rgba(255, 20, 147, 0.15), transparent 50%),
     radial-gradient(ellipse 160% 130% at 10% 10%, rgba(0, 255, 255, 0.12), transparent 60%),
