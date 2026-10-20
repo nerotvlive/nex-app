@@ -47,9 +47,11 @@ const isEnglish = computed(() => {
   return t("languages.auto.key") === "en";
 })
 
+const isFirstSetup = window.location.pathname === "/";
+
 onMounted(() => {
   if (localStorage.getItem("nexapp.neo.settings.setup.finished") === "true") {
-    if(window.location.pathname === "/") {
+    if(isFirstSetup) {
       start();
     }
   } else if (urlParams.get("intro") !== "skip") {
@@ -65,7 +67,7 @@ onMounted(() => {
         <button type="button" style="padding: 0 1rem;" @click="router.push('/intro')" id="titlebar-replay-intro"><i class="bi-arrow-clockwise mr-2"></i> {{ t('pages.start.intro.replay') }}</button>
       </template>
     </DesktopTitlebarButtons>
-    <div class="northern-aurora absolute inset-0 z-0 pointer-events-none" />
+    <div class="northern-aurora absolute inset-0 z-0 pointer-events-none" :class="isFirstSetup ? '' : 'hidden'" />
     <div class="z-1 overflow-hidden overflow-y-auto w-full content">
       <CardStructured @mousedown.stop>
         <template #header>
@@ -89,9 +91,9 @@ onMounted(() => {
         <template #footer>
           <div class="flex w-full justify-between">
             <div class="flex gap-1">
+              <button @click="setLang('en'); router.push('/intro');" class="zyn-btn compact" :class="{ 'hidden': isEnglish }">Use English</button>
               <button @click="start()" class="zyn-btn hover-warning-alt compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': !withControls }">{{ t('pages.start.setup.skip') }}</button>
               <button @click="restart()" class="zyn-btn hover-danger-alt compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': withControls }">{{ t('pages.start.setup.restart') }}</button>
-              <button @click="setLang('en'); router.push('/intro');" class="zyn-btn compact opacity-50 hover:opacity-100 transition-all" :class="{ 'hidden': isEnglish }">Use English</button>
             </div>
             <button @click="start()" class="zyn-btn compact">{{ t('pages.start.setup.continue') }}</button>
           </div>
