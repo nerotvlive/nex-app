@@ -122,6 +122,12 @@ export function createPrimaryRouter() {
         const title = to.meta.title as string | undefined;
         document.title = title ? `${title} (primary) - ${defaultTitle}` : defaultTitle;
         WindowControls.pageLoadEvent();
+        if(window.hideNotifications) {
+            window.hideNotifications();
+        }
+        if(window.hideFriends) {
+            window.hideFriends();
+        }
     })
 
     return router;

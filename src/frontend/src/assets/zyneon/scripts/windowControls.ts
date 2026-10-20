@@ -22,6 +22,12 @@ declare global {
         openOldWindow?: () => void;
         finishIntro?: () => void;
         setup?: () => void;
+        showNotifications?: () => void;
+        hideNotifications?: () => void;
+        toggleNotifications?: () => void;
+        showFriends?: () => void;
+        hideFriends?: () => void;
+        toggleFriends?: () => void;
     }
 }
 

@@ -3,6 +3,8 @@
     flex-direction: column;
     transition: var(--zyn-transition);
     position: relative;
+    max-width: 3rem;
+    min-width: 3rem;
     width: 3rem;
     overflow: hidden;
 
@@ -36,7 +38,7 @@
         width: 2rem;
         height: 2rem;
         overflow: hidden;
-        margin: 0 0.5rem 0.5rem 0.433rem;
+        margin: 0 0.5rem 0.5rem 0.5rem;
 
         span {
             display: none;
@@ -48,7 +50,10 @@
 }
 
 .side-menu.active {
-    width: 20rem;
+    max-width: 16rem;
+    min-width: 16rem;
+    width: 16rem;
+    overflow: hidden;
 
     a {
         width: calc(100% - 1rem);
@@ -60,6 +65,8 @@
 }
 
 .side-menu.disabled {
+    max-width: 0;
+    min-width: 0;
     width: 0;
 }
 

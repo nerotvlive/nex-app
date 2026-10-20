@@ -4,15 +4,17 @@
   import DesktopPane from "../components/shared/DesktopPane.vue";
   import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
   import Badge from "../components/shared/desktopelements/Badge.vue";
-  import {computed, onMounted} from 'vue'
+  import {computed, onMounted, ref} from 'vue'
   import {ZyneonSettings} from "../assets/zyneon/scripts";
   import {getApiStatus} from "../assets/zyneon/scripts";
   import {useI18n} from "vue-i18n";
-
-  const { t } = useI18n();
   import { useRoute } from 'vue-router';
+  import CardStructured from "../components/shared/desktopelements/CardStructured.vue";
 
+  const notifications = ref(false);
+  const friends = ref(false);
   const route = useRoute();
+  const { t } = useI18n();
 
   const withNavigation = computed(() => {
     return (route.path !== '/' && route.path !== '/intro');
@@ -21,6 +23,47 @@
   const withTitlebar = computed(() => {
     return withNavigation.value && ZyneonSettings.isBorderless;
   });
+
+  const showNotifications = () => {
+    friends.value = false;
+    notifications.value = true;
+  }
+
+  const showFriends = () => {
+    notifications.value = false;
+    friends.value = true;
+  }
+
+  const hideNotifications = () => {
+    notifications.value = false;
+  }
+
+  const hideFriends = () => {
+    friends.value = false;
+  }
+
+  const toggleNotifications = () => {
+    if(notifications.value) {
+      hideNotifications();
+    } else {
+      showNotifications();
+    }
+  }
+
+  const toggleFriends = () => {
+    if(friends.value) {
+      hideFriends();
+    } else {
+      showFriends();
+    }
+  }
+
+  window.showNotifications = showNotifications;
+  window.showFriends = showFriends;
+  window.hideNotifications = hideNotifications;
+  window.hideFriends = hideFriends;
+  window.toggleNotifications = toggleNotifications;
+  window.toggleFriends = toggleFriends;
 
   onMounted(() => {
     ZyneonSettings.setClassicMenu(ZyneonSettings.useClassicMenu);
@@ -38,6 +81,9 @@
 <template>
   <div class="zyneon-desktop zyn-background-body" id="main">
     <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar" :class="withTitlebar ? '' : 'hidden'">
+      <template #additional-buttons>
+        <button @click="toggleFriends()" type="button" style="padding: 0 1rem; width: 40px;"><i class="bi" :class="friends ? 'bi-people-fill text-white' : 'bi-people'"/></button>
+      </template>
       <template #start>
         <div class="w-full h-full gap-2 flex justify-start items-center">
           <img alt="" class="z-n1 h-4 ml-3" src="../assets/zyneon/img/nex-app-title.png">
@@ -48,7 +94,7 @@
       </template>
       <template #end>
         <div class="w-full h-full gap-2 flex justify-end items-center pr-6">
-          <Badge class="mr-2" background="var(--color-red-300)">
+          <Badge class="mr-10" background="var(--color-red-300)">
             <strong class="text-red-900">{{getApiStatus().version.number}}-{{getApiStatus().version.type}}.{{getApiStatus().version.build}}</strong>
           </Badge>
         </div>
@@ -80,7 +126,11 @@
            </div>
          </template>
          <template #bottom>
-           <a class="zyn-btn compact transparent disabled" @mousedown.stop>
+           <a @click="toggleFriends()" class="zyn-btn compact transparent" :class="{'active-alt': friends, 'hidden': withTitlebar}" @mousedown.stop>
+             <i class="bi" :class="friends ? 'bi-people-fill text-white' : 'bi-people'"></i>
+             <span class="grow">{{ t('menu.friends') }}</span>
+           </a>
+           <a @click="toggleNotifications()" class="zyn-btn compact transparent" :class="{'active-alt': notifications}" @mousedown.stop>
              <i class="icon-bell"></i>
              <span class="grow">{{ t('menu.notifications') }}</span>
            </a>
@@ -96,13 +146,31 @@
          </template>
        </DesktopSideMenu>
       </template>
+      <template #extra-left>
+        <div class="h-full flex flex-col" :class="{'active': notifications, 'full': !withTitlebar}" id="notifications">
+          <CardStructured class="mr-2 mb-2 grow notifications-card z-10" backgroundOverride="var(--zyn-background)">
+            <template #header>
+              <strong>{{ t('menu.notifications') }}</strong>
+            </template>
+          </CardStructured>
+        </div>
+      </template>
       <template #center>
-        <DesktopPane class="zyneon-desktop-content" :class="{'rounded-border': withTitlebar,'border-none': !withNavigation}">
+        <DesktopPane class="zyneon-desktop-content" :class="{'rounded-border': withTitlebar,'border-none': !withNavigation,'friends': friends}">
           <div class="zyneon-desktop-content-background" />
           <div class="zyneon-desktop-content-pages">
             <router-view />
           </div>
         </DesktopPane>
+      </template>
+      <template #right>
+        <div class="h-full flex flex-col" :class="{'active': friends, 'full': !withTitlebar}" id="friends">
+          <CardStructured class="ml-2 mb-2 grow friends-card z-10" backgroundOverride="var(--zyn-background)">
+            <template #header>
+              <strong>{{ t('menu.friends') }}</strong>
+            </template>
+          </CardStructured>
+        </div>
       </template>
     </DesktopRootView>
   </div>
@@ -110,6 +178,40 @@
 
 <style scoped>
   body {
+    #notifications, #friends {
+      min-width: 0;
+      max-width: 0;
+      width: 0;
+      overflow: hidden;
+      transition: all 0.15s ease-in-out;
+      opacity: 0;
+      height: 100%;
+
+      .notifications-card, .friends-card {
+        border-radius: var(--zyn-br-lg);
+      }
+    }
+
+    #notifications.full, #friends.full {
+      height: 100vh;
+
+      .notifications-card, .friends-card {
+        margin-top: 0.5rem;
+      }
+    }
+
+    #notifications.active, #friends.active {
+      min-width: 16rem;
+      max-width: 16rem;
+      width: 16rem;
+      overflow: hidden;
+      opacity: 1;
+    }
+
+    #friends.active {
+      margin-right: 0.5rem;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -181,6 +283,15 @@
           border-top-left-radius: var(--zyn-br-lg);
           border-top: 1px solid var(--zyn-ov-brighter-200);
           height: 100%;
+        }
+
+        .zyneon-desktop-content.friends {
+          border-right: 1px solid var(--zyn-ov-brighter-200);
+        }
+
+        .zyneon-desktop-content.friends.rounded-border {
+          border-top-right-radius: var(--zyn-br-lg);
+          border-right: 1px solid var(--zyn-ov-brighter-200);
         }
       }
     }
