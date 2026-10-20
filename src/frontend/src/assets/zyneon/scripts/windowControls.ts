@@ -17,7 +17,7 @@ declare global {
         reloadAll?: () => void;
         openMain?: () => void;
         toggleNativeWindow?: () => void;
-        getUrl?: (href: string) => void;
+        pageLoadEvent?: (href: string) => void;
         openSecondaryFrame?: (tool: any) => void;
         openOldWindow?: () => void;
     }
@@ -35,9 +35,9 @@ export class windowControls {
         }
     };
 
-    getUrl(): void {
-        if(window.getUrl) {
-            window.getUrl(window.location.href);
+    pageLoadEvent(): void {
+        if(window.pageLoadEvent) {
+            window.pageLoadEvent(window.location.href);
         }
     }
 

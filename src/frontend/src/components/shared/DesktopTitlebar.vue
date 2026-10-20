@@ -31,6 +31,10 @@
         <div class="window-controls-placeholder"></div>
       </div>
     </div>
-    <DesktopTitlebarButtons :hideInsteadClose="hideInsteadClose" @mousedown.stop/>
+    <DesktopTitlebarButtons :hideInsteadClose="hideInsteadClose" @mousedown.stop>
+      <template #additional-buttons>
+        <slot name="additional-buttons"></slot>
+      </template>
+    </DesktopTitlebarButtons>
   </div>
 </template>

@@ -73,6 +73,10 @@ const resetSettings = () => {
         </div>
       </template>
       <template #bottom>
+        <router-link to="/start" class="zyn-btn darker compact" @mousedown.stop>
+          <i class="bi bi-wrench-adjustable"></i>
+          <span class="grow">{{ t("menu.setup") }}</span>
+        </router-link>
         <router-link to="/tools" class="zyn-btn darker compact" @mousedown.stop>
           <i class="bi bi-wrench"></i>
           <span class="grow">{{ t("menu.tools") }}</span>
@@ -136,7 +140,6 @@ const resetSettings = () => {
             <input :checked="ZyneonSettings.useClassicMenu" @change="handleClassicMenu" type="checkbox" class="pointer-events-none peer appearance-none w-9 h-5 bg-zinc-500 rounded-full checked:bg-blue-400 cursor-pointer transition-colors duration-300" />
             <label for="switch-component" class="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm pointer-events-none transition-transform duration-300 peer-checked:translate-x-4 peer-checked:border-slate-800 cursor-pointer">
             </label>
-            <input :checked="ZyneonSettings.useClassicMenu" @change="handleClassicMenu" type="checkbox" class="zyn-switch pointer-events-none"/>
           </div>
         </div>
       </div>

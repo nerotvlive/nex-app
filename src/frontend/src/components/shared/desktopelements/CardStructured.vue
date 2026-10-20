@@ -2,10 +2,17 @@
 import '../../../assets/zyneon/css/components/desktop-element-card-structured.css';
 import Card from "./Card.vue";
 import SpacerHorizontal from "./SpacerHorizontal.vue";
-defineProps<{
-  background?: string
-  border?: string
-}>()
+
+const props = withDefaults(
+    defineProps<{
+      background?: string
+      border?: string
+    }>(),
+    {
+      background: "var(--zyn-ov-brighter-200)",
+      border: "1px solid var(--zyn-ov-brighter-200)"
+    }
+)
 </script>
 
 <template>
@@ -18,7 +25,7 @@ defineProps<{
       <div class="content px-3 py-2">
         <slot name="content"></slot>
       </div>
-      <div class="footer mt-auto px-3 pb-2 pt-2 flex h-full flex-1 grow items-end">
+      <div class="footer mt-auto px-3 pb-3 pt-2 flex h-full flex-1 grow items-end">
         <slot name="footer"></slot>
       </div>
     </div>

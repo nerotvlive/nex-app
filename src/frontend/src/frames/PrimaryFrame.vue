@@ -4,12 +4,23 @@
   import DesktopPane from "../components/shared/DesktopPane.vue";
   import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
   import Badge from "../components/shared/desktopelements/Badge.vue";
-  import { onMounted } from 'vue'
+  import {computed, onMounted} from 'vue'
   import {ZyneonSettings} from "../assets/zyneon/scripts";
   import {getApiStatus} from "../assets/zyneon/scripts";
   import {useI18n} from "vue-i18n";
 
   const { t } = useI18n();
+  import { useRoute } from 'vue-router';
+
+  const route = useRoute();
+
+  const withNavigation = computed(() => {
+    return (route.path !== '/' && route.path !== '/intro');
+  });
+
+  const withTitlebar = computed(() => {
+    return withNavigation.value && ZyneonSettings.isBorderless;
+  });
 
   onMounted(() => {
     ZyneonSettings.setClassicMenu(ZyneonSettings.useClassicMenu);
@@ -26,7 +37,7 @@
 
 <template>
   <div class="zyneon-desktop zyn-background-body" id="main">
-    <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar" :class="ZyneonSettings.isBorderless ? '' : 'hidden'">
+    <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar" :class="withTitlebar ? '' : 'hidden'">
       <template #start>
         <div class="w-full h-full gap-2 flex justify-start items-center">
           <img alt="" class="z-n1 h-4 ml-3" src="../assets/zyneon/img/nex-app-title.png">
@@ -45,7 +56,7 @@
     </DesktopTitlebar>
     <DesktopRootView class="zyneon-desktop-view">
       <template #left>
-       <DesktopSideMenu id="navigation" class="desktop-side-menu flex-col" :class="ZyneonSettings.isBorderless ? 'rounded-border' : ''">
+       <DesktopSideMenu id="navigation" class="desktop-side-menu flex-col" :class="{'rounded-border': withTitlebar,'hidden': !withNavigation}">
          <template #top>
            <a class="zyn-btn compact transparent" @mousedown.stop @click="ZyneonSettings.toggleMenuExpanded">
              <i class="icon-text-align-justify"></i>
@@ -54,7 +65,7 @@
          </template>
          <template #center>
            <div class="flex flex-col">
-             <router-link to="/" id="dashboard-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
+             <router-link to="/dashboard" id="dashboard-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
                <i class="icon-gallery-vertical-end"></i>
                <span class="grow">{{ t('menu.dashboard') }}</span>
              </router-link>
@@ -86,7 +97,7 @@
        </DesktopSideMenu>
       </template>
       <template #center>
-        <DesktopPane class="zyneon-desktop-content" :class="ZyneonSettings.isBorderless ? 'rounded-border' : ''">
+        <DesktopPane class="zyneon-desktop-content" :class="{'rounded-border': withTitlebar,'border-none': !withNavigation}">
           <div class="zyneon-desktop-content-background" />
           <div class="zyneon-desktop-content-pages">
             <router-view />
@@ -99,6 +110,14 @@
 
 <style scoped>
   body {
+    .hidden {
+      display: none !important;
+    }
+
+    .border-none {
+      border: none !important;
+    }
+
     .zyneon-desktop {
       position: absolute;
       display: flex;

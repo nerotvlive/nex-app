@@ -70,7 +70,7 @@ export function createSecondaryRouter() {
         const defaultTitle = 'NEX App';
         const title = to.meta.title as string | undefined;
         document.title = title ? `${title} (secondary) - ${defaultTitle}` : defaultTitle;
-        WindowControls.getUrl();
+        WindowControls.pageLoadEvent();
     })
 
     return router;

@@ -12,10 +12,30 @@ import ErrorPage from "../../../../pages/errors/ErrorPage.vue";
 import Error501 from "../../../../pages/errors/Error501.vue";
 import {WindowControls} from "../windowControls.ts";
 import ErrorGame from "../../../../pages/errors/ErrorGame.vue";
+import DesktopIndex from "../../../../pages/DesktopIndex.vue";
+import DesktopIntro from "../../../../pages/DesktopIntro.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
+        name: 'index',
+        meta: { title: 'Start' },
+        component: DesktopIndex
+    },
+    {
+        path: '/intro',
+        name: 'intro',
+        meta: { title: 'Intro' },
+        component: DesktopIntro
+    },
+    {
+        path: '/start',
+        name: 'start',
+        meta: { title: 'Start' },
+        component: DesktopIndex
+    },
+    {
+        path: '/dashboard',
         name: 'Dashboard',
         meta: { title: 'Dashboard' },
         component: DesktopDashboard
@@ -88,11 +108,20 @@ export function createPrimaryRouter() {
         routes
     });
 
+    router.beforeEach((to, from) => {
+        if (Object.keys(from.query).length > 0 && Object.keys(to.query).length === 0) {
+            return {
+                ...to,
+                query: { ...from.query, ...to.query }
+            }
+        }
+    });
+
     router.afterEach((to) => {
         const defaultTitle = 'NEX App';
         const title = to.meta.title as string | undefined;
         document.title = title ? `${title} (primary) - ${defaultTitle}` : defaultTitle;
-        WindowControls.getUrl();
+        WindowControls.pageLoadEvent();
     })
 
     return router;

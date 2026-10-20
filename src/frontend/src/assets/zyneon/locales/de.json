@@ -26,9 +26,25 @@
     "reload": "Neu laden",
     "notifications": "Benachrichtigungen",
     "downloads": "Downloads",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "setup": "Setup wiederholen"
   },
   "pages": {
+    "start": {
+      "intro": {
+        "welcome": "WILLKOMMEN",
+        "tothe": "ZU DER",
+        "allnew": "BRANDNEUEN",
+        "replay": "Intro wiederholen"
+      },
+      "setup": {
+        "title": "Fangen wir an...",
+        "description": "Beginne damit, folgende Einstellungen für dich zu optimieren:",
+        "skip": "Überspringen",
+        "continue": "Weiter",
+        "restart": "Zurücksetzen"
+      }
+    },
     "dashboard": {
       "title": "NEX App",
       "header": {

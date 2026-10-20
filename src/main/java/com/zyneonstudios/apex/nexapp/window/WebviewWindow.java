@@ -1,6 +1,7 @@
 package com.zyneonstudios.apex.nexapp.window;
 
 import com.zyneonstudios.apex.nexapp.Main;
+import com.zyneonstudios.apex.nexapp.events.PageLoadEvent;
 import io.avaje.webview.Webview;
 
 import java.awt.*;
@@ -9,11 +10,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class WebviewWindow {
 
     private static final HashMap<String,WebviewWindow> windows = new HashMap<>();
+
     private Webview webview = null;
+    private final HashMap<UUID, PageLoadEvent> loadEvents = new HashMap<>();
+
 
     private final String id;
     private String url = Main.getBaseUrl();
@@ -83,6 +88,32 @@ public class WebviewWindow {
                     initWindowControls();
                     initBindings();
                     initIcon();
+
+                    registerPageLoadEvent(new PageLoadEvent() {
+                        @Override
+                        public boolean execute() {
+                            String params = "";
+                            if(!url().toLowerCase().contains("borderless="+isBorderless)) {
+                                params += "borderless="+isBorderless;
+                            }
+
+                            String mode = (id == null || id.isBlank() || id.equals("main")) ? "primary" : "secondary";
+                            if(!url().toLowerCase().contains("mode="+mode)) {
+                                params += "&mode="+mode;
+                            }
+
+                            if(!params.isBlank()) {
+                                if(url().contains("?")) {
+                                    params = "&"+params;
+                                } else {
+                                    params = "?"+params;
+                                }
+                                String newUrl = url()+params;
+                                loadUrl(newUrl);
+                            }
+                            return true;
+                        }
+                    });
 
                     this.webview.run();
 
@@ -205,9 +236,16 @@ public class WebviewWindow {
             return null;
         });
 
-        webview.bind("getUrl", href -> {
+        webview.bind("pageLoadEvent", href -> {
             href = href.replace("[\"","").replace("\"]","");
             this.url = href;
+            for(PageLoadEvent event : loadEvents.values()) {
+                event.url(this.url);
+                if(!event.execute()) {
+                    break;
+                }
+                event.url(null);
+            }
             return null;
         });
 
@@ -312,6 +350,9 @@ public class WebviewWindow {
         WebviewWindow window = new WebviewWindow(this.id);
         window.loadUrl(this.url);
         window.setSize(this.width, this.height);
+        if(!secondary) {
+            Main.getNEXApp().registerMainWindow(window);
+        }
         window.launchWindow();
 
         close();
@@ -426,5 +467,9 @@ public class WebviewWindow {
 
     public Webview getWebview() {
         return webview;
+    }
+
+    public void registerPageLoadEvent(PageLoadEvent event) {
+        loadEvents.put(event.uuid(), event);
     }
 }

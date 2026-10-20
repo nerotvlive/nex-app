@@ -10,7 +10,7 @@ import java.util.Properties;
 public class NEXApp {
 
     private boolean launched = false;
-    private final WebviewWindow window;
+    private WebviewWindow window;
     private String version = "0.0.0";
     private String versionName = "Unknown";
     private String versionType = "unstable";
@@ -18,9 +18,13 @@ public class NEXApp {
     private String curseforgeToken = "";
 
     public NEXApp() {
-        window = new WebviewWindow();
         initResourceData();
         CurseforgeController.setApiKey(curseforgeToken);
+        registerMainWindow(new WebviewWindow());
+    }
+
+    public void registerMainWindow(WebviewWindow webviewWindow) {
+        window = webviewWindow;
     }
 
     private void initResourceData() {

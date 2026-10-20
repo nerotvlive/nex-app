@@ -16,6 +16,7 @@ const props = withDefaults(
 
 <template>
   <div class="titlebar-buttons w-fit absolute right-0 top-0" id="titlebar-buttons" :class="ZyneonSettings.isBorderless ? 'flex' : 'hidden'">
+    <slot name="additional-buttons"></slot>
     <button type="button" @click="WindowControls.minimize()" id="titlebar-button-minimize"><i class="icon-minus"></i></button>
     <button type="button" @click="WindowControls.toggleMaximize()" class="smaller" id="titlebar-button-maximize"><i class="icon-square"></i></button>
     <button type="button" @click="WindowControls.close()" class="red" id="titlebar-button-close"><i class="icon-x"></i></button>
