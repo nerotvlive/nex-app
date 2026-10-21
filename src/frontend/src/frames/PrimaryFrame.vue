@@ -190,6 +190,13 @@
       .notifications-card, .friends-card {
         border-radius: var(--zyn-br-lg);
       }
+
+      .friends-card {
+        margin: 0;
+        border-radius: 0;
+        border: none !important;
+        border-top: 1px solid var(--zyn-ov-brighter-200) !important;
+      }
     }
 
     #notifications.full, #friends.full {
@@ -218,10 +225,6 @@
       width: 16rem;
       overflow: hidden;
       opacity: 1;
-    }
-
-    #friends.active {
-      margin-right: 0.5rem;
     }
 
     #friends.active.full {
@@ -302,11 +305,6 @@
         }
 
         .zyneon-desktop-content.friends {
-          border-right: 1px solid var(--zyn-ov-brighter-200);
-        }
-
-        .zyneon-desktop-content.friends.rounded-border {
-          border-top-right-radius: var(--zyn-br-lg);
           border-right: 1px solid var(--zyn-ov-brighter-200);
         }
       }
