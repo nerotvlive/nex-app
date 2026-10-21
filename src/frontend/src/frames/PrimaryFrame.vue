@@ -200,6 +200,18 @@
       }
     }
 
+    #friends.full, #notifications.full {
+      .friends-card, .notifications-card {
+        margin: 0;
+        border-radius: 0;
+        border: none !important;
+      }
+
+      .notifications-card {
+        border-left: 1px solid var(--zyn-ov-brighter-200) !important;
+      }
+    }
+
     #notifications.active, #friends.active {
       min-width: 16rem;
       max-width: 16rem;
@@ -210,6 +222,10 @@
 
     #friends.active {
       margin-right: 0.5rem;
+    }
+
+    #friends.active.full {
+      margin: 0;
     }
 
     .hidden {
