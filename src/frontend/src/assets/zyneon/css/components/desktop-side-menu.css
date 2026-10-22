@@ -70,14 +70,10 @@
     width: 0;
 }
 
-.side-menu.animates {
-    animation: comeInLeft 0.25s ease-in-out forwards;
-}
-
 .side-menu.active.small {
-    min-width: 12rem;
+    min-width: 14rem;
     max-width: 14rem;
-    width: fit-content;
+    width: 14rem;
 }
 
 body.classic-menu {

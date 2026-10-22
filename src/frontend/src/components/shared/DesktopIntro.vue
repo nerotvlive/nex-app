@@ -79,25 +79,25 @@ onUnmounted(() => {
     display: flex;
 
     .welcome {
-      animation: welcome 8s ease-in-out forwards;
+      animation: intro_welcome 8s ease-in-out forwards;
       transform: translateX(110vh);
       opacity: 0;
     }
 
     .tothe {
-      animation: tothe 8s ease-in-out forwards;
+      animation: intro_tothe 8s ease-in-out forwards;
       transform: translateX(110vh);
       opacity: 0;
     }
 
     .allnew {
-      animation: allnew 8s ease-in-out forwards;
+      animation: intro_allnew 8s ease-in-out forwards;
       transform: translateX(110vh);
       opacity: 0;
     }
 
     .nexapp {
-      animation: nexapp 10s ease-in-out forwards;
+      animation: intro_nexapp 10s ease-in-out forwards;
       scale: 0;
       opacity: 0;
     }
@@ -107,7 +107,7 @@ onUnmounted(() => {
       height: 3rem;
       overflow: hidden;
       position: relative;
-      animation: loader 11s ease-in-out forwards;
+      animation: intro_loader 11s ease-in-out forwards;
       opacity: 0;
 
       .rotate {
@@ -115,24 +115,24 @@ onUnmounted(() => {
         width: 3rem;
         height: 3rem;
         overflow: hidden;
-        animation: rotate 1s linear infinite;
+        animation: intro_rotate 1s linear infinite;
       }
     }
   }
 
   .intro.finish {
     .nexapp {
-      animation: nexappFinish 3s ease-in-out forwards;
+      animation: intro_nexappFinish 3s ease-in-out forwards;
     }
 
     .loader-container {
-      animation: loaderFinish 500ms ease-in-out forwards;
+      animation: intro_loaderFinish 500ms ease-in-out forwards;
     }
   }
 
   .northern-aurora {
     opacity: 0;
-    animation: fadeInGradient 12s ease-in-out forwards;
+    animation: intro_fadeInGradient 12s ease-in-out forwards;
     background: center
     radial-gradient(ellipse 70% 55% at 50% 50%, rgba(255, 20, 147, 0.15), transparent 50%),
     radial-gradient(ellipse 160% 130% at 10% 10%, rgba(0, 255, 255, 0.12), transparent 60%),
@@ -144,7 +144,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes rotate {
+@keyframes intro_rotate {
   0% {
     rotate: 0deg;
   }
@@ -153,7 +153,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes welcome {
+@keyframes intro_welcome {
   0% {
     transform: translateX(110vh);
     opacity: 0;
@@ -172,7 +172,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes tothe {
+@keyframes intro_tothe {
   20% {
     transform: translateY(110vh);
     opacity: 0;
@@ -191,7 +191,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes allnew {
+@keyframes intro_allnew {
   40% {
     transform: translateX(-110vh);
     opacity: 0;
@@ -210,7 +210,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes nexapp {
+@keyframes intro_nexapp {
   45% {
     transform: translateY(0rem);
     opacity: 0;
@@ -241,7 +241,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes nexappFinish {
+@keyframes intro_nexappFinish {
   0% {
     transform: translateY(-2rem);
     opacity: 1;
@@ -261,7 +261,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes loader {
+@keyframes intro_loader {
   45% {
     opacity: 0;
   }
@@ -280,7 +280,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes loaderFinish {
+@keyframes intro_loaderFinish {
   0% {
     opacity: 1;
     transform: translateY(4rem);
@@ -291,7 +291,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes fadeInGradient {
+@keyframes intro_fadeInGradient {
   from {
     opacity: 0;
     filter: grayscale(100%);

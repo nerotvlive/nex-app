@@ -234,7 +234,7 @@ body {
   }
 
   .deco {
-    animation: fadeInDeco 2s ease-in-out forwards;
+    animation: index_fadeInDeco 2s ease-in-out forwards;
 
     .rotated {
       position: absolute;
@@ -246,7 +246,7 @@ body {
 
     .rotated.comeIn {
       transform: rotate(-90deg) translateY(-5rem);
-      animation: comeIn 2s ease-in-out forwards;
+      animation: index_comeIn 2s ease-in-out forwards;
     }
 
     .rotated.out {
@@ -255,7 +255,7 @@ body {
     }
 
     .rotated.fallOff {
-      animation: fallOff 2s ease-in-out forwards;
+      animation: index_fallOff 2s ease-in-out forwards;
     }
   }
 
@@ -286,14 +286,14 @@ body {
 
 .titlebar-container.comeInTop {
   position: relative;
-  animation: comeInTop 0.5s ease forwards;
+  animation: index_comeInTop 0.5s ease forwards;
 }
 
 .main.withTitlebar {
   box-shadow: 0 0 1rem #00000075;
   border-left: 1px solid transparent;
   border-top: 1px solid transparent;
-  animation: corner 4s ease-in-out forwards;
+  animation: index_corner 4s ease-in-out forwards;
 
   .animated-border, .animated-border-left {
     position: absolute;
@@ -303,7 +303,7 @@ body {
     right: 0;
     background: var(--zyn-ov-brighter-200);
     width: 1%;
-    animation: border 4s ease-in-out forwards;
+    animation: index_border 4s ease-in-out forwards;
   }
 
   .animated-border-left {
@@ -318,7 +318,7 @@ body {
     left: 0;
     background: var(--zyn-ov-brighter-200);
     height: 1%;
-    animation: borderHeight 4s ease-in-out forwards;
+    animation: index_borderHeight 4s ease-in-out forwards;
   }
 
   .animated-border-bottom {
@@ -327,7 +327,7 @@ body {
   }
 }
 
-@keyframes border {
+@keyframes index_border {
   0% {
     width: 0;
     background: var(--zyn-ov-brighter-500);
@@ -349,7 +349,7 @@ body {
   }
 }
 
-@keyframes corner {
+@keyframes index_corner {
   0%,50% {
     border-left: 1px solid transparent;
     border-top: 1px solid transparent;
@@ -367,7 +367,7 @@ body {
   }
 }
 
-@keyframes borderHeight {
+@keyframes index_borderHeight {
   0% {
     height: 0;
     background: var(--zyn-ov-brighter-500);
@@ -389,7 +389,7 @@ body {
   }
 }
 
-@keyframes fadeInDeco {
+@keyframes index_fadeInDeco {
   0% {
     opacity: 0;
   }
@@ -399,7 +399,7 @@ body {
   }
 }
 
-@keyframes comeIn {
+@keyframes index_comeIn {
   0%, 50% {
     transform: rotate(-90deg) translateY(-5rem);
   }
@@ -409,7 +409,7 @@ body {
   }
 }
 
-@keyframes comeInTop {
+@keyframes index_comeInTop {
   0% {
     height: 0;
     max-height: 0 !important;
@@ -423,7 +423,7 @@ body {
   }
 }
 
-@keyframes fallOff {
+@keyframes index_fallOff {
   50% {
     bottom: 1rem;
     transform: rotate(-90deg);

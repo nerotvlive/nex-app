@@ -6,16 +6,16 @@ import {ZyneonSettings} from "../../assets/zyneon/scripts";
 const { t } = useI18n()
 onMounted(() => {
   ZyneonSettings.setMenuExpanded(false);
-  const header = document.querySelector('.header');
-  if(header) {
-    header.classList.add('active');
-    const headerText = header.querySelector('.header h1');
-    if (headerText) {
-      if (headerText.querySelector('.gray-text')) {
-        headerText.querySelector('.gray-text')?.classList.add('active');
+  const error = document.querySelector('.error');
+  if(error) {
+    error.classList.add('active');
+    const errorText = error.querySelector('.error h1');
+    if (errorText) {
+      if (errorText.querySelector('.gray-text')) {
+        errorText.querySelector('.gray-text')?.classList.add('active');
       }
-      if (headerText.querySelector('.special-text')) {
-        headerText.querySelector('.special-text')?.classList.add('active');
+      if (errorText.querySelector('.special-text')) {
+        errorText.querySelector('.special-text')?.classList.add('active');
       }
     }
   }
@@ -51,13 +51,13 @@ const redirect = (url:string) => {
 </script>
 
 <template>
-  <div class="header relative h-full flex flex-col">
-    <div class="header-overlay"></div>
-    <div class="header-content max-w-6xl mx-auto w-full py-4 grow flex flex-col justify-between items-center text-center">
+  <div class="error relative h-full flex flex-col">
+    <div class="error-overlay"></div>
+    <div class="error-content max-w-6xl mx-auto w-full py-4 grow flex flex-col justify-between items-center text-center">
       <div class="px-4">{{ injectedError }}</div>
       <div class="flex flex-col items-center">
         <div>
-          <h1 ref="header-text" class="text-5xl sm:text-6xl md:text-7xl px-4 font-bold"><span class="gray-text"><slot name="error">{{ t('pages.error.title') }}</slot></span> <span class="special-text"><slot name="error-code">{{ errorCode }}</slot></span></h1>
+          <h1 ref="error-text" class="text-5xl sm:text-6xl md:text-7xl px-4 font-bold"><span class="gray-text"><slot name="error">{{ t('pages.error.title') }}</slot></span> <span class="special-text"><slot name="error-code">{{ errorCode }}</slot></span></h1>
           <p class="py-4 text-xl"><slot name="message">{{ errorMessage }}</slot></p>
         </div>
         <div class="flex gap-4 p-4 pt-8">
@@ -82,7 +82,7 @@ const redirect = (url:string) => {
 </template>
 
 <style scoped>
-.header {
+.error {
   opacity: 0;
   background: var(--zyn-background-body);
   border-bottom: 1px solid #ffffff15;
@@ -93,7 +93,7 @@ const redirect = (url:string) => {
     animation: textIn 1s ease-in-out forwards;
   }
 
-  .header-overlay {
+  .error-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -107,7 +107,7 @@ const redirect = (url:string) => {
     animation: fadeIn 5s ease-in-out forwards;
   }
 
-  .header-content {
+  .error-content {
     z-index: 2;
   }
 
@@ -136,7 +136,7 @@ const redirect = (url:string) => {
   }
 }
 
-.header.active {
+.error.active {
   animation: fadeIn 1s ease-in-out forwards;
 }
 </style>

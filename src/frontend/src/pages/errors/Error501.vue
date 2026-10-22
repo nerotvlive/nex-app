@@ -5,8 +5,8 @@ const { t } = useI18n()
 </script>
 
 <template>
-    <ErrorPage>
-      <template #error-code>501</template>
-      <template #message>{{ t('pages.error.notimplemented') }}</template>
-    </ErrorPage>
+  <ErrorPage>
+    <template #error-code>501</template>
+    <template #message>{{ t('pages.error.notimplemented') }}</template>
+  </ErrorPage>
 </template>

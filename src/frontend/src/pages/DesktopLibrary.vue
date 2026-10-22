@@ -5,6 +5,7 @@ import {WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
 import {useI18n} from "vue-i18n";
 const { t } = useI18n();
 import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
+import Error501 from "./errors/Error501.vue";
 
 
 onMounted(()=>{
@@ -47,7 +48,7 @@ onMounted(()=>{
           </a>
         </div>
         <div class="px-2 pb-2" style="border-bottom: 1px solid var(--zyn-ov-brighter-200);" @mousedown.stop>
-          <input type="text" class="zyn-btn darker compact outline-none" :placeholder="t('pages.library.menu.search')">
+          <input type="text" class="zyn-btn darker compact outline-none w-full" :placeholder="t('pages.library.menu.search')">
         </div>
         <div class="flex flex-col h-full w-full overflow-hidden overflow-y-auto" @mousedown.stop>
 
@@ -59,5 +60,6 @@ onMounted(()=>{
         </div>
       </template>
     </DesktopSideMenu>
+    <Error501 class="w-full"/>
   </div>
 </template>
