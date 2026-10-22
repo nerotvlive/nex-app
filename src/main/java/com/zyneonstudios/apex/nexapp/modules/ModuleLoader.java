@@ -1,5 +1,8 @@
 package com.zyneonstudios.apex.nexapp.modules;
 
+import com.zyneonstudios.apex.nexapp.events.module.ModuleDisableEvent;
+import com.zyneonstudios.apex.nexapp.events.module.ModuleEnableEvent;
+import com.zyneonstudios.apex.nexapp.events.module.ModuleLoadEvent;
 import com.zyneonstudios.apex.nexapp.main.NEXApp;
 
 import java.io.File;
@@ -15,7 +18,7 @@ import java.util.Set;
 public class ModuleLoader {
 
     // Map to store loaded modules, keyed by their unique ID.
-    private final HashMap<String, NEXModule> modules = new HashMap<>();
+    private final HashMap<String, AppModule> modules = new HashMap<>();
 
     // Map to store the paths of module JAR files, keyed by module ID.
     private final HashMap<String, String> moduleJars = new HashMap<>();
@@ -35,7 +38,7 @@ public class ModuleLoader {
      *
      * @return A collection of NexusModule instances.
      */
-    public Collection<NEXModule> getNexusModules() {
+    public Collection<AppModule> getNexusModules() {
         return modules.values();
     }
 
@@ -44,7 +47,7 @@ public class ModuleLoader {
      *
      * @return A map of module IDs to NexusModule instances.
      */
-    public HashMap<String, NEXModule> getNexusModulesById() {
+    public HashMap<String, AppModule> getNexusModulesById() {
         return modules;
     }
 
@@ -63,7 +66,7 @@ public class ModuleLoader {
      * @param moduleJar The JAR file containing the module.
      * @return The NexusModule instance if successful, null otherwise.
      */
-    public NEXModule readModule(File moduleJar) {
+    public AppModule readModule(File moduleJar) {
         /*try {
             String mainPath;
             String id;
@@ -107,12 +110,19 @@ public class ModuleLoader {
      *
      * @param module The NexusModule instance to load.
      */
-    public void loadModule(NEXModule module) {
+    public void loadModule(AppModule module) {
         // Check if a module with the same ID is already loaded.
         if (!modules.containsKey(module.getModuleId())) {
             System.out.println("Loading module " + module.getModuleId() + " v" + module.getModuleVersion() + " by " + module.getModuleOwner() + "...");
             modules.put(module.getModuleId(), module);
-            module.onLoad();
+            if(module.load().execute()) {
+                for(ModuleLoadEvent event : module.loadEvents()) {
+                    event.execute();
+                }
+                System.out.println("Module " + module.getModuleId() + " loaded successfully.");
+            } else {
+                System.err.println("Module " + module.getModuleId() + " failed to load.");
+            }
         } else {
             System.err.println("Module with ID '" + module.getModuleId() + "' is already loaded. Skipping.");
         }
@@ -122,8 +132,15 @@ public class ModuleLoader {
      * Activates all loaded modules.
      */
     public void activateModules() {
-        for (NEXModule module : modules.values()) {
-            module.onEnable();
+        for (AppModule module : modules.values()) {
+            if(module.enable().execute()) {
+                for(ModuleEnableEvent event : module.enableEvents()) {
+                    event.execute();
+                }
+                System.out.println("Module " + module.getModuleId() + " activated successfully.");
+            } else {
+                System.err.println("Module " + module.getModuleId() + " failed to activate.");
+            }
         }
     }
 
@@ -131,8 +148,15 @@ public class ModuleLoader {
      * Deactivates all loaded modules.
      */
     public void deactivateModules() {
-        for (NEXModule module : modules.values()) {
-            module.onDisable();
+        for (AppModule module : modules.values()) {
+            if(module.disable().execute()) {
+                for(ModuleDisableEvent event : module.disableEvents()) {
+                    event.execute();
+                }
+                System.out.println("Module " + module.getModuleId() + " deactivated successfully.");
+            } else {
+                System.err.println("Module " + module.getModuleId() + " failed to deactivate.");
+            }
         }
     }
 
@@ -141,7 +165,7 @@ public class ModuleLoader {
      *
      * @param module The NexusModule instance to unload.
      */
-    public void unloadModule(NEXModule module) {
+    public void unloadModule(AppModule module) {
         modules.remove(module.getModuleId());
     }
 
@@ -149,7 +173,7 @@ public class ModuleLoader {
      * Unloads all loaded modules.
      */
     public void unloadModules() {
-        for (NEXModule module : modules.values()) {
+        for (AppModule module : modules.values()) {
             unloadModule(module);
         }
         modules.clear();
