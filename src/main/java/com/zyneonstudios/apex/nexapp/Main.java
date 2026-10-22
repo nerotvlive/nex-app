@@ -47,6 +47,7 @@ public class Main {
             if(nexApp.getModuleLoader()!=null) {
                 try {
                     nexApp.getModuleLoader().deactivateModules();
+                    nexApp.getModuleLoader().unloadModules();
                 } catch (Exception e) {
                     System.err.println("Failed to deactivate modules: " + e.getMessage());
                 }
