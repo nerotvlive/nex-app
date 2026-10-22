@@ -1,6 +1,7 @@
 package com.zyneonstudios.apex.nexapp.window;
 
 import com.zyneonstudios.apex.nexapp.Main;
+import com.zyneonstudios.apex.nexapp.events.AppSetupEvent;
 import com.zyneonstudios.apex.nexapp.events.PageLoadEvent;
 import io.avaje.webview.Webview;
 
@@ -21,7 +22,7 @@ public class WebviewWindow {
 
 
     private final String id;
-    private String url = Main.getBaseUrl();
+    private String url = Main.getBaseUrl() + "/loader";
     private int width;
     private int height;
     private boolean secondary = false;
@@ -120,7 +121,7 @@ public class WebviewWindow {
                     if(!restart) {
                         windows.remove(this.id);
                         if (windows.isEmpty()) {
-                            System.exit(0);
+                            Main.stop(0);
                         }
                     }
                 } catch (Throwable e) {
@@ -281,7 +282,18 @@ public class WebviewWindow {
         });
 
         this.webview.bind("setup", (_) -> {
-            webview.eval("finishIntro();");
+            boolean success = true;
+            for(AppSetupEvent event : Main.getNEXApp().getSetupEvents()) {
+                if(!event.execute()) {
+                    success = false;
+                    break;
+                }
+            }
+            if(success) {
+                webview.eval("finishIntro();");
+            } else {
+                Main.stop(-1);
+            }
             return null;
         });
 

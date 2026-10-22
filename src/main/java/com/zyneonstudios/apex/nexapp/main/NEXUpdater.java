@@ -1,5 +1,7 @@
 package com.zyneonstudios.apex.nexapp.main;
 
+import com.zyneonstudios.apex.nexapp.Main;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -34,6 +36,6 @@ public class NEXUpdater {
         }
 
         pb.start();
-        System.exit(0);
+        Main.stop(0);
     }
 }

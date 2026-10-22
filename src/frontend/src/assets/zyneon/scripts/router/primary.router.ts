@@ -14,8 +14,15 @@ import {WindowControls} from "../windowControls.ts";
 import ErrorGame from "../../../../pages/errors/ErrorGame.vue";
 import DesktopIndex from "../../../../pages/DesktopIndex.vue";
 import DesktopIntro from "../../../../components/shared/DesktopIntro.vue";
+import LoadingScreen from "../../../../components/shared/desktopelements/LoadingScreen.vue";
 
 const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/loader',
+        name: 'loader',
+        meta: { title: 'Loading...' },
+        component: LoadingScreen
+    },
     {
         path: '/',
         name: 'index',

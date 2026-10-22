@@ -19,6 +19,7 @@ public class Main {
     private static String updateMetaUrl = null;
     private static boolean dev = false;
     private static boolean nativeFrame = false;
+    private static boolean shutdown = false;
 
     static void main(String[] args) {
         Main.args = args;
@@ -30,6 +31,28 @@ public class Main {
         springApp.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
         springApp.run(args);
         nexApp.launch();
+    }
+
+    public static void stop(int exitCode) {
+        if(shutdown) return;
+        shutdown = true;
+        if(nexApp!=null) {
+            if(nexApp.getWindow()!=null) {
+                try {
+                    nexApp.getWindow().loadUrl(getBaseUrl() + "/loader?shutdown=true");
+                } catch (Exception e) {
+                    System.err.println("Failed to load shutdown URL: " + e.getMessage());
+                }
+            }
+            if(nexApp.getModuleLoader()!=null) {
+                try {
+                    nexApp.getModuleLoader().deactivateModules();
+                } catch (Exception e) {
+                    System.err.println("Failed to deactivate modules: " + e.getMessage());
+                }
+            }
+        }
+        System.exit(exitCode);
     }
 
     private static void resolveArgs() {

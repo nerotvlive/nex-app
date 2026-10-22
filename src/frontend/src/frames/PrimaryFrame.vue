@@ -17,7 +17,7 @@
   const { t } = useI18n();
 
   const withNavigation = computed(() => {
-    return (route.path !== '/' && route.path !== '/intro');
+    return (route.path !== '/' && route.path !== '/intro' && route.path !== '/loader');
   });
 
   const withTitlebar = computed(() => {
