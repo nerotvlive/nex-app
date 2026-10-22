@@ -1,11 +1,13 @@
 package com.zyneonstudios.apex.nexapp.main;
 
+import com.zyneonstudios.apex.nexapp.Main;
+import com.zyneonstudios.apex.nexapp.events.AppSetupEvent;
+import com.zyneonstudios.apex.nexapp.modules.ModuleLoader;
 import com.zyneonstudios.apex.nexapp.springboot.controllers.CurseforgeController;
 import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
 
 import java.io.InputStream;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 public class NEXApp {
 
@@ -16,6 +18,9 @@ public class NEXApp {
     private String versionType = "unstable";
     private String versionBuild = "000000000000";
     private String curseforgeToken = "";
+
+    private HashMap<UUID, AppSetupEvent> appSetupEvents = new HashMap<>();
+    private ModuleLoader moduleLoader;
 
     public NEXApp() {
         initResourceData();
@@ -71,6 +76,20 @@ public class NEXApp {
             throw new IllegalStateException("NEX App already launched!");
         } else {
             launched = true;
+
+            addSetupEvent(new AppSetupEvent() {
+                @Override
+                public boolean execute() {
+                    try {
+                        moduleLoader = new ModuleLoader(Main.getNEXApp());
+                        moduleLoader.activateModules();
+                    } catch (Exception e) {
+                        System.err.println("Failed to load modules: " + e.getMessage());
+                    }
+                    return true;
+                }
+            });
+
             window.launchWindow();
         }
     }
@@ -97,5 +116,17 @@ public class NEXApp {
 
     public String getVersionType() {
         return versionType;
+    }
+
+    public Collection<AppSetupEvent> getSetupEvents() {
+        return appSetupEvents.values();
+    }
+
+    public void addSetupEvent(AppSetupEvent event) {
+        appSetupEvents.put(event.uuid(), event);
+    }
+
+    public ModuleLoader getModuleLoader() {
+        return moduleLoader;
     }
 }
