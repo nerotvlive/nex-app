@@ -4,11 +4,19 @@ import com.zyneonstudios.apex.nexapp.events.module.ModuleDisableEvent;
 import com.zyneonstudios.apex.nexapp.events.module.ModuleEnableEvent;
 import com.zyneonstudios.apex.nexapp.events.module.ModuleLoadEvent;
 import com.zyneonstudios.apex.nexapp.main.NEXApp;
+import com.zyneonstudios.apex.nexapp.springboot.controllers.ApiController;
+import tools.jackson.databind.JsonNode;
 
 import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * The {@code ModuleLoader} class is responsible for loading, managing, and unloading modules within the NEX App.
@@ -67,31 +75,43 @@ public class ModuleLoader {
      * @return The NexusModule instance if successful, null otherwise.
      */
     public AppModule readModule(File moduleJar) {
-        /*try {
+        try {
             String mainPath;
             String id;
-            // Read module information from nexus-module.json within the JAR.
-            try (JarFile jarFile = new JarFile(moduleJar.getAbsolutePath())) {
-                InputStream is = jarFile.getInputStream(jarFile.getJarEntry("nexus-module.json"));
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-                JsonObject jsonObject = NEXApp.getInstance().getFastGson().fromJson(reader, JsonObject.class);
-                JsonArray array = jsonObject.getAsJsonArray("modules");
-                mainPath = array.get(0).getAsJsonObject().get("main").getAsString();
-                id = array.get(0).getAsJsonObject().get("id").getAsString();
+
+            // Read module information from nexapp-module.json within the JAR.
+            try (JarFile jarFile = new JarFile(moduleJar)) {
+                JarEntry entry = jarFile.getJarEntry("nexapp-module.json");
+
+                if (entry == null) {
+                    System.err.println("nexapp-module.json not found in " + moduleJar.getPath());
+                    return null;
+                }
+
+                try (InputStream is = jarFile.getInputStream(entry)) {
+                    JsonNode rootNode = ApiController.getObjectMapper().readTree(is);
+                    JsonNode firstModule = rootNode.get("modules").get(0);
+
+                    mainPath = firstModule.get("main").asText();
+                    id = firstModule.get("id").asText();
+                }
+
                 // Check if a module with the same ID is already loaded.
                 if (moduleJars.containsKey(id)) {
-                    NEXApp.getLogger().deb("Module with ID '" + id + "' is already loaded. Skipping duplicate.");
+                    System.err.println("Module with ID '" + id + "' is already loaded. Skipping duplicate.");
                     return null;
                 }
             } catch (Exception e) {
-                System.err.println("Couldn't read module " + moduleJar.getPath() + ": " + e.getMessage());
+                System.err.println("Couldn't read module JSON from " + moduleJar.getPath() + ": " + e.getMessage());
                 return null;
             }
+
             // Load the module class using a URLClassLoader.
             URLClassLoader classLoader = new URLClassLoader(new URL[]{moduleJar.toURI().toURL()});
             Class<?> moduleClass = classLoader.loadClass(mainPath);
             Constructor<?> constructor = moduleClass.getConstructor();
-            NEXModule module = (NEXModule) constructor.newInstance();
+            AppModule module = (AppModule) constructor.newInstance();
+
             // Validate the module ID and store the module path.
             if (id.equals(module.getModuleId())) {
                 moduleJars.put(id, moduleJar.getAbsolutePath().replace("\\", "/"));
@@ -101,7 +121,7 @@ public class ModuleLoader {
             }
         } catch (Exception e) {
             System.err.println("Couldn't read module " + moduleJar.getPath() + ": " + e.getMessage());
-        }*/
+        }
         return null;
     }
 

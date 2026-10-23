@@ -3,7 +3,7 @@ package com.zyneonstudios.apex.nexapp.main;
 import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.events.AppSetupEvent;
 import com.zyneonstudios.apex.nexapp.modules.ModuleLoader;
-import com.zyneonstudios.apex.nexapp.modules.TestModule;
+import com.zyneonstudios.apex.nexapp.modules.test.TestModule;
 import com.zyneonstudios.apex.nexapp.springboot.controllers.CurseforgeController;
 import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
 
