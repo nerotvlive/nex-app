@@ -148,7 +148,8 @@
       },
       "reset": "Réinitialiser tous les paramètres & recharger",
       "reload": "Recharger",
-      "restart": "Redémarrer"
+      "restart": "Redémarrer",
+      "report": "Signaler un problème"
     }
   }
 }

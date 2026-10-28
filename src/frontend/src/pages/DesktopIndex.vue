@@ -128,7 +128,7 @@ onMounted(() => {
 <template>
   <div class="flex flex-col h-full root">
     <div class="absolute top-0 left-0 w-full h-full gradient"/>
-    <div class="titlebar-container hidden w-full h-[40px]" id="tb-div">
+    <div class="titlebar-container hidden w-full h-10" id="tb-div">
       <DesktopTitlebar class="absolute z-10 controls" @mousedown.stop :class="{ 'hidden': !withControls }">
         <template #title>
           <div/>
@@ -167,7 +167,7 @@ onMounted(() => {
           <span class="absolute rotated fallOff deco-setup">{{ t('pages.start.setup.title') }}</span>
         </div>
         <div class="z-1 overflow-hidden overflow-y-auto w-full content">
-          <CardStructured @mousedown.stop class="min-w-[32rem] z-10 setup-card">
+          <CardStructured @mousedown.stop class="min-w-md z-10 setup-card">
             <template #header>
               <strong class="text-xl text-white title">
                 {{ t('pages.start.setup.title') }} » {{ t('pages.start.setup.language.title') }}

@@ -148,7 +148,8 @@
       },
       "reset": "Einstellungen löschen & neu laden",
       "reload": "Neu laden",
-      "restart": "Neu starten"
+      "restart": "Neu starten",
+      "report": "Fehler melden"
     }
   }
 }

@@ -34,13 +34,15 @@ onMounted(()=>{
         </template>
         <template #footer>
           <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
-            <select ref="secondarySelect" class="zyn-btn">
-              <option class="bg-black text-white" value="/">/ (501)</option>
+            <select ref="secondarySelect" class="zyn-btn compact">
+              <option class="bg-black text-white" value="/404">/ (404)</option>
+              <option class="bg-black text-white" value="/">/ (500)</option>
+              <option class="bg-black text-white" value="/501">/ (501)</option>
               <option class="bg-black text-white" value="/library">{{ t('menu.library') }}</option>
               <option class="bg-black text-white" value="/downloads">{{ t('menu.downloads') }}</option>
               <option class="bg-black text-white" value="/settings">{{ t('menu.settings') }}</option>
             </select>
-            <a @click="launchSecondary" class="zyn-btn">
+            <a @click="launchSecondary" class="zyn-btn compact">
               <i class="bi bi-play"/>
               {{ t('pages.tools.secondary.launch') }}
             </a>
@@ -56,15 +58,15 @@ onMounted(()=>{
         </template>
         <template #footer>
           <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
-            <a @click="WindowControls.reload" class="zyn-btn">
+            <a @click="WindowControls.reload" class="zyn-btn compact">
               <i class="bi bi-play"/>
               {{ t('pages.tools.controls.reload') }}
             </a>
-            <a @click="WindowControls.restart" class="zyn-btn">
+            <a @click="WindowControls.restart" class="zyn-btn compact">
               <i class="bi bi-play"/>
               {{ t('pages.tools.controls.restart') }}
             </a>
-            <button @click="WindowControls.toggleNative" class="zyn-btn">
+            <button @click="WindowControls.toggleNative" class="zyn-btn compact">
               <i class="bi bi-play"/>
               {{ t('pages.tools.controls.native') }}
             </button>
@@ -80,7 +82,7 @@ onMounted(()=>{
         </template>
         <template #footer>
           <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
-            <a @click="WindowControls.openOld" class="zyn-btn">
+            <a @click="WindowControls.openOld" class="zyn-btn compact">
               <i class="bi bi-play"/>
               {{ t('pages.tools.old.open') }}
             </a>
@@ -90,14 +92,3 @@ onMounted(()=>{
     </div>
   </div>
 </template>
-
-<style scoped>
-button.absolute {
-  transition: all 0.2s ease;
-}
-
-button.absolute:hover {
-  background: var(--zyn-ov-brighter-400);
-  cursor: pointer;
-}
-</style>

@@ -6,6 +6,7 @@ import {useI18n} from "vue-i18n";
 import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
 import DesktopTools from "./DesktopTools.vue";
 import DesktopIndex from "./DesktopIndex.vue";
+import ErrorReport from "./errors/ErrorReport.vue";
 const { t } = useI18n();
 
 const view = ref("general");
@@ -54,6 +55,10 @@ onMounted(()=>{
       </template>
       <template #bottom>
         <div class="pt-2" @mousedown.stop>
+          <a class="zyn-btn compact" :class="view === 'report' ? 'active-alt' : ''" @click="view = 'report'">
+            <i class="bi bi-bug"></i>
+            <span class="grow">{{ t("pages.settings.report") }}</span>
+          </a>
           <a class="zyn-btn compact" :class="view === 'setup' ? 'active-alt' : ''" @click="view = 'setup'">
             <i class="bi bi-wrench-adjustable"></i>
             <span class="grow">{{ t("menu.setup") }}</span>
@@ -87,6 +92,9 @@ onMounted(()=>{
       </div>
       <div class="setup-settings grow overflow-hidden relative border zyn-br-lg shadow-lg shadow-black/50" style="border-color: var(--zyn-ov-brighter-200);" :class="view === 'setup' ? 'active' : 'hidden'">
         <DesktopIndex></DesktopIndex>
+      </div>
+      <div class="setup-settings grow overflow-hidden relative border zyn-br-lg shadow-lg shadow-black/50" style="border-color: var(--zyn-ov-brighter-200);" :class="view === 'report' ? 'active' : 'hidden'">
+        <ErrorReport></ErrorReport>
       </div>
     </div>
   </div>

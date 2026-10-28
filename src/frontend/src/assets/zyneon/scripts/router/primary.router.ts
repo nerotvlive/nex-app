@@ -16,6 +16,7 @@ import DesktopIndex from "../../../../pages/DesktopIndex.vue";
 import DesktopIntro from "../../../../components/shared/DesktopIntro.vue";
 import LoadingScreen from "../../../../components/shared/desktopelements/LoadingScreen.vue";
 import {ZyneonSettings} from "../settings.ts";
+import ErrorReport from "../../../../pages/errors/ErrorReport.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -89,6 +90,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Settings',
         meta: { title: 'Settings' },
         component: DesktopSettings
+    },
+    {
+        path: '/report',
+        name: 'Report Error',
+        meta: { title: 'Report Error' },
+        component: ErrorReport
     },
     {
         path: '/error',

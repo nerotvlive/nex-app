@@ -148,7 +148,8 @@
       },
       "reset": "Reset all settings & reload",
       "reload": "Reload",
-      "restart": "Restart"
+      "restart": "Restart",
+      "report": "Report error"
     }
   }
 }
