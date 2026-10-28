@@ -5,8 +5,6 @@ import {WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
 import {useI18n} from "vue-i18n";
 const { t } = useI18n();
 import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
-import Error501 from "./errors/Error501.vue";
-
 
 onMounted(()=>{
   ZyneonSettings.setMenuExpanded(false);
@@ -39,8 +37,8 @@ onMounted(()=>{
       </template>
       <template #center>
         <div class="flex gap-1" @mousedown.stop>
-          <a class="zyn-btn darker compact w-full disabled" style="margin-right: 0;">
-            <i class="icon-text-align-justify"></i>
+          <a class="zyn-btn darker compact w-full" style="margin-right: 0;">
+            <i class="bi bi-plus-lg"></i>
             <span class="grow">{{ t("pages.library.menu.add") }}</span>
           </a>
           <a class="zyn-btn darker compact" style="width: fit-content; margin-left: 0; padding: 0 0.667rem" @click="WindowControls.reload">
@@ -60,6 +58,8 @@ onMounted(()=>{
         </div>
       </template>
     </DesktopSideMenu>
-    <Error501 class="w-full"/>
+    <div class="library-content w-full overflow-hidden overflow-y-auto">
+
+    </div>
   </div>
 </template>

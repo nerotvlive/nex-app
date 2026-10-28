@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted} from "vue";
 import {WindowControls} from "../../../assets/zyneon/scripts";
+import {useRoute, useRouter} from "vue-router";
+const route = useRoute();
+const router = useRouter();
 
 let timer: ReturnType<typeof setTimeout> | null = null;
-const shutdown = new URLSearchParams(window.location.search)?.get("shutdown")==="true" || false;
+const urlParams = new URLSearchParams(window.location.search);
+const shutdown = urlParams?.get("shutdown")==="true" || false;
+const setup = urlParams?.get("setup")==="true" || false;
 
 const finishIntro = () => {
   if(shutdown) return;
@@ -19,7 +24,18 @@ const finishIntro = () => {
       } else {
         startpage = localStorage.getItem("nexapp.neo.settings.general.startpage") || "/dashboard";
       }
-      window.location.href = startpage;
+      if(setup) {
+        router.push({
+          path: '/',
+          query: {
+            ...route.query,
+            intro: "skip"
+          }
+        });
+        return;
+      } else {
+        window.location.href = startpage;
+      }
     }, 2000);
   }
 };

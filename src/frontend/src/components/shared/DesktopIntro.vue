@@ -8,7 +8,23 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 let timer: ReturnType<typeof setTimeout> | null = null;
+let finished = false;
 
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (event.key === "Escape") {
+    if (!finished) {
+      finished = true;
+      router.push({
+        path: '/loader',
+        query: {
+          ...route.query,
+          setup: "true"
+        }
+      });
+    }
+  }
+};
 
 const finishIntro = () => {
   const intro = document.getElementById("intro");
@@ -27,8 +43,10 @@ const finishIntro = () => {
 };
 
 onMounted(() => {
+  window.addEventListener("keydown", handleKeyDown);
   window.finishIntro = finishIntro;
   timer = setTimeout(() => {
+    finished = true;
     if(!window.setup) {
       finishIntro();
     } else {
@@ -43,6 +61,8 @@ onUnmounted(() => {
     clearTimeout(timer);
   }
 });
+
+
 </script>
 
 <template>
