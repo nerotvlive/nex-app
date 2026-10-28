@@ -146,7 +146,9 @@
       "language": {
         "select": "Sprache"
       },
-      "reset": "Einstellungen löschen & neu laden"
+      "reset": "Einstellungen löschen & neu laden",
+      "reload": "Neu laden",
+      "restart": "Neu starten"
     }
   }
 }

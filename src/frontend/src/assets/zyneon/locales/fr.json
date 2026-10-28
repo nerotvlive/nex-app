@@ -146,7 +146,9 @@
       "language": {
         "select": "Langue"
       },
-      "reset": "Réinitialiser tous les paramètres & recharger"
+      "reset": "Réinitialiser tous les paramètres & recharger",
+      "reload": "Recharger",
+      "restart": "Redémarrer"
     }
   }
 }

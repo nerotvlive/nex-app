@@ -124,7 +124,7 @@
            </a>
          </template>
          <template #center>
-           <div class="flex flex-col">
+           <div class="flex flex-col pt-2">
              <router-link to="/dashboard" id="dashboard-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
                <i class="icon-gallery-vertical-end"></i>
                <span class="grow">{{ t('menu.dashboard') }}</span>
@@ -140,23 +140,25 @@
            </div>
          </template>
          <template #bottom>
-           <a @click="toggleFriends()" class="zyn-btn compact transparent" :class="{'active-alt': friends && withNavigation, 'hidden': withTitlebar || !withNavigation}" @mousedown.stop>
-             <i class="bi" :class="friends ? 'bi-people-fill text-white' : 'bi-people'"></i>
-             <span class="grow">{{ t('menu.friends') }}</span>
-           </a>
-           <a @click="toggleNotifications()" class="zyn-btn compact transparent" :class="{'active-alt': notifications && withNavigation}" @mousedown.stop>
-             <i class="icon-bell"></i>
-             <span class="grow">{{ t('menu.notifications') }}</span>
-           </a>
-           <hr class="opacity-20 mb-2" @mousedown.stop>
-           <router-link to="/downloads" id="downloads-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
-             <i class="icon-download"></i>
-             <span class="grow">{{ t('menu.downloads') }}</span>
-           </router-link>
-           <router-link to="/settings" id="settings-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
-             <i class="icon-bolt"></i>
-             <span class="grow">{{ t('menu.settings') }}</span>
-           </router-link>
+           <div class="w-full pt-2">
+             <a @click="toggleFriends()" class="zyn-btn compact transparent" :class="{'active-alt': friends && withNavigation, 'hidden': withTitlebar || !withNavigation}" @mousedown.stop>
+               <i class="bi" :class="friends ? 'bi-people-fill text-white' : 'bi-people'"></i>
+               <span class="grow">{{ t('menu.friends') }}</span>
+             </a>
+             <a @click="toggleNotifications()" class="zyn-btn compact transparent" :class="{'active-alt': notifications && withNavigation}" @mousedown.stop>
+               <i class="icon-bell"></i>
+               <span class="grow">{{ t('menu.notifications') }}</span>
+             </a>
+             <hr class="opacity-20 mb-2" @mousedown.stop>
+             <router-link to="/downloads" id="downloads-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
+               <i class="icon-download"></i>
+               <span class="grow">{{ t('menu.downloads') }}</span>
+             </router-link>
+             <router-link to="/settings" id="settings-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
+               <i class="icon-bolt"></i>
+               <span class="grow">{{ t('menu.settings') }}</span>
+             </router-link>
+           </div>
          </template>
        </DesktopSideMenu>
       </template>

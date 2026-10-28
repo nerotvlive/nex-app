@@ -35,7 +35,7 @@ onMounted(()=>{
         </div>
       </template>
       <template #center>
-        <div class="flex gap-1" @mousedown.stop>
+        <div class="flex gap-1 pt-2" @mousedown.stop>
           <a class="zyn-btn darker compact w-full" style="margin-right: 0;">
             <i class="bi bi-plus-lg"></i>
             <span class="grow">{{ t("pages.library.menu.add") }}</span>

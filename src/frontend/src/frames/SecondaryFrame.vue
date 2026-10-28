@@ -36,7 +36,9 @@ const back = () => {
         <button type="button" style="padding: 0 0.75rem 0 0.7rem;" @click="back" id="titlebar-replay-intro"><i class="bi bi-caret-left-fill mr-1"></i> {{ t('titlebar.back') }}</button>
       </template>
     </DesktopTitlebar>
-    <router-view />
+    <div class="w-full h-full overflow-hidden overflow-y-auto">
+      <router-view />
+    </div>
   </div>
 </template>
 

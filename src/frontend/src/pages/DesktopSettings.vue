@@ -1,36 +1,20 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/settings.css';
 import {WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
-import LanguageSwitcher from "../components/shared/desktopelements/LanguageSwitcher.vue";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
+import DesktopTools from "./DesktopTools.vue";
+import DesktopIndex from "./DesktopIndex.vue";
 const { t } = useI18n();
 
-const handleRoundedCorners = (isRange: boolean, e: Event) => {
-  const target = e.target as HTMLInputElement;
-  ZyneonSettings.setRoundedCorners(isRange, parseFloat(target.value));
-};
+const view = ref("general");
 
-const handleBgAccentOpacity = (isRange: boolean, e: Event) => {
-  const target = e.target as HTMLInputElement;
-  ZyneonSettings.setBackgroundAccentOpacity(isRange, parseFloat(target.value));
-};
-
-const handleBgAccent = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  ZyneonSettings.setBackgroundAccent(target.value);
-};
-
-const handleBgColor = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  ZyneonSettings.setBackgroundColor(target.value);
-};
-
-const handleClassicMenu = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  ZyneonSettings.setClassicMenu(target.checked);
-};
+const resetSettings = () => {
+  localStorage.clear();
+  WindowControls.reloadAll();
+  window.location.href = "/?intro=skip&skip=true";
+}
 
 onMounted(()=>{
   ZyneonSettings.setMenuExpanded(localStorage.getItem("nexapp.neo.settings.view.menu") === "true");
@@ -40,13 +24,6 @@ onMounted(()=>{
     header.classList.add('active');
   }
 })
-
-const resetSettings = () => {
-  localStorage.clear();
-  WindowControls.reloadAll();
-  window.location.href = "/";
-}
-
 </script>
 
 <template>
@@ -60,96 +37,56 @@ const resetSettings = () => {
         </div>
       </template>
       <template #center>
-        <div class="flex flex-col h-full w-full overflow-hidden overflow-y-auto" @mousedown.stop>
-          <a class="zyn-btn darker compact">
+        <div class="flex flex-col h-full w-full pt-2 overflow-hidden overflow-y-auto" @mousedown.stop>
+          <a class="zyn-btn compact" :class="view === 'general' ? 'active-alt' : ' '" @click="view = 'general'">
             <i class="bi bi-gear-wide-connected"></i>
             <span class="grow">{{ t("pages.settings.menu.general") }}</span>
           </a>
-          <a class="zyn-btn darker compact">
+          <a class="zyn-btn compact" :class="view === 'appearance' ? 'active-alt' : ' '" @click="view = 'appearance'">
             <i class="bi bi-palette"></i>
             <span class="grow">{{ t("pages.settings.menu.appearance") }}</span>
+          </a>
+          <a class="zyn-btn compact" :class="view === 'experimental' ? 'active-alt' : ' '" @click="view = 'experimental'">
+            <i class="bi bi-wrench"></i>
+            <span class="grow">{{ t("menu.tools") }}</span>
           </a>
         </div>
       </template>
       <template #bottom>
-        <router-link to="/start" class="zyn-btn darker compact" @mousedown.stop>
-          <i class="bi bi-wrench-adjustable"></i>
-          <span class="grow">{{ t("menu.setup") }}</span>
-        </router-link>
-        <router-link to="/tools" class="zyn-btn darker compact" @mousedown.stop>
-          <i class="bi bi-wrench"></i>
-          <span class="grow">{{ t("menu.tools") }}</span>
-        </router-link>
-        <div class="flex pt-2" style="margin-right: 0; border-top: 1px solid var(--zyn-ov-brighter-200);" @mousedown.stop>
-          <a class="zyn-btn darker compact max-w-fit" @click="WindowControls.reload(); WindowControls.reloadAll();">
-            <i class="bi bi-arrow-clockwise"></i>
+        <div class="pt-2" @mousedown.stop>
+          <a class="zyn-btn compact" :class="view === 'setup' ? 'active-alt' : ''" @click="view = 'setup'">
+            <i class="bi bi-wrench-adjustable"></i>
+            <span class="grow">{{ t("menu.setup") }}</span>
           </a>
-          <a class="zyn-btn darker compact hover-danger" style="margin-left: 0;" @click="resetSettings">
+          <a class="zyn-btn compact hover-danger" @click="resetSettings">
             <i class="bi bi-trash"></i>
             <span class="grow">{{ t("pages.settings.reset") }}</span>
           </a>
+          <div class="flex pt-2" style="margin-right: 0; border-top: 1px solid var(--zyn-ov-brighter-200);">
+            <a class="zyn-btn compact" @click="WindowControls.reloadAll(); WindowControls.reload();">
+              <i class="bi bi-arrow-clockwise"></i>
+              <span class="grow">{{ t("pages.settings.reload") }}</span>
+            </a>
+            <a class="zyn-btn compact hover-danger" style="margin-left: 0;" @click="WindowControls.restart">
+              <i class="bi bi-arrow-clockwise"></i>
+              <span class="grow">{{ t("pages.settings.restart") }}</span>
+            </a>
+          </div>
         </div>
       </template>
     </DesktopSideMenu>
-    <div class="w-full p-3 py-2">
-      <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2">
-        <div class="flex w-full">
-          <strong>{{ t("pages.settings.border.radius") }}</strong>
-        </div>
-        <div class="flex w-full justify-end align-middle items-center">
-          <input id="background-rounded-number" type="number" min="0" max="2" step="0.01" :value="ZyneonSettings.getRoundedCorners()" @input="e => handleRoundedCorners(false, e)" />
-          <input id="background-rounded-range" type="range" min="0" max="2" step="0.01" :value="ZyneonSettings.getRoundedCorners()" @input="e => handleRoundedCorners(true, e)" />
-        </div>
-      </div>
+    <div class="flex flex-col w-full p-3 py-2 overflow-hidden overflow-y-auto relative">
+      <div class="general-settings grow" :class="view === 'general' ? 'active' : 'hidden'">
 
-      <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2">
-        <div class="flex w-full">
-          <strong>{{ t("pages.settings.background.accent.opacity") }}</strong>
-        </div>
-        <div class="flex w-full justify-end align-middle items-center">
-          <input id="background-accOp-number" type="number" min="0" max="0.99" step="0.01" :value="ZyneonSettings.getBackgroundAccentOpacity()" @input="e => handleBgAccentOpacity(false, e)" />
-          <input id="background-accOp-range" type="range" min="0" max="0.99" step="0.01" :value="ZyneonSettings.getBackgroundAccentOpacity()" @input="e => handleBgAccentOpacity(true, e)" />
-        </div>
       </div>
+      <div class="appearance-settings grow" :class="view === 'appearance' ? 'active' : 'hidden'">
 
-      <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2">
-        <div class="flex w-full">
-          <strong>{{ t("pages.settings.background.accent.color") }}</strong>
-        </div>
-        <div class="flex w-full justify-end align-middle items-center">
-          <input type="color" class="w-10 h-10 cursor-pointer rounded border-none bg-transparent" :value="ZyneonSettings.getBackgroundAccent()" @input="handleBgAccent" />
-        </div>
       </div>
-
-      <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2">
-        <div class="flex w-full">
-          <strong>{{ t("pages.settings.background.color") }}</strong>
-        </div>
-        <div class="flex w-full justify-end align-middle items-center">
-          <input type="color" class="w-10 h-10 cursor-pointer rounded border-none bg-transparent" :value="ZyneonSettings.getBackgroundColor()" @input="handleBgColor" />
-        </div>
+      <div class="experimental-settings grow" :class="view === 'experimental' ? 'active' : 'hidden'">
+        <DesktopTools></DesktopTools>
       </div>
-
-      <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2" @click="(e) => (e.currentTarget as HTMLElement).querySelector('input')?.click()">
-        <div class="flex w-full">
-          <strong>{{ t("pages.settings.menu.classic") }}</strong>
-        </div>
-        <div class="flex w-full justify-end align-middle items-center">
-          <div class="relative inline-block w-11 h-5">
-            <input :checked="ZyneonSettings.useClassicMenu" @change="handleClassicMenu" type="checkbox" class="pointer-events-none peer appearance-none w-9 h-5 bg-zinc-500 rounded-full checked:bg-blue-400 cursor-pointer transition-colors duration-300" />
-            <label for="switch-component" class="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm pointer-events-none transition-transform duration-300 peer-checked:translate-x-4 peer-checked:border-slate-800 cursor-pointer">
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex w-full zyn-ov-darker-500 p-2 zyn-br-md my-2">
-        <div class="flex w-full">
-          <strong>{{ t("pages.settings.language.select") }}</strong>
-        </div>
-        <div class="flex w-full justify-end align-middle items-center">
-          <LanguageSwitcher/>
-        </div>
+      <div class="setup-settings grow overflow-hidden relative border zyn-br-lg shadow-lg shadow-black/50" style="border-color: var(--zyn-ov-brighter-200);" :class="view === 'setup' ? 'active' : 'hidden'">
+        <DesktopIndex></DesktopIndex>
       </div>
     </div>
   </div>

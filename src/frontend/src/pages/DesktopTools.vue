@@ -22,7 +22,7 @@ onMounted(()=>{
 </script>
 
 <template>
-  <div class="w-full h-full p-3">
+  <div class="w-full h-full">
     <h1 class="text-2xl font-bold mb-2">{{ t("pages.tools.title") }}</h1>
     <div class="grid grid-cols-[repeat(auto-fit,minmax(550px,1fr))] gap-3">
       <CardStructured background="var(--zyn-ov-brighter-100)" border="1px solid var(--zyn-ov-brighter-200)">
@@ -84,19 +84,6 @@ onMounted(()=>{
               <i class="bi bi-play"/>
               {{ t('pages.tools.old.open') }}
             </a>
-          </div>
-        </template>
-      </CardStructured>
-      <CardStructured background="var(--zyn-ov-brighter-100)" border="1px solid var(--zyn-ov-brighter-200)" v-if="ZyneonSettings.isSecondaryFrame">
-        <template #header>
-          <strong class="text-white">{{ t('menu.settings') }}</strong>
-        </template>
-        <template #footer>
-          <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
-            <router-link to="/settings" class="zyn-btn">
-              <i class="bi bi-play"/>
-              {{ t('pages.tools.old.open') }}
-            </router-link>
           </div>
         </template>
       </CardStructured>

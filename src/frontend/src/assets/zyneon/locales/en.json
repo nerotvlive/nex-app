@@ -146,7 +146,9 @@
       "language": {
         "select": "Language"
       },
-      "reset": "Reset all settings & reload"
+      "reset": "Reset all settings & reload",
+      "reload": "Reload",
+      "restart": "Restart"
     }
   }
 }

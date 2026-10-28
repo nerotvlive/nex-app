@@ -113,7 +113,9 @@ let next = () => {
 }
 
 onMounted(() => {
-  if (localStorage.getItem("nexapp.neo.settings.setup.finished") === "true") {
+  if (urlParams.get("skip") === "true") {
+    start();
+  } else if (localStorage.getItem("nexapp.neo.settings.setup.finished") === "true") {
     if(isFirstSetup) {
       start();
     }

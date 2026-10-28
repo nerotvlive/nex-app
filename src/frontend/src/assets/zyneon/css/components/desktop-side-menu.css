@@ -20,7 +20,6 @@
 
     .center, .bottom {
         border-bottom: none;
-        padding-top: 0.5rem;
         height: fit-content;
     }
 
