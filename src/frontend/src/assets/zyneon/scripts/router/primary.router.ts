@@ -15,6 +15,7 @@ import ErrorGame from "../../../../pages/errors/ErrorGame.vue";
 import DesktopIndex from "../../../../pages/DesktopIndex.vue";
 import DesktopIntro from "../../../../components/shared/DesktopIntro.vue";
 import LoadingScreen from "../../../../components/shared/desktopelements/LoadingScreen.vue";
+import {ZyneonSettings} from "../settings.ts";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -129,11 +130,13 @@ export function createPrimaryRouter() {
         const title = to.meta.title as string | undefined;
         document.title = title ? `${title} (primary) - ${defaultTitle}` : defaultTitle;
         WindowControls.pageLoadEvent();
-        if(window.hideNotifications) {
-            window.hideNotifications();
-        }
-        if(window.hideFriends) {
-            window.hideFriends();
+        if(ZyneonSettings.isMenuExpanded) {
+            if (window.hideNotifications) {
+                window.hideNotifications();
+            }
+            if (window.hideFriends) {
+                window.hideFriends();
+            }
         }
     })
 

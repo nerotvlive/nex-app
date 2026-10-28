@@ -185,6 +185,12 @@ export class settings {
         if(menu) {
             if(value) {
                 menu.classList.add("active");
+                if(window.hideNotifications) {
+                    window.hideNotifications();
+                }
+                if(window.hideFriends) {
+                    window.hideFriends();
+                }
             } else {
                 menu.classList.remove("active");
             }

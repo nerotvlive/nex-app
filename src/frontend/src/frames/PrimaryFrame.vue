@@ -25,11 +25,13 @@
   });
 
   const showNotifications = () => {
+    ZyneonSettings.setMenuExpanded(false);
     friends.value = false;
     notifications.value = true;
   }
 
   const showFriends = () => {
+    ZyneonSettings.setMenuExpanded(false);
     notifications.value = false;
     friends.value = true;
   }

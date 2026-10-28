@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/dashboard.css';
 import DashboardHeader from "../components/shared/desktopelements/DashboardHeader.vue";
-import {ZyneonSettings} from "../assets/zyneon/scripts";
-import {onMounted} from "vue";
-
-onMounted(()=>{
-  ZyneonSettings.setMenuExpanded(true);
-})
 </script>
 
 <template>
