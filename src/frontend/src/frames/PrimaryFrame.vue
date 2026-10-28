@@ -27,14 +27,14 @@
   const showNotifications = () => {
     localStorage.setItem("nexapp.neo.settings.view.notifications", "true");
     ZyneonSettings.setMenuExpanded(false);
-    friends.value = false;
+    hideFriends();
     notifications.value = true;
   }
 
   const showFriends = () => {
     localStorage.setItem("nexapp.neo.settings.view.friends", "true");
     ZyneonSettings.setMenuExpanded(false);
-    notifications.value = false;
+    hideNotifications();
     friends.value = true;
   }
 
@@ -96,7 +96,7 @@
   <div class="zyneon-desktop zyn-background-body" id="main">
     <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar" :class="withTitlebar ? '' : 'hidden'">
       <template #additional-buttons>
-        <button @click="toggleFriends()" type="button" style="padding: 0 1rem; width: 40px;"><i class="bi" :class="friends ? 'bi-people-fill text-white' : 'bi-people'"/></button>
+        <button @click="toggleFriends()" type="button" style="padding: 0 1rem; width: 40px;"><i class="bi" :class="friends && withNavigation ? 'bi-people-fill text-white' : 'bi-people'"/></button>
       </template>
       <template #start>
         <div class="w-full h-full gap-2 flex justify-start items-center">
@@ -140,11 +140,11 @@
            </div>
          </template>
          <template #bottom>
-           <a @click="toggleFriends()" class="zyn-btn compact transparent" :class="{'active-alt': friends, 'hidden': withTitlebar}" @mousedown.stop>
+           <a @click="toggleFriends()" class="zyn-btn compact transparent" :class="{'active-alt': friends && withNavigation, 'hidden': withTitlebar || !withNavigation}" @mousedown.stop>
              <i class="bi" :class="friends ? 'bi-people-fill text-white' : 'bi-people'"></i>
              <span class="grow">{{ t('menu.friends') }}</span>
            </a>
-           <a @click="toggleNotifications()" class="zyn-btn compact transparent" :class="{'active-alt': notifications}" @mousedown.stop>
+           <a @click="toggleNotifications()" class="zyn-btn compact transparent" :class="{'active-alt': notifications && withNavigation}" @mousedown.stop>
              <i class="icon-bell"></i>
              <span class="grow">{{ t('menu.notifications') }}</span>
            </a>
@@ -161,7 +161,7 @@
        </DesktopSideMenu>
       </template>
       <template #extra-left>
-        <div class="h-full flex flex-col" :class="{'active': notifications, 'full': !withTitlebar}" id="notifications">
+        <div class="h-full flex flex-col" :class="{'active': notifications && withNavigation, 'full': !withTitlebar}" id="notifications">
           <CardStructured class="mr-2 mb-2 grow notifications-card z-10" backgroundOverride="var(--zyn-background)">
             <template #header>
               <strong>{{ t('menu.notifications') }}</strong>
@@ -178,7 +178,7 @@
         </DesktopPane>
       </template>
       <template #right>
-        <div class="h-full flex flex-col" :class="{'active': friends, 'full': !withTitlebar}" id="friends">
+        <div class="h-full flex flex-col" :class="{'active': friends && withNavigation, 'full': !withTitlebar}" id="friends">
           <CardStructured class="ml-2 mb-2 grow friends-card z-10" backgroundOverride="var(--zyn-background)">
             <template #header>
               <strong>{{ t('menu.friends') }}</strong>
