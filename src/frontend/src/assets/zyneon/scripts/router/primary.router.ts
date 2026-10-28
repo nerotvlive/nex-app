@@ -129,7 +129,7 @@ export function createPrimaryRouter() {
         const defaultTitle = 'NEX App';
         const title = to.meta.title as string | undefined;
         document.title = title ? `${title} (primary) - ${defaultTitle}` : defaultTitle;
-        WindowControls.pageLoadEvent();
+
         if(ZyneonSettings.isMenuExpanded) {
             if (window.hideNotifications) {
                 window.hideNotifications();
@@ -138,6 +138,8 @@ export function createPrimaryRouter() {
                 window.hideFriends();
             }
         }
+
+        WindowControls.pageLoadEvent();
     })
 
     return router;

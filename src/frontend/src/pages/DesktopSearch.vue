@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/search.css';
 import {useI18n} from "vue-i18n";
+import {onMounted} from "vue";
+import {ZyneonSettings} from "../assets/zyneon/scripts";
 const { t } = useI18n();
+
+onMounted(() => {
+  ZyneonSettings.setMenuExpanded(localStorage.getItem("nexapp.neo.settings.view.menu") === "true");
+});
 </script>
 
 <template>

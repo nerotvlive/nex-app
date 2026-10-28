@@ -25,22 +25,26 @@
   });
 
   const showNotifications = () => {
+    localStorage.setItem("nexapp.neo.settings.view.notifications", "true");
     ZyneonSettings.setMenuExpanded(false);
     friends.value = false;
     notifications.value = true;
   }
 
   const showFriends = () => {
+    localStorage.setItem("nexapp.neo.settings.view.friends", "true");
     ZyneonSettings.setMenuExpanded(false);
     notifications.value = false;
     friends.value = true;
   }
 
   const hideNotifications = () => {
+    localStorage.setItem("nexapp.neo.settings.view.notifications", "false");
     notifications.value = false;
   }
 
   const hideFriends = () => {
+    localStorage.setItem("nexapp.neo.settings.view.friends", "false");
     friends.value = false;
   }
 
@@ -71,11 +75,19 @@
     ZyneonSettings.setClassicMenu(ZyneonSettings.useClassicMenu);
     ZyneonSettings.setBackgroundColor(ZyneonSettings.getBackgroundColor());
     ZyneonSettings.setBackgroundAccent(ZyneonSettings.getBackgroundAccent());
-    ZyneonSettings.setRoundedCorners(false,ZyneonSettings.getRoundedCorners());
-    ZyneonSettings.setBackgroundAccentOpacity(false,ZyneonSettings.getBackgroundAccentOpacity());
+    ZyneonSettings.setRoundedCorners(false, ZyneonSettings.getRoundedCorners());
+    ZyneonSettings.setBackgroundAccentOpacity(false, ZyneonSettings.getBackgroundAccentOpacity());
     ZyneonSettings.setSecondaryFrame(false);
 
     ZyneonSettings.setCanReloadMain(true);
+
+    if (localStorage.getItem("nexapp.neo.settings.view.notifications") === "true") {
+      showNotifications();
+    }
+
+    if (localStorage.getItem("nexapp.neo.settings.view.friends") === "true") {
+      showFriends();
+    }
   })
 
 </script>

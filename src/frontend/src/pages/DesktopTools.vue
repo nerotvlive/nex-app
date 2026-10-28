@@ -14,6 +14,7 @@ const launchSecondary = () => {
 }
 
 onMounted(()=>{
+  ZyneonSettings.setMenuExpanded(localStorage.getItem("nexapp.neo.settings.view.menu") === "true");
   if (secondarySelect.value) {
     secondarySelect.value.value = "/settings";
   }

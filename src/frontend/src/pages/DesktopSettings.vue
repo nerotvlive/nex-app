@@ -33,6 +33,7 @@ const handleClassicMenu = (e: Event) => {
 };
 
 onMounted(()=>{
+  ZyneonSettings.setMenuExpanded(localStorage.getItem("nexapp.neo.settings.view.menu") === "true");
   const header = document.querySelector('.settings-menu');
   if(header) {
     header.classList.add('animates');

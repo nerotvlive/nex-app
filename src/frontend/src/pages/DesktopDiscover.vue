@@ -3,7 +3,13 @@ import '../assets/zyneon/css/discover.css';
 import {useI18n} from "vue-i18n";
 import Badge from "../components/shared/desktopelements/Badge.vue";
 import ImmersiveHeader from "../components/shared/desktopelements/ImmersiveHeader.vue";
+import {onMounted} from "vue";
+import {ZyneonSettings} from "../assets/zyneon/scripts";
 const { t } = useI18n();
+
+onMounted(() => {
+  ZyneonSettings.setMenuExpanded(localStorage.getItem("nexapp.neo.settings.view.menu") === "true");
+});
 </script>
 
 <template>

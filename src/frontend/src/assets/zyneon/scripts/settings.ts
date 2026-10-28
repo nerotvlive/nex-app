@@ -180,6 +180,7 @@ export class settings {
     }
 
     public setMenuExpanded(value: boolean) {
+        localStorage.setItem("nexapp.neo.settings.view.menu", value.toString());
         this.menuExpanded = value;
         const menu = document.getElementById("navigation");
         if(menu) {

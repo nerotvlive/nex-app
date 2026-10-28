@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/library.css';
 import {onMounted} from "vue";
-import {WindowControls} from "../assets/zyneon/scripts";
+import {WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
 import {useI18n} from "vue-i18n";
 const { t } = useI18n();
 import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
 
 onMounted(()=>{
+  ZyneonSettings.setMenuExpanded(localStorage.getItem("nexapp.neo.settings.view.menu") === "true");
   const header = document.querySelector('.library-menu');
   if(header) {
     header.classList.add('animates');
