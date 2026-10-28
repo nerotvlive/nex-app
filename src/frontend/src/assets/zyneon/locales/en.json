@@ -10,7 +10,11 @@
     },
     "de": {
       "key": "de",
-      "name": "Deutsch"
+      "name": "German (Deutsch)"
+    },
+    "fr": {
+      "key": "fr",
+      "name": "French (Français)"
     }
   },
   "titlebar": {

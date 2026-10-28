@@ -61,7 +61,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web:4.1.1")
+    implementation("org.springframework.boot:spring-boot-starter-web:4.1.2")
     implementation("com.zyneonstudios.apex:jauri-webview:0.30")
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")
 

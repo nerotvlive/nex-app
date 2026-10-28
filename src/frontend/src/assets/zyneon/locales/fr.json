@@ -1,0 +1,152 @@
+{
+  "languages": {
+    "auto": {
+      "key": "fr",
+      "name": "Automatique"
+    },
+    "en": {
+      "key": "en",
+      "name": "Anglais (English)"
+    },
+    "de": {
+      "key": "de",
+      "name": "Allemand (Deutsch)"
+    },
+    "fr": {
+      "key": "fr",
+      "name": "Français"
+    }
+  },
+  "titlebar": {
+    "back": "Retour"
+  },
+  "menu": {
+    "toggle": "Basculer le menu",
+    "dashboard": "Tableau de bord",
+    "discover": "Découvrir",
+    "library": "Bibliothèque",
+    "search": "Recherche",
+    "tools": "Outils & Expériences",
+    "reload": "Recharger",
+    "friends": "Amis et Chat",
+    "notifications": "Notifications",
+    "downloads": "Téléchargements",
+    "settings": "Paramètres",
+    "setup": "Relancer la configuration"
+  },
+  "pages": {
+    "start": {
+      "intro": {
+        "welcome": "BIENVENUE",
+        "tothe": "DANS LA",
+        "allnew": "TROP NOUVELLE",
+        "replay": "Recommencer la configuration"
+      },
+      "setup": {
+        "title": "Configuration",
+        "description": "Commencez par optimiser les paramètres suivants pour vous :",
+        "skip": "Passer la configuration",
+        "continue": "Continuer",
+        "restart": "Réinitialiser",
+        "language": {
+          "title": "Langue",
+          "description": "Choisissez votre langue préférée :"
+        },
+        "appearance": {
+          "title": "Apparence",
+          "description": "Choisissez votre apparence préférée :"
+        }
+      }
+    },
+    "dashboard": {
+      "title": "NEX App",
+      "header": {
+        "search": "Rechercher des ressources...",
+        "unstable": "VERSION INSTABLE",
+        "website": "Site web",
+        "discord": "Discord",
+        "github": "GitHub"
+      }
+    },
+    "discover": {
+      "title": "Découvrir"
+    },
+    "error": {
+      "title": "Erreur",
+      "unknown": "Une erreur inattendue s'est produite.",
+      "notfound": "Nous n'avons pas pu trouver cette page.",
+      "notimplemented": "Cette fonctionnalité ou vue n'est pas encore implémentée.",
+      "injection": "Cette erreur a été causée par du contenu tiers. Soyez prudent lorsque vous suivez les instructions de cette page.",
+      "buttons": {
+        "home": "Retour à l'accueil",
+        "retry": "Réessayer"
+      },
+      "game": {
+        "resize": "Ne redimensionnez pas la fenêtre pendant que le jeu est en cours !",
+        "start": "DÉMARRER",
+        "restart": "RÉESSAYER",
+        "controls": {
+          "select": "SÉLECTIONNER LES CONTRÔLES",
+          "classic": {
+            "title": "CLASSIQUE",
+            "description": "Touches WASD / ZQSD / Flèches pour se déplacer et Espace / Clic pour tirer"
+          },
+          "cool": {
+            "title": "COOL (recom)",
+            "description": "Souris pour se déplacer et Clic pour tirer"
+          }
+        }
+      }
+    },
+    "library": {
+      "title": "Bibliothèque",
+      "menu": {
+        "add": "Nouvelle instance",
+        "search": "Rechercher des instances..."
+      }
+    },
+    "tools": {
+      "title": "Outils & Expériences",
+      "secondary": {
+        "title": "Lancer une fenêtre secondaire",
+        "description": "Lance une fenêtre secondaire pour déboguer et tester des fonctionnalités. Vous pouvez sélectionner la page que vous souhaitez détacher dans le menu déroulant.",
+        "launch": "Lancer"
+      },
+      "controls": {
+        "title": "Contrôles avancés",
+        "description": "Contrôles supplémentaires pour déboguer et tester la webview/fenêtre.",
+        "reload": "Recharger",
+        "restart": "Redémarrer",
+        "native": "Basculer la fenêtre native"
+      },
+      "old": {
+        "title": "Lancer l'ancienne fenêtre",
+        "description": "Lance l'ancienne interface utilisateur. (Nécessite une connexion internet)",
+        "open": "Ouvrir"
+      }
+    },
+    "settings": {
+      "title": "Paramètres",
+      "border": {
+        "radius": "Valeur de base du rayon des bordures"
+      },
+      "background": {
+        "color": "Couleur de base de l'arrière-plan",
+        "accent": {
+          "opacity": "Opacité de l'accent d'arrière-plan",
+          "color": "Couleur d'accent d'arrière-plan"
+        }
+      },
+      "menu": {
+        "search": "Rechercher des paramètres...",
+        "general": "Paramètres généraux",
+        "appearance": "Paramètres d'apparence",
+        "classic": "Utiliser le design de menu classique"
+      },
+      "language": {
+        "select": "Langue"
+      },
+      "reset": "Réinitialiser tous les paramètres & recharger"
+    }
+  }
+}

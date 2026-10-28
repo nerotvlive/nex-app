@@ -6,13 +6,14 @@
     const { setLang } = useLang()
     const selectedLang = ref(localStorage.getItem('user-lang') || 'auto')
     const languages = computed(() => [
-        { code: 'auto', label: t('languages.auto.name') },
-        { code: 'de', label: t('languages.de.name') },
-        { code: 'en', label: t('languages.en.name') }
+      { code: 'auto', label: t('languages.auto.name') },
+      { code: 'en', label: t('languages.en.name') },
+      { code: 'de', label: t('languages.de.name') },
+      { code: 'fr', label: t('languages.fr.name') },
     ])
     const handleChange = (event: Event) => {
         const target = event.target as HTMLSelectElement
-        const val = target.value as 'de' | 'en' | 'auto'
+        const val = target.value as 'de' | 'en' | 'fr' | 'auto'
         selectedLang.value = val
         setLang(val)
     }

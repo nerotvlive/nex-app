@@ -6,11 +6,15 @@
     },
     "en": {
       "key": "en",
-      "name": "English"
+      "name": "Englisch (English)"
     },
     "de": {
       "key": "de",
       "name": "Deutsch"
+    },
+    "fr": {
+      "key": "fr",
+      "name": "Französisch (Français)"
     }
   },
   "titlebar": {
