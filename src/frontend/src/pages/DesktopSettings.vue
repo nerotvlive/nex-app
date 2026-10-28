@@ -33,8 +33,6 @@ const handleClassicMenu = (e: Event) => {
 };
 
 onMounted(()=>{
-  ZyneonSettings.setMenuExpanded(false);
-
   const header = document.querySelector('.settings-menu');
   if(header) {
     header.classList.add('animates');

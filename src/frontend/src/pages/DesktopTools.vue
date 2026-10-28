@@ -14,7 +14,6 @@ const launchSecondary = () => {
 }
 
 onMounted(()=>{
-  ZyneonSettings.setMenuExpanded(false);
   if (secondarySelect.value) {
     secondarySelect.value.value = "/settings";
   }

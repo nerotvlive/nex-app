@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/search.css';
-import {onMounted} from "vue";
-import {ZyneonSettings} from "../assets/zyneon/scripts";
 import {useI18n} from "vue-i18n";
 const { t } = useI18n();
-
-onMounted(()=>{
-  ZyneonSettings.setMenuExpanded(false);
-})
 </script>
 
 <template>
