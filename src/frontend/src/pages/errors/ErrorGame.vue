@@ -39,7 +39,8 @@ const keys: Record<string, boolean> = {
 
 let mouseX = 0
 let animationFrameId = 0
-let spawnRate = 60
+let lastTime = 0
+let spawnInterval = 1.0
 let enemyTimer = 0
 
 class Player {
@@ -47,7 +48,7 @@ class Player {
   height = 40
   x: number
   y: number
-  speed = 7
+  speed = 600
 
   constructor() {
     const canvas = canvasRef.value!
@@ -55,11 +56,11 @@ class Player {
     this.y = canvas.height - 80
   }
 
-  update() {
+  update(dt: number) {
     const canvas = canvasRef.value!
     if (selectedControl.value === 'classic') {
-      if (keys.ArrowLeft || keys.a) this.x -= this.speed
-      if (keys.ArrowRight || keys.d) this.x += this.speed
+      if (keys.ArrowLeft || keys.a) this.x -= this.speed * dt
+      if (keys.ArrowRight || keys.d) this.x += this.speed * dt
     } else if (selectedControl.value === 'cool') {
       this.x = mouseX - this.width / 2
     }
@@ -84,7 +85,7 @@ class Bullet {
   y: number
   width = 4
   height = 15
-  speed = 10
+  speed = 600
   color = '#ff0'
 
   constructor(x: number, y: number) {
@@ -92,8 +93,8 @@ class Bullet {
     this.y = y
   }
 
-  update() {
-    this.y -= this.speed
+  update(dt: number) {
+    this.y -= this.speed * dt
   }
 
   draw() {
@@ -115,12 +116,12 @@ class Enemy {
   constructor(x: number) {
     this.x = x
     this.y = -40
-    this.speedY = Math.random() * 2 + 1
+    this.speedY = (Math.random() * 3 + 2) * 60
     this.image = loadedEnemyImages[Math.floor(Math.random() * loadedEnemyImages.length)]
   }
 
-  update() {
-    this.y += this.speedY
+  update(dt: number) {
+    this.y += this.speedY * dt
   }
 
   draw() {
@@ -212,43 +213,51 @@ function init() {
   enemies = []
   score.value = 0
   enemyTimer = 0
-  spawnRate = 60
+  spawnInterval = 1.0
 
   isGameOver.value = false
   gameRunning.value = true
-  animate()
+
+  lastTime = performance.now()
+  requestAnimationFrame(animate)
 }
 
-function animate() {
+function animate(timestamp: number) {
   const canvas = canvasRef.value
   if (!gameRunning.value || !canvas || !ctx) return
+
+  let dt = (timestamp - lastTime) / 1000
+  if (dt > 0.1) dt = 0.1
+  lastTime = timestamp
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   if (player) {
-    player.update()
+    player.update(dt)
     player.draw()
   }
 
   bullets.forEach((bullet, index) => {
-    bullet.update()
+    bullet.update(dt)
     bullet.draw()
     if (bullet.y + bullet.height < 0) {
       setTimeout(() => bullets.splice(index, 1), 0)
     }
   })
 
-  enemyTimer++
-  if (enemyTimer > spawnRate) {
+  enemyTimer += dt
+  if (enemyTimer > spawnInterval) {
     const randomX = Math.random() * (canvas.width - 50)
     enemies.push(new Enemy(randomX))
     enemyTimer = 0
 
-    if (spawnRate > 20 && score.value > 0 && score.value % 10 === 0) spawnRate -= 2
+    if (spawnInterval > 0.33 && score.value > 0 && score.value % 10 === 0) {
+      spawnInterval -= 0.033
+    }
   }
 
   enemies.forEach((enemy) => {
-    enemy.update()
+    enemy.update(dt)
     enemy.draw()
 
     if (player && checkCollision(player, enemy)) {
@@ -318,7 +327,7 @@ onUnmounted(() => {
         <strong class="text-4xl" id="screenTitle" :style="{ color: isGameOver ? 'red' : '#5111b8', margin: '0' }">
           {{ isGameOver ? 'GAME OVER!!!' : 'LEGACY DEFENDER' }}
         </strong>
-        <p class="text-sm opacity-50">0.1</p>
+        <p class="text-sm opacity-50">0.2</p>
         <p v-if="isGameOver" style="margin: 0;">SCORE: <span>{{ score }}</span></p>
         <p style="margin: 5px 0;">{{t("pages.error.game.controls.select")}}:</p>
         <div class="control-options">

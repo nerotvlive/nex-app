@@ -37,8 +37,8 @@ onMounted(()=>{
         </template>
         <template #bottom-left>
           <div class="flex gap-2 mt-8 text-md xl:text-lg">
-            <button class="zyn-btn">
-              <i class="bi bi-globe mr-1 hidden lg:inline"></i>
+            <button class="zyn-btn compact">
+              <i class="bi bi-globe hidden lg:inline"></i>
               button
             </button>
           </div>
