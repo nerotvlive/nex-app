@@ -35,9 +35,9 @@ onMounted(()=>{
         <template #footer>
           <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
             <select ref="secondarySelect" class="zyn-btn compact">
-              <option class="bg-black text-white" value="/404">/ (404)</option>
-              <option class="bg-black text-white" value="/">/ (500)</option>
-              <option class="bg-black text-white" value="/501">/ (501)</option>
+              <option class="bg-black text-white" value="/404">Error 404</option>
+              <option class="bg-black text-white" value="/">Error 500</option>
+              <option class="bg-black text-white" value="/501">Error 501</option>
               <option class="bg-black text-white" value="/library">{{ t('menu.library') }}</option>
               <option class="bg-black text-white" value="/downloads">{{ t('menu.downloads') }}</option>
               <option class="bg-black text-white" value="/settings">{{ t('menu.settings') }}</option>
