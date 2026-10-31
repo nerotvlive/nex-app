@@ -56,14 +56,19 @@ val buildFrontend = tasks.register<PnpmTask>("buildFrontend") {
 
 repositories {
     mavenCentral()
-    maven("https://maven.nrfy.net/snapshots") { name = "nerofySnapshots" }
-    maven("https://maven.nrfy.net/releases") { name = "nerofyReleases" }
+    maven("https://maven.zyneonstudios.com/snapshots") { name = "zyneonapex-snapshots" }
+    maven("https://maven.zyneonstudios.com/releases") { name = "zyneonapex-releases" }
 }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:4.1.2")
     implementation("com.zyneonstudios.apex:jauri-webview:0.30")
     implementation("org.xerial:sqlite-jdbc:3.53.4.0")
+
+    implementation("fr.flowarg:flowupdater:1.9.4")
+    implementation("fr.flowarg:openlauncherlib:3.2.11")
+    implementation("fr.flowarg:azuljavadownloader:1.0.2")
+    implementation("org.zyneonstudios.apex:mojang-auth:2025.12")
 
     jsign("net.jsign:jsign:7.5")
 }
