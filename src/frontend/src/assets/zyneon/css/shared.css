@@ -517,8 +517,11 @@ body {
     padding: 0.5rem 1rem;
     color: var(--zyn-foreground-alt);
     box-shadow: var(--drop-shadow-md);
-    backdrop-filter: blur(12px);
     gap: 0.25rem;
+  }
+
+  .zyn-btn.glass {
+    backdrop-filter: blur(12px);
   }
 
   .zyn-btn.transparent {

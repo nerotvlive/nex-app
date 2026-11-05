@@ -30,7 +30,7 @@ It integrates CurseForge, Modrinth and our own self-hostable content distributio
 > [!IMPORTANT]
 > **We're searching for help**<br>
 > Currently, the NEX App effectively has only two developers who are working on it as a hobby and is entirely self-taught, so we are looking for support.<br>
-> GitHub contributions, issue reports and feedback is highly welcome.<br>
+> GitHub contributions, issue reports, and feedback are highly welcome.<br>
 > If you are interested in joining the team, please get in touch via [our Discord server](https://discord.gg/g3ZwWugj9N) or message @nerotvlive directly.
 
 - - -
@@ -43,16 +43,18 @@ It integrates CurseForge, Modrinth and our own self-hostable content distributio
 
 #### Windows 10+:
 - [Microsoft Edge WebView2](https://developer.microsoft.com/microsoft-edge/webview2)
-  - Should be pre-installed on Windows 11 systems but if it is not, you can download it from the official Microsoft website linked above.
-- If you want to launch the .jar you have to install Java 25, we recommend [Azul Zulu JDK](https://www.azul.com/downloads/?version=java-25-lts&os=windows&package=jdk#zulu).
+  - Should be pre-installed on Windows 11 systems, but if it is not, you can download it from the official Microsoft website linked above.
+- If you want to launch the .jar, you have to install Java 25; we recommend [Azul Zulu JDK](https://www.azul.com/downloads/?version=java-25-lts&os=windows&package=jdk#zulu).
 
 #### Linux:
-##### Arch based (Arch, CachyOS & Co)
+- The application requires Wayland, it is not optimized for X11, and some features will break if you are using X11.
+
+##### Arch-based (Arch, CachyOS & Co)
 ```bash
 sudo pacman -S gtk4 webkit2gtk-4.1 webkitgtk-6.0 jdk25-openjdk --needed
 ```
 
-##### Debian based (Debian, Ubuntu, ZorinOS & Co):
+##### Debian-based (Debian, Ubuntu, ZorinOS & Co):
 ```bash
 sudo apt-get install libgtk-4-1 libwebkit2gtk-4.1-0 libwebkitgtk-6.0-4 libjavascriptcoregtk-6.0-1 openjdk-25-jdk -y
 ```
@@ -62,4 +64,4 @@ You need webkit/webkitgtk support and a Java 25 jdk. We're working on more distr
 
 - - -
 
-###### The Zyneon NEX App is an independent project and not affiliated with Minecraft, Mojang AB, Mojang Studios, XBOX, XBOX Game Studios, Microsoft, Rinth Inc., Spark Universe, Modrinth, Overwolf or CurseForge.
+###### The Zyneon NEX App is an independent project and not affiliated with Minecraft, Mojang AB, Mojang Studios, XBOX, XBOX Game Studios, Microsoft, Rinth Inc., Spark Universe, Modrinth, Overwolf, or CurseForge.

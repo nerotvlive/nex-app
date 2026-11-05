@@ -36,7 +36,7 @@ const finishIntro = () => {
       } else {
         window.location.href = startpage;
       }
-    }, 2000);
+    }, 1500);
   }
 };
 

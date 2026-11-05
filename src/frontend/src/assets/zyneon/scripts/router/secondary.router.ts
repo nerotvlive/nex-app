@@ -36,6 +36,12 @@ const routes: Array<RouteRecordRaw> = [
         component: DesktopDownloads
     },
     {
+        path: '/skineditor',
+        name: 'Skin Editor',
+        meta: { title: 'Skin Editor' },
+        component: () => import("../../../../pages/DesktopSkinEditor.vue")
+    },
+    {
         path: '/settings',
         name: 'Settings',
         meta: { title: 'Settings' },

@@ -338,6 +338,8 @@ public class WebviewWindow {
             }
             return null;
         });
+
+        SkinEditorBridge.register(this.webview);
     }
 
     @Deprecated

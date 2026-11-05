@@ -123,6 +123,12 @@
         "title": "Altes Fenster starten",
         "description": "Startet ein Fenster mit der alten UI. (Benötigt Internetverbindung)",
         "open": "Öffnen"
+      },
+      "skineditor": {
+        "title": "Skin-Editor (Vorschau)",
+        "description": "Ebenenbasierter Skin-Editor mit 3D-Malen, Körperteil-Auswahl und klassischem 2D-Pixelmodus.",
+        "open": "Öffnen",
+        "window": "In neuem Fenster öffnen"
       }
     },
     "settings": {
@@ -150,6 +156,328 @@
       "reload": "Neu laden",
       "restart": "Neu starten",
       "report": "Fehler melden"
+    },
+    "skineditor": {
+      "document": {
+        "untitled": "Neuer Skin",
+        "name": "Projektname",
+        "unsaved": "Ungespeicherte Änderungen",
+        "dropLayer": "Ablegen, um als Ebenen zu diesem Skin hinzuzufügen",
+        "dropTab": "Ablegen, um in einem neuen Tab zu öffnen"
+      },
+      "menu": {
+        "file": "Datei",
+        "new": "Neuer Skin",
+        "open": "Öffnen…",
+        "save": "Speichern",
+        "saveAs": "Speichern unter…",
+        "export": "Als PNG exportieren…",
+        "openFolder": "Skin-Ordner öffnen",
+        "undo": "Rückgängig",
+        "redo": "Wiederholen"
+      },
+      "view": {
+        "3d": "3D",
+        "split": "Geteilt",
+        "2d": "2D",
+        "modeHint": "Zwischen 3D-, geteilter und 2D-Ansicht wechseln (Tab)",
+        "front": "Vorne",
+        "back": "Hinten",
+        "left": "Links",
+        "right": "Rechts",
+        "iso": "3/4",
+        "fit": "An Ansicht anpassen",
+        "shading": "Flächenschattierung in 3D",
+        "grid": "Pixelraster",
+        "guides": "UV-Hilfslinien",
+        "noWebgl": "3D-Ansicht nicht verfügbar",
+        "noWebglHint": "WebGL konnte in diesem Webview nicht gestartet werden. Der 2D-Editor funktioniert trotzdem."
+      },
+      "model": {
+        "classic": "Classic",
+        "slim": "Slim",
+        "hint": "Armbreite des 3D-Modells. Ändert nur die Vorschau, zum Umrechnen der Pixel den Konverter nutzen."
+      },
+      "tools": {
+        "more": "Weitere Werkzeuge",
+        "mirror": "Spiegeln",
+        "mirrorHint": "Auf beiden Seiten gleichzeitig malen (links ↔ rechts)",
+        "mirrorSide": "Auf andere Seite spiegeln",
+        "mirrorSideHint": "Kopiert die gewählten Körperteile der aktiven Ebene auf die gegenüberliegende Seite",
+        "pencil": {
+          "name": "Stift",
+          "hint": "Linksklick: Primärfarbe, Rechtsklick (2D): Sekundärfarbe"
+        },
+        "eraser": {
+          "name": "Radierer",
+          "hint": "Entfernt Pixel der aktiven Ebene"
+        },
+        "fill": {
+          "name": "Füllen",
+          "hint": "Füllt zusammenhängende Pixel gleicher Farbe"
+        },
+        "picker": {
+          "name": "Pipette",
+          "hint": "Nimmt eine Farbe aus dem Skin auf. Mit jedem Werkzeug: Alt gedrückt halten."
+        },
+        "shade": {
+          "name": "Schattierpinsel",
+          "hint": "Dunkelt vorhandene Pixel pro Strich um eine Stufe ab oder hellt sie auf. Shift kehrt um."
+        },
+        "select": {
+          "name": "Auswahl",
+          "hint": "Wählt ein Rechteck in der Textur aus. Gemalt wird nur innerhalb der Auswahl."
+        },
+        "move": {
+          "name": "Verschieben",
+          "hint": "Verschiebt die Auswahl oder die ganze Ebene. Pfeiltasten verschieben um einen Pixel."
+        },
+        "line": {
+          "name": "Linie",
+          "hint": "Zeichnet eine gerade Linie. Shift rastet auf 45° ein."
+        },
+        "rect": {
+          "name": "Rechteck",
+          "hint": "Zeichnet ein Rechteck. Shift füllt es."
+        },
+        "noise": {
+          "name": "Rauschpinsel",
+          "hint": "Malt die Primärfarbe mit zufälliger Helligkeitsvariation (Shift+B wechselt die Pinselwerkzeuge)"
+        },
+        "replace": {
+          "name": "Farbe ersetzen",
+          "hint": "Ersetzt auf der aktiven Ebene jeden Pixel mit der angeklickten Farbe"
+        },
+        "hand": {
+          "name": "Hand",
+          "hint": "Verschiebt und dreht die Ansicht mit der linken Maustaste. Kurzzeitig: Leertaste halten."
+        }
+      },
+      "options": {
+        "size": "Größe",
+        "noise": "Stärke",
+        "fill": {
+          "face": "Fläche",
+          "part": "Körperteil",
+          "global": "Überall",
+          "faceHint": "Füllt nur innerhalb der angeklickten Würfelfläche",
+          "partHint": "Füllt über alle Flächen des angeklickten Körperteils",
+          "globalHint": "Ersetzt die Farbe auf der ganzen Ebene"
+        },
+        "rect": {
+          "outline": "Umriss",
+          "filled": "Gefüllt"
+        },
+        "shade": {
+          "darken": "Dunkler",
+          "lighten": "Heller",
+          "hint": "Richtung des Schattierpinsels. Shift oder Rechtsklick kehrt sie um."
+        },
+        "selection": {
+          "copy": "Kopieren",
+          "cut": "Ausschneiden",
+          "paste": "Einfügen",
+          "delete": "Löschen",
+          "flipH": "Horizontal spiegeln",
+          "flipV": "Vertikal spiegeln",
+          "deselect": "Auswahl aufheben"
+        }
+      },
+      "parts": {
+        "title": "Körperteile",
+        "all": "Alle",
+        "selectHint": "Klick: nur dieses Teil, Shift/Strg + Klick: hinzufügen oder entfernen",
+        "head": "Kopf",
+        "body": "Körper",
+        "rightArm": "Rechter Arm",
+        "leftArm": "Linker Arm",
+        "rightLeg": "Rechtes Bein",
+        "leftLeg": "Linkes Bein",
+        "overlayToggle": "Overlay dieses Teils ein- oder ausblenden",
+        "overlayAll": "Alle Overlays ein- oder ausblenden",
+        "modeHint": "Wie nicht gewählte Körperteile angezeigt werden",
+        "mode": {
+          "hide": "Ausblenden",
+          "ghost": "Transparent",
+          "lock": "Sperren"
+        }
+      },
+      "colors": {
+        "title": "Farben",
+        "primary": "Primärfarbe",
+        "secondary": "Sekundärfarbe",
+        "swap": "Farben tauschen",
+        "swapHint": "Primär- und Sekundärfarbe (X tauscht)",
+        "shades": "Abstufungen",
+        "shadesHint": "Dunklere und hellere Varianten der Primärfarbe mit Farbton-Verschiebung wie in der Pixel-Art",
+        "recent": "Zuletzt verwendet",
+        "palette": "Palette"
+      },
+      "layers": {
+        "title": "Ebenen",
+        "add": "Neue Ebene",
+        "addGroup": "Neue Gruppe",
+        "duplicate": "Duplizieren",
+        "mergeDown": "Nach unten zusammenführen",
+        "delete": "Löschen",
+        "rename": "Umbenennen",
+        "clear": "Ebene leeren",
+        "split": "In Base und Overlay aufteilen",
+        "moveUp": "Nach oben",
+        "moveDown": "Nach unten",
+        "visibility": "Ein- / ausblenden",
+        "lock": "Sperren / entsperren",
+        "empty": "Noch keine Ebenen",
+        "opacity": "Deckkraft",
+        "blend": "Füllmethode",
+        "renderTarget": "Rendert auf",
+        "defaultName": "Ebene {number}",
+        "defaultGroup": "Gruppe",
+        "copyName": "{name} Kopie",
+        "splitBase": "{name} (Base)",
+        "splitOverlay": "{name} (Overlay)",
+        "legacyOverlay": "64×32-Skins haben nur am Kopf ein Overlay. Konvertiere den Skin nach 64×64, um alle Overlays zu nutzen.",
+        "target": {
+          "base": "Base",
+          "overlay": "Overlay",
+          "atlas": "Atlas",
+          "baseHint": "Innere Skin-Ebene",
+          "overlayHint": "Äußere Ebene (Hut, Jacke, Ärmel, Hose). Beim Wechsel zwischen Base und Overlay bleiben die Pixel erhalten.",
+          "atlasHint": "Rohe Texturkoordinaten, enthält beide Ebenen (importierte PNGs)"
+        },
+        "blendModes": {
+          "normal": "Normal",
+          "multiply": "Multiplizieren",
+          "screen": "Negativ multiplizieren",
+          "overlay": "Ineinanderkopieren",
+          "darken": "Abdunkeln",
+          "lighten": "Aufhellen",
+          "add": "Addieren"
+        },
+        "group": "Ebene gruppieren",
+        "ungroup": "Gruppierung aufheben",
+        "mergeVisible": "Sichtbare zusammenführen",
+        "merged": "Zusammengeführt"
+      },
+      "convert": {
+        "open": "Format oder Modell konvertieren",
+        "title": "Skin konvertieren",
+        "description": "Rechnet die Pixel aller Ebenen auf ein anderes Format oder eine andere Armbreite um.",
+        "current": "Aktuell",
+        "format": "Format",
+        "legacy": "vor 1.8",
+        "model": "Armbreite",
+        "lossy": "Diese Konvertierung kann Pixel entfernen (Overlays von 64×64-Skins oder die äußere Armspalte).",
+        "undoHint": "Die Konvertierung lässt sich mit Strg+Z rückgängig machen.",
+        "apply": "Konvertieren"
+      },
+      "dialog": {
+        "cancel": "Abbrechen",
+        "discard": "Der aktuelle Skin hat ungespeicherte Änderungen. Verwerfen?",
+        "discardConfirm": "Verwerfen",
+        "closeTab": "„{name}“ hat ungespeicherte Änderungen. Trotzdem schließen?",
+        "closeConfirm": "Schließen"
+      },
+      "draft": {
+        "found": "Ungespeicherte Entwürfe gefunden ({count}): {names} vom {time}.",
+        "restore": "Wiederherstellen",
+        "discard": "Verwerfen"
+      },
+      "status": {
+        "hint": "Linke Maustaste malt · rechte Maustaste dreht (3D) · Leertaste oder H verschiebt die Ansicht · Tab blendet Panels aus · F1 zeigt alle Shortcuts"
+      },
+      "help": {
+        "title": "Hilfe zum Skin-Editor",
+        "layers": "Jede Ebene rendert auf die Base, das Overlay oder den rohen Atlas. Kleidung kann auf eigenen Ebenen liegen und jederzeit ohne Neumalen zwischen Base und Overlay verschoben werden.",
+        "mouse": "3D: linke Maustaste malt, rechte dreht, mittlere verschiebt, Mausrad zoomt. Ein Linksklick neben das Modell dreht ebenfalls. 2D: Mausrad zoomt, mittlere Maustaste, Leertaste oder das Hand-Werkzeug verschiebt. Dateien auf die Arbeitsfläche ziehen fügt sie als Ebenen hinzu, auf die Tableiste öffnet sie in einem neuen Tab.",
+        "keys": {
+          "brush": "Stift, Rauschpinsel, Farbe ersetzen",
+          "shapes": "Rechteck, Linie",
+          "navigate": "Hand (Leertaste halten)",
+          "size": "Pinselgröße",
+          "colors": "Farben tauschen / Standardfarben",
+          "mirror": "Spiegeln an / aus",
+          "layerVia": "Ebene durch Kopie / durch Ausschneiden",
+          "merge": "Nach unten / sichtbare zusammenführen",
+          "group": "Gruppieren / Gruppierung aufheben",
+          "order": "Ebene nach unten / oben (Shift: ganz nach unten / oben)",
+          "selectLayer": "Ebene darunter / darüber auswählen",
+          "opacity": "Deckkraft 10 … 90 % / 100 %",
+          "fill": "Auswahl mit Primär- / Sekundärfarbe füllen",
+          "newOpen": "Neuer Skin / Öffnen (im neuen Tab)",
+          "save": "Speichern / Speichern unter",
+          "tabs": "Tab schließen / nächster Tab",
+          "undo": "Rückgängig / Wiederholen",
+          "select": "Alles auswählen / Auswahl aufheben",
+          "clipboard": "Kopieren, Ausschneiden, Einfügen",
+          "panels": "Panels ein- / ausblenden",
+          "view": "Geteilt / 3D / 2D durchschalten",
+          "zoom": "Vergrößern / Verkleinern / Einpassen",
+          "grid": "Pixelraster / UV-Hilfslinien",
+          "parts": "Körperteil wählen (Shift fügt hinzu) / alle"
+        },
+        "groups": {
+          "tools": "Werkzeuge",
+          "layers": "Ebenen",
+          "document": "Dateien & Bearbeiten",
+          "view": "Ansicht"
+        }
+      },
+      "history": {
+        "paint": "Malen",
+        "erase": "Radieren",
+        "fill": "Füllen",
+        "replace": "Farbe ersetzen",
+        "shade": "Schattieren",
+        "noise": "Rauschen",
+        "line": "Linie",
+        "rect": "Rechteck",
+        "move": "Verschieben",
+        "paste": "Einfügen",
+        "cut": "Ausschneiden",
+        "flip": "Spiegeln",
+        "mirror": "Auf andere Seite spiegeln",
+        "addLayer": "Neue Ebene",
+        "addGroup": "Neue Gruppe",
+        "duplicate": "Duplizieren",
+        "delete": "Löschen",
+        "merge": "Zusammenführen",
+        "clear": "Ebene leeren",
+        "split": "Ebene aufteilen",
+        "target": "Render-Ziel ändern",
+        "property": "Ebene ändern",
+        "rename": "Umbenennen",
+        "model": "Modell ändern",
+        "convert": "Skin konvertieren",
+        "import": "Als Ebenen importieren",
+        "group": "Gruppieren",
+        "ungroup": "Gruppierung aufheben",
+        "layerViaCopy": "Ebene durch Kopie",
+        "layerViaCut": "Ebene durch Ausschneiden",
+        "mergeVisible": "Sichtbare zusammenführen"
+      },
+      "messages": {
+        "noLayer": "Wähle zuerst eine Ebene aus.",
+        "layerLocked": "Die aktive Ebene ist gesperrt.",
+        "layerHidden": "Die aktive Ebene ist ausgeblendet.",
+        "mergeImpossible": "Es gibt keine Ebene darunter zum Zusammenführen.",
+        "copied": "Kopiert.",
+        "cut": "Ausgeschnitten.",
+        "opened": "{name} geöffnet.",
+        "openFailed": "Die Datei konnte nicht geöffnet werden: {error}",
+        "saved": "{name} gespeichert.",
+        "saveFailed": "Die Datei konnte nicht gespeichert werden: {error}",
+        "exported": "{name} exportiert.",
+        "exportedTransparent": "Exportiert. {count} Base-Pixel sind nicht voll deckend und können im Spiel falsch aussehen.",
+        "converted": "Skin konvertiert.",
+        "draftRestored": "Entwurf wiederhergestellt.",
+        "imported": "{name} als Ebenen hinzugefügt.",
+        "wrongSize": "Nicht unterstützte Bildgröße {width}×{height}, Skins müssen 64×64 oder 64×32 groß sein."
+      },
+      "tabs": {
+        "new": "Neuer Skin",
+        "close": "Schließen"
+      }
     }
   }
 }

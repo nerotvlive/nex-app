@@ -123,6 +123,12 @@
         "title": "Lancer l'ancienne fenêtre",
         "description": "Lance l'ancienne interface utilisateur. (Nécessite une connexion internet)",
         "open": "Ouvrir"
+      },
+      "skineditor": {
+        "title": "Éditeur de skin (aperçu)",
+        "description": "Éditeur de skin à calques avec peinture 3D, sélection des parties du corps et mode pixel 2D classique.",
+        "open": "Ouvrir",
+        "window": "Ouvrir dans une nouvelle fenêtre"
       }
     },
     "settings": {
@@ -150,6 +156,328 @@
       "reload": "Recharger",
       "restart": "Redémarrer",
       "report": "Signaler un problème"
+    },
+    "skineditor": {
+      "document": {
+        "untitled": "Nouveau skin",
+        "name": "Nom du projet",
+        "unsaved": "Modifications non enregistrées",
+        "dropLayer": "Dépose pour ajouter comme calques à ce skin",
+        "dropTab": "Dépose pour ouvrir dans un nouvel onglet"
+      },
+      "menu": {
+        "file": "Fichier",
+        "new": "Nouveau skin",
+        "open": "Ouvrir…",
+        "save": "Enregistrer",
+        "saveAs": "Enregistrer sous…",
+        "export": "Exporter en PNG…",
+        "openFolder": "Ouvrir le dossier des skins",
+        "undo": "Annuler",
+        "redo": "Rétablir"
+      },
+      "view": {
+        "3d": "3D",
+        "split": "Partagé",
+        "2d": "2D",
+        "modeHint": "Basculer entre la vue 3D, partagée et 2D (Tab)",
+        "front": "Avant",
+        "back": "Arrière",
+        "left": "Gauche",
+        "right": "Droite",
+        "iso": "3/4",
+        "fit": "Ajuster à la vue",
+        "shading": "Ombrage des faces en 3D",
+        "grid": "Grille de pixels",
+        "guides": "Repères UV",
+        "noWebgl": "Vue 3D indisponible",
+        "noWebglHint": "WebGL n'a pas pu démarrer dans cette webview. L'éditeur 2D fonctionne toujours."
+      },
+      "model": {
+        "classic": "Classique",
+        "slim": "Fin",
+        "hint": "Largeur des bras du modèle 3D. Ne change que l'aperçu, utilise le convertisseur pour déplacer les pixels."
+      },
+      "tools": {
+        "more": "Plus d'outils",
+        "mirror": "Miroir",
+        "mirrorHint": "Peindre des deux côtés en même temps (gauche ↔ droite)",
+        "mirrorSide": "Copier vers l'autre côté",
+        "mirrorSideHint": "Copie les parties du corps sélectionnées du calque actif vers le côté opposé",
+        "pencil": {
+          "name": "Crayon",
+          "hint": "Clic gauche : couleur principale, clic droit (2D) : couleur secondaire"
+        },
+        "eraser": {
+          "name": "Gomme",
+          "hint": "Supprime les pixels du calque actif"
+        },
+        "fill": {
+          "name": "Remplissage",
+          "hint": "Remplit les pixels voisins de même couleur"
+        },
+        "picker": {
+          "name": "Pipette",
+          "hint": "Prélève une couleur du skin. Avec n'importe quel outil : maintenir Alt."
+        },
+        "shade": {
+          "name": "Pinceau d'ombrage",
+          "hint": "Assombrit ou éclaircit les pixels existants d'un niveau par trait. Maj inverse."
+        },
+        "select": {
+          "name": "Sélection",
+          "hint": "Sélectionne un rectangle dans la texture. La peinture est limitée à la sélection."
+        },
+        "move": {
+          "name": "Déplacer",
+          "hint": "Déplace la sélection ou tout le calque. Les flèches déplacent d'un pixel."
+        },
+        "line": {
+          "name": "Ligne",
+          "hint": "Trace une ligne droite. Maj aligne sur 45°."
+        },
+        "rect": {
+          "name": "Rectangle",
+          "hint": "Trace un rectangle. Maj le remplit."
+        },
+        "noise": {
+          "name": "Pinceau de bruit",
+          "hint": "Peint la couleur principale avec une variation aléatoire de luminosité (Maj+B change d'outil pinceau)"
+        },
+        "replace": {
+          "name": "Remplacer la couleur",
+          "hint": "Remplace chaque pixel de la couleur cliquée sur le calque actif"
+        },
+        "hand": {
+          "name": "Main",
+          "hint": "Déplace et fait pivoter la vue avec le clic gauche. Temporairement : maintenir Espace."
+        }
+      },
+      "options": {
+        "size": "Taille",
+        "noise": "Intensité",
+        "fill": {
+          "face": "Face",
+          "part": "Partie du corps",
+          "global": "Partout",
+          "faceHint": "Remplit uniquement la face du cube cliquée",
+          "partHint": "Remplit toutes les faces de la partie du corps cliquée",
+          "globalHint": "Remplace la couleur sur tout le calque"
+        },
+        "rect": {
+          "outline": "Contour",
+          "filled": "Rempli"
+        },
+        "shade": {
+          "darken": "Plus sombre",
+          "lighten": "Plus clair",
+          "hint": "Direction du pinceau d'ombrage. Maj ou clic droit l'inverse."
+        },
+        "selection": {
+          "copy": "Copier",
+          "cut": "Couper",
+          "paste": "Coller",
+          "delete": "Supprimer",
+          "flipH": "Retourner horizontalement",
+          "flipV": "Retourner verticalement",
+          "deselect": "Désélectionner"
+        }
+      },
+      "parts": {
+        "title": "Parties du corps",
+        "all": "Tout",
+        "selectHint": "Clic : seulement cette partie, Maj/Ctrl + clic : ajouter ou retirer",
+        "head": "Tête",
+        "body": "Corps",
+        "rightArm": "Bras droit",
+        "leftArm": "Bras gauche",
+        "rightLeg": "Jambe droite",
+        "leftLeg": "Jambe gauche",
+        "overlayToggle": "Afficher ou masquer la couche externe de cette partie",
+        "overlayAll": "Afficher ou masquer toutes les couches externes",
+        "modeHint": "Affichage des parties du corps non sélectionnées",
+        "mode": {
+          "hide": "Masquer",
+          "ghost": "Transparent",
+          "lock": "Verrouiller"
+        }
+      },
+      "colors": {
+        "title": "Couleurs",
+        "primary": "Couleur principale",
+        "secondary": "Couleur secondaire",
+        "swap": "Inverser les couleurs",
+        "swapHint": "Couleur principale et secondaire (X inverse)",
+        "shades": "Nuances",
+        "shadesHint": "Variantes plus sombres et plus claires de la couleur principale avec décalage de teinte façon pixel art",
+        "recent": "Récentes",
+        "palette": "Palette"
+      },
+      "layers": {
+        "title": "Calques",
+        "add": "Nouveau calque",
+        "addGroup": "Nouveau groupe",
+        "duplicate": "Dupliquer",
+        "mergeDown": "Fusionner vers le bas",
+        "delete": "Supprimer",
+        "rename": "Renommer",
+        "clear": "Vider le calque",
+        "split": "Séparer en base et couche externe",
+        "moveUp": "Monter",
+        "moveDown": "Descendre",
+        "visibility": "Afficher / masquer",
+        "lock": "Verrouiller / déverrouiller",
+        "empty": "Aucun calque",
+        "opacity": "Opacité",
+        "blend": "Mode de fusion",
+        "renderTarget": "Rendu sur",
+        "defaultName": "Calque {number}",
+        "defaultGroup": "Groupe",
+        "copyName": "{name} copie",
+        "splitBase": "{name} (base)",
+        "splitOverlay": "{name} (externe)",
+        "legacyOverlay": "Les skins 64×32 n'ont une couche externe que sur la tête. Convertis le skin en 64×64 pour toutes les couches externes.",
+        "target": {
+          "base": "Base",
+          "overlay": "Externe",
+          "atlas": "Atlas",
+          "baseHint": "Couche interne du skin",
+          "overlayHint": "Couche externe (chapeau, veste, manches, pantalon). Passer de base à externe conserve les pixels.",
+          "atlasHint": "Coordonnées brutes de la texture, contient les deux couches (PNG importés)"
+        },
+        "blendModes": {
+          "normal": "Normal",
+          "multiply": "Produit",
+          "screen": "Superposition claire",
+          "overlay": "Incrustation",
+          "darken": "Obscurcir",
+          "lighten": "Éclaircir",
+          "add": "Addition"
+        },
+        "group": "Grouper le calque",
+        "ungroup": "Dissocier",
+        "mergeVisible": "Fusionner les calques visibles",
+        "merged": "Fusionné"
+      },
+      "convert": {
+        "open": "Convertir le format ou le modèle",
+        "title": "Convertir le skin",
+        "description": "Recalcule les pixels de tous les calques pour un autre format ou une autre largeur de bras.",
+        "current": "Actuel",
+        "format": "Format",
+        "legacy": "avant 1.8",
+        "model": "Largeur des bras",
+        "lossy": "Cette conversion peut supprimer des pixels (couches externes des skins 64×64 ou la colonne extérieure des bras).",
+        "undoHint": "La conversion peut être annulée avec Ctrl+Z.",
+        "apply": "Convertir"
+      },
+      "dialog": {
+        "cancel": "Annuler",
+        "discard": "Le skin actuel contient des modifications non enregistrées. Les abandonner ?",
+        "discardConfirm": "Abandonner",
+        "closeTab": "« {name} » contient des modifications non enregistrées. Fermer quand même ?",
+        "closeConfirm": "Fermer"
+      },
+      "draft": {
+        "found": "Brouillons non enregistrés trouvés ({count}) : {names} du {time}.",
+        "restore": "Restaurer",
+        "discard": "Supprimer"
+      },
+      "status": {
+        "hint": "Clic gauche peint · clic droit fait pivoter (3D) · Espace ou H déplace la vue · Tab masque les panneaux · F1 affiche les raccourcis"
+      },
+      "help": {
+        "title": "Aide de l'éditeur de skin",
+        "layers": "Chaque calque est rendu sur la base, la couche externe ou l'atlas brut. Les vêtements peuvent avoir leurs propres calques et passer à tout moment de la base à la couche externe sans repeindre.",
+        "mouse": "3D : clic gauche peint, clic droit fait pivoter, clic molette déplace, la molette zoome. Un clic gauche à côté du modèle fait aussi pivoter. 2D : la molette zoome, clic molette, Espace ou l'outil main déplace. Dépose des fichiers sur le canevas pour les ajouter comme calques, sur la barre d'onglets pour les ouvrir.",
+        "keys": {
+          "brush": "Crayon, pinceau de bruit, remplacer la couleur",
+          "shapes": "Rectangle, ligne",
+          "navigate": "Main (maintenir Espace)",
+          "size": "Taille du pinceau",
+          "colors": "Inverser / couleurs par défaut",
+          "mirror": "Miroir activé / désactivé",
+          "layerVia": "Calque par copier / par couper",
+          "merge": "Fusionner vers le bas / les visibles",
+          "group": "Grouper / dissocier",
+          "order": "Calque vers le bas / haut (Maj : tout en bas / haut)",
+          "selectLayer": "Sélectionner le calque dessous / dessus",
+          "opacity": "Opacité 10 … 90 % / 100 %",
+          "fill": "Remplir la sélection avec la couleur principale / secondaire",
+          "newOpen": "Nouveau skin / ouvrir (nouvel onglet)",
+          "save": "Enregistrer / enregistrer sous",
+          "tabs": "Fermer l'onglet / onglet suivant",
+          "undo": "Annuler / rétablir",
+          "select": "Tout sélectionner / désélectionner",
+          "clipboard": "Copier, couper, coller",
+          "panels": "Afficher / masquer les panneaux",
+          "view": "Basculer partagé / 3D / 2D",
+          "zoom": "Zoom avant / arrière / ajuster",
+          "grid": "Grille de pixels / repères UV",
+          "parts": "Choisir une partie du corps (Maj ajoute) / tout"
+        },
+        "groups": {
+          "tools": "Outils",
+          "layers": "Calques",
+          "document": "Fichiers & édition",
+          "view": "Affichage"
+        }
+      },
+      "history": {
+        "paint": "Peindre",
+        "erase": "Effacer",
+        "fill": "Remplir",
+        "replace": "Remplacer la couleur",
+        "shade": "Ombrer",
+        "noise": "Bruit",
+        "line": "Ligne",
+        "rect": "Rectangle",
+        "move": "Déplacer",
+        "paste": "Coller",
+        "cut": "Couper",
+        "flip": "Retourner",
+        "mirror": "Copier vers l'autre côté",
+        "addLayer": "Nouveau calque",
+        "addGroup": "Nouveau groupe",
+        "duplicate": "Dupliquer",
+        "delete": "Supprimer",
+        "merge": "Fusionner",
+        "clear": "Vider le calque",
+        "split": "Séparer le calque",
+        "target": "Changer la cible de rendu",
+        "property": "Modifier le calque",
+        "rename": "Renommer",
+        "model": "Changer le modèle",
+        "convert": "Convertir le skin",
+        "import": "Importer comme calques",
+        "group": "Grouper",
+        "ungroup": "Dissocier",
+        "layerViaCopy": "Calque par copier",
+        "layerViaCut": "Calque par couper",
+        "mergeVisible": "Fusionner les calques visibles"
+      },
+      "messages": {
+        "noLayer": "Sélectionne d'abord un calque.",
+        "layerLocked": "Le calque actif est verrouillé.",
+        "layerHidden": "Le calque actif est masqué.",
+        "mergeImpossible": "Aucun calque en dessous pour fusionner.",
+        "copied": "Copié.",
+        "cut": "Coupé.",
+        "opened": "{name} ouvert.",
+        "openFailed": "Impossible d'ouvrir le fichier : {error}",
+        "saved": "{name} enregistré.",
+        "saveFailed": "Impossible d'enregistrer le fichier : {error}",
+        "exported": "{name} exporté.",
+        "exportedTransparent": "Exporté. {count} pixels de base ne sont pas totalement opaques et peuvent mal s'afficher en jeu.",
+        "converted": "Skin converti.",
+        "draftRestored": "Brouillon restauré.",
+        "imported": "{name} ajouté comme calques.",
+        "wrongSize": "Taille d'image non prise en charge {width}×{height}, les skins doivent faire 64×64 ou 64×32."
+      },
+      "tabs": {
+        "new": "Nouveau skin",
+        "close": "Fermer"
+      }
     }
   }
 }

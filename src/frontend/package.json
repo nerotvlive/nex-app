@@ -2,32 +2,37 @@
   "name": "zyneon-desktop",
   "private": true,
   "version": "27.0.13",
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
     "bootstrap-icons": "^1.13.2",
-    "lucide-static": "^1.61.0",
+    "fflate": "^0.8.3",
+    "lucide-static": "^1.67.0",
+    "three": "^0.187.0",
     "vue": "^3.5.44",
-    "vue-i18n": "^11.4.16",
+    "vue-i18n": "^11.4.18",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.4",
+    "@tailwindcss/vite": "^4.3.4",
     "@types/node": "^24.19.2",
+    "@types/three": "^0.187.0",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/tsconfig": "^0.9.1",
-    "autoprefixer": "^10.6.1",
-    "postcss": "^8.5.31",
-    "tailwindcss": "^4.3.3",
+    "autoprefixer": "^10.6.2",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^4.3.4",
     "typescript": "~6.0.3",
     "vite": "^8.3.5",
-    "vue-tsc": "^3.3.13"
+    "vitest": "^5.1.0",
+    "vue-tsc": "^3.3.14"
   },
   "packageManager": "pnpm@12.9.0",
   "engines": {

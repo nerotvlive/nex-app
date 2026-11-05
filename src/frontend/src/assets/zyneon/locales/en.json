@@ -123,6 +123,12 @@
         "title": "Launch Old Frame",
         "description": "Launches the discontinued UI. (Requires internet connection)",
         "open": "Launch"
+      },
+      "skineditor": {
+        "title": "Skin Editor (preview)",
+        "description": "Layer based skin editor with 3D painting, body part selection and a classic 2D pixel mode.",
+        "open": "Open",
+        "window": "Open in new window"
       }
     },
     "settings": {
@@ -150,6 +156,328 @@
       "reload": "Reload",
       "restart": "Restart",
       "report": "Report error"
+    },
+    "skineditor": {
+      "document": {
+        "untitled": "New skin",
+        "name": "Project name",
+        "unsaved": "Unsaved changes",
+        "dropLayer": "Drop to add as layers to this skin",
+        "dropTab": "Drop to open in a new tab"
+      },
+      "menu": {
+        "file": "File",
+        "new": "New skin",
+        "open": "Open…",
+        "save": "Save",
+        "saveAs": "Save as…",
+        "export": "Export as PNG…",
+        "openFolder": "Open skin folder",
+        "undo": "Undo",
+        "redo": "Redo"
+      },
+      "view": {
+        "3d": "3D",
+        "split": "Split",
+        "2d": "2D",
+        "modeHint": "Switch between 3D, split and 2D view (Tab)",
+        "front": "Front",
+        "back": "Back",
+        "left": "Left",
+        "right": "Right",
+        "iso": "3/4",
+        "fit": "Fit to view",
+        "shading": "Face shading in 3D",
+        "grid": "Pixel grid",
+        "guides": "UV guides",
+        "noWebgl": "3D view not available",
+        "noWebglHint": "WebGL could not be started in this webview. The 2D editor still works."
+      },
+      "model": {
+        "classic": "Classic",
+        "slim": "Slim",
+        "hint": "Arm width of the 3D model. Only changes the preview, use the converter to move pixels."
+      },
+      "tools": {
+        "more": "More tools",
+        "mirror": "Mirror",
+        "mirrorHint": "Paint on both sides at the same time (left ↔ right)",
+        "mirrorSide": "Mirror to other side",
+        "mirrorSideHint": "Copies the selected body parts of the active layer to the opposite side",
+        "pencil": {
+          "name": "Pencil",
+          "hint": "Left click: primary color, right click (2D): secondary color"
+        },
+        "eraser": {
+          "name": "Eraser",
+          "hint": "Removes pixels of the active layer"
+        },
+        "fill": {
+          "name": "Fill",
+          "hint": "Fills connected pixels of the same color"
+        },
+        "picker": {
+          "name": "Color picker",
+          "hint": "Picks a color from the skin. Hold Alt with any tool."
+        },
+        "shade": {
+          "name": "Shade brush",
+          "hint": "Darkens or lightens existing pixels one step per stroke. Shift inverts."
+        },
+        "select": {
+          "name": "Selection",
+          "hint": "Selects a rectangle in the texture. Painting is limited to the selection."
+        },
+        "move": {
+          "name": "Move",
+          "hint": "Moves the selection or the whole layer. Arrow keys move by one pixel."
+        },
+        "line": {
+          "name": "Line",
+          "hint": "Draws a straight line. Shift snaps to 45°."
+        },
+        "rect": {
+          "name": "Rectangle",
+          "hint": "Draws a rectangle. Shift fills it."
+        },
+        "noise": {
+          "name": "Noise brush",
+          "hint": "Paints the primary color with random brightness variation (Shift+B cycles the brush tools)"
+        },
+        "replace": {
+          "name": "Replace color",
+          "hint": "Replaces every pixel with the clicked color on the active layer"
+        },
+        "hand": {
+          "name": "Hand",
+          "hint": "Moves and rotates the view with the left mouse. Hold Space for a moment."
+        }
+      },
+      "options": {
+        "size": "Size",
+        "noise": "Strength",
+        "fill": {
+          "face": "Face",
+          "part": "Body part",
+          "global": "Everywhere",
+          "faceHint": "Only fills inside the clicked cube face",
+          "partHint": "Fills across the faces of the clicked body part",
+          "globalHint": "Replaces the color on the whole layer"
+        },
+        "rect": {
+          "outline": "Outline",
+          "filled": "Filled"
+        },
+        "shade": {
+          "darken": "Darker",
+          "lighten": "Lighter",
+          "hint": "Direction of the shade brush. Shift or right click inverts it."
+        },
+        "selection": {
+          "copy": "Copy",
+          "cut": "Cut",
+          "paste": "Paste",
+          "delete": "Delete",
+          "flipH": "Flip horizontally",
+          "flipV": "Flip vertically",
+          "deselect": "Deselect"
+        }
+      },
+      "parts": {
+        "title": "Body parts",
+        "all": "All",
+        "selectHint": "Click: only this part, Shift/Ctrl + click: add or remove",
+        "head": "Head",
+        "body": "Body",
+        "rightArm": "Right arm",
+        "leftArm": "Left arm",
+        "rightLeg": "Right leg",
+        "leftLeg": "Left leg",
+        "overlayToggle": "Show or hide the overlay of this part",
+        "overlayAll": "Show or hide all overlays",
+        "modeHint": "How body parts that are not selected are shown",
+        "mode": {
+          "hide": "Hide",
+          "ghost": "Ghost",
+          "lock": "Lock"
+        }
+      },
+      "colors": {
+        "title": "Colors",
+        "primary": "Primary color",
+        "secondary": "Secondary color",
+        "swap": "Swap colors",
+        "swapHint": "Primary and secondary color (X swaps)",
+        "shades": "Shades",
+        "shadesHint": "Darker and lighter variants of the primary color with pixel art hue shifting",
+        "recent": "Recent",
+        "palette": "Palette"
+      },
+      "layers": {
+        "title": "Layers",
+        "add": "New layer",
+        "addGroup": "New group",
+        "duplicate": "Duplicate",
+        "mergeDown": "Merge down",
+        "delete": "Delete",
+        "rename": "Rename",
+        "clear": "Clear layer",
+        "split": "Split into base and overlay",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "visibility": "Show / hide",
+        "lock": "Lock / unlock",
+        "empty": "No layers yet",
+        "opacity": "Opacity",
+        "blend": "Blend mode",
+        "renderTarget": "Renders on",
+        "defaultName": "Layer {number}",
+        "defaultGroup": "Group",
+        "copyName": "{name} copy",
+        "splitBase": "{name} (base)",
+        "splitOverlay": "{name} (overlay)",
+        "legacyOverlay": "64×32 skins only have an overlay on the head. Convert the skin to 64×64 to use all overlays.",
+        "target": {
+          "base": "Base",
+          "overlay": "Overlay",
+          "atlas": "Atlas",
+          "baseHint": "Inner skin layer",
+          "overlayHint": "Outer layer (hat, jacket, sleeves, pants). Switching between base and overlay keeps the pixels.",
+          "atlasHint": "Raw texture coordinates, contains both layers (imported PNGs)"
+        },
+        "blendModes": {
+          "normal": "Normal",
+          "multiply": "Multiply",
+          "screen": "Screen",
+          "overlay": "Overlay",
+          "darken": "Darken",
+          "lighten": "Lighten",
+          "add": "Add"
+        },
+        "group": "Group layer",
+        "ungroup": "Ungroup",
+        "mergeVisible": "Merge visible",
+        "merged": "Merged"
+      },
+      "convert": {
+        "open": "Convert format or model",
+        "title": "Convert skin",
+        "description": "Recalculates the pixels of all layers for another format or arm width.",
+        "current": "Current",
+        "format": "Format",
+        "legacy": "before 1.8",
+        "model": "Arm width",
+        "lossy": "This conversion can remove pixels (overlays of 64×64 skins or the outer arm column).",
+        "undoHint": "The conversion can be undone with Ctrl+Z.",
+        "apply": "Convert"
+      },
+      "dialog": {
+        "cancel": "Cancel",
+        "discard": "The current skin has unsaved changes. Discard them?",
+        "discardConfirm": "Discard",
+        "closeTab": "\"{name}\" has unsaved changes. Close it anyway?",
+        "closeConfirm": "Close"
+      },
+      "draft": {
+        "found": "Unsaved drafts found ({count}): {names} from {time}.",
+        "restore": "Restore",
+        "discard": "Discard"
+      },
+      "status": {
+        "hint": "Left mouse paints · right mouse rotates (3D) · Space or H moves the view · Tab hides panels · F1 shows all shortcuts"
+      },
+      "help": {
+        "title": "Skin editor help",
+        "layers": "Every layer renders on the base layer, the overlay or the raw atlas. Clothes can live on their own layers and be moved between base and overlay at any time without repainting.",
+        "mouse": "3D: left mouse paints, right mouse rotates, middle mouse pans, mouse wheel zooms. A left click next to the model rotates as well. 2D: mouse wheel zooms, middle mouse, Space or the hand tool pans. Drop files onto the canvas to add them as layers, onto the tab bar to open them.",
+        "keys": {
+          "brush": "Pencil, noise brush, replace color",
+          "shapes": "Rectangle, line",
+          "navigate": "Hand (hold Space)",
+          "size": "Brush size",
+          "colors": "Swap colors / default colors",
+          "mirror": "Mirror painting on / off",
+          "layerVia": "Layer via copy / via cut",
+          "merge": "Merge down / merge visible",
+          "group": "Group / ungroup",
+          "order": "Move layer down / up (Shift: to bottom / top)",
+          "selectLayer": "Select layer below / above",
+          "opacity": "Layer opacity 10 … 90 % / 100 %",
+          "fill": "Fill selection with primary / secondary color",
+          "newOpen": "New skin / open (in a new tab)",
+          "save": "Save / save as",
+          "tabs": "Close tab / next tab",
+          "undo": "Undo / redo",
+          "select": "Select all / deselect",
+          "clipboard": "Copy, cut, paste",
+          "panels": "Show / hide panels",
+          "view": "Cycle split / 3D / 2D view",
+          "zoom": "Zoom in / out / fit",
+          "grid": "Pixel grid / UV guides",
+          "parts": "Select a body part (Shift adds) / all parts"
+        },
+        "groups": {
+          "tools": "Tools",
+          "layers": "Layers",
+          "document": "Files & editing",
+          "view": "View"
+        }
+      },
+      "history": {
+        "paint": "Paint",
+        "erase": "Erase",
+        "fill": "Fill",
+        "replace": "Replace color",
+        "shade": "Shade",
+        "noise": "Noise",
+        "line": "Line",
+        "rect": "Rectangle",
+        "move": "Move",
+        "paste": "Paste",
+        "cut": "Cut",
+        "flip": "Flip",
+        "mirror": "Mirror to other side",
+        "addLayer": "New layer",
+        "addGroup": "New group",
+        "duplicate": "Duplicate",
+        "delete": "Delete",
+        "merge": "Merge down",
+        "clear": "Clear layer",
+        "split": "Split layer",
+        "target": "Change render target",
+        "property": "Change layer",
+        "rename": "Rename",
+        "model": "Change model",
+        "convert": "Convert skin",
+        "import": "Import as layers",
+        "group": "Group",
+        "ungroup": "Ungroup",
+        "layerViaCopy": "Layer via copy",
+        "layerViaCut": "Layer via cut",
+        "mergeVisible": "Merge visible"
+      },
+      "messages": {
+        "noLayer": "Select a layer first.",
+        "layerLocked": "The active layer is locked.",
+        "layerHidden": "The active layer is hidden.",
+        "mergeImpossible": "There is no layer below to merge into.",
+        "copied": "Copied.",
+        "cut": "Cut.",
+        "opened": "Opened {name}.",
+        "openFailed": "Could not open the file: {error}",
+        "saved": "Saved {name}.",
+        "saveFailed": "Could not save the file: {error}",
+        "exported": "Exported {name}.",
+        "exportedTransparent": "Exported. {count} base pixels are not fully opaque and may look wrong in game.",
+        "converted": "Skin converted.",
+        "draftRestored": "Draft restored.",
+        "imported": "Added {name} as layers.",
+        "wrongSize": "Unsupported image size {width}×{height}, skins have to be 64×64 or 64×32."
+      },
+      "tabs": {
+        "new": "New skin",
+        "close": "Close"
+      }
     }
   }
 }
