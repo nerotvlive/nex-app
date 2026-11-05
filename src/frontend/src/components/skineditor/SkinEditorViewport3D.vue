@@ -53,7 +53,10 @@ const pick = (event: PointerEvent | MouseEvent): Hit3D | null => {
 
 const toPointerHit = (hit: Hit3D) => ({x: hit.x, y: hit.y, part: hit.part, view: '3d' as const});
 
+let middleStart: { x: number, y: number } | null = null;
+
 const onPointerDown = (event: PointerEvent) => {
+  if (event.button === 1) middleStart = {x: event.clientX, y: event.clientY};
   if (!renderer || event.button !== 0) return;
   if (props.editor.navigating) return;
   const hit = pick(event);
@@ -105,6 +108,14 @@ const onPointerMove = (event: PointerEvent) => {
 };
 
 const endPointer = (event: PointerEvent) => {
+  if (event.button === 1 && middleStart) {
+    const start = middleStart;
+    middleStart = null;
+    if (renderer && props.editor.middleClickFills && Math.hypot(event.clientX - start.x, event.clientY - start.y) < 5) {
+      const hit = renderer.pick(start.x, start.y, props.editor.activeTarget, props.editor.composite);
+      if (hit) props.editor.quickFill(toPointerHit(hit));
+    }
+  }
   if (rotatingWithLeft) {
     rotatingWithLeft = false;
     renderer?.setLeftMouseNavigation(props.editor.navigating);
@@ -163,7 +174,7 @@ watch(() => props.editor.activeLayerId, () => renderer?.setHover(null));
 
 <template>
   <div class="skin-editor-viewport relative w-full h-full overflow-hidden" :class="{'navigating': editor.navigating}">
-    <div ref="container" class="absolute inset-0" @pointerdown.capture="onPointerDown" @pointermove="onPointerMove" @pointerup="endPointer" @pointercancel="endPointer" @pointerleave="onPointerLeave" @contextmenu.prevent></div>
+    <div ref="container" class="absolute inset-0" @pointerdown.capture="onPointerDown" @pointermove="onPointerMove" @pointerup="endPointer" @pointercancel="endPointer" @pointerleave="onPointerLeave" @mousedown.middle.prevent @contextmenu.prevent></div>
     <div v-if="!supported" class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-6 text-center">
       <i class="icon-triangle-alert text-2xl zyn-text-warning"></i>
       <strong class="text-white">{{ t('pages.skineditor.view.noWebgl') }}</strong>

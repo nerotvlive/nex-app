@@ -206,7 +206,7 @@
         "mirrorSideHint": "Copie les parties du corps sélectionnées du calque actif vers le côté opposé",
         "pencil": {
           "name": "Crayon",
-          "hint": "Clic gauche : couleur principale, clic droit (2D) : couleur secondaire"
+          "hint": "Clic gauche : couleur principale, clic droit (2D) : couleur secondaire, clic molette : remplir la zone"
         },
         "eraser": {
           "name": "Gomme",
@@ -251,6 +251,10 @@
         "hand": {
           "name": "Main",
           "hint": "Déplace et fait pivoter la vue avec le clic gauche. Temporairement : maintenir Espace."
+        },
+        "gradient": {
+          "name": "Dégradé",
+          "hint": "Glisser pour tracer un dégradé de la couleur principale à la secondaire (clic droit : inversé)"
         }
       },
       "options": {
@@ -281,6 +285,16 @@
           "flipH": "Retourner horizontalement",
           "flipV": "Retourner verticalement",
           "deselect": "Désélectionner"
+        },
+        "eraserOpacity": "Intensité",
+        "eraserOpacityHint": "100 % efface complètement, des valeurs plus faibles rendent les pixels plus transparents (une fois par trait)",
+        "shadeStrength": "Écart des nuances",
+        "shadeStrengthHint": "Distance entre les nuances. Des valeurs plus faibles donnent des transitions plus douces.",
+        "gradient": {
+          "steps": "Paliers",
+          "stepsHint": "Paliers de couleur nets pour un style pixel art",
+          "smooth": "continu",
+          "areaHint": "Zone qui reçoit le dégradé (une sélection est toujours prioritaire)"
         }
       },
       "parts": {
@@ -389,7 +403,7 @@
       "help": {
         "title": "Aide de l'éditeur de skin",
         "layers": "Chaque calque est rendu sur la base, la couche externe ou l'atlas brut. Les vêtements peuvent avoir leurs propres calques et passer à tout moment de la base à la couche externe sans repeindre.",
-        "mouse": "3D : clic gauche peint, clic droit fait pivoter, clic molette déplace, la molette zoome. Un clic gauche à côté du modèle fait aussi pivoter. 2D : la molette zoome, clic molette, Espace ou l'outil main déplace. Dépose des fichiers sur le canevas pour les ajouter comme calques, sur la barre d'onglets pour les ouvrir.",
+        "mouse": "3D : clic gauche peint, clic droit fait pivoter, clic molette déplace, la molette zoome. Un clic gauche à côté du modèle fait aussi pivoter. 2D : la molette zoome, clic molette, Espace ou l'outil main déplace. Avec le crayon ou le pinceau de bruit, un clic molette (sans glisser) remplit la zone. Dépose des fichiers sur le canevas pour les ajouter comme calques, sur la barre d'onglets pour les ouvrir.",
         "keys": {
           "brush": "Crayon, pinceau de bruit, remplacer la couleur",
           "shapes": "Rectangle, ligne",
@@ -414,7 +428,8 @@
           "view": "Basculer partagé / 3D / 2D",
           "zoom": "Zoom avant / arrière / ajuster",
           "grid": "Grille de pixels / repères UV",
-          "parts": "Choisir une partie du corps (Maj ajoute) / tout"
+          "parts": "Choisir une partie du corps (Maj ajoute) / tout",
+          "fillGradient": "Remplissage, dégradé"
         },
         "groups": {
           "tools": "Outils",
@@ -454,7 +469,8 @@
         "ungroup": "Dissocier",
         "layerViaCopy": "Calque par copier",
         "layerViaCut": "Calque par couper",
-        "mergeVisible": "Fusionner les calques visibles"
+        "mergeVisible": "Fusionner les calques visibles",
+        "gradient": "Dégradé"
       },
       "messages": {
         "noLayer": "Sélectionne d'abord un calque.",

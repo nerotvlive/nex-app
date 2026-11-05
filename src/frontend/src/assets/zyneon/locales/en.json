@@ -206,7 +206,7 @@
         "mirrorSideHint": "Copies the selected body parts of the active layer to the opposite side",
         "pencil": {
           "name": "Pencil",
-          "hint": "Left click: primary color, right click (2D): secondary color"
+          "hint": "Left click: primary color, right click (2D): secondary color, middle click: fill area"
         },
         "eraser": {
           "name": "Eraser",
@@ -251,6 +251,10 @@
         "hand": {
           "name": "Hand",
           "hint": "Moves and rotates the view with the left mouse. Hold Space for a moment."
+        },
+        "gradient": {
+          "name": "Gradient",
+          "hint": "Drag to draw a gradient from the primary to the secondary color (right mouse: reversed)"
         }
       },
       "options": {
@@ -281,6 +285,16 @@
           "flipH": "Flip horizontally",
           "flipV": "Flip vertically",
           "deselect": "Deselect"
+        },
+        "eraserOpacity": "Strength",
+        "eraserOpacityHint": "100 % erases completely, lower values make pixels more transparent (once per stroke)",
+        "shadeStrength": "Shade step",
+        "shadeStrengthHint": "How far apart the shades are. Lower values give smoother transitions.",
+        "gradient": {
+          "steps": "Steps",
+          "stepsHint": "Hard color steps for a pixel art look",
+          "smooth": "smooth",
+          "areaHint": "Area that gets the gradient (the selection always wins)"
         }
       },
       "parts": {
@@ -389,7 +403,7 @@
       "help": {
         "title": "Skin editor help",
         "layers": "Every layer renders on the base layer, the overlay or the raw atlas. Clothes can live on their own layers and be moved between base and overlay at any time without repainting.",
-        "mouse": "3D: left mouse paints, right mouse rotates, middle mouse pans, mouse wheel zooms. A left click next to the model rotates as well. 2D: mouse wheel zooms, middle mouse, Space or the hand tool pans. Drop files onto the canvas to add them as layers, onto the tab bar to open them.",
+        "mouse": "3D: left mouse paints, right mouse rotates, middle mouse pans, mouse wheel zooms. A left click next to the model rotates as well. 2D: mouse wheel zooms, middle mouse, Space or the hand tool pans. With the pencil or noise brush a middle click (without dragging) fills the area. Drop files onto the canvas to add them as layers, onto the tab bar to open them.",
         "keys": {
           "brush": "Pencil, noise brush, replace color",
           "shapes": "Rectangle, line",
@@ -414,7 +428,8 @@
           "view": "Cycle split / 3D / 2D view",
           "zoom": "Zoom in / out / fit",
           "grid": "Pixel grid / UV guides",
-          "parts": "Select a body part (Shift adds) / all parts"
+          "parts": "Select a body part (Shift adds) / all parts",
+          "fillGradient": "Fill, gradient"
         },
         "groups": {
           "tools": "Tools",
@@ -454,7 +469,8 @@
         "ungroup": "Ungroup",
         "layerViaCopy": "Layer via copy",
         "layerViaCut": "Layer via cut",
-        "mergeVisible": "Merge visible"
+        "mergeVisible": "Merge visible",
+        "gradient": "Gradient"
       },
       "messages": {
         "noLayer": "Select a layer first.",

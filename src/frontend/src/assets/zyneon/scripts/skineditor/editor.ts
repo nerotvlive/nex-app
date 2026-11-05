@@ -4,14 +4,14 @@ import {createGroup, createId, createPixelLayer, cloneNode, type LayerNode, type
 import {atlasToStorage, destTable, getLayout, partMask, type SkinLayout} from "./layout.ts";
 import {analyzeComposite, compositeDocument} from "./compositor.ts";
 import {History, type HistoryEntry, PixelStroke, snapshotEntry} from "./history.ts";
-import {alphaOf, jitter, pack, shade, shadeRamp, TRANSPARENT} from "./color.ts";
+import {alphaOf, jitter, mix, pack, shade, shadeRamp, TRANSPARENT, withAlpha} from "./color.ts";
 import {splitAtlasPixels, convertDocument, documentFromImage} from "./convert.ts";
 import {encodePng, decodeImage} from "./png.ts";
 import {isNexSkin, NEXSKIN_EXTENSION, readNexSkin, writeNexSkin} from "./nexskin.ts";
 import {openSkinFile, saveSkinFile} from "./bridge.ts";
 import {clearDraft, loadDraft, saveDraft, type DraftTab} from "./draft.ts";
 
-export type ToolId = 'pencil' | 'eraser' | 'fill' | 'picker' | 'shade' | 'noise' | 'select' | 'move' | 'line' | 'rect' | 'replace' | 'hand';
+export type ToolId = 'pencil' | 'eraser' | 'fill' | 'gradient' | 'picker' | 'shade' | 'noise' | 'select' | 'move' | 'line' | 'rect' | 'replace' | 'hand';
 
 export interface ToolInfo {
     id: ToolId;
@@ -24,6 +24,7 @@ export const TOOLS: readonly ToolInfo[] = [
     {id: 'pencil', icon: 'icon-pencil', key: 'B', primary: true},
     {id: 'eraser', icon: 'icon-eraser', key: 'E', primary: true},
     {id: 'fill', icon: 'icon-paint-bucket', key: 'G', primary: true},
+    {id: 'gradient', icon: 'icon-blend', key: 'G', primary: true},
     {id: 'picker', icon: 'icon-pipette', key: 'I', primary: true},
     {id: 'shade', icon: 'icon-sun-moon', key: 'O', primary: true},
     {id: 'noise', icon: 'icon-spray-can', key: 'B', primary: true},
@@ -127,7 +128,11 @@ export class SkinEditor {
     fillMode: FillMode = 'face';
     rectMode: RectMode = 'outline';
     shadeDirection: 1 | -1 = -1;
+    shadeStrength = 0.4;
     noiseAmount = 0.25;
+    eraserOpacity = 1;
+    gradientArea: FillMode = 'face';
+    gradientSteps = 1;
 
     selection: Rect | null = null;
     selectedParts: PartId[] = [...PART_IDS];
@@ -715,7 +720,22 @@ export class SkinEditor {
     }
 
     get shadePalette(): PackedColor[] {
-        return shadeRamp(this.primaryColor, 7);
+        return shadeRamp(this.primaryColor, 9, this.shadeStrength);
+    }
+
+    get middleClickFills(): boolean {
+        return this.tool === 'pencil' || this.tool === 'noise';
+    }
+
+    quickFill(hit: PointerHit) {
+        this.cancelStroke();
+        const layer = this.canStartStroke();
+        if (!layer) return;
+        this.stroke = new PixelStroke(layer);
+        this.strokeColor = this.primaryColor;
+        this.rememberColor(this.strokeColor);
+        this.fill(hit);
+        this.finishStroke('pages.skineditor.history.fill');
     }
 
     private inSelection(index: number): boolean {
@@ -798,13 +818,17 @@ export class SkinEditor {
     private brushColorFunction(): (storage: number, current: number) => number | null {
         switch (this.tool) {
             case 'eraser':
-                return () => TRANSPARENT;
+                if (this.eraserOpacity >= 1) return () => TRANSPARENT;
+                return (storage, current) => {
+                    if (!this.stroke || alphaOf(current) === 0 || this.stroke.touched(storage)) return null;
+                    const alpha = Math.round(alphaOf(current) * (1 - this.eraserOpacity));
+                    return alpha <= 0 ? TRANSPARENT : withAlpha(current, alpha);
+                };
             case 'shade':
                 return (storage, current) => {
-                    // every pixel is shaded once per stroke
                     if (!this.stroke || alphaOf(current) === 0) return null;
                     if (this.stroke.touched(storage)) return null;
-                    return shade(current, this.strokeDirection);
+                    return shade(current, this.strokeDirection, this.shadeStrength);
                 };
             case 'noise':
                 return () => jitter(this.strokeColor, this.noiseAmount);
@@ -874,6 +898,39 @@ export class SkinEditor {
         }
         for (const index of indices) {
             if (filter(index)) this.paintPixel(index, start.view === '3d' ? start.part : undefined, color);
+        }
+    }
+
+    private regionAround(hit: PointerHit, area: FillMode): number[] {
+        const layout = this.layout;
+        const start = hit.y * layout.width + hit.x;
+        const face = layout.pixelFace[start] ?? -1;
+        const kind = layout.pixelKind[start];
+        const parts = hit.part ? partMask([hit.part]) : layout.pixelParts[start]!;
+        const out: number[] = [];
+        for (let i = 0; i < layout.width * layout.height; i++) {
+            if (area === 'face' && (face < 0 || layout.pixelFace[i] !== face)) continue;
+            if (area === 'part' && (layout.pixelKind[i] !== kind || (layout.pixelParts[i]! & parts) === 0)) continue;
+            out.push(i);
+        }
+        return out;
+    }
+
+    private drawGradient(start: PointerHit, end: PointerHit) {
+        if (!this.stroke) return;
+        this.stroke.revert();
+        const width = this.layout.width;
+        const dx = end.x - start.x, dy = end.y - start.y;
+        const length = dx * dx + dy * dy;
+        const from = this.strokeColor;
+        const to = from === this.primaryColor ? this.secondaryColor : this.primaryColor;
+        const steps = this.gradientSteps;
+        for (const index of this.regionAround(start, this.selection ? 'global' : this.gradientArea)) {
+            const x = index % width, y = Math.floor(index / width);
+            let t = length === 0 ? 0 : Math.min(1, Math.max(0, ((x - start.x) * dx + (y - start.y) * dy) / length));
+            if (steps >= 2) t = Math.round(t * (steps - 1)) / (steps - 1);
+            const color = mix(from, to, t);
+            this.paintPixel(index, index === start.y * width + start.x ? start.part : undefined, () => color);
         }
     }
 
@@ -1043,6 +1100,9 @@ export class SkinEditor {
                 this.rememberColor(this.strokeColor);
                 this.drawShape(hit, hit, info.shift);
                 break;
+            case 'gradient':
+                this.drawGradient(hit, hit);
+                break;
             case 'move':
                 this.liftPixels();
                 break;
@@ -1086,6 +1146,9 @@ export class SkinEditor {
             case 'rect':
                 this.drawShape(this.strokeStart, hit, info.shift);
                 break;
+            case 'gradient':
+                this.drawGradient(this.strokeStart, hit);
+                break;
             case 'move':
                 this.applyMove(hit.x - this.strokeStart.x, hit.y - this.strokeStart.y);
                 break;
@@ -1107,6 +1170,7 @@ export class SkinEditor {
                 noise: 'pages.skineditor.history.noise',
                 line: 'pages.skineditor.history.line',
                 rect: 'pages.skineditor.history.rect',
+                gradient: 'pages.skineditor.history.gradient',
                 move: 'pages.skineditor.history.move'
             };
             this.finishStroke(labels[this.tool] ?? 'pages.skineditor.history.paint');

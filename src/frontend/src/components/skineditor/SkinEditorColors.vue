@@ -140,9 +140,12 @@ const commitHex = () => {
       </div>
 
       <div>
-        <div class="skin-editor-subtitle" :title="t('pages.skineditor.colors.shadesHint')">{{ t('pages.skineditor.colors.shades') }}</div>
+        <div class="flex items-center gap-2">
+          <span class="skin-editor-subtitle grow" :title="t('pages.skineditor.colors.shadesHint')">{{ t('pages.skineditor.colors.shades') }}</span>
+          <input type="range" min="0.1" max="1" step="0.05" v-model.number="editor.shadeStrength" class="skin-editor-range w-20" :title="t('pages.skineditor.options.shadeStrengthHint')">
+        </div>
         <div class="flex gap-0.5">
-          <button v-for="(color, index) in editor.shadePalette" :key="index" class="skin-editor-swatch grow checker" :class="{'center': index === 3}" :title="toHex(color)" @click="setColor(color)">
+          <button v-for="(color, index) in editor.shadePalette" :key="index" class="skin-editor-swatch grow checker" :class="{'center': index === Math.floor(editor.shadePalette.length / 2)}" :title="toHex(color)" @click="setColor(color)">
             <span :style="{background: toCss(color)}"></span>
           </button>
         </div>

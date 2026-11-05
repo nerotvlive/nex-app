@@ -115,7 +115,7 @@ function shiftHue(h: number, target: number, amount: number): number {
     return (h + Math.sign(diff) * amount + 360) % 360;
 }
 
-export function shade(color: PackedColor, step: number): PackedColor {
+export function shade(color: PackedColor, step: number, strength: number = 1): PackedColor {
     if (step === 0) return color;
     const c = unpack(color);
     const hsv = rgbToHsv(c.r, c.g, c.b);
@@ -123,23 +123,29 @@ export function shade(color: PackedColor, step: number): PackedColor {
     const n = Math.abs(step);
     for (let i = 0; i < n; i++) {
         if (step < 0) {
-            if (!greyish) hsv.h = shiftHue(hsv.h, 235, 7);
-            hsv.s = greyish ? hsv.s : Math.min(1, hsv.s + 0.06);
-            hsv.v = Math.max(0, hsv.v - 0.11);
+            if (!greyish) hsv.h = shiftHue(hsv.h, 235, 7 * strength);
+            hsv.s = greyish ? hsv.s : Math.min(1, hsv.s + 0.06 * strength);
+            hsv.v = Math.max(0, hsv.v - 0.11 * strength);
         } else {
-            if (!greyish) hsv.h = shiftHue(hsv.h, 55, 6);
-            hsv.s = Math.max(0, hsv.s - 0.07);
-            hsv.v = Math.min(1, hsv.v + 0.1);
+            if (!greyish) hsv.h = shiftHue(hsv.h, 55, 6 * strength);
+            hsv.s = Math.max(0, hsv.s - 0.07 * strength);
+            hsv.v = Math.min(1, hsv.v + 0.1 * strength);
         }
     }
     return hsvToPacked(hsv, c.a);
 }
 
-export function shadeRamp(color: PackedColor, steps: number = 7): PackedColor[] {
+export function shadeRamp(color: PackedColor, steps: number = 9, strength: number = 1): PackedColor[] {
     const half = Math.floor(steps / 2);
     const ramp: PackedColor[] = [];
-    for (let i = -half; i <= half; i++) ramp.push(shade(color, i));
+    for (let i = -half; i <= half; i++) ramp.push(shade(color, i, strength));
     return ramp;
+}
+
+export function mix(from: PackedColor, to: PackedColor, t: number): PackedColor {
+    const a = unpack(from), b = unpack(to);
+    const ar = a.a === 0 ? b : a, br = b.a === 0 ? a : b;
+    return pack(ar.r + (br.r - ar.r) * t, ar.g + (br.g - ar.g) * t, ar.b + (br.b - ar.b) * t, a.a + (b.a - a.a) * t);
 }
 
 export function jitter(color: PackedColor, amount: number, random: () => number = Math.random): PackedColor {

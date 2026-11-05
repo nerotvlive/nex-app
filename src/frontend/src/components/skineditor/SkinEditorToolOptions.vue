@@ -8,6 +8,7 @@ const {t} = useI18n();
 
 const tool = computed(() => props.editor.tool);
 const hasBrush = computed(() => ['pencil', 'eraser', 'shade', 'noise', 'line'].includes(tool.value));
+const percent = (value: number) => Math.round(value * 100) + '%';
 const hasSelectionActions = computed(() => tool.value === 'select' || tool.value === 'move' || !!props.editor.selection);
 
 const fillModes: FillMode[] = ['face', 'part', 'global'];
@@ -23,6 +24,23 @@ const rectModes: RectMode[] = ['outline', 'filled'];
       <input type="range" min="1" max="8" step="1" v-model.number="editor.brushSize" class="skin-editor-range w-24">
       <span class="w-6 text-center">{{ editor.brushSize }}</span>
     </label>
+
+    <label v-if="tool === 'eraser'" class="flex items-center gap-2 whitespace-nowrap" :title="t('pages.skineditor.options.eraserOpacityHint')">
+      <span class="opacity-75">{{ t('pages.skineditor.options.eraserOpacity') }}</span>
+      <input type="range" min="0.05" max="1" step="0.05" v-model.number="editor.eraserOpacity" class="skin-editor-range w-24">
+      <span class="w-9 text-center">{{ percent(editor.eraserOpacity) }}</span>
+    </label>
+
+    <template v-if="tool === 'gradient'">
+      <div class="skin-editor-segmented" :title="t('pages.skineditor.options.gradient.areaHint')">
+        <button v-for="mode in fillModes" :key="mode" :class="{'active': editor.gradientArea === mode}" :title="t('pages.skineditor.options.fill.' + mode + 'Hint')" @click="editor.gradientArea = mode">{{ t('pages.skineditor.options.fill.' + mode) }}</button>
+      </div>
+      <label class="flex items-center gap-2 whitespace-nowrap" :title="t('pages.skineditor.options.gradient.stepsHint')">
+        <span class="opacity-75">{{ t('pages.skineditor.options.gradient.steps') }}</span>
+        <input type="range" min="1" max="12" step="1" v-model.number="editor.gradientSteps" class="skin-editor-range w-24">
+        <span class="w-14 text-center">{{ editor.gradientSteps < 2 ? t('pages.skineditor.options.gradient.smooth') : editor.gradientSteps }}</span>
+      </label>
+    </template>
 
     <div v-if="tool === 'fill'" class="skin-editor-segmented">
       <button v-for="mode in fillModes" :key="mode" :class="{'active': editor.fillMode === mode}" :title="t('pages.skineditor.options.fill.' + mode + 'Hint')" @click="editor.fillMode = mode">
@@ -44,6 +62,12 @@ const rectModes: RectMode[] = ['outline', 'filled'];
         <i class="icon-sun"></i> {{ t('pages.skineditor.options.shade.lighten') }}
       </button>
     </div>
+
+    <label v-if="tool === 'shade'" class="flex items-center gap-2 whitespace-nowrap" :title="t('pages.skineditor.options.shadeStrengthHint')">
+      <span class="opacity-75">{{ t('pages.skineditor.options.shadeStrength') }}</span>
+      <input type="range" min="0.1" max="1" step="0.05" v-model.number="editor.shadeStrength" class="skin-editor-range w-24">
+      <span class="w-9 text-center">{{ percent(editor.shadeStrength) }}</span>
+    </label>
 
     <label v-if="tool === 'noise'" class="flex items-center gap-2 whitespace-nowrap">
       <span class="opacity-75">{{ t('pages.skineditor.options.noise') }}</span>

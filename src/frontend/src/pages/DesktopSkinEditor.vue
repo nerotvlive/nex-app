@@ -172,7 +172,7 @@ const shortcuts: { title: string, keys: [string, string][] }[] = [
     title: 'pages.skineditor.help.groups.tools', keys: [
       ['B / Shift+B', 'pages.skineditor.help.keys.brush'],
       ['E', 'pages.skineditor.tools.eraser.name'],
-      ['G', 'pages.skineditor.tools.fill.name'],
+      ['G / Shift+G', 'pages.skineditor.help.keys.fillGradient'],
       ['I / Alt', 'pages.skineditor.tools.picker.name'],
       ['O', 'pages.skineditor.tools.shade.name'],
       ['M', 'pages.skineditor.tools.select.name'],

@@ -13,6 +13,7 @@ let renderer: SkinRenderer2D | null = null;
 
 let painting = false;
 let panning = false;
+let middleStart: { x: number, y: number } | null = null;
 let lastClient: { x: number, y: number } | null = null;
 
 const brushTools = ['pencil', 'eraser', 'shade', 'noise', 'line'];
@@ -53,6 +54,7 @@ const onPointerDown = (event: PointerEvent) => {
   lastClient = {x: event.clientX, y: event.clientY};
   if (event.button === 1 || (event.button === 0 && props.editor.navigating)) {
     panning = true;
+    if (event.button === 1) middleStart = {x: event.clientX, y: event.clientY};
     return;
   }
   if (event.button !== 0 && event.button !== 2) return;
@@ -86,6 +88,14 @@ const endPointer = (event: PointerEvent) => {
   if (container.value?.hasPointerCapture(event.pointerId)) container.value.releasePointerCapture(event.pointerId);
   panning = false;
   lastClient = null;
+  if (event.button === 1 && middleStart) {
+    const start = middleStart;
+    middleStart = null;
+    if (props.editor.middleClickFills && Math.hypot(event.clientX - start.x, event.clientY - start.y) < 5) {
+      const hit = renderer?.screenToAtlas(start.x, start.y);
+      if (hit) props.editor.quickFill({...hit, view: '2d'});
+    }
+  }
   if (painting) {
     painting = false;
     props.editor.pointerUp();
@@ -147,7 +157,7 @@ watch(() => [props.editor.grid, props.editor.guides], () => renderer?.setGrid(pr
 
 <template>
   <div class="skin-editor-viewport relative w-full h-full overflow-hidden" :class="{'navigating': editor.navigating}">
-    <div ref="container" class="absolute inset-0" @pointerdown="onPointerDown" @pointermove="onPointerMove" @pointerup="endPointer" @pointercancel="endPointer" @pointerleave="onPointerLeave" @contextmenu.prevent></div>
+    <div ref="container" class="absolute inset-0" @pointerdown="onPointerDown" @pointermove="onPointerMove" @pointerup="endPointer" @pointercancel="endPointer" @pointerleave="onPointerLeave" @mousedown.middle.prevent @contextmenu.prevent></div>
     <div class="skin-editor-floating absolute bottom-2 left-2 flex items-center gap-1 p-1">
       <button class="skin-editor-icon-btn text-xs px-2" :title="t('pages.skineditor.view.fit')" @click="fit">
         <i class="icon-maximize"></i>

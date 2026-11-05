@@ -206,7 +206,7 @@
         "mirrorSideHint": "Kopiert die gewählten Körperteile der aktiven Ebene auf die gegenüberliegende Seite",
         "pencil": {
           "name": "Stift",
-          "hint": "Linksklick: Primärfarbe, Rechtsklick (2D): Sekundärfarbe"
+          "hint": "Linksklick: Primärfarbe, Rechtsklick (2D): Sekundärfarbe, Mittelklick: Fläche füllen"
         },
         "eraser": {
           "name": "Radierer",
@@ -251,6 +251,10 @@
         "hand": {
           "name": "Hand",
           "hint": "Verschiebt und dreht die Ansicht mit der linken Maustaste. Kurzzeitig: Leertaste halten."
+        },
+        "gradient": {
+          "name": "Verlauf",
+          "hint": "Ziehen zeichnet einen Verlauf von der Primär- zur Sekundärfarbe (rechte Maustaste: umgekehrt)"
         }
       },
       "options": {
@@ -281,6 +285,16 @@
           "flipH": "Horizontal spiegeln",
           "flipV": "Vertikal spiegeln",
           "deselect": "Auswahl aufheben"
+        },
+        "eraserOpacity": "Stärke",
+        "eraserOpacityHint": "100 % radiert komplett, kleinere Werte machen Pixel transparenter (einmal pro Strich)",
+        "shadeStrength": "Abstufung",
+        "shadeStrengthHint": "Wie weit die Abstufungen auseinanderliegen. Kleinere Werte ergeben weichere Übergänge.",
+        "gradient": {
+          "steps": "Stufen",
+          "stepsHint": "Harte Farbstufen für einen Pixel-Art-Look",
+          "smooth": "stufenlos",
+          "areaHint": "Bereich, der den Verlauf bekommt (eine Auswahl hat immer Vorrang)"
         }
       },
       "parts": {
@@ -389,7 +403,7 @@
       "help": {
         "title": "Hilfe zum Skin-Editor",
         "layers": "Jede Ebene rendert auf die Base, das Overlay oder den rohen Atlas. Kleidung kann auf eigenen Ebenen liegen und jederzeit ohne Neumalen zwischen Base und Overlay verschoben werden.",
-        "mouse": "3D: linke Maustaste malt, rechte dreht, mittlere verschiebt, Mausrad zoomt. Ein Linksklick neben das Modell dreht ebenfalls. 2D: Mausrad zoomt, mittlere Maustaste, Leertaste oder das Hand-Werkzeug verschiebt. Dateien auf die Arbeitsfläche ziehen fügt sie als Ebenen hinzu, auf die Tableiste öffnet sie in einem neuen Tab.",
+        "mouse": "3D: linke Maustaste malt, rechte dreht, mittlere verschiebt, Mausrad zoomt. Ein Linksklick neben das Modell dreht ebenfalls. 2D: Mausrad zoomt, mittlere Maustaste, Leertaste oder das Hand-Werkzeug verschiebt. Mit Stift oder Rauschpinsel füllt ein Mittelklick (ohne Ziehen) die Fläche. Dateien auf die Arbeitsfläche ziehen fügt sie als Ebenen hinzu, auf die Tableiste öffnet sie in einem neuen Tab.",
         "keys": {
           "brush": "Stift, Rauschpinsel, Farbe ersetzen",
           "shapes": "Rechteck, Linie",
@@ -414,7 +428,8 @@
           "view": "Geteilt / 3D / 2D durchschalten",
           "zoom": "Vergrößern / Verkleinern / Einpassen",
           "grid": "Pixelraster / UV-Hilfslinien",
-          "parts": "Körperteil wählen (Shift fügt hinzu) / alle"
+          "parts": "Körperteil wählen (Shift fügt hinzu) / alle",
+          "fillGradient": "Füllen, Verlauf"
         },
         "groups": {
           "tools": "Werkzeuge",
@@ -454,7 +469,8 @@
         "ungroup": "Gruppierung aufheben",
         "layerViaCopy": "Ebene durch Kopie",
         "layerViaCut": "Ebene durch Ausschneiden",
-        "mergeVisible": "Sichtbare zusammenführen"
+        "mergeVisible": "Sichtbare zusammenführen",
+        "gradient": "Verlauf"
       },
       "messages": {
         "noLayer": "Wähle zuerst eine Ebene aus.",
