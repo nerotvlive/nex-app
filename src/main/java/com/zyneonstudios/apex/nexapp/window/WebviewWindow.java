@@ -21,7 +21,7 @@ public class WebviewWindow {
     private final HashMap<UUID, PageLoadEvent> loadEvents = new HashMap<>();
 
 
-    private final String id;
+    private String id;
     private String url = Main.getBaseUrl() + "/loader";
     private int width;
     private int height;
@@ -72,6 +72,14 @@ public class WebviewWindow {
 
     @SuppressWarnings("all")
     public void launchWindow() {
+        if(Main.getNEXApp().getStartMode().toLowerCase().equals("se")||Main.getNEXApp().getStartMode().toLowerCase().equals("skineditor")) {
+            Main.getNEXApp().setStartMode("");
+            windows.remove(this.id);
+            id = "/skins";
+            url = Main.getBaseUrl()+id;
+            secondary = true;
+            windows.put(id, this);
+        }
         try {
             Thread.ofPlatform().start(() -> {
                 try {

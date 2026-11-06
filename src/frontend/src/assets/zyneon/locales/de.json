@@ -173,6 +173,7 @@
         "saveAs": "Speichern unter…",
         "export": "Als PNG exportieren…",
         "openFolder": "Skin-Ordner öffnen",
+        "openApp": "NEX App öffnen",
         "undo": "Rückgängig",
         "redo": "Wiederholen",
         "bar": {

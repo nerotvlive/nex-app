@@ -173,6 +173,7 @@
         "saveAs": "Save as…",
         "export": "Export as PNG…",
         "openFolder": "Open skin folder",
+        "openApp": "Open NEX App",
         "undo": "Undo",
         "redo": "Redo",
         "bar": {

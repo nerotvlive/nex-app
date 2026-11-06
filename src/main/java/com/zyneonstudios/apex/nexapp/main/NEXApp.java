@@ -18,6 +18,7 @@ public class NEXApp {
     private String versionType = "unstable";
     private String versionBuild = "000000000000";
     private String curseforgeToken = "";
+    private String mode = "";
 
     private HashMap<UUID, AppSetupEvent> appSetupEvents = new HashMap<>();
     private ModuleLoader moduleLoader;
@@ -128,5 +129,13 @@ public class NEXApp {
 
     public ModuleLoader getModuleLoader() {
         return moduleLoader;
+    }
+
+    public void setStartMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getStartMode() {
+        return mode;
     }
 }

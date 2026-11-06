@@ -3,6 +3,7 @@ import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import type {AdjustmentKind, AdjustScope, SkinEditor} from "../../assets/zyneon/scripts/skineditor";
 import {hasNativeFileAccess, hasParameters, openSkinFolder} from "../../assets/zyneon/scripts/skineditor";
+import {WindowControls, ZyneonSettings} from "../../assets/zyneon/scripts";
 
 const props = defineProps<{ editor: SkinEditor }>();
 const emit = defineEmits<{
@@ -57,6 +58,10 @@ const menus = computed<{ id: string, entries: MenuEntry[] }[]>(() => {
   return [
     {
       id: 'file', entries: [
+        {label: 'pages.skineditor.menu.openApp', disabled: !ZyneonSettings.isSecondaryFrame, icon: 'icon-app-window', action: () => {
+            WindowControls.openMain();
+          }},
+        'separator',
         {label: 'pages.skineditor.menu.new', icon: 'icon-file-plus', kbd: 'Ctrl+N', action: () => emit('new')},
         {label: 'pages.skineditor.menu.open', icon: 'icon-folder-open', kbd: 'Ctrl+O', action: () => emit('open')},
         'separator',
@@ -184,6 +189,7 @@ onBeforeUnmount(() => {
 
 <template>
   <nav class="skin-editor-menubar">
+    <strong class="scale-85">NEX App</strong>
     <div v-for="menu in menus" :key="menu.id" class="relative">
       <button :class="{'open': openMenu === menu.id}" @click="toggle(menu.id)" @pointerenter="hover(menu.id)">{{ t('pages.skineditor.menu.bar.' + menu.id) }}</button>
       <div v-if="openMenu === menu.id" class="skin-editor-menu">

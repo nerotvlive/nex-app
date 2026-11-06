@@ -20,6 +20,7 @@ public class Main {
     private static boolean dev = false;
     private static boolean nativeFrame = false;
     private static boolean shutdown = false;
+    private static String mode = "";
 
     static void main(String[] args) {
         Main.args = args;
@@ -30,6 +31,7 @@ public class Main {
         nexApp = new NEXApp();
         springApp.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
         springApp.run(args);
+        nexApp.setStartMode(mode);
         nexApp.launch();
     }
 
@@ -61,6 +63,7 @@ public class Main {
             switch (args[i]) {
                 case "-v", "--vite" -> url = "http://localhost:5278";
                 case "-d", "--dev" -> dev = true;
+                case "-se", "--skineditor" -> mode = "se";
                 case "-u", "--url" -> {
                     if (args.length > i + 1) {
                         url = args[i + 1];

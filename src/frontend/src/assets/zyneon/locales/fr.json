@@ -173,6 +173,7 @@
         "saveAs": "Enregistrer sous…",
         "export": "Exporter en PNG…",
         "openFolder": "Ouvrir le dossier des skins",
+        "openApp": "Ouvrir NEX App",
         "undo": "Annuler",
         "redo": "Rétablir",
         "bar": {
