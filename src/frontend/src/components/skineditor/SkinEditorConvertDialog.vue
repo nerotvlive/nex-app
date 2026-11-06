@@ -3,6 +3,7 @@ import {computed, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import type {SkinEditor} from "../../assets/zyneon/scripts/skineditor";
 import type {SkinFormat, SkinModel} from "../../assets/zyneon/scripts/skineditor";
+import {vDraggable} from "./draggable.ts";
 
 const props = defineProps<{ editor: SkinEditor }>();
 const emit = defineEmits<{ (event: 'close'): void }>();
@@ -22,7 +23,7 @@ const apply = () => {
 
 <template>
   <div class="skin-editor-modal-backdrop" @pointerdown.self="emit('close')">
-    <div class="skin-editor-modal">
+    <div v-draggable class="skin-editor-modal">
       <header class="flex items-center gap-2">
         <i class="icon-refresh-cw"></i>
         <strong class="text-white grow">{{ t('pages.skineditor.convert.title') }}</strong>

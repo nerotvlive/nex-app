@@ -26,6 +26,10 @@ const syncDocument = () => {
   syncMask();
 };
 
+const syncProblems = () => {
+  renderer?.setProblems(props.editor.showProblems ? props.editor.computeProblemMask() : null);
+};
+
 const syncMask = () => {
   renderer?.setEditable(props.editor.computeEditableMask());
 };
@@ -34,7 +38,8 @@ const info = (event: PointerEvent): PointerInfo => ({
   button: event.button === -1 ? 0 : event.button,
   shift: event.shiftKey,
   ctrl: event.ctrlKey || event.metaKey,
-  alt: event.altKey
+  alt: event.altKey,
+  pressure: event.pointerType === 'pen' ? event.pressure : undefined
 });
 
 const atlasAt = (event: PointerEvent, clamp: boolean) => {
@@ -129,7 +134,8 @@ onMounted(() => {
   renderer = new SkinRenderer2D(container.value);
   renderer.setGrid(props.editor.grid, props.editor.guides);
   syncDocument();
-  renderer.setSelection(props.editor.selection);
+  renderer.setSelection(props.editor.selection, props.editor.selectionMask);
+  syncProblems();
   container.value.addEventListener('wheel', onWheel, {passive: false});
   zoom.value = renderer.zoom;
 });
@@ -142,7 +148,9 @@ onBeforeUnmount(() => {
 
 watch(() => props.editor.version, syncDocument);
 watch(() => [props.editor.activeLayerId, props.editor.selectedParts], syncMask);
-watch(() => props.editor.selection, value => renderer?.setSelection(value));
+watch(() => [props.editor.selection, props.editor.selectionMask], () => renderer?.setSelection(props.editor.selection, props.editor.selectionMask));
+watch(() => props.editor.lassoPoints, points => renderer?.setLasso(points));
+watch(() => [props.editor.showProblems, props.editor.version], () => syncProblems());
 watch(() => props.editor.viewRequest, request => {
   if (!renderer || !request) return;
   if (request.kind === 'fit') renderer.fit();

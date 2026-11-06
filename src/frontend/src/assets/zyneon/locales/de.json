@@ -174,7 +174,30 @@
         "export": "Als PNG exportieren…",
         "openFolder": "Skin-Ordner öffnen",
         "undo": "Rückgängig",
-        "redo": "Wiederholen"
+        "redo": "Wiederholen",
+        "bar": {
+          "file": "Datei",
+          "edit": "Bearbeiten",
+          "image": "Bild",
+          "layer": "Ebene",
+          "select": "Auswahl",
+          "view": "Ansicht"
+        },
+        "adjustments": "Korrekturen (ganzer Skin)",
+        "layerAdjustments": "Korrekturen (aktive Ebene)",
+        "colorRange": "Farbbereich (Primärfarbe)",
+        "exportLegacy": "Als 64×32 exportieren…",
+        "exportModel": {
+          "classic": "Mit breiten Armen (Classic) exportieren…",
+          "slim": "Mit schmalen Armen (Slim) exportieren…"
+        },
+        "fillPrimary": "Mit Primärfarbe füllen",
+        "fillSecondary": "Mit Sekundärfarbe füllen",
+        "flipImage": "Skin links ↔ rechts spiegeln",
+        "invertSelection": "Auswahl umkehren",
+        "selectAll": "Alles auswählen",
+        "selectFace": "Fläche auswählen…",
+        "selectPart": "Körperteil auswählen…"
       },
       "view": {
         "3d": "3D",
@@ -191,7 +214,9 @@
         "grid": "Pixelraster",
         "guides": "UV-Hilfslinien",
         "noWebgl": "3D-Ansicht nicht verfügbar",
-        "noWebglHint": "WebGL konnte in diesem Webview nicht gestartet werden. Der 2D-Editor funktioniert trotzdem."
+        "noWebglHint": "WebGL konnte in diesem Webview nicht gestartet werden. Der 2D-Editor funktioniert trotzdem.",
+        "problems": "Problem-Pixel anzeigen",
+        "problemsHint": "Markiert transparente oder halbtransparente Base-Pixel, die im Spiel schwarz oder falsch dargestellt werden"
       },
       "model": {
         "classic": "Classic",
@@ -255,6 +280,18 @@
         "gradient": {
           "name": "Verlauf",
           "hint": "Ziehen zeichnet einen Verlauf von der Primär- zur Sekundärfarbe (rechte Maustaste: umgekehrt)"
+        },
+        "lasso": {
+          "name": "Lasso",
+          "hint": "Freie Auswahl in der 2D-Ansicht. Shift fügt hinzu, Alt zieht ab."
+        },
+        "wand": {
+          "name": "Zauberstab",
+          "hint": "Wählt gleiche Farben, eine Würfelfläche oder ein Körperteil per Klick aus. Shift fügt hinzu, Alt zieht ab."
+        },
+        "dither": {
+          "name": "Dither-Pinsel",
+          "hint": "Malt die Primärfarbe im Schachbrett-Muster (Shift+B wechselt die Pinselwerkzeuge)"
         }
       },
       "options": {
@@ -284,7 +321,8 @@
           "delete": "Löschen",
           "flipH": "Horizontal spiegeln",
           "flipV": "Vertikal spiegeln",
-          "deselect": "Auswahl aufheben"
+          "deselect": "Auswahl aufheben",
+          "modifiers": "Shift: hinzufügen · Alt: abziehen"
         },
         "eraserOpacity": "Stärke",
         "eraserOpacityHint": "100 % radiert komplett, kleinere Werte machen Pixel transparenter (einmal pro Strich)",
@@ -294,7 +332,33 @@
           "steps": "Stufen",
           "stepsHint": "Harte Farbstufen für einen Pixel-Art-Look",
           "smooth": "stufenlos",
-          "areaHint": "Bereich, der den Verlauf bekommt (eine Auswahl hat immer Vorrang)"
+          "areaHint": "Bereich, der den Verlauf bekommt (eine Auswahl hat immer Vorrang)",
+          "dither": "Dithern",
+          "ditherHint": "Übergänge zwischen den Stufen mit einem Pixelmuster statt harter Kanten"
+        },
+        "dither": {
+          "densityHint": "Anteil der Pixel, die im Schachbrett-Muster bemalt werden",
+          "fillGaps": "Lücken füllen",
+          "fillGapsHint": "Malt die freien Pixel des Musters mit der Sekundärfarbe"
+        },
+        "pencilOpacity": "Deckkraft",
+        "pencilOpacityHint": "Mischt die Farbe mit den vorhandenen Pixeln (einmal pro Strich)",
+        "pressure": {
+          "hint": "Was der Stiftdruck eines Grafiktabletts steuert",
+          "off": "Druck: aus",
+          "opacity": "Druck: Deckkraft",
+          "size": "Druck: Größe"
+        },
+        "wand": {
+          "color": "Farbe",
+          "face": "Fläche",
+          "part": "Körperteil",
+          "modeHint": "Was mit einem Klick ausgewählt wird",
+          "tolerance": "Toleranz",
+          "toleranceHint": "Maximale Abweichung pro Farbkanal (0 = exakt gleiche Farbe)",
+          "contiguous": "Zusammenhängend",
+          "allLayers": "Alle Ebenen",
+          "allLayersHint": "Farben aus dem fertigen Skin statt nur aus der aktiven Ebene vergleichen"
         }
       },
       "parts": {
@@ -314,7 +378,8 @@
           "hide": "Ausblenden",
           "ghost": "Transparent",
           "lock": "Sperren"
-        }
+        },
+        "figureHint": "Rechtsklick: Overlay ein- / ausblenden"
       },
       "colors": {
         "title": "Farben",
@@ -371,7 +436,13 @@
         "group": "Ebene gruppieren",
         "ungroup": "Gruppierung aufheben",
         "mergeVisible": "Sichtbare zusammenführen",
-        "merged": "Zusammengeführt"
+        "merged": "Zusammengeführt",
+        "autoShade": "Auto-Schattierung",
+        "clip": "Schnittmaske",
+        "clipHint": "Die Ebene ist nur dort sichtbar, wo die Ebene darunter Pixel hat",
+        "makeClip": "Schnittmaske erstellen",
+        "unclip": "Schnittmaske lösen",
+        "mergeGroup": "Gruppe zusammenführen"
       },
       "convert": {
         "open": "Format oder Modell konvertieren",
@@ -390,7 +461,8 @@
         "discard": "Der aktuelle Skin hat ungespeicherte Änderungen. Verwerfen?",
         "discardConfirm": "Verwerfen",
         "closeTab": "„{name}“ hat ungespeicherte Änderungen. Trotzdem schließen?",
-        "closeConfirm": "Schließen"
+        "closeConfirm": "Schließen",
+        "apply": "Anwenden"
       },
       "draft": {
         "found": "Ungespeicherte Entwürfe gefunden ({count}): {names} vom {time}.",
@@ -429,7 +501,9 @@
           "zoom": "Vergrößern / Verkleinern / Einpassen",
           "grid": "Pixelraster / UV-Hilfslinien",
           "parts": "Körperteil wählen (Shift fügt hinzu) / alle",
-          "fillGradient": "Füllen, Verlauf"
+          "fillGradient": "Füllen, Verlauf",
+          "hue": "Farbton / Sättigung, Entsättigen",
+          "selectModes": "Auswahl hinzufügen / abziehen (beides: Schnittmenge)"
         },
         "groups": {
           "tools": "Werkzeuge",
@@ -470,7 +544,20 @@
         "layerViaCopy": "Ebene durch Kopie",
         "layerViaCut": "Ebene durch Ausschneiden",
         "mergeVisible": "Sichtbare zusammenführen",
-        "gradient": "Verlauf"
+        "gradient": "Verlauf",
+        "autoShade": "Auto-Schattierung",
+        "dither": "Dithern",
+        "flipImage": "Bild spiegeln",
+        "recolor": "Umfärben",
+        "adjust": {
+          "brightnessContrast": "Helligkeit / Kontrast",
+          "hueSaturation": "Farbton / Sättigung",
+          "invert": "Umkehren",
+          "desaturate": "Entsättigen",
+          "posterize": "Tontrennung",
+          "replace": "Farben ersetzen"
+        },
+        "mergeGroup": "Gruppe zusammenführen"
       },
       "messages": {
         "noLayer": "Wähle zuerst eine Ebene aus.",
@@ -488,11 +575,80 @@
         "converted": "Skin konvertiert.",
         "draftRestored": "Entwurf wiederhergestellt.",
         "imported": "{name} als Ebenen hinzugefügt.",
-        "wrongSize": "Nicht unterstützte Bildgröße {width}×{height}, Skins müssen 64×64 oder 64×32 groß sein."
+        "wrongSize": "Nicht unterstützte Bildgröße {width}×{height}, Skins müssen 64×64 oder 64×32 groß sein.",
+        "clickRegion": "Klicke auf den Skin, um die Fläche bzw. das Körperteil auszuwählen.",
+        "hoverFirst": "Bewege die Maus zuerst über den Skin.",
+        "wrongCape": "Das Bild ist kein gültiges Cape (mindestens 22×17 Pixel, üblich sind 64×32).",
+        "groupEmpty": "Die Gruppe enthält keine sichtbaren, entsperrten Ebenen."
       },
       "tabs": {
         "new": "Neuer Skin",
-        "close": "Schließen"
+        "close": "Schließen",
+        "renameHint": "Doppelklick zum Umbenennen"
+      },
+      "adjust": {
+        "brightnessContrast": "Helligkeit / Kontrast",
+        "hueSaturation": "Farbton / Sättigung",
+        "invert": "Umkehren",
+        "desaturate": "Entsättigen",
+        "posterize": "Tontrennung",
+        "replace": "Farbe ersetzen",
+        "fields": {
+          "brightness": "Helligkeit",
+          "contrast": "Kontrast",
+          "hue": "Farbton",
+          "saturation": "Sättigung",
+          "lightness": "Helligkeit",
+          "levels": "Stufen",
+          "colorize": "Färben",
+          "colorizeHint": "Setzt alle Pixel auf einen einheitlichen Farbton, die Helligkeit bleibt erhalten"
+        },
+        "scope": {
+          "layer": "Aktive Ebene",
+          "image": "Ganzer Skin"
+        },
+        "limits": "Wirkt nur auf gewählte Körperteile, die Auswahl und nicht gesperrte Ebenen.",
+        "preview": "Vorschau",
+        "reset": "Zurücksetzen"
+      },
+      "autoShade": {
+        "hint": "Legt eine neue Ebene mit Schatten und Glanzlichtern über den Skin. Du kannst sie danach wie jede andere Ebene anpassen.",
+        "style": {
+          "smooth": "Weich",
+          "dither": "Dither"
+        },
+        "strength": "Schatten",
+        "highlight": "Glanzlicht",
+        "edges": "Kanten abdunkeln",
+        "overlay": "Overlay mitschattieren"
+      },
+      "palette": {
+        "title": "Skin-Palette",
+        "count": "{count} Farben",
+        "empty": "Der Skin hat noch keine Farben.",
+        "hint": "Klick wählt eine Farbe, Strg/Shift mehrere, Doppelklick oder Alt setzt sie als Primärfarbe.",
+        "pixels": "{count} Pixel",
+        "clear": "Palettenauswahl aufheben",
+        "recolor": "Umfärben (Farbton / Sättigung)…",
+        "recolorTarget": "{count} Farben umfärben:",
+        "replace": "Durch Primärfarbe ersetzen",
+        "selectPixels": "Pixel dieser Farben auswählen",
+        "similar": "Ähnliche Farbtöne dazunehmen"
+      },
+      "preview": {
+        "pose": {
+          "stand": "Stehen",
+          "walk": "Gehen (Animation)",
+          "tpose": "T-Pose"
+        },
+        "back": {
+          "none": "Kein Rücken",
+          "cape": "Cape",
+          "elytra": "Elytren"
+        },
+        "backHint": "Cape oder Elytren zur Vorschau anzeigen",
+        "loadCape": "Cape-Bild laden…",
+        "voxel": "Overlay als 3D-Voxel anzeigen"
       }
     }
   }

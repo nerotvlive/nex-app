@@ -20,6 +20,7 @@ interface ManifestLayer extends ManifestNodeBase {
     type: 'layer';
     target: LayerTarget;
     blend: BlendMode;
+    clip?: boolean;
     file: string;
 }
 
@@ -54,7 +55,7 @@ export function writeNexSkin(doc: SkinDocument): Uint8Array {
         }
         const file = `layers/${node.id}.png`;
         files[file] = [encodePng(node.pixels, doc.width, doc.height), {level: 0}];
-        return {...base, type: 'layer', target: node.target, blend: node.blend, file};
+        return {...base, type: 'layer', target: node.target, blend: node.blend, clip: node.clip, file};
     };
     const manifest: NexSkinManifest = {
         type: 'nexskin',
@@ -114,7 +115,7 @@ export function readNexSkin(bytes: Uint8Array): SkinDocument {
         }
         const target: LayerTarget = node.target === 'overlay' || node.target === 'atlas' ? node.target : 'base';
         const blend: BlendMode = BLEND_MODES.includes(node.blend) ? node.blend : 'normal';
-        return {...base, kind: 'layer', target, blend, pixels};
+        return {...base, kind: 'layer', target, blend, clip: node.clip === true, pixels};
     };
 
     return new SkinDocument(String(manifest.name ?? 'Skin'), format, model, (manifest.layers ?? []).map(fromManifest));

@@ -158,7 +158,7 @@ const setBlend = (event: Event) => {
         <button class="skin-editor-icon-btn" :title="t('pages.skineditor.layers.add') + ' (Ctrl+Shift+N)'" @click="editor.addLayer()"><i class="icon-layers-plus"></i></button>
         <button class="skin-editor-icon-btn" :title="t('pages.skineditor.layers.addGroup') + ' (Ctrl+G)'" @click="editor.addGroup()"><i class="icon-folder-plus"></i></button>
         <button class="skin-editor-icon-btn" :disabled="!active" :title="t('pages.skineditor.layers.duplicate') + ' (Ctrl+J)'" @click="active && editor.duplicateNode(active.id)"><i class="icon-copy"></i></button>
-        <button class="skin-editor-icon-btn" :disabled="!activeLayer" :title="t('pages.skineditor.layers.mergeDown') + ' (Ctrl+E)'" @click="activeLayer && editor.mergeDown(activeLayer.id)"><i class="icon-merge"></i></button>
+        <button class="skin-editor-icon-btn" :disabled="!active" :title="t(active?.kind === 'group' ? 'pages.skineditor.layers.mergeGroup' : 'pages.skineditor.layers.mergeDown') + ' (Ctrl+E)'" @click="active && editor.mergeDown(active.id)"><i class="icon-merge"></i></button>
         <button class="skin-editor-icon-btn hover-danger" :disabled="!active" :title="t('pages.skineditor.layers.delete')" @click="active && editor.deleteNode(active.id)"><i class="icon-trash-2"></i></button>
       </div>
     </header>
@@ -186,7 +186,8 @@ const setBlend = (event: Event) => {
         <button v-if="row.node.kind === 'group'" class="skin-editor-icon-btn small" @pointerdown.stop @click="editor.setNodeProperty(row.node.id, 'collapsed', !row.node.collapsed)">
           <i :class="row.node.collapsed ? 'icon-folder' : 'icon-folder-open'"></i>
         </button>
-        <SkinEditorLayerThumb v-else :layer="row.node" :layout="editor.layout" :version="editor.version"/>
+        <i v-else-if="row.node.clip" class="icon-corner-down-right skin-editor-clip-mark" :title="t('pages.skineditor.layers.clip')"></i>
+        <SkinEditorLayerThumb v-if="row.node.kind === 'layer'" :layer="row.node" :layout="editor.layout" :version="editor.version"/>
 
         <input v-if="renamingId === row.node.id" ref="renameInput" v-model="renameValue" class="skin-editor-input grow min-w-0 text-sm" @pointerdown.stop @keydown.enter="commitRename" @keydown.escape="renamingId = null" @blur="commitRename">
         <span v-else class="grow min-w-0 truncate text-sm" @dblclick="startRename(row.node)">{{ row.node.name }}</span>
@@ -224,15 +225,20 @@ const setBlend = (event: Event) => {
           <option v-for="mode in BLEND_MODES" :key="mode" :value="mode" class="bg-black text-white">{{ t('pages.skineditor.layers.blendModes.' + mode) }}</option>
         </select>
       </label>
+      <label v-if="activeLayer" class="flex items-center gap-2 text-sm cursor-pointer" :title="t('pages.skineditor.layers.clipHint')">
+        <input type="checkbox" :checked="activeLayer.clip" class="accent-[var(--zyn-accent)]" @change="editor.toggleClip(activeLayer.id)">
+        <span>{{ t('pages.skineditor.layers.clip') }}</span>
+      </label>
     </div>
 
     <Teleport to="body">
       <div v-if="menu" ref="menuElement" class="skin-editor-menu" :style="{left: menu.x + 'px', top: menu.y + 'px'}">
         <button @click="menuAction(() => startRename(menu!.node))"><i class="icon-pencil"></i>{{ t('pages.skineditor.layers.rename') }}</button>
         <button @click="menuAction(() => editor.duplicateNode(menu!.node.id))"><i class="icon-copy"></i>{{ t('pages.skineditor.layers.duplicate') }}<kbd>Ctrl+J</kbd></button>
+        <button @click="menuAction(() => editor.mergeDown(menu!.node.id))"><i class="icon-merge"></i>{{ t(menu.node.kind === 'group' ? 'pages.skineditor.layers.mergeGroup' : 'pages.skineditor.layers.mergeDown') }}<kbd>Ctrl+E</kbd></button>
+        <button @click="menuAction(() => editor.clearLayer(menu!.node.id))"><i class="icon-eraser"></i>{{ t('pages.skineditor.layers.clear') }}</button>
         <template v-if="menu.node.kind === 'layer'">
-          <button @click="menuAction(() => editor.mergeDown(menu!.node.id))"><i class="icon-merge"></i>{{ t('pages.skineditor.layers.mergeDown') }}<kbd>Ctrl+E</kbd></button>
-          <button @click="menuAction(() => editor.clearLayer(menu!.node.id))"><i class="icon-eraser"></i>{{ t('pages.skineditor.layers.clear') }}</button>
+          <button @click="menuAction(() => editor.toggleClip(menu!.node.id))"><i class="icon-corner-down-right"></i>{{ t(menu.node.clip ? 'pages.skineditor.layers.unclip' : 'pages.skineditor.layers.makeClip') }}<kbd>Ctrl+Alt+G</kbd></button>
           <button v-if="menu.node.target === 'atlas'" @click="menuAction(() => editor.splitAtlasLayer(menu!.node.id))"><i class="icon-layers-2"></i>{{ t('pages.skineditor.layers.split') }}</button>
         </template>
         <button @click="menuAction(() => editor.mergeVisible())"><i class="icon-layers"></i>{{ t('pages.skineditor.layers.mergeVisible') }}<kbd>Ctrl+Shift+E</kbd></button>

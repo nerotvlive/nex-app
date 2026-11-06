@@ -25,39 +25,41 @@ const modes: { id: HiddenPartMode, icon: string }[] = [
 
 const isSelected = (part: PartId) => props.editor.selectedParts.includes(part);
 
+const toggleOverlay = (part: PartId) => props.editor.setOverlayVisible(part, !props.editor.overlayVisible[part]);
+
 const select = (part: PartId, event: MouseEvent) => {
   props.editor.selectPart(part, event.shiftKey || event.ctrlKey || event.metaKey);
 };
 </script>
 
 <template>
-  <section class="skin-editor-panel">
+  <section class="skin-editor-panel" :class="{'collapsed': collapsed}">
     <header class="skin-editor-panel-header">
       <button class="skin-editor-panel-toggle" @click="collapsed = !collapsed">
         <i :class="collapsed ? 'icon-chevron-right' : 'icon-chevron-down'"></i>
         <span>{{ t('pages.skineditor.parts.title') }}</span>
       </button>
       <div class="flex gap-0.5">
-        <button class="skin-editor-icon-btn" :class="{'active': editor.allOverlaysVisible}" :title="t('pages.skineditor.parts.overlayAll')" @click="editor.setOverlayVisible('all', !editor.allOverlaysVisible)">
+        <button class="zyn-btn compact" :class="{'active-alt': editor.allOverlaysVisible}" :title="t('pages.skineditor.parts.overlayAll')" @click="editor.setOverlayVisible('all', !editor.allOverlaysVisible)">
           <i class="icon-shirt"></i>
         </button>
-        <button class="skin-editor-icon-btn text-xs px-2" :class="{'active': editor.allPartsSelected}" @click="editor.selectAllParts()" :title="'0'">
+        <button class="zyn-btn compact text-xs px-2" :class="{'active-alt': editor.allPartsSelected}" @click="editor.selectAllParts()" :title="'0'">
           {{ t('pages.skineditor.parts.all') }}
         </button>
       </div>
     </header>
     <div v-show="!collapsed" class="flex gap-3 p-2">
       <svg class="skin-editor-figure shrink-0" viewBox="-0.5 -0.5 17 33" width="68" height="132">
-        <rect v-for="part in PART_IDS" :key="part" :x="figure[part].x" :y="figure[part].y" :width="figure[part].w" :height="figure[part].h" :class="{'selected': isSelected(part), 'overlay-off': !editor.overlayVisible[part]}" @click="select(part, $event)">
-          <title>{{ t('pages.skineditor.parts.' + part) }}</title>
+        <rect v-for="part in PART_IDS" :key="part" :x="figure[part].x" :y="figure[part].y" :width="figure[part].w" :height="figure[part].h" :class="{'selected': isSelected(part), 'overlay-off': !editor.overlayVisible[part]}" @click="select(part, $event)" @contextmenu.prevent="toggleOverlay(part)">
+          <title>{{ t('pages.skineditor.parts.' + part) }} · {{ t('pages.skineditor.parts.figureHint') }}</title>
         </rect>
       </svg>
       <div class="flex flex-col gap-0.5 grow min-w-0">
         <div v-for="(part, index) in PART_IDS" :key="part" class="skin-editor-part-row" :class="{'selected': isSelected(part)}">
-          <button class="grow text-left truncate" @click="select(part, $event)" :title="t('pages.skineditor.parts.selectHint') + ' (' + (index + 1) + ')'">
+          <button class="grow text-left truncate" @click="select(part, $event)" @contextmenu.prevent="toggleOverlay(part)" :title="t('pages.skineditor.parts.selectHint') + ' (' + (index + 1) + ')'">
             {{ t('pages.skineditor.parts.' + part) }}
           </button>
-          <button class="skin-editor-icon-btn small" :class="{'muted': !editor.overlayVisible[part]}" :title="t('pages.skineditor.parts.overlayToggle')" @click="editor.setOverlayVisible(part, !editor.overlayVisible[part])">
+          <button class="zyn-btn compact" :class="{'muted transparent': !editor.overlayVisible[part]}" :title="t('pages.skineditor.parts.overlayToggle')" @click="editor.setOverlayVisible(part, !editor.overlayVisible[part])">
             <i :class="editor.overlayVisible[part] ? 'icon-shirt' : 'icon-user'"></i>
           </button>
         </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useI18n} from "vue-i18n";
-import type {SkinEditor, PointerInfo} from "../../assets/zyneon/scripts/skineditor";
+import type {PointerInfo, SkinEditor} from "../../assets/zyneon/scripts/skineditor";
 import {type CameraPreset, type Hit3D, SkinRenderer3D} from "../../assets/zyneon/scripts/skineditor/renderer3d.ts";
 
 const props = defineProps<{ editor: SkinEditor }>();
@@ -43,7 +43,8 @@ const info = (event: PointerEvent): PointerInfo => ({
   button: event.button === -1 ? 0 : event.button,
   shift: event.shiftKey,
   ctrl: event.ctrlKey || event.metaKey,
-  alt: event.altKey
+  alt: event.altKey,
+  pressure: event.pointerType === 'pen' ? event.pressure : undefined
 });
 
 const pick = (event: PointerEvent | MouseEvent): Hit3D | null => {
@@ -170,6 +171,12 @@ watch(() => props.editor.viewRequest, request => {
   if (request?.kind === 'fit') renderer?.setCameraPreset('iso');
 });
 watch(() => props.editor.activeLayerId, () => renderer?.setHover(null));
+watch(() => props.editor.pose, pose => renderer?.setPose(pose));
+watch(() => [props.editor.backAccessory, props.editor.capeImage], () => renderer?.setBackAccessory(props.editor.backAccessory, props.editor.capeImage));
+watch(() => props.editor.backAccessory, (kind, previous) => {
+  if (kind !== 'none' && previous === 'none') setPreset('back');
+});
+watch(() => props.editor.voxelOverlay, value => renderer?.setVoxelOverlay(value));
 </script>
 
 <template>

@@ -2,6 +2,7 @@ import type {DocumentSnapshot, PixelLayer, SkinDocument} from "./document.ts";
 
 export interface HistoryEntry {
     label: string;
+    bytes?: number;
     undo(): void;
     redo(): void;
 }
@@ -11,15 +12,26 @@ export class History {
     private undoStack: HistoryEntry[] = [];
     private redoStack: HistoryEntry[] = [];
     private readonly limit: number;
+    private readonly byteLimit: number;
+    private bytes = 0;
 
-    constructor(limit: number = 250) {
+    constructor(limit: number = 500, byteLimit: number = 32 * 1024 * 1024) {
         this.limit = limit;
+        this.byteLimit = byteLimit;
     }
 
     push(entry: HistoryEntry) {
         this.undoStack.push(entry);
-        if (this.undoStack.length > this.limit) this.undoStack.shift();
+        this.bytes += entry.bytes ?? 0;
+        for (const dropped of this.redoStack) this.bytes -= dropped.bytes ?? 0;
         this.redoStack = [];
+        while (this.undoStack.length > 1 && (this.undoStack.length > this.limit || this.bytes > this.byteLimit)) {
+            this.bytes -= this.undoStack.shift()!.bytes ?? 0;
+        }
+    }
+
+    get usedBytes(): number {
+        return this.bytes;
     }
 
     undo(): HistoryEntry | null {
@@ -41,6 +53,7 @@ export class History {
     clear() {
         this.undoStack = [];
         this.redoStack = [];
+        this.bytes = 0;
     }
 
     get canUndo(): boolean {
@@ -133,15 +146,29 @@ export class PixelStroke {
         };
         return {
             label,
+            bytes: indexArray.byteLength + beforeArray.byteLength + afterArray.byteLength,
             undo: () => apply(beforeArray),
             redo: () => apply(afterArray)
         };
     }
 }
 
+function snapshotBytes(snapshot: DocumentSnapshot): number {
+    let bytes = 0;
+    const walk = (nodes: DocumentSnapshot['layers']) => {
+        for (const node of nodes) {
+            if (node.kind === 'layer') bytes += node.pixels.byteLength;
+            else walk(node.children);
+        }
+    };
+    walk(snapshot.layers);
+    return bytes;
+}
+
 export function snapshotEntry(label: string, doc: SkinDocument, before: DocumentSnapshot, after: DocumentSnapshot, onChange: () => void): HistoryEntry {
     return {
         label,
+        bytes: snapshotBytes(before) + snapshotBytes(after),
         undo: () => {
             doc.restore(before);
             onChange();

@@ -174,7 +174,30 @@
         "export": "Export as PNG…",
         "openFolder": "Open skin folder",
         "undo": "Undo",
-        "redo": "Redo"
+        "redo": "Redo",
+        "bar": {
+          "file": "File",
+          "edit": "Edit",
+          "image": "Image",
+          "layer": "Layer",
+          "select": "Select",
+          "view": "View"
+        },
+        "adjustments": "Adjustments (whole skin)",
+        "layerAdjustments": "Adjustments (active layer)",
+        "colorRange": "Color range (primary color)",
+        "exportLegacy": "Export as 64×32…",
+        "exportModel": {
+          "classic": "Export with wide arms (Classic)…",
+          "slim": "Export with slim arms (Slim)…"
+        },
+        "fillPrimary": "Fill with primary color",
+        "fillSecondary": "Fill with secondary color",
+        "flipImage": "Flip skin left ↔ right",
+        "invertSelection": "Invert selection",
+        "selectAll": "Select all",
+        "selectFace": "Select face…",
+        "selectPart": "Select body part…"
       },
       "view": {
         "3d": "3D",
@@ -191,7 +214,9 @@
         "grid": "Pixel grid",
         "guides": "UV guides",
         "noWebgl": "3D view not available",
-        "noWebglHint": "WebGL could not be started in this webview. The 2D editor still works."
+        "noWebglHint": "WebGL could not be started in this webview. The 2D editor still works.",
+        "problems": "Show problem pixels",
+        "problemsHint": "Marks transparent or semi-transparent base pixels that render black or wrong in game"
       },
       "model": {
         "classic": "Classic",
@@ -255,6 +280,18 @@
         "gradient": {
           "name": "Gradient",
           "hint": "Drag to draw a gradient from the primary to the secondary color (right mouse: reversed)"
+        },
+        "lasso": {
+          "name": "Lasso",
+          "hint": "Freehand selection in the 2D view. Shift adds, Alt subtracts."
+        },
+        "wand": {
+          "name": "Magic wand",
+          "hint": "Selects matching colors, a cube face or a body part with one click. Shift adds, Alt subtracts."
+        },
+        "dither": {
+          "name": "Dither brush",
+          "hint": "Paints the primary color in a checker pattern (Shift+B cycles brush tools)"
         }
       },
       "options": {
@@ -284,7 +321,8 @@
           "delete": "Delete",
           "flipH": "Flip horizontally",
           "flipV": "Flip vertically",
-          "deselect": "Deselect"
+          "deselect": "Deselect",
+          "modifiers": "Shift: add · Alt: subtract"
         },
         "eraserOpacity": "Strength",
         "eraserOpacityHint": "100 % erases completely, lower values make pixels more transparent (once per stroke)",
@@ -294,7 +332,33 @@
           "steps": "Steps",
           "stepsHint": "Hard color steps for a pixel art look",
           "smooth": "smooth",
-          "areaHint": "Area that gets the gradient (the selection always wins)"
+          "areaHint": "Area that gets the gradient (the selection always wins)",
+          "dither": "Dither",
+          "ditherHint": "Blend between steps with a pixel pattern instead of hard edges"
+        },
+        "dither": {
+          "densityHint": "Share of pixels painted in the checker pattern",
+          "fillGaps": "Fill gaps",
+          "fillGapsHint": "Paints the free pattern pixels with the secondary color"
+        },
+        "pencilOpacity": "Opacity",
+        "pencilOpacityHint": "Blends the color with existing pixels (once per stroke)",
+        "pressure": {
+          "hint": "What a drawing tablet's pen pressure controls",
+          "off": "Pressure: off",
+          "opacity": "Pressure: opacity",
+          "size": "Pressure: size"
+        },
+        "wand": {
+          "color": "Color",
+          "face": "Face",
+          "part": "Body part",
+          "modeHint": "What a single click selects",
+          "tolerance": "Tolerance",
+          "toleranceHint": "Maximum difference per color channel (0 = exact color)",
+          "contiguous": "Contiguous",
+          "allLayers": "All layers",
+          "allLayersHint": "Compare colors of the finished skin instead of only the active layer"
         }
       },
       "parts": {
@@ -314,7 +378,8 @@
           "hide": "Hide",
           "ghost": "Ghost",
           "lock": "Lock"
-        }
+        },
+        "figureHint": "Right-click: toggle overlay"
       },
       "colors": {
         "title": "Colors",
@@ -371,7 +436,13 @@
         "group": "Group layer",
         "ungroup": "Ungroup",
         "mergeVisible": "Merge visible",
-        "merged": "Merged"
+        "merged": "Merged",
+        "autoShade": "Auto shading",
+        "clip": "Clipping mask",
+        "clipHint": "The layer is only visible where the layer below has pixels",
+        "makeClip": "Create clipping mask",
+        "unclip": "Release clipping mask",
+        "mergeGroup": "Merge group"
       },
       "convert": {
         "open": "Convert format or model",
@@ -390,7 +461,8 @@
         "discard": "The current skin has unsaved changes. Discard them?",
         "discardConfirm": "Discard",
         "closeTab": "\"{name}\" has unsaved changes. Close it anyway?",
-        "closeConfirm": "Close"
+        "closeConfirm": "Close",
+        "apply": "Apply"
       },
       "draft": {
         "found": "Unsaved drafts found ({count}): {names} from {time}.",
@@ -429,7 +501,9 @@
           "zoom": "Zoom in / out / fit",
           "grid": "Pixel grid / UV guides",
           "parts": "Select a body part (Shift adds) / all parts",
-          "fillGradient": "Fill, gradient"
+          "fillGradient": "Fill, gradient",
+          "hue": "Hue / Saturation, desaturate",
+          "selectModes": "Add to / subtract from selection (both: intersect)"
         },
         "groups": {
           "tools": "Tools",
@@ -470,7 +544,20 @@
         "layerViaCopy": "Layer via copy",
         "layerViaCut": "Layer via cut",
         "mergeVisible": "Merge visible",
-        "gradient": "Gradient"
+        "gradient": "Gradient",
+        "autoShade": "Auto shading",
+        "dither": "Dither",
+        "flipImage": "Flip image",
+        "recolor": "Recolor",
+        "adjust": {
+          "brightnessContrast": "Brightness / Contrast",
+          "hueSaturation": "Hue / Saturation",
+          "invert": "Invert",
+          "desaturate": "Desaturate",
+          "posterize": "Posterize",
+          "replace": "Replace colors"
+        },
+        "mergeGroup": "Merge group"
       },
       "messages": {
         "noLayer": "Select a layer first.",
@@ -488,11 +575,80 @@
         "converted": "Skin converted.",
         "draftRestored": "Draft restored.",
         "imported": "Added {name} as layers.",
-        "wrongSize": "Unsupported image size {width}×{height}, skins have to be 64×64 or 64×32."
+        "wrongSize": "Unsupported image size {width}×{height}, skins have to be 64×64 or 64×32.",
+        "clickRegion": "Click the skin to select the face or body part.",
+        "hoverFirst": "Move the mouse over the skin first.",
+        "wrongCape": "The image is not a valid cape (at least 22×17 pixels, usually 64×32).",
+        "groupEmpty": "The group has no visible, unlocked layers."
       },
       "tabs": {
         "new": "New skin",
-        "close": "Close"
+        "close": "Close",
+        "renameHint": "Double-click to rename"
+      },
+      "adjust": {
+        "brightnessContrast": "Brightness / Contrast",
+        "hueSaturation": "Hue / Saturation",
+        "invert": "Invert",
+        "desaturate": "Desaturate",
+        "posterize": "Posterize",
+        "replace": "Replace color",
+        "fields": {
+          "brightness": "Brightness",
+          "contrast": "Contrast",
+          "hue": "Hue",
+          "saturation": "Saturation",
+          "lightness": "Lightness",
+          "levels": "Levels",
+          "colorize": "Colorize",
+          "colorizeHint": "Sets every pixel to a single hue while keeping its lightness"
+        },
+        "scope": {
+          "layer": "Active layer",
+          "image": "Whole skin"
+        },
+        "limits": "Only affects selected body parts, the selection and unlocked layers.",
+        "preview": "Preview",
+        "reset": "Reset"
+      },
+      "autoShade": {
+        "hint": "Adds a new layer with shadows and highlights on top of the skin. You can tweak it afterwards like any other layer.",
+        "style": {
+          "smooth": "Smooth",
+          "dither": "Dither"
+        },
+        "strength": "Shadows",
+        "highlight": "Highlights",
+        "edges": "Darken edges",
+        "overlay": "Shade the overlay too"
+      },
+      "palette": {
+        "title": "Skin palette",
+        "count": "{count} colors",
+        "empty": "The skin has no colors yet.",
+        "hint": "Click selects a color, Ctrl/Shift several, double-click or Alt sets it as primary color.",
+        "pixels": "{count} pixels",
+        "clear": "Clear palette selection",
+        "recolor": "Recolor (Hue / Saturation)…",
+        "recolorTarget": "Recolor {count} colors:",
+        "replace": "Replace with primary color",
+        "selectPixels": "Select pixels of these colors",
+        "similar": "Add similar hues"
+      },
+      "preview": {
+        "pose": {
+          "stand": "Stand",
+          "walk": "Walk (animated)",
+          "tpose": "T-pose"
+        },
+        "back": {
+          "none": "Nothing on back",
+          "cape": "Cape",
+          "elytra": "Elytra"
+        },
+        "backHint": "Show a cape or elytra in the preview",
+        "loadCape": "Load cape image…",
+        "voxel": "Show overlay as 3D voxels"
       }
     }
   }

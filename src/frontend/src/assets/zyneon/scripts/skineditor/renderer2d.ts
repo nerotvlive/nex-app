@@ -1,5 +1,6 @@
 import type {Rect} from "./types.ts";
 import type {SkinLayout} from "./layout.ts";
+import {maskOutline} from "./selection.ts";
 
 export class SkinRenderer2D {
 
@@ -14,6 +15,9 @@ export class SkinRenderer2D {
     private editable: Uint8Array | null = null;
     private hover: { x: number, y: number, size: number } | null = null;
     private selection: Rect | null = null;
+    private selectionOutline: number[] | null = null;
+    private lasso: { x: number, y: number }[] = [];
+    private problems: Uint8Array | null = null;
     private grid = true;
     private guides = true;
     private renderQueued = false;
@@ -129,8 +133,19 @@ export class SkinRenderer2D {
         this.requestRender();
     }
 
-    setSelection(selection: Rect | null) {
+    setSelection(selection: Rect | null, mask: Uint8Array | null = null) {
         this.selection = selection;
+        this.selectionOutline = selection && mask && this.layout ? maskOutline(mask, this.layout.width, this.layout.height) : null;
+        this.requestRender();
+    }
+
+    setLasso(points: { x: number, y: number }[]) {
+        this.lasso = points;
+        this.requestRender();
+    }
+
+    setProblems(problems: Uint8Array | null) {
+        this.problems = problems;
         this.requestRender();
     }
 
@@ -235,7 +250,55 @@ export class SkinRenderer2D {
         context.strokeStyle = 'rgba(255,255,255,0.25)';
         context.strokeRect(x0 - 0.5, y0 - 0.5, width + 1, height + 1);
 
-        if (this.selection) {
+        if (this.problems) {
+            context.save();
+            context.strokeStyle = 'rgba(255,70,70,0.9)';
+            context.lineWidth = 1;
+            for (let i = 0; i < this.problems.length; i++) {
+                if (!this.problems[i]) continue;
+                const px = x0 + (i % layout.width) * zoom, py = y0 + Math.floor(i / layout.width) * zoom;
+                context.fillStyle = 'rgba(255,40,40,0.28)';
+                context.fillRect(px, py, zoom, zoom);
+                context.beginPath();
+                context.moveTo(px, py + zoom);
+                context.lineTo(px + zoom, py);
+                context.stroke();
+            }
+            context.restore();
+        }
+
+        if (this.lasso.length > 1) {
+            context.beginPath();
+            this.lasso.forEach((point, index) => {
+                const px = x0 + (point.x + 0.5) * zoom, py = y0 + (point.y + 0.5) * zoom;
+                if (index === 0) context.moveTo(px, py);
+                else context.lineTo(px, py);
+            });
+            context.closePath();
+            context.setLineDash([4, 4]);
+            context.strokeStyle = '#fff';
+            context.lineWidth = 1;
+            context.stroke();
+            context.setLineDash([]);
+        }
+
+        if (this.selection && this.selectionOutline) {
+            const segments = this.selectionOutline;
+            context.beginPath();
+            for (let i = 0; i < segments.length; i += 4) {
+                context.moveTo(x0 + segments[i]! * zoom + 0.5, y0 + segments[i + 1]! * zoom + 0.5);
+                context.lineTo(x0 + segments[i + 2]! * zoom + 0.5, y0 + segments[i + 3]! * zoom + 0.5);
+            }
+            context.lineWidth = 1;
+            context.setLineDash([4, 4]);
+            context.strokeStyle = '#000';
+            context.stroke();
+            context.lineDashOffset = 4;
+            context.strokeStyle = '#fff';
+            context.stroke();
+            context.setLineDash([]);
+            context.lineDashOffset = 0;
+        } else if (this.selection) {
             const s = this.selection;
             const sx = x0 + s.x * zoom + 0.5, sy = y0 + s.y * zoom + 0.5;
             context.lineWidth = 1;

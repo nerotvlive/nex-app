@@ -174,7 +174,30 @@
         "export": "Exporter en PNG…",
         "openFolder": "Ouvrir le dossier des skins",
         "undo": "Annuler",
-        "redo": "Rétablir"
+        "redo": "Rétablir",
+        "bar": {
+          "file": "Fichier",
+          "edit": "Édition",
+          "image": "Image",
+          "layer": "Calque",
+          "select": "Sélection",
+          "view": "Affichage"
+        },
+        "adjustments": "Réglages (skin entier)",
+        "layerAdjustments": "Réglages (calque actif)",
+        "colorRange": "Plage de couleurs (couleur principale)",
+        "exportLegacy": "Exporter en 64×32…",
+        "exportModel": {
+          "classic": "Exporter avec bras larges (Classic)…",
+          "slim": "Exporter avec bras fins (Slim)…"
+        },
+        "fillPrimary": "Remplir avec la couleur principale",
+        "fillSecondary": "Remplir avec la couleur secondaire",
+        "flipImage": "Symétrie gauche ↔ droite du skin",
+        "invertSelection": "Inverser la sélection",
+        "selectAll": "Tout sélectionner",
+        "selectFace": "Sélectionner une face…",
+        "selectPart": "Sélectionner une partie du corps…"
       },
       "view": {
         "3d": "3D",
@@ -191,7 +214,9 @@
         "grid": "Grille de pixels",
         "guides": "Repères UV",
         "noWebgl": "Vue 3D indisponible",
-        "noWebglHint": "WebGL n'a pas pu démarrer dans cette webview. L'éditeur 2D fonctionne toujours."
+        "noWebglHint": "WebGL n'a pas pu démarrer dans cette webview. L'éditeur 2D fonctionne toujours.",
+        "problems": "Afficher les pixels problématiques",
+        "problemsHint": "Marque les pixels de base transparents ou semi-transparents qui s’affichent en noir ou mal en jeu"
       },
       "model": {
         "classic": "Classique",
@@ -255,6 +280,18 @@
         "gradient": {
           "name": "Dégradé",
           "hint": "Glisser pour tracer un dégradé de la couleur principale à la secondaire (clic droit : inversé)"
+        },
+        "lasso": {
+          "name": "Lasso",
+          "hint": "Sélection à main levée dans la vue 2D. Maj ajoute, Alt soustrait."
+        },
+        "wand": {
+          "name": "Baguette magique",
+          "hint": "Sélectionne en un clic les couleurs identiques, une face du cube ou une partie du corps. Maj ajoute, Alt soustrait."
+        },
+        "dither": {
+          "name": "Pinceau tramé",
+          "hint": "Peint la couleur principale selon un motif en damier (Maj+B change d’outil pinceau)"
         }
       },
       "options": {
@@ -284,7 +321,8 @@
           "delete": "Supprimer",
           "flipH": "Retourner horizontalement",
           "flipV": "Retourner verticalement",
-          "deselect": "Désélectionner"
+          "deselect": "Désélectionner",
+          "modifiers": "Maj : ajouter · Alt : soustraire"
         },
         "eraserOpacity": "Intensité",
         "eraserOpacityHint": "100 % efface complètement, des valeurs plus faibles rendent les pixels plus transparents (une fois par trait)",
@@ -294,7 +332,33 @@
           "steps": "Paliers",
           "stepsHint": "Paliers de couleur nets pour un style pixel art",
           "smooth": "continu",
-          "areaHint": "Zone qui reçoit le dégradé (une sélection est toujours prioritaire)"
+          "areaHint": "Zone qui reçoit le dégradé (une sélection est toujours prioritaire)",
+          "dither": "Tramer",
+          "ditherHint": "Transitions entre les paliers avec un motif de pixels au lieu de bords nets"
+        },
+        "dither": {
+          "densityHint": "Part des pixels peints selon le motif en damier",
+          "fillGaps": "Combler les trous",
+          "fillGapsHint": "Peint les pixels libres du motif avec la couleur secondaire"
+        },
+        "pencilOpacity": "Opacité",
+        "pencilOpacityHint": "Mélange la couleur avec les pixels existants (une fois par trait)",
+        "pressure": {
+          "hint": "Ce que contrôle la pression du stylet d’une tablette graphique",
+          "off": "Pression : désactivée",
+          "opacity": "Pression : opacité",
+          "size": "Pression : taille"
+        },
+        "wand": {
+          "color": "Couleur",
+          "face": "Face",
+          "part": "Partie du corps",
+          "modeHint": "Ce qu’un clic sélectionne",
+          "tolerance": "Tolérance",
+          "toleranceHint": "Écart maximal par canal de couleur (0 = couleur identique)",
+          "contiguous": "Pixels contigus",
+          "allLayers": "Tous les calques",
+          "allLayersHint": "Comparer les couleurs du skin final au lieu du seul calque actif"
         }
       },
       "parts": {
@@ -314,7 +378,8 @@
           "hide": "Masquer",
           "ghost": "Transparent",
           "lock": "Verrouiller"
-        }
+        },
+        "figureHint": "Clic droit : afficher / masquer l’overlay"
       },
       "colors": {
         "title": "Couleurs",
@@ -371,7 +436,13 @@
         "group": "Grouper le calque",
         "ungroup": "Dissocier",
         "mergeVisible": "Fusionner les calques visibles",
-        "merged": "Fusionné"
+        "merged": "Fusionné",
+        "autoShade": "Ombrage automatique",
+        "clip": "Masque d’écrêtage",
+        "clipHint": "Le calque n’est visible que là où le calque inférieur a des pixels",
+        "makeClip": "Créer un masque d’écrêtage",
+        "unclip": "Annuler le masque d’écrêtage",
+        "mergeGroup": "Fusionner le groupe"
       },
       "convert": {
         "open": "Convertir le format ou le modèle",
@@ -390,7 +461,8 @@
         "discard": "Le skin actuel contient des modifications non enregistrées. Les abandonner ?",
         "discardConfirm": "Abandonner",
         "closeTab": "« {name} » contient des modifications non enregistrées. Fermer quand même ?",
-        "closeConfirm": "Fermer"
+        "closeConfirm": "Fermer",
+        "apply": "Appliquer"
       },
       "draft": {
         "found": "Brouillons non enregistrés trouvés ({count}) : {names} du {time}.",
@@ -429,7 +501,9 @@
           "zoom": "Zoom avant / arrière / ajuster",
           "grid": "Grille de pixels / repères UV",
           "parts": "Choisir une partie du corps (Maj ajoute) / tout",
-          "fillGradient": "Remplissage, dégradé"
+          "fillGradient": "Remplissage, dégradé",
+          "hue": "Teinte / Saturation, désaturer",
+          "selectModes": "Ajouter à / soustraire de la sélection (les deux : intersection)"
         },
         "groups": {
           "tools": "Outils",
@@ -470,7 +544,20 @@
         "layerViaCopy": "Calque par copier",
         "layerViaCut": "Calque par couper",
         "mergeVisible": "Fusionner les calques visibles",
-        "gradient": "Dégradé"
+        "gradient": "Dégradé",
+        "autoShade": "Ombrage automatique",
+        "dither": "Tramage",
+        "flipImage": "Symétrie de l’image",
+        "recolor": "Recoloriser",
+        "adjust": {
+          "brightnessContrast": "Luminosité / Contraste",
+          "hueSaturation": "Teinte / Saturation",
+          "invert": "Négatif",
+          "desaturate": "Désaturer",
+          "posterize": "Postériser",
+          "replace": "Remplacer les couleurs"
+        },
+        "mergeGroup": "Fusionner le groupe"
       },
       "messages": {
         "noLayer": "Sélectionne d'abord un calque.",
@@ -488,11 +575,80 @@
         "converted": "Skin converti.",
         "draftRestored": "Brouillon restauré.",
         "imported": "{name} ajouté comme calques.",
-        "wrongSize": "Taille d'image non prise en charge {width}×{height}, les skins doivent faire 64×64 ou 64×32."
+        "wrongSize": "Taille d'image non prise en charge {width}×{height}, les skins doivent faire 64×64 ou 64×32.",
+        "clickRegion": "Clique sur le skin pour sélectionner la face ou la partie du corps.",
+        "hoverFirst": "Place d’abord la souris sur le skin.",
+        "wrongCape": "L’image n’est pas une cape valide (au moins 22×17 pixels, généralement 64×32).",
+        "groupEmpty": "Le groupe ne contient aucun calque visible et déverrouillé."
       },
       "tabs": {
         "new": "Nouveau skin",
-        "close": "Fermer"
+        "close": "Fermer",
+        "renameHint": "Double-clic pour renommer"
+      },
+      "adjust": {
+        "brightnessContrast": "Luminosité / Contraste",
+        "hueSaturation": "Teinte / Saturation",
+        "invert": "Négatif",
+        "desaturate": "Désaturer",
+        "posterize": "Postériser",
+        "replace": "Remplacer la couleur",
+        "fields": {
+          "brightness": "Luminosité",
+          "contrast": "Contraste",
+          "hue": "Teinte",
+          "saturation": "Saturation",
+          "lightness": "Luminosité",
+          "levels": "Niveaux",
+          "colorize": "Redéfinir",
+          "colorizeHint": "Applique une seule teinte à tous les pixels en conservant leur luminosité"
+        },
+        "scope": {
+          "layer": "Calque actif",
+          "image": "Skin entier"
+        },
+        "limits": "N’agit que sur les parties du corps choisies, la sélection et les calques non verrouillés.",
+        "preview": "Aperçu",
+        "reset": "Réinitialiser"
+      },
+      "autoShade": {
+        "hint": "Ajoute un nouveau calque d’ombres et de reflets au-dessus du skin. Tu peux ensuite l’ajuster comme n’importe quel calque.",
+        "style": {
+          "smooth": "Doux",
+          "dither": "Tramé"
+        },
+        "strength": "Ombres",
+        "highlight": "Reflets",
+        "edges": "Assombrir les arêtes",
+        "overlay": "Ombrer aussi l’overlay"
+      },
+      "palette": {
+        "title": "Palette du skin",
+        "count": "{count} couleurs",
+        "empty": "Le skin n’a pas encore de couleurs.",
+        "hint": "Un clic choisit une couleur, Ctrl/Maj plusieurs, double-clic ou Alt la définit comme couleur principale.",
+        "pixels": "{count} pixels",
+        "clear": "Effacer la sélection de la palette",
+        "recolor": "Recoloriser (Teinte / Saturation)…",
+        "recolorTarget": "Recoloriser {count} couleurs :",
+        "replace": "Remplacer par la couleur principale",
+        "selectPixels": "Sélectionner les pixels de ces couleurs",
+        "similar": "Ajouter les teintes proches"
+      },
+      "preview": {
+        "pose": {
+          "stand": "Debout",
+          "walk": "Marche (animée)",
+          "tpose": "Pose en T"
+        },
+        "back": {
+          "none": "Rien dans le dos",
+          "cape": "Cape",
+          "elytra": "Élytres"
+        },
+        "backHint": "Afficher une cape ou des élytres dans l’aperçu",
+        "loadCape": "Charger une image de cape…",
+        "voxel": "Afficher l’overlay en voxels 3D"
       }
     }
   }

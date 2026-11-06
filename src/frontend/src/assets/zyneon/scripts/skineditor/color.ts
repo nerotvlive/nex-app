@@ -155,3 +155,55 @@ export function jitter(color: PackedColor, amount: number, random: () => number 
     hsv.h = (hsv.h + (random() * 2 - 1) * amount * 12 + 360) % 360;
     return hsvToPacked(hsv, c.a);
 }
+
+export function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const l = (max + min) / 2;
+    if (max === min) return [0, 0, l];
+    const d = max - min;
+    const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    let h: number;
+    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    return [h * 60, s, l];
+}
+
+export function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+    h = ((h % 360) + 360) % 360 / 360;
+    if (s === 0) return [l * 255, l * 255, l * 255];
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    const channel = (t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+    };
+    return [channel(h + 1 / 3) * 255, channel(h) * 255, channel(h - 1 / 3) * 255];
+}
+
+const BAYER_4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
+export function bayer(x: number, y: number): number {
+    return (BAYER_4[(y & 3) * 4 + (x & 3)]! + 0.5) / 16;
+}
+
+export function over(backdrop: PackedColor, source: PackedColor, opacity: number): PackedColor {
+    const b = unpack(backdrop), s = unpack(source);
+    const sa = s.a / 255 * opacity, ba = b.a / 255;
+    const outAlpha = sa + ba * (1 - sa);
+    if (outAlpha <= 0) return 0;
+    const channel = (sc: number, bc: number) => (sc * sa + bc * ba * (1 - sa)) / outAlpha;
+    return pack(channel(s.r, b.r), channel(s.g, b.g), channel(s.b, b.b), outAlpha * 255);
+}
+
+export function colorDistance(a: PackedColor, b: PackedColor): number {
+    const x = unpack(a), y = unpack(b);
+    return Math.max(Math.abs(x.r - y.r), Math.abs(x.g - y.g), Math.abs(x.b - y.b), Math.abs(x.a - y.a));
+}

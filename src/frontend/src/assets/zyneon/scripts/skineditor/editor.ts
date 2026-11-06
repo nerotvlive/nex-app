@@ -1,17 +1,20 @@
 import {markRaw, shallowReactive} from "vue";
 import {PART_IDS, type LayerTarget, type PackedColor, type PartId, type Rect, type SkinFormat, type SkinModel} from "./types.ts";
-import {createGroup, createId, createPixelLayer, cloneNode, type LayerNode, type PixelLayer, SkinDocument} from "./document.ts";
-import {atlasToStorage, destTable, getLayout, partMask, type SkinLayout} from "./layout.ts";
+import {createGroup, createId, createPixelLayer, cloneNode, type DocumentSnapshot, type LayerNode, type PixelLayer, SkinDocument} from "./document.ts";
+import {atlasToStorage, destTable, getLayout, partMask, type SkinLayout, surfaceNeighbours} from "./layout.ts";
 import {analyzeComposite, compositeDocument} from "./compositor.ts";
 import {History, type HistoryEntry, PixelStroke, snapshotEntry} from "./history.ts";
-import {alphaOf, jitter, mix, pack, shade, shadeRamp, TRANSPARENT, withAlpha} from "./color.ts";
+import {alphaOf, bayer, colorDistance, jitter, mix, over, pack, packedToHsv, shade, shadeRamp, TRANSPARENT, withAlpha} from "./color.ts";
+import {adjustColor, type Adjustment, type AdjustmentKind} from "./adjust.ts";
+import {combineMasks, maskBounds, polygonMask, rectMask, type SelectionMode, shiftMask} from "./selection.ts";
+import {autoShade, DEFAULT_SHADING, type ShadingOptions} from "./shading.ts";
 import {splitAtlasPixels, convertDocument, documentFromImage} from "./convert.ts";
 import {encodePng, decodeImage} from "./png.ts";
 import {isNexSkin, NEXSKIN_EXTENSION, readNexSkin, writeNexSkin} from "./nexskin.ts";
 import {openSkinFile, saveSkinFile} from "./bridge.ts";
 import {clearDraft, loadDraft, saveDraft, type DraftTab} from "./draft.ts";
 
-export type ToolId = 'pencil' | 'eraser' | 'fill' | 'gradient' | 'picker' | 'shade' | 'noise' | 'select' | 'move' | 'line' | 'rect' | 'replace' | 'hand';
+export type ToolId = 'pencil' | 'eraser' | 'fill' | 'gradient' | 'picker' | 'shade' | 'noise' | 'dither' | 'select' | 'lasso' | 'wand' | 'move' | 'line' | 'rect' | 'replace' | 'hand';
 
 export interface ToolInfo {
     id: ToolId;
@@ -29,9 +32,12 @@ export const TOOLS: readonly ToolInfo[] = [
     {id: 'shade', icon: 'icon-sun-moon', key: 'O', primary: true},
     {id: 'noise', icon: 'icon-spray-can', key: 'B', primary: true},
     {id: 'select', icon: 'icon-square-dashed', key: 'M', primary: true},
+    {id: 'lasso', icon: 'icon-lasso', key: 'L', primary: false},
+    {id: 'wand', icon: 'icon-wand', key: 'W', primary: false},
     {id: 'move', icon: 'icon-move', key: 'V', primary: false},
     {id: 'rect', icon: 'icon-square', key: 'U', primary: false},
     {id: 'line', icon: 'icon-slash', key: 'U', primary: false},
+    {id: 'dither', icon: 'icon-grid-2x2', key: 'B', primary: false},
     {id: 'replace', icon: 'icon-replace', key: 'B', primary: false},
     {id: 'hand', icon: 'icon-hand', key: 'H', primary: false}
 ];
@@ -50,6 +56,7 @@ export interface DocumentTab {
     dirty: boolean;
     activeLayerId: string | null;
     selection: Rect | null;
+    selectionMask: Uint8Array | null;
 }
 
 export interface TabInfo {
@@ -66,6 +73,21 @@ export type ViewMode = '3d' | '2d' | 'split';
 export type HiddenPartMode = 'hide' | 'ghost' | 'lock';
 export type FillMode = 'face' | 'part' | 'global';
 export type RectMode = 'outline' | 'filled';
+export type PressureMode = 'off' | 'opacity' | 'size';
+export type WandMode = 'color' | 'face' | 'part';
+export type Pose = 'stand' | 'walk' | 'tpose';
+export type BackAccessory = 'none' | 'cape' | 'elytra';
+export type AdjustScope = 'layer' | 'image';
+
+export type EditorDialog =
+    | { kind: 'adjust', adjustment: AdjustmentKind, scope: AdjustScope, colors: PackedColor[] | null }
+    | { kind: 'autoShade' }
+    | { kind: 'convert' };
+
+export interface PaletteEntry {
+    color: PackedColor;
+    count: number;
+}
 
 export interface PointerHit {
     x: number;
@@ -79,6 +101,7 @@ export interface PointerInfo {
     shift: boolean;
     ctrl: boolean;
     alt: boolean;
+    pressure?: number;
 }
 
 export interface EditorMessage {
@@ -92,6 +115,7 @@ export type Translate = (key: string, params?: Record<string, unknown>) => strin
 interface Clipboard {
     rect: Rect;
     colors: Uint32Array;
+    mask: Uint8Array | null;
 }
 
 interface LiftedPixel {
@@ -133,13 +157,32 @@ export class SkinEditor {
     eraserOpacity = 1;
     gradientArea: FillMode = 'face';
     gradientSteps = 1;
+    gradientDither = false;
+    pencilOpacity = 1;
+    pressureMode: PressureMode = 'opacity';
+    penDetected = false;
+    ditherDensity = 0.5;
+    ditherFillGaps = false;
+    wandMode: WandMode = 'color';
+    wandTolerance = 0;
+    wandContiguous = true;
+    wandAllLayers = true;
+    selectionMask: Uint8Array | null = null;
+    lassoPoints: { x: number, y: number }[] = [];
+    showProblems = false;
+    pose: Pose = 'stand';
+    backAccessory: BackAccessory = 'none';
+    capeImage: { width: number, height: number, data: Uint8ClampedArray } | null = null;
+    voxelOverlay = false;
+    dialog: EditorDialog | null = null;
+    paletteSelection: PackedColor[] = [];
 
     selection: Rect | null = null;
     selectedParts: PartId[] = [...PART_IDS];
     overlayVisible: Record<PartId, boolean> = {head: true, body: true, rightArm: true, leftArm: true, rightLeg: true, leftLeg: true};
     hiddenPartMode: HiddenPartMode = 'hide';
 
-    viewMode: ViewMode = 'split';
+    viewMode: ViewMode = '3d';
     shading = true;
     grid = true;
     guides = true;
@@ -163,8 +206,16 @@ export class SkinEditor {
     private strokeColor: PackedColor = 0;
     private strokeDirection = 1;
     private selectionStart: PointerHit | null = null;
-    private lifted: LiftedPixel[] | null = null;
+    private selectionBase: Uint8Array | null = null;
+    private selectionMode: SelectionMode = 'replace';
+    private strokePressure = 1;
+    private adjustBefore: DocumentSnapshot | null = null;
+    private shadeBase: Uint8ClampedArray | null = null;
+    private shadeLayerId: string | null = null;
+    private lifted: LiftedPixel[][] | null = null;
+    private extraStrokes: PixelStroke[] = [];
     private liftedSelection: Rect | null = null;
+    private liftedMask: Uint8Array | null = null;
     private clipboard: Clipboard | null = null;
     private messageTimer: number | null = null;
     private draftTimer: number | null = null;
@@ -237,7 +288,8 @@ export class SkinEditor {
             fileName,
             dirty: false,
             activeLayerId: doc.allLayers()[0]?.id ?? doc.layers[0]?.id ?? null,
-            selection: null
+            selection: null,
+            selectionMask: null
         });
     }
 
@@ -255,6 +307,7 @@ export class SkinEditor {
         tab.dirty = this.dirty;
         tab.activeLayerId = this.activeLayerId;
         tab.selection = this.selection;
+        tab.selectionMask = this.selectionMask;
     }
 
     private loadTab(tab: DocumentTab) {
@@ -266,6 +319,7 @@ export class SkinEditor {
         this.dirty = tab.dirty;
         this.activeLayerId = tab.activeLayerId;
         this.selection = tab.selection;
+        this.selectionMask = tab.selectionMask;
         this.lastPropertyEdit = null;
         this.historyVersion++;
         this.refreshLayout();
@@ -525,7 +579,7 @@ export class SkinEditor {
         });
     }
 
-    setNodeProperty<K extends 'name' | 'visible' | 'locked' | 'opacity' | 'blend' | 'collapsed'>(id: string, key: K, value: unknown, merge: boolean = false) {
+    setNodeProperty<K extends 'name' | 'visible' | 'locked' | 'opacity' | 'blend' | 'collapsed' | 'clip'>(id: string, key: K, value: unknown, merge: boolean = false) {
         const location = this.doc.find(id);
         if (!location) return;
         const node = location.node as unknown as Record<string, unknown>;
@@ -599,8 +653,27 @@ export class SkinEditor {
         });
     }
 
+    mergeGroup(id: string) {
+        const location = this.doc.find(id);
+        if (!location || location.node.kind !== 'group') return;
+        const group = location.node;
+        this.structural('pages.skineditor.history.mergeGroup', () => {
+            const pixels = new Uint8ClampedArray(this.nodeComposite(group).buffer.slice(0));
+            const merged = createPixelLayer(group.name, 'atlas', this.doc.width, this.doc.height, pixels);
+            merged.opacity = group.opacity;
+            merged.visible = group.visible;
+            merged.locked = group.locked;
+            location.siblings.splice(location.index, 1, merged);
+            this.activeLayerId = merged.id;
+        });
+    }
+
     mergeDown(id: string) {
         const location = this.doc.find(id);
+        if (location?.node.kind === 'group') {
+            this.mergeGroup(id);
+            return;
+        }
         if (!location || location.node.kind !== 'layer') return;
         const below = location.siblings[location.index + 1];
         if (!below || below.kind !== 'layer') {
@@ -642,10 +715,12 @@ export class SkinEditor {
     }
 
     clearLayer(id: string) {
-        const layer = this.doc.findLayer(id);
-        if (!layer) return;
+        const node = this.doc.find(id)?.node;
+        if (!node) return;
+        const layers = this.groupLayers(node).filter(layer => !this.doc.isEffectivelyLocked(layer.id));
+        if (!layers.length) return;
         this.structural('pages.skineditor.history.clear', () => {
-            this.doc.findLayer(id)!.pixels.fill(0);
+            for (const layer of layers) this.doc.findLayer(layer.id)?.pixels.fill(0);
         });
     }
 
@@ -687,13 +762,13 @@ export class SkinEditor {
         const layout = this.layout;
         const count = layout.width * layout.height;
         const mask = new Uint8Array(count);
-        const layer = this.activeLayer;
-        if (!layer) return mask;
+        const layers = this.groupLayers();
+        if (!layers.length) return mask;
         const parts = this.selectedMask;
         for (let i = 0; i < count; i++) {
             if (!layout.pixelActive[i]) continue;
             if ((layout.pixelParts[i]! & parts) === 0) continue;
-            if (atlasToStorage(layout, layer.target, i) < 0) continue;
+            if (layers.every(layer => atlasToStorage(layout, layer.target, i) < 0)) continue;
             mask[i] = 1;
         }
         return mask;
@@ -741,6 +816,7 @@ export class SkinEditor {
     private inSelection(index: number): boolean {
         const selection = this.selection;
         if (!selection) return true;
+        if (this.selectionMask) return this.selectionMask[index] === 1;
         const x = index % this.layout.width, y = Math.floor(index / this.layout.width);
         return x >= selection.x && y >= selection.y && x < selection.x + selection.w && y < selection.y + selection.h;
     }
@@ -756,6 +832,71 @@ export class SkinEditor {
             if (!this.inSelection(index)) return -1;
         }
         return atlasToStorage(layout, layer.target, index);
+    }
+
+    private groupLayers(node: LayerNode | null = this.activeNode): PixelLayer[] {
+        if (!node) return [];
+        if (node.kind === 'layer') return [node];
+        const out: PixelLayer[] = [];
+        const walk = (nodes: LayerNode[]) => {
+            for (const child of nodes) {
+                if (child.kind === 'layer') out.push(child);
+                else walk(child.children);
+            }
+        };
+        walk(node.children);
+        return out;
+    }
+
+    private editTargets(): PixelLayer[] | null {
+        const node = this.activeNode;
+        if (!node || node.kind === 'layer') {
+            const layer = this.canStartStroke();
+            return layer ? [layer] : null;
+        }
+        if (this.doc.isEffectivelyLocked(node.id)) {
+            this.notify('pages.skineditor.messages.layerLocked', 'warning');
+            return null;
+        }
+        if (!this.doc.isEffectivelyVisible(node.id)) {
+            this.notify('pages.skineditor.messages.layerHidden', 'warning');
+            return null;
+        }
+        const layers = this.groupLayers(node).filter(layer => !this.doc.isEffectivelyLocked(layer.id) && this.doc.isEffectivelyVisible(layer.id));
+        if (!layers.length) {
+            this.notify('pages.skineditor.messages.groupEmpty', 'warning');
+            return null;
+        }
+        return layers;
+    }
+
+    private beginStrokes(): boolean {
+        const layers = this.editTargets();
+        if (!layers) return false;
+        this.stroke = new PixelStroke(layers[0]!);
+        this.extraStrokes = layers.slice(1).map(layer => new PixelStroke(layer));
+        return true;
+    }
+
+    private get allStrokes(): PixelStroke[] {
+        return this.stroke ? [this.stroke, ...this.extraStrokes] : [];
+    }
+
+    private nodeComposite(node: LayerNode | null = this.activeNode): Uint32Array {
+        const count = this.layout.width * this.layout.height;
+        if (!node) return new Uint32Array(count);
+        if (node.kind === 'layer') {
+            const out = new Uint32Array(count);
+            const view = new Uint32Array(node.pixels.buffer, node.pixels.byteOffset, node.pixels.length / 4);
+            for (let i = 0; i < count; i++) {
+                const storage = atlasToStorage(this.layout, node.target, i);
+                if (storage >= 0) out[i] = view[storage]!;
+            }
+            return out;
+        }
+        const temp = new SkinDocument('group', this.doc.format, this.doc.model, [{...node, visible: true, opacity: 1}]);
+        const composite = compositeDocument(temp, this.layout);
+        return new Uint32Array(composite.buffer, composite.byteOffset, count);
     }
 
     private canStartStroke(): PixelLayer | null {
@@ -775,7 +916,7 @@ export class SkinEditor {
         return layer;
     }
 
-    private paintPixel(index: number, part: PartId | undefined, color: (storage: number, current: number) => number | null) {
+    private paintPixel(index: number, part: PartId | undefined, color: (storage: number, current: number, atlas: number) => number | null) {
         if (!this.stroke) return;
         const targets: [number, PartId | undefined, boolean][] = [[index, part, false]];
         if (this.mirror) {
@@ -785,15 +926,53 @@ export class SkinEditor {
         for (const [atlas, atlasPart, ignore] of targets) {
             const storage = this.paintableStorage(atlas, atlasPart, ignore);
             if (storage < 0) continue;
-            const next = color(storage, this.stroke.get(storage));
+            const next = color(storage, this.stroke.get(storage), atlas);
             if (next !== null) this.stroke.set(storage, next);
         }
     }
 
-    private brushPixels(x: number, y: number): number[] {
+    private get effectiveBrushSize(): number {
+        const size = this.pressureMode === 'size' ? Math.round(this.brushSize * this.strokePressure) : this.brushSize;
+        return Math.max(1, Math.min(8, size));
+    }
+
+    private get effectiveOpacity(): number {
+        return this.pressureMode === 'opacity' ? this.strokePressure : 1;
+    }
+
+    private brushPixels3D(center: number, size: number): number[] {
         const layout = this.layout;
-        const size = Math.max(1, Math.min(8, this.brushSize));
+        const box = layout.pixelBox[center] ?? -1;
+        if (box < 0 || Number.isNaN(layout.texelCenter[center * 3]!)) return [center];
+        const radius = (size - 1) / 2 + 0.01;
+        const cx = layout.texelCenter[center * 3]!, cy = layout.texelCenter[center * 3 + 1]!, cz = layout.texelCenter[center * 3 + 2]!;
+        const out: number[] = [];
+        for (const index of layout.boxPixels[box]!) {
+            const dx = Math.abs(layout.texelCenter[index * 3]! - cx), dy = Math.abs(layout.texelCenter[index * 3 + 1]! - cy), dz = Math.abs(layout.texelCenter[index * 3 + 2]! - cz);
+            if (dx <= radius && dy <= radius && dz <= radius) out.push(index);
+        }
+        return out;
+    }
+
+    private nearestTexel(box: number, p: [number, number, number]): number {
+        const layout = this.layout;
+        let best = -1, bestDistance = Infinity;
+        for (const index of layout.boxPixels[box] ?? []) {
+            const dx = layout.texelCenter[index * 3]! - p[0], dy = layout.texelCenter[index * 3 + 1]! - p[1], dz = layout.texelCenter[index * 3 + 2]! - p[2];
+            const distance = dx * dx + dy * dy + dz * dz;
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                best = index;
+            }
+        }
+        return best;
+    }
+
+    private brushPixels(x: number, y: number, view: '2d' | '3d' = '2d'): number[] {
+        const layout = this.layout;
+        const size = this.effectiveBrushSize;
         if (size === 1) return [y * layout.width + x];
+        if (view === '3d') return this.brushPixels3D(y * layout.width + x, size);
         const center = y * layout.width + x;
         const face = layout.pixelFace[center] ?? -1;
         const start = -Math.floor((size - 1) / 2);
@@ -812,18 +991,34 @@ export class SkinEditor {
 
     private brushAt(hit: PointerHit) {
         const color = this.brushColorFunction();
-        for (const index of this.brushPixels(hit.x, hit.y)) this.paintPixel(index, hit.part, color);
+        for (const index of this.brushPixels(hit.x, hit.y, hit.view)) this.paintPixel(index, hit.part, color);
     }
 
-    private brushColorFunction(): (storage: number, current: number) => number | null {
+    private brushColorFunction(): (storage: number, current: number, atlas: number) => number | null {
+        const pressure = this.effectiveOpacity;
+        const paint = (color: PackedColor, opacity: number) => opacity >= 1
+            ? () => color
+            : (storage: number, current: number) => !this.stroke || this.stroke.touched(storage) ? null : over(current, color, opacity);
         switch (this.tool) {
-            case 'eraser':
-                if (this.eraserOpacity >= 1) return () => TRANSPARENT;
+            case 'eraser': {
+                const strength = this.eraserOpacity * pressure;
+                if (strength >= 1) return () => TRANSPARENT;
                 return (storage, current) => {
                     if (!this.stroke || alphaOf(current) === 0 || this.stroke.touched(storage)) return null;
-                    const alpha = Math.round(alphaOf(current) * (1 - this.eraserOpacity));
+                    const alpha = Math.round(alphaOf(current) * (1 - strength));
                     return alpha <= 0 ? TRANSPARENT : withAlpha(current, alpha);
                 };
+            }
+            case 'dither': {
+                const main = paint(this.strokeColor, this.pencilOpacity * pressure);
+                const gap = this.ditherFillGaps ? paint(this.strokeColor === this.primaryColor ? this.secondaryColor : this.primaryColor, this.pencilOpacity * pressure) : null;
+                const width = this.layout.width;
+                return (storage, current, atlas) => bayer(atlas % width, Math.floor(atlas / width)) < this.ditherDensity
+                    ? main(storage, current)
+                    : gap ? gap(storage, current) : null;
+            }
+            case 'pencil':
+                return paint(this.strokeColor, this.pencilOpacity * pressure);
             case 'shade':
                 return (storage, current) => {
                     if (!this.stroke || alphaOf(current) === 0) return null;
@@ -883,8 +1078,24 @@ export class SkinEditor {
                     target = {x: start.x + Math.sign(dx) * d, y: start.y + Math.sign(dy) * d};
                 }
             }
-            for (const point of this.linePixels(start, target)) {
-                for (const index of this.brushPixels(point.x, point.y)) indices.add(index);
+            const layout = this.layout;
+            const a = start.y * width + start.x, b = target.y * width + target.x;
+            const boxA = layout.pixelBox[a] ?? -1, boxB = layout.pixelBox[b] ?? -1;
+            if (start.view === '3d' && boxA >= 0 && boxB >= 0 && !Number.isNaN(layout.texelCenter[a * 3]!)) {
+                const pa = [layout.texelCenter[a * 3]!, layout.texelCenter[a * 3 + 1]!, layout.texelCenter[a * 3 + 2]!];
+                const pb = [layout.texelCenter[b * 3]!, layout.texelCenter[b * 3 + 1]!, layout.texelCenter[b * 3 + 2]!];
+                const steps = Math.max(1, Math.ceil(Math.hypot(pb[0]! - pa[0]!, pb[1]! - pa[1]!, pb[2]! - pa[2]!) * 2));
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    const p: [number, number, number] = [pa[0]! + (pb[0]! - pa[0]!) * t, pa[1]! + (pb[1]! - pa[1]!) * t, pa[2]! + (pb[2]! - pa[2]!) * t];
+                    const near = this.nearestTexel(t < 0.5 ? boxA : boxB, p);
+                    if (near < 0) continue;
+                    for (const index of this.brushPixels(near % width, Math.floor(near / width), '3d')) indices.add(index);
+                }
+            } else {
+                for (const point of this.linePixels(start, target)) {
+                    for (const index of this.brushPixels(point.x, point.y)) indices.add(index);
+                }
             }
         } else {
             const x0 = Math.min(start.x, end.x), x1 = Math.max(start.x, end.x);
@@ -897,7 +1108,7 @@ export class SkinEditor {
             }
         }
         for (const index of indices) {
-            if (filter(index)) this.paintPixel(index, start.view === '3d' ? start.part : undefined, color);
+            if (this.tool === 'line' || filter(index)) this.paintPixel(index, start.view === '3d' ? start.part : undefined, color);
         }
     }
 
@@ -916,19 +1127,67 @@ export class SkinEditor {
         return out;
     }
 
+    private gradientRegion(start: PointerHit, end: PointerHit, area: FillMode): number[] {
+        const layout = this.layout;
+        const width = layout.width;
+        const startIndex = start.y * width + start.x, endIndex = end.y * width + end.x;
+        if (area !== 'face') {
+            const region = this.regionAround(start, area);
+            if (area === 'global' || layout.pixelParts[endIndex] === layout.pixelParts[startIndex]) return region;
+            return [...new Set([...region, ...this.regionAround(end, area)])];
+        }
+        const faces = new Set<number>([layout.pixelFace[startIndex] ?? -1, layout.pixelFace[endIndex] ?? -1]);
+        const box = layout.pixelBox[startIndex] ?? -1;
+        if (box >= 0 && box === layout.pixelBox[endIndex]) {
+            const a = this.texel(startIndex)!, b = this.texel(endIndex)!;
+            const samples = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]) * 3);
+            for (let i = 1; i < samples; i++) {
+                const t = i / samples;
+                const near = this.nearestTexel(box, [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]);
+                if (near >= 0) faces.add(layout.pixelFace[near] ?? -1);
+            }
+        }
+        faces.delete(-1);
+        const out: number[] = [];
+        for (let i = 0; i < width * layout.height; i++) if (faces.has(layout.pixelFace[i] ?? -1)) out.push(i);
+        return out;
+    }
+
+    private texel(index: number): [number, number, number] | null {
+        const c = this.layout.texelCenter;
+        const x = c[index * 3]!;
+        return Number.isNaN(x) ? null : [x, c[index * 3 + 1]!, c[index * 3 + 2]!];
+    }
+
     private drawGradient(start: PointerHit, end: PointerHit) {
         if (!this.stroke) return;
         this.stroke.revert();
         const width = this.layout.width;
-        const dx = end.x - start.x, dy = end.y - start.y;
-        const length = dx * dx + dy * dy;
+        const area = this.selection ? 'global' : this.gradientArea;
+        const a = this.texel(start.y * width + start.x), b = this.texel(end.y * width + end.x);
+        const spatial = !!a && !!b && (area !== 'global' || start.view === '3d');
+        const dx = spatial ? b![0] - a![0] : end.x - start.x;
+        const dy = spatial ? b![1] - a![1] : end.y - start.y;
+        const dz = spatial ? b![2] - a![2] : 0;
+        const length = dx * dx + dy * dy + dz * dz;
         const from = this.strokeColor;
         const to = from === this.primaryColor ? this.secondaryColor : this.primaryColor;
         const steps = this.gradientSteps;
-        for (const index of this.regionAround(start, this.selection ? 'global' : this.gradientArea)) {
+        for (const index of this.gradientRegion(start, end, area)) {
             const x = index % width, y = Math.floor(index / width);
-            let t = length === 0 ? 0 : Math.min(1, Math.max(0, ((x - start.x) * dx + (y - start.y) * dy) / length));
-            if (steps >= 2) t = Math.round(t * (steps - 1)) / (steps - 1);
+            const p = spatial ? this.texel(index) : null;
+            const projected = p ? (p[0] - a![0]) * dx + (p[1] - a![1]) * dy + (p[2] - a![2]) * dz : (x - start.x) * dx + (y - start.y) * dy;
+            const span = Math.sqrt(length);
+            if (span === 0 ? index !== start.y * width + start.x : projected / span < -0.5 || projected / span > span + 0.5) continue;
+            let t = length === 0 ? 0 : Math.min(1, Math.max(0, projected / length));
+            if (this.gradientDither) {
+                const levels = Math.max(2, steps) - 1;
+                const value = t * levels;
+                const lower = Math.floor(value);
+                t = Math.min(levels, lower + (value - lower > bayer(x, y) ? 1 : 0)) / levels;
+            } else if (steps >= 2) {
+                t = Math.round(t * (steps - 1)) / (steps - 1);
+            }
             const color = mix(from, to, t);
             this.paintPixel(index, index === start.y * width + start.x ? start.part : undefined, () => color);
         }
@@ -966,6 +1225,7 @@ export class SkinEditor {
             }
             return;
         }
+        const neighbours = surfaceNeighbours(layout);
         const visited = new Uint8Array(width * height);
         const queue = [startIndex];
         visited[startIndex] = 1;
@@ -973,10 +1233,8 @@ export class SkinEditor {
             const index = queue.pop()!;
             if (!matches(index) && index !== startIndex) continue;
             this.paintPixel(index, index === startIndex ? hit.part : undefined, color);
-            const x = index % width, y = Math.floor(index / width);
-            const neighbours = [x > 0 ? index - 1 : -1, x < width - 1 ? index + 1 : -1, y > 0 ? index - width : -1, y < height - 1 ? index + width : -1];
-            for (const next of neighbours) {
-                if (next < 0 || visited[next]) continue;
+            for (const next of neighbours[index]!) {
+                if (visited[next]) continue;
                 visited[next] = 1;
                 if (allowed(next) && matches(next)) queue.push(next);
             }
@@ -1007,72 +1265,91 @@ export class SkinEditor {
     }
 
     private liftPixels() {
-        const layer = this.stroke?.layer;
-        if (!layer || !this.stroke) return;
+        const strokes = this.allStrokes;
+        if (!strokes.length) return;
         const layout = this.layout;
-        const lifted: LiftedPixel[] = [];
         const rect = this.selection ?? {x: 0, y: 0, w: layout.width, h: layout.height};
-        for (let y = rect.y; y < rect.y + rect.h; y++) {
-            for (let x = rect.x; x < rect.x + rect.w; x++) {
-                const atlas = y * layout.width + x;
-                const storage = atlasToStorage(layout, layer.target, atlas);
-                if (storage < 0) continue;
-                const color = this.stroke.get(storage);
-                if (color !== 0) lifted.push({atlas, color});
+        this.lifted = strokes.map(stroke => {
+            const lifted: LiftedPixel[] = [];
+            for (let y = rect.y; y < rect.y + rect.h; y++) {
+                for (let x = rect.x; x < rect.x + rect.w; x++) {
+                    const atlas = y * layout.width + x;
+                    if (!this.inSelection(atlas)) continue;
+                    const storage = atlasToStorage(layout, stroke.layer.target, atlas);
+                    if (storage < 0) continue;
+                    const color = stroke.get(storage);
+                    if (color !== 0) lifted.push({atlas, color});
+                }
             }
-        }
-        this.lifted = lifted;
+            return lifted;
+        });
         this.liftedSelection = this.selection ? {...this.selection} : null;
+        this.liftedMask = this.selectionMask;
     }
 
     private applyMove(dx: number, dy: number) {
-        const layer = this.stroke?.layer;
-        if (!layer || !this.stroke || !this.lifted) return;
-        this.stroke.revert();
+        const strokes = this.allStrokes;
+        if (!strokes.length || !this.lifted) return;
         const layout = this.layout;
-        for (const pixel of this.lifted) {
-            const storage = atlasToStorage(layout, layer.target, pixel.atlas);
-            if (storage >= 0) this.stroke.set(storage, 0);
-        }
-        for (const pixel of this.lifted) {
-            const x = pixel.atlas % layout.width + dx, y = Math.floor(pixel.atlas / layout.width) + dy;
-            if (x < 0 || y < 0 || x >= layout.width || y >= layout.height) continue;
-            const storage = atlasToStorage(layout, layer.target, y * layout.width + x);
-            if (storage >= 0) this.stroke.set(storage, pixel.color);
-        }
+        strokes.forEach((stroke, index) => {
+            const lifted = this.lifted![index] ?? [];
+            const target = stroke.layer.target;
+            stroke.revert();
+            for (const pixel of lifted) {
+                const storage = atlasToStorage(layout, target, pixel.atlas);
+                if (storage >= 0) stroke.set(storage, 0);
+            }
+            for (const pixel of lifted) {
+                const x = pixel.atlas % layout.width + dx, y = Math.floor(pixel.atlas / layout.width) + dy;
+                if (x < 0 || y < 0 || x >= layout.width || y >= layout.height) continue;
+                const storage = atlasToStorage(layout, target, y * layout.width + x);
+                if (storage >= 0) stroke.set(storage, pixel.color);
+            }
+        });
         if (this.liftedSelection) this.selection = {...this.liftedSelection, x: this.liftedSelection.x + dx, y: this.liftedSelection.y + dy};
+        if (this.liftedMask) this.selectionMask = markRaw(shiftMask(this.liftedMask, layout.width, layout.height, dx, dy));
     }
 
     nudge(dx: number, dy: number) {
-        const layer = this.canStartStroke();
-        if (!layer) return;
-        this.stroke = new PixelStroke(layer);
+        if (!this.beginStrokes()) return;
         this.liftPixels();
         this.applyMove(dx, dy);
         this.finishStroke('pages.skineditor.history.move');
     }
 
     pointerDown(hit: PointerHit, info: PointerInfo) {
+        if (info.pressure !== undefined) this.penDetected = true;
         this.cancelStroke();
         this.lastHit = hit;
         const secondary = info.button === 2;
-        const tool = info.alt && this.tool !== 'picker' ? 'picker' : this.tool;
+        const tool = this.effectiveTool(info);
         if (tool === 'hand') return;
+        this.strokePressure = info.pressure ?? 1;
 
         if (tool === 'picker') {
             this.pickColor(hit, secondary);
             this.strokeStart = hit;
             return;
         }
-        if (tool === 'select') {
+        if (tool === 'select' || tool === 'lasso' || tool === 'wand') {
+            this.selectionMode = info.shift && info.alt ? 'intersect' : info.shift ? 'add' : info.alt ? 'subtract' : 'replace';
+            this.selectionBase = this.currentSelectionMask();
+            if (tool === 'wand') {
+                this.applySelection(this.wandMask(hit), this.selectionMode, this.selectionBase);
+                return;
+            }
             this.selectionStart = hit;
-            this.selection = null;
+            this.lassoPoints = tool === 'lasso' ? [{x: hit.x, y: hit.y}] : [];
             return;
         }
 
-        const layer = this.canStartStroke();
-        if (!layer) return;
-        this.stroke = new PixelStroke(layer);
+        if (tool === 'move') {
+            if (!this.beginStrokes()) return;
+        } else {
+            const layer = this.canStartStroke();
+            if (!layer) return;
+            this.stroke = new PixelStroke(layer);
+        }
         this.strokeStart = hit;
         this.strokeColor = secondary ? this.secondaryColor : this.primaryColor;
         this.strokeDirection = (info.shift || secondary) ? -this.shadeDirection : this.shadeDirection;
@@ -1082,7 +1359,8 @@ export class SkinEditor {
             case 'eraser':
             case 'shade':
             case 'noise':
-                if (tool === 'pencil') this.rememberColor(this.strokeColor);
+            case 'dither':
+                if (tool === 'pencil' || tool === 'dither') this.rememberColor(this.strokeColor);
                 this.brushAt(hit);
                 break;
             case 'fill':
@@ -1113,14 +1391,23 @@ export class SkinEditor {
     pointerMove(hit: PointerHit | null, info: PointerInfo) {
         this.hover = hit;
         if (!hit) return;
-        const tool = info.alt && this.tool !== 'picker' ? 'picker' : this.tool;
+        const tool = this.effectiveTool(info);
+        if (info.pressure !== undefined) this.strokePressure = info.pressure;
 
         if (this.selectionStart && tool === 'select') {
             const a = this.selectionStart;
-            this.selection = {
-                x: Math.min(a.x, hit.x), y: Math.min(a.y, hit.y),
-                w: Math.abs(hit.x - a.x) + 1, h: Math.abs(hit.y - a.y) + 1
-            };
+            const rect = {x: Math.min(a.x, hit.x), y: Math.min(a.y, hit.y), w: Math.abs(hit.x - a.x) + 1, h: Math.abs(hit.y - a.y) + 1};
+            if (this.selectionMode === 'replace' || !this.selectionBase) {
+                this.selection = rect;
+                this.selectionMask = null;
+            } else {
+                this.applySelection(rectMask(rect, this.layout.width, this.layout.height), this.selectionMode, this.selectionBase);
+            }
+            return;
+        }
+        if (this.selectionStart && tool === 'lasso') {
+            const last = this.lassoPoints[this.lassoPoints.length - 1];
+            if (!last || last.x !== hit.x || last.y !== hit.y) this.lassoPoints = [...this.lassoPoints, {x: hit.x, y: hit.y}];
             return;
         }
         if (tool === 'picker' && this.strokeStart) {
@@ -1133,7 +1420,8 @@ export class SkinEditor {
             case 'pencil':
             case 'eraser':
             case 'shade':
-            case 'noise': {
+            case 'noise':
+            case 'dither': {
                 const last = this.lastHit;
                 if (last && hit.view === '2d' && last.view === '2d') {
                     for (const point of this.linePixels(last, hit).slice(1)) this.brushAt({...hit, x: point.x, y: point.y});
@@ -1159,8 +1447,16 @@ export class SkinEditor {
 
     pointerUp() {
         if (this.selectionStart) {
-            if (this.selection && this.selection.w === 1 && this.selection.h === 1 && this.lastHit === this.selectionStart) this.selection = null;
+            if (this.lassoPoints.length) {
+                const points = this.lassoPoints;
+                this.lassoPoints = [];
+                if (points.length > 2) this.applySelection(polygonMask(points, this.layout.width, this.layout.height), this.selectionMode, this.selectionBase);
+                else if (this.selectionMode === 'replace') this.deselect();
+            } else if (this.selectionMode === 'replace' && this.selection && this.selection.w === 1 && this.selection.h === 1 && this.lastHit === this.selectionStart) {
+                this.deselect();
+            }
             this.selectionStart = null;
+            this.selectionBase = null;
         }
         this.strokeStart = null;
         if (this.stroke) {
@@ -1171,12 +1467,14 @@ export class SkinEditor {
                 line: 'pages.skineditor.history.line',
                 rect: 'pages.skineditor.history.rect',
                 gradient: 'pages.skineditor.history.gradient',
+                dither: 'pages.skineditor.history.dither',
                 move: 'pages.skineditor.history.move'
             };
             this.finishStroke(labels[this.tool] ?? 'pages.skineditor.history.paint');
         }
         this.lifted = null;
         this.liftedSelection = null;
+        this.liftedMask = null;
     }
 
     pointerLeave() {
@@ -1184,10 +1482,18 @@ export class SkinEditor {
     }
 
     private finishStroke(label: string) {
-        const stroke = this.stroke;
+        const strokes = this.allStrokes;
         this.stroke = null;
-        if (!stroke) return;
-        this.pushHistory(stroke.toEntry(label, id => this.doc.findLayer(id), () => this.touch()));
+        this.extraStrokes = [];
+        if (!strokes.length) return;
+        const entries = strokes.map(stroke => stroke.toEntry(label, id => this.doc.findLayer(id), () => this.touch())).filter((entry): entry is HistoryEntry => !!entry);
+        if (entries.length <= 1) this.pushHistory(entries[0] ?? null);
+        else this.pushHistory({
+            label,
+            bytes: entries.reduce((sum, entry) => sum + (entry.bytes ?? 0), 0),
+            undo: () => [...entries].reverse().forEach(entry => entry.undo()),
+            redo: () => entries.forEach(entry => entry.redo())
+        });
         this.touch();
     }
 
@@ -1205,21 +1511,107 @@ export class SkinEditor {
 
     deselect() {
         this.selection = null;
+        this.selectionMask = null;
+    }
+
+    private effectiveTool(info: PointerInfo): ToolId {
+        const selectionTools: ToolId[] = ['select', 'lasso', 'wand', 'move', 'hand', 'picker'];
+        return info.alt && !selectionTools.includes(this.tool) ? 'picker' : this.tool;
+    }
+
+    private currentSelectionMask(): Uint8Array | null {
+        if (!this.selection) return null;
+        return this.selectionMask ?? rectMask(this.selection, this.layout.width, this.layout.height);
+    }
+
+    applySelection(mask: Uint8Array, mode: SelectionMode = 'replace', base: Uint8Array | null = this.currentSelectionMask()) {
+        const combined = combineMasks(base, mask, mode);
+        const bounds = maskBounds(combined, this.layout.width);
+        this.selection = bounds;
+        this.selectionMask = bounds ? markRaw(combined) : null;
+    }
+
+    invertSelection() {
+        const layout = this.layout;
+        const current = this.currentSelectionMask();
+        const mask = new Uint8Array(layout.width * layout.height);
+        for (let i = 0; i < mask.length; i++) mask[i] = layout.pixelActive[i] && !(current && current[i]) ? 1 : 0;
+        this.applySelection(mask, 'replace', null);
+    }
+
+    private sampleSource(): Uint32Array {
+        if (!this.wandAllLayers) return this.nodeComposite();
+        return new Uint32Array(this.composite.buffer, this.composite.byteOffset, this.composite.length / 4);
+    }
+
+    private wandMask(hit: PointerHit): Uint8Array {
+        const layout = this.layout;
+        const width = layout.width, height = layout.height;
+        const start = hit.y * width + hit.x;
+        const mask = new Uint8Array(width * height);
+        if (this.wandMode !== 'color') {
+            for (const index of this.regionAround(hit, this.wandMode)) if (layout.pixelActive[index]) mask[index] = 1;
+            return mask;
+        }
+        const source = this.sampleSource();
+        const target = source[start]!;
+        const tolerance = this.wandTolerance;
+        const matches = (index: number) => layout.pixelActive[index] === 1 && colorDistance(source[index]!, target) <= tolerance;
+        if (!this.wandContiguous) {
+            for (let i = 0; i < mask.length; i++) if (matches(i)) mask[i] = 1;
+            return mask;
+        }
+        const neighbours = surfaceNeighbours(layout);
+        const queue = [start];
+        const visited = new Uint8Array(width * height);
+        visited[start] = 1;
+        while (queue.length) {
+            const index = queue.pop()!;
+            if (!matches(index)) continue;
+            mask[index] = 1;
+            for (const next of neighbours[index]!) {
+                if (visited[next]) continue;
+                visited[next] = 1;
+                queue.push(next);
+            }
+        }
+        return mask;
+    }
+
+    selectColorRange(colors: PackedColor | PackedColor[] = this.primaryColor) {
+        const list = Array.isArray(colors) ? colors : [colors];
+        const source = this.sampleSource();
+        const mask = new Uint8Array(this.layout.width * this.layout.height);
+        for (let i = 0; i < mask.length; i++) {
+            if (!this.layout.pixelActive[i]) continue;
+            const sample = source[i]!;
+            if (list.some(color => colorDistance(sample, color) <= this.wandTolerance)) mask[i] = 1;
+        }
+        this.applySelection(mask, 'replace', null);
+    }
+
+    selectRegionOf(hit: PointerHit | null, area: 'face' | 'part') {
+        if (!hit) {
+            this.notify('pages.skineditor.messages.hoverFirst', 'info');
+            return;
+        }
+        const mask = new Uint8Array(this.layout.width * this.layout.height);
+        for (const index of this.regionAround(hit, area)) if (this.layout.pixelActive[index]) mask[index] = 1;
+        this.applySelection(mask, 'replace', null);
     }
 
     copySelection(cut: boolean = false) {
-        const layer = this.activeLayer;
-        if (!layer) return;
+        if (!this.activeNode) return;
         const rect = this.selection ?? {x: 0, y: 0, w: this.layout.width, h: this.layout.height};
         const colors = new Uint32Array(rect.w * rect.h);
-        const view = new Uint32Array(layer.pixels.buffer, layer.pixels.byteOffset, layer.pixels.length / 4);
+        const source = this.nodeComposite();
         for (let y = 0; y < rect.h; y++) {
             for (let x = 0; x < rect.w; x++) {
-                const storage = atlasToStorage(this.layout, layer.target, (rect.y + y) * this.layout.width + rect.x + x);
-                colors[y * rect.w + x] = storage >= 0 ? view[storage]! : 0;
+                const atlas = (rect.y + y) * this.layout.width + rect.x + x;
+                if (this.inSelection(atlas)) colors[y * rect.w + x] = source[atlas]!;
             }
         }
-        this.clipboard = {rect: {...rect}, colors};
+        this.clipboard = {rect: {...rect}, colors, mask: this.selectionMask};
         if (cut) this.deleteSelection('pages.skineditor.history.cut');
         this.notify(cut ? 'pages.skineditor.messages.cut' : 'pages.skineditor.messages.copied', 'info');
     }
@@ -1240,64 +1632,66 @@ export class SkinEditor {
             }
         }
         this.selection = {...rect};
+        this.selectionMask = clipboard.mask;
         this.tool = 'move';
         this.finishStroke('pages.skineditor.history.paste');
     }
 
     deleteSelection(label: string = 'pages.skineditor.history.erase') {
-        const layer = this.canStartStroke();
-        if (!layer) return;
-        this.stroke = new PixelStroke(layer);
+        if (!this.beginStrokes()) return;
         const rect = this.selection ?? {x: 0, y: 0, w: this.layout.width, h: this.layout.height};
-        for (let y = rect.y; y < rect.y + rect.h; y++) {
-            for (let x = rect.x; x < rect.x + rect.w; x++) {
-                const index = y * this.layout.width + x;
-                if ((this.layout.pixelParts[index]! & this.selectedMask) === 0) continue;
-                const storage = atlasToStorage(this.layout, layer.target, index);
-                if (storage >= 0) this.stroke.set(storage, 0);
+        for (const stroke of this.allStrokes) {
+            for (let y = rect.y; y < rect.y + rect.h; y++) {
+                for (let x = rect.x; x < rect.x + rect.w; x++) {
+                    const index = y * this.layout.width + x;
+                    if ((this.layout.pixelParts[index]! & this.selectedMask) === 0 || !this.inSelection(index)) continue;
+                    const storage = atlasToStorage(this.layout, stroke.layer.target, index);
+                    if (storage >= 0) stroke.set(storage, 0);
+                }
             }
         }
         this.finishStroke(label);
     }
 
     flipSelection(direction: 'horizontal' | 'vertical') {
-        const layer = this.canStartStroke();
-        if (!layer) return;
+        if (!this.beginStrokes()) return;
         const rect = this.selection ?? {x: 0, y: 0, w: this.layout.width, h: this.layout.height};
-        this.stroke = new PixelStroke(layer);
         const width = this.layout.width;
-        const read = (x: number, y: number) => {
-            const storage = atlasToStorage(this.layout, layer.target, y * width + x);
-            return storage >= 0 ? this.stroke!.original(storage) : 0;
-        };
-        for (let y = rect.y; y < rect.y + rect.h; y++) {
-            for (let x = rect.x; x < rect.x + rect.w; x++) {
-                const storage = atlasToStorage(this.layout, layer.target, y * width + x);
-                if (storage < 0) continue;
-                const sx = direction === 'horizontal' ? rect.x + rect.w - 1 - (x - rect.x) : x;
-                const sy = direction === 'vertical' ? rect.y + rect.h - 1 - (y - rect.y) : y;
-                this.stroke.set(storage, read(sx, sy));
+        for (const stroke of this.allStrokes) {
+            const target = stroke.layer.target;
+            const read = (x: number, y: number) => {
+                const storage = atlasToStorage(this.layout, target, y * width + x);
+                return storage >= 0 ? stroke.original(storage) : 0;
+            };
+            for (let y = rect.y; y < rect.y + rect.h; y++) {
+                for (let x = rect.x; x < rect.x + rect.w; x++) {
+                    const storage = atlasToStorage(this.layout, target, y * width + x);
+                    if (storage < 0 || !this.inSelection(y * width + x)) continue;
+                    const sx = direction === 'horizontal' ? rect.x + rect.w - 1 - (x - rect.x) : x;
+                    const sy = direction === 'vertical' ? rect.y + rect.h - 1 - (y - rect.y) : y;
+                    stroke.set(storage, read(sx, sy));
+                }
             }
         }
         this.finishStroke('pages.skineditor.history.flip');
     }
 
     mirrorToOtherSide() {
-        const layer = this.canStartStroke();
-        if (!layer) return;
-        this.stroke = new PixelStroke(layer);
+        if (!this.beginStrokes()) return;
         const layout = this.layout;
         const count = layout.width * layout.height;
-        const view = new Uint32Array(layer.pixels.buffer, layer.pixels.byteOffset, count);
-        const snapshot = new Uint32Array(view);
-        for (let i = 0; i < count; i++) {
-            if (!layout.pixelActive[i] || (layout.pixelParts[i]! & this.selectedMask) === 0) continue;
-            const target = layout.mirror[i]!;
-            if (target < 0 || target === i) continue;
-            if ((layout.pixelParts[target]! & this.selectedMask) !== 0 && !this.allPartsSelected) continue;
-            const from = atlasToStorage(layout, layer.target, i);
-            const to = atlasToStorage(layout, layer.target, target);
-            if (from >= 0 && to >= 0) this.stroke.set(to, snapshot[from]!);
+        for (const stroke of this.allStrokes) {
+            const layer = stroke.layer;
+            const snapshot = new Uint32Array(new Uint32Array(layer.pixels.buffer, layer.pixels.byteOffset, count));
+            for (let i = 0; i < count; i++) {
+                if (!layout.pixelActive[i] || (layout.pixelParts[i]! & this.selectedMask) === 0) continue;
+                const target = layout.mirror[i]!;
+                if (target < 0 || target === i) continue;
+                if ((layout.pixelParts[target]! & this.selectedMask) !== 0 && !this.allPartsSelected) continue;
+                const from = atlasToStorage(layout, layer.target, i);
+                const to = atlasToStorage(layout, layer.target, target);
+                if (from >= 0 && to >= 0) stroke.set(to, snapshot[from]!);
+            }
         }
         this.finishStroke('pages.skineditor.history.mirror');
     }
@@ -1388,12 +1782,21 @@ export class SkinEditor {
         }
     }
 
-    async exportPng(): Promise<boolean> {
+    async exportPng(format: SkinFormat = this.doc.format, model: SkinModel = this.doc.model): Promise<boolean> {
         this.cancelStroke();
         try {
-            const warnings = analyzeComposite(this.composite, this.layout);
-            const bytes = encodePng(this.composite, this.layout.width, this.layout.height);
-            const saved = await saveSkinFile(this.baseFileName() + '.png', bytes, null, true);
+            let composite = this.composite;
+            let layout = this.layout;
+            if (format !== this.doc.format || model !== this.doc.model) {
+                const copy = new SkinDocument(this.doc.name, this.doc.format, this.doc.model, this.doc.snapshot().layers);
+                convertDocument(copy, format, model);
+                layout = getLayout(format, model);
+                composite = compositeDocument(copy, layout);
+            }
+            const warnings = analyzeComposite(composite, layout);
+            const bytes = encodePng(composite, layout.width, layout.height);
+            const suffix = format !== this.doc.format || model !== this.doc.model ? '-' + (format === 'legacy' ? '64x32' : '64x64') + '-' + model : '';
+            const saved = await saveSkinFile(this.baseFileName() + suffix + '.png', bytes, null, true);
             if (!saved) return false;
             if (warnings.transparentBasePixels > 0) {
                 this.notify('pages.skineditor.messages.exportedTransparent', 'warning', {count: warnings.transparentBasePixels});
@@ -1465,6 +1868,180 @@ export class SkinEditor {
         if (this.messageTimer !== null) clearTimeout(this.messageTimer);
     }
 
+    openDialog(dialog: EditorDialog) {
+        this.cancelStroke();
+        this.dialog = dialog;
+    }
+
+    openAdjustment(adjustment: AdjustmentKind, scope: AdjustScope = 'layer', colors: PackedColor[] | null = null) {
+        this.openDialog({kind: 'adjust', adjustment, scope, colors});
+    }
+
+    beginPreview() {
+        this.cancelStroke();
+        if (!this.adjustBefore) this.adjustBefore = this.doc.snapshot();
+    }
+
+    previewAdjustment(adjustment: Adjustment, scope: AdjustScope, colors: PackedColor[] | null = null) {
+        this.beginPreview();
+        this.doc.restore(this.adjustBefore!);
+        this.applyAdjustment(adjustment, scope, colors);
+        this.touch();
+    }
+
+    commitPreview(label: string) {
+        const before = this.adjustBefore;
+        this.adjustBefore = null;
+        this.shadeBase = null;
+        this.shadeLayerId = null;
+        if (!before) return;
+        this.pushHistory(snapshotEntry(label, this.doc, before, this.doc.snapshot(), () => this.afterHistory()));
+        this.touch();
+    }
+
+    cancelPreview() {
+        const before = this.adjustBefore;
+        this.adjustBefore = null;
+        this.shadeBase = null;
+        this.shadeLayerId = null;
+        if (!before) return;
+        this.doc.restore(before);
+        this.afterHistory();
+        this.touch();
+    }
+
+    applyAdjustmentNow(adjustment: Adjustment, scope: AdjustScope = 'layer', colors: PackedColor[] | null = null) {
+        this.previewAdjustment(adjustment, scope, colors);
+        this.commitPreview('pages.skineditor.history.adjust.' + adjustment.kind);
+    }
+
+    private applyAdjustment(adjustment: Adjustment, scope: AdjustScope, colors: PackedColor[] | null) {
+        const layout = this.layout;
+        const count = layout.width * layout.height;
+        const filter = colors ? new Set(colors) : null;
+        const layers = scope === 'image' ? this.doc.allLayers() : this.groupLayers();
+        for (const layer of layers) {
+            if (this.doc.isEffectivelyLocked(layer.id)) continue;
+            const dest = destTable(layout, layer.target);
+            const view = new Uint32Array(layer.pixels.buffer, layer.pixels.byteOffset, count);
+            for (let i = 0; i < count; i++) {
+                const color = view[i]!;
+                if (color === 0) continue;
+                const atlas = dest ? dest[i]! : i;
+                if (atlas < 0 || !layout.pixelActive[atlas]) continue;
+                if ((layout.pixelParts[atlas]! & this.selectedMask) === 0 || !this.inSelection(atlas)) continue;
+                if (filter && !filter.has(color)) continue;
+                view[i] = adjustColor(color, adjustment);
+            }
+        }
+    }
+
+    get skinPalette(): PaletteEntry[] {
+        void this.version;
+        const counts = new Map<PackedColor, number>();
+        const view = new Uint32Array(this.composite.buffer, this.composite.byteOffset, this.composite.length / 4);
+        for (let i = 0; i < view.length; i++) {
+            if (!this.layout.pixelActive[i] || alphaOf(view[i]!) === 0) continue;
+            counts.set(view[i]!, (counts.get(view[i]!) ?? 0) + 1);
+        }
+        const entries = [...counts].map(([color, count]) => ({color, count, hsv: packedToHsv(color)}));
+        entries.sort((a, b) => {
+            const greyA = a.hsv.s < 0.1, greyB = b.hsv.s < 0.1;
+            if (greyA !== greyB) return greyA ? -1 : 1;
+            if (!greyA && Math.abs(a.hsv.h - b.hsv.h) > 12) return a.hsv.h - b.hsv.h;
+            return a.hsv.v - b.hsv.v;
+        });
+        return entries.map(({color, count}) => ({color, count}));
+    }
+
+    togglePaletteColor(color: PackedColor, additive: boolean) {
+        const has = this.paletteSelection.includes(color);
+        if (additive) this.paletteSelection = has ? this.paletteSelection.filter(c => c !== color) : [...this.paletteSelection, color];
+        else this.paletteSelection = has && this.paletteSelection.length === 1 ? [] : [color];
+    }
+
+    selectSimilarPaletteColors() {
+        const base = this.paletteSelection[0];
+        if (base === undefined) return;
+        const hue = packedToHsv(base).h;
+        this.paletteSelection = this.skinPalette.map(entry => entry.color).filter(color => {
+            const hsv = packedToHsv(color);
+            const difference = Math.abs(((hsv.h - hue + 540) % 360) - 180);
+            return hsv.s >= 0.1 && difference <= 18;
+        });
+    }
+
+    replacePaletteColors(colors: PackedColor[], replacement: PackedColor) {
+        if (!colors.length) return;
+        this.applyAdjustmentNow({kind: 'replace', replaceWith: replacement}, 'image', colors);
+        this.paletteSelection = [replacement];
+    }
+
+    beginAutoShade() {
+        this.beginPreview();
+        this.shadeBase = new Uint8ClampedArray(this.composite);
+        const layer = createPixelLayer(this.translate('pages.skineditor.layers.autoShade'), 'atlas', this.doc.width, this.doc.height);
+        this.doc.layers.unshift(layer);
+        this.shadeLayerId = layer.id;
+        this.activeLayerId = layer.id;
+    }
+
+    previewAutoShade(options: ShadingOptions = DEFAULT_SHADING) {
+        if (!this.shadeLayerId || !this.shadeBase) this.beginAutoShade();
+        const layer = this.doc.findLayer(this.shadeLayerId);
+        if (!layer) return;
+        const mask = this.selectedMask;
+        layer.pixels = autoShade(this.shadeBase!, this.layout, options, index => (this.layout.pixelParts[index]! & mask) !== 0 && this.inSelection(index));
+        this.touch();
+    }
+
+    flipImage() {
+        this.structural('pages.skineditor.history.flipImage', () => {
+            const mirror = this.layout.mirror;
+            for (const layer of this.doc.allLayers()) {
+                const count = layer.pixels.length / 4;
+                const source = new Uint32Array(layer.pixels.buffer.slice(layer.pixels.byteOffset, layer.pixels.byteOffset + layer.pixels.byteLength));
+                const pixels = new Uint8ClampedArray(layer.pixels.length);
+                const target = new Uint32Array(pixels.buffer);
+                for (let i = 0; i < count; i++) {
+                    const m = mirror[i] ?? -1;
+                    target[i] = source[m >= 0 ? m : i]!;
+                }
+                layer.pixels = pixels;
+            }
+        });
+    }
+
+    toggleClip(id: string | null = this.activeLayerId) {
+        const layer = this.doc.findLayer(id);
+        if (!layer) return;
+        this.setNodeProperty(layer.id, 'clip', !layer.clip);
+    }
+
+    computeProblemMask(): Uint8Array {
+        const layout = this.layout;
+        const mask = new Uint8Array(layout.width * layout.height);
+        for (let i = 0; i < mask.length; i++) {
+            if (layout.pixelKind[i] === 1 && layout.pixelActive[i] === 1 && this.composite[i * 4 + 3]! < 255) mask[i] = 1;
+        }
+        return mask;
+    }
+
+    async loadCape(): Promise<boolean> {
+        try {
+            const file = await openSkinFile();
+            if (!file) return false;
+            const image = await decodeImage(file.bytes);
+            if (image.width < 22 || image.height < 17) throw new Error(this.translate('pages.skineditor.messages.wrongCape'));
+            this.capeImage = markRaw(image);
+            if (this.backAccessory === 'none') this.backAccessory = 'cape';
+            return true;
+        } catch (error) {
+            this.notify('pages.skineditor.messages.openFailed', 'error', {error: String((error as Error)?.message ?? error)});
+            return false;
+        }
+    }
+
     selectToolByKey(letter: string, cycle: boolean): boolean {
         const group = TOOLS.filter(tool => tool.key.toLowerCase() === letter.toLowerCase());
         if (!group.length) return false;
@@ -1517,28 +2094,39 @@ export class SkinEditor {
     }
 
     layerVia(cut: boolean) {
-        const layer = this.activeLayer;
-        if (!layer) return;
-        const location = this.doc.find(layer.id)!;
+        const node = this.activeNode;
+        if (!node) return;
+        const location = this.doc.find(node.id)!;
         if (!this.selection) {
-            if (!cut) this.duplicateNode(layer.id);
+            if (!cut) this.duplicateNode(node.id);
+            return;
+        }
+        if (cut && this.doc.isEffectivelyLocked(node.id)) {
+            this.notify('pages.skineditor.messages.layerLocked', 'warning');
             return;
         }
         const rect = this.selection;
+        const merged = node.kind === 'group' ? this.nodeComposite(node) : null;
         this.structural(cut ? 'pages.skineditor.history.layerViaCut' : 'pages.skineditor.history.layerViaCopy', () => {
             const count = this.layout.width * this.layout.height;
-            const source = new Uint32Array(layer.pixels.buffer, layer.pixels.byteOffset, count);
-            const copy = createPixelLayer(this.nextLayerName(), layer.target, this.doc.width, this.doc.height);
+            const copy = createPixelLayer(this.nextLayerName(), node.kind === 'layer' ? node.target : 'atlas', this.doc.width, this.doc.height);
             const target = new Uint32Array(copy.pixels.buffer);
+            const sources = this.groupLayers(node).filter(layer => !this.doc.isEffectivelyLocked(layer.id));
             for (let y = rect.y; y < rect.y + rect.h; y++) {
                 for (let x = rect.x; x < rect.x + rect.w; x++) {
-                    const storage = atlasToStorage(this.layout, layer.target, y * this.layout.width + x);
-                    if (storage < 0) continue;
-                    target[storage] = source[storage]!;
-                    if (cut) source[storage] = 0;
+                    const atlas = y * this.layout.width + x;
+                    if (!this.inSelection(atlas)) continue;
+                    if (merged) target[atlas] = merged[atlas]!;
+                    for (const layer of sources) {
+                        const storage = atlasToStorage(this.layout, layer.target, atlas);
+                        if (storage < 0) continue;
+                        const source = new Uint32Array(layer.pixels.buffer, layer.pixels.byteOffset, count);
+                        if (!merged) target[storage] = source[storage]!;
+                        if (cut) source[storage] = 0;
+                    }
                 }
             }
-            copy.blend = layer.blend;
+            if (node.kind === 'layer') copy.blend = node.blend;
             location.siblings.splice(location.index, 0, copy);
             this.activeLayerId = copy.id;
         });
@@ -1678,6 +2266,14 @@ export class SkinEditor {
                     if (shift) this.ungroupActive();
                     else this.groupActive();
                     return true;
+                case 'u':
+                    if (shift) this.applyAdjustmentNow({kind: 'desaturate'});
+                    else this.openAdjustment('hueSaturation');
+                    return true;
+                case 'i':
+                    if (shift) this.invertSelection();
+                    else this.applyAdjustmentNow({kind: 'invert'});
+                    return true;
                 case 'a':
                     this.selectAll();
                     return true;
@@ -1711,6 +2307,10 @@ export class SkinEditor {
         if (ctrl && alt) {
             if (key === 'z') {
                 this.undo();
+                return true;
+            }
+            if (key === 'g') {
+                this.toggleClip();
                 return true;
             }
             if (shift && (key === 'w' || key === 's')) {

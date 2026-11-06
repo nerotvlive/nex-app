@@ -97,7 +97,7 @@ const commitHex = () => {
 </script>
 
 <template>
-  <section class="skin-editor-panel">
+  <section class="skin-editor-panel" :class="{'collapsed': collapsed}">
     <header class="skin-editor-panel-header">
       <button class="skin-editor-panel-toggle" @click="collapsed = !collapsed">
         <i :class="collapsed ? 'icon-chevron-right' : 'icon-chevron-down'"></i>

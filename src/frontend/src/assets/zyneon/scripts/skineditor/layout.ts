@@ -44,6 +44,9 @@ export interface SkinLayout {
     overlayOffset: Record<PartId, number | null>;
     destBase: Int32Array;
     destOverlay: Int32Array;
+    pixelBox: Int16Array;
+    texelCenter: Float32Array;
+    boxPixels: number[][];
 }
 
 export const FACE_ORDER: readonly FaceDir[] = ['top', 'bottom', 'right', 'front', 'left', 'back'];
@@ -112,7 +115,7 @@ export function skinHeight(format: SkinFormat): number {
     return format === 'legacy' ? 32 : 64;
 }
 
-function buildFaces(u: number, v: number, size: Vec3, min: Vec3, mirrored: boolean): FaceDef[] {
+export function buildFaces(u: number, v: number, size: Vec3, min: Vec3, mirrored: boolean): FaceDef[] {
     const [w, h, d] = size;
     const [x0, y0, z0] = min;
     const x1 = x0 + w, y1 = y0 + h, z1 = z0 + d;
@@ -291,10 +294,27 @@ function createLayout(format: SkinFormat, model: SkinModel): SkinLayout {
         }
     }
 
+    const pixelBox = new Int16Array(size).fill(-1);
+    const texelCenter = new Float32Array(size * 3).fill(NaN);
+    const boxPixels: number[][] = boxes.map(() => []);
+    for (const box of boxes) {
+        for (const face of box.faces) {
+            for (let t = 0; t < face.rect.h; t++) {
+                for (let s = 0; s < face.rect.w; s++) {
+                    const index = (face.rect.y + t) * width + face.rect.x + s;
+                    if (index >= size || pixelBox[index] !== -1) continue;
+                    pixelBox[index] = box.id;
+                    texelCenter.set(facePoint(face, s + 0.5, t + 0.5), index * 3);
+                    boxPixels[box.id]!.push(index);
+                }
+            }
+        }
+    }
+
     return {
         format, model, width, height, boxes,
         pixelParts, pixelPart, pixelKind, pixelActive, pixelFace, mirror,
-        overlayOffset, destBase, destOverlay
+        overlayOffset, destBase, destOverlay, pixelBox, texelCenter, boxPixels
     };
 }
 
@@ -306,6 +326,37 @@ function forEachTexel(rect: Rect, width: number, height: number, callback: (inde
             callback(y * width + x);
         }
     }
+}
+
+const neighbourCache = new WeakMap<SkinLayout, number[][]>();
+
+export function surfaceNeighbours(layout: SkinLayout): number[][] {
+    const cached = neighbourCache.get(layout);
+    if (cached) return cached;
+    const width = layout.width;
+    const out: number[][] = Array.from({length: width * layout.height}, () => []);
+    const centers = layout.texelCenter;
+    for (const pixels of layout.boxPixels) {
+        for (let a = 0; a < pixels.length; a++) {
+            const i = pixels[a]!;
+            for (let b = a + 1; b < pixels.length; b++) {
+                const j = pixels[b]!;
+                const dx = centers[i * 3]! - centers[j * 3]!, dy = centers[i * 3 + 1]! - centers[j * 3 + 1]!, dz = centers[i * 3 + 2]! - centers[j * 3 + 2]!;
+                if (dx * dx + dy * dy + dz * dz > 1.02) continue;
+                out[i]!.push(j);
+                out[j]!.push(i);
+            }
+        }
+    }
+    for (let i = 0; i < out.length; i++) {
+        if (layout.pixelBox[i] !== -1) continue;
+        const x = i % width, y = Math.floor(i / width);
+        for (const next of [x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < layout.height - 1 ? i + width : -1]) {
+            if (next >= 0) out[i]!.push(next);
+        }
+    }
+    neighbourCache.set(layout, out);
+    return out;
 }
 
 export function destTable(layout: SkinLayout, target: LayerTarget): Int32Array | null {

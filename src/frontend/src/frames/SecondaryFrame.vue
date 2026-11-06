@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import DesktopTitlebar from "../components/shared/DesktopTitlebar.vue";
-import { onMounted } from 'vue'
+import {computed, onMounted} from 'vue'
 import {WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
 import {useI18n} from "vue-i18n";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
 const { t } = useI18n();
 
+const withNavigation = computed(() => {
+  return (route.path !== '/skins' && route.path !== '/intro' && route.path !== '/loader');
+});
+
+const withTitlebar = computed(() => {
+  return withNavigation.value && ZyneonSettings.isBorderless;
+});
 
 onMounted(() => {
   ZyneonSettings.setClassicMenu(ZyneonSettings.useClassicMenu);
@@ -25,7 +34,7 @@ const back = () => {
 
 <template>
   <div class="zyneon-desktop zyn-background-body" id="main">
-    <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar">
+    <DesktopTitlebar class="zyneon-desktop-titlebar" id="titlebar" :class="withTitlebar ? '' : 'hidden'">
       <template #start>
         <span class="p-3 text-white">NEX App</span>
       </template>

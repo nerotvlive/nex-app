@@ -5,17 +5,35 @@ import {destTable, type SkinLayout} from "./layout.ts";
 export interface FlatLayer {
     layer: PixelLayer;
     opacity: number;
+    clipped: boolean;
 }
 
 export function flattenVisible(nodes: LayerNode[], opacity: number = 1, out: FlatLayer[] = []): FlatLayer[] {
+    let baseVisible = false;
     for (let i = nodes.length - 1; i >= 0; i--) {
         const node = nodes[i]!;
-        if (!node.visible || node.opacity <= 0) continue;
+        const clipped = node.kind === 'layer' && node.clip;
+        const visible = node.visible && node.opacity > 0;
+        if (!clipped) baseVisible = visible;
+        if (!visible || (clipped && !baseVisible)) continue;
         const effective = opacity * node.opacity;
         if (node.kind === 'group') flattenVisible(node.children, effective, out);
-        else out.push({layer: node, opacity: effective});
+        else out.push({layer: node, opacity: effective, clipped});
     }
     return out;
+}
+
+function layerAlpha(layer: PixelLayer, opacity: number, layout: SkinLayout): Float32Array {
+    const count = layout.width * layout.height;
+    const alpha = new Float32Array(count);
+    const dest = destTable(layout, layer.target);
+    for (let i = 0; i < count; i++) {
+        const value = layer.pixels[i * 4 + 3]!;
+        if (value === 0) continue;
+        const j = dest ? dest[i]! : i;
+        if (j >= 0) alpha[j] = value / 255 * opacity;
+    }
+    return alpha;
 }
 
 function blendChannel(mode: BlendMode, backdrop: number, source: number): number {
@@ -37,16 +55,20 @@ function blendChannel(mode: BlendMode, backdrop: number, source: number): number
     }
 }
 
-export function blendLayerInto(accumulator: Float32Array, layer: PixelLayer, opacity: number, layout: SkinLayout) {
+export function blendLayerInto(accumulator: Float32Array, layer: PixelLayer, opacity: number, layout: SkinLayout, mask: Float32Array | null = null) {
     const src = layer.pixels;
     const dest = destTable(layout, layer.target);
     const count = layout.width * layout.height;
     const mode = layer.blend;
     for (let i = 0; i < count; i++) {
-        const sourceAlpha = src[i * 4 + 3]! / 255 * opacity;
+        let sourceAlpha = src[i * 4 + 3]! / 255 * opacity;
         if (sourceAlpha <= 0) continue;
         const j = dest ? dest[i]! : i;
         if (j < 0) continue;
+        if (mask) {
+            sourceAlpha *= mask[j]!;
+            if (sourceAlpha <= 0) continue;
+        }
         const o = j * 4, s = i * 4;
         const backdropAlpha = accumulator[o + 3]!;
         const outAlpha = sourceAlpha + backdropAlpha * (1 - sourceAlpha);
@@ -65,8 +87,14 @@ export function compositeDocument(doc: SkinDocument, layout: SkinLayout, out?: U
     const count = layout.width * layout.height;
     const result = out && out.length === count * 4 ? out : new Uint8ClampedArray(count * 4);
     const accumulator = new Float32Array(count * 4);
-    for (const flat of layers ?? flattenVisible(doc.layers)) {
-        blendLayerInto(accumulator, flat.layer, flat.opacity, layout);
+    const flat = layers ?? flattenVisible(doc.layers);
+    let clipMask: Float32Array | null = null;
+    for (let i = 0; i < flat.length; i++) {
+        const entry = flat[i]!;
+        if (!entry.clipped) clipMask = null;
+        else if (!clipMask) continue;
+        blendLayerInto(accumulator, entry.layer, entry.opacity, layout, entry.clipped ? clipMask : null);
+        if (!entry.clipped && flat[i + 1]?.clipped) clipMask = layerAlpha(entry.layer, entry.opacity, layout);
     }
     for (let i = 0; i < count * 4; i++) result[i] = accumulator[i]! * 255;
     return result;

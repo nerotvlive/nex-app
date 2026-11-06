@@ -13,6 +13,7 @@ export interface PixelLayer extends LayerNodeBase {
     kind: 'layer';
     target: LayerTarget;
     blend: BlendMode;
+    clip: boolean;
     pixels: Uint8ClampedArray;
 }
 
@@ -58,6 +59,7 @@ export function createPixelLayer(name: string, target: LayerTarget, width: numbe
         opacity: 1,
         target,
         blend: 'normal',
+        clip: false,
         pixels: pixels ?? new Uint8ClampedArray(width * height * 4)
     };
 }

@@ -9,11 +9,11 @@ const { t } = useI18n();
 const router = useRouter();
 
 const openSkinEditor = () => {
-  router.push("/skineditor");
+  router.push("/skins");
 }
 
 const openSkinEditorWindow = () => {
-  WindowControls.openSecondaryFrame("/skineditor");
+  WindowControls.openSecondaryFrame("/skins");
 }
 
 const secondarySelect = ref<HTMLSelectElement | null>(null);

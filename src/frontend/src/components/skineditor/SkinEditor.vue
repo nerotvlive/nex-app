@@ -1,22 +1,26 @@
 <script setup lang="ts">
-import '../assets/zyneon/css/skineditor.css';
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import '../../assets/zyneon/css/skineditor.css';
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useI18n} from "vue-i18n";
-import {ZyneonSettings} from "../assets/zyneon/scripts";
-import {colorAt, createSkinEditor} from "../assets/zyneon/scripts/skineditor";
-import {loadDraft} from "../assets/zyneon/scripts/skineditor/draft.ts";
-import {PART_IDS} from "../assets/zyneon/scripts/skineditor";
-import {alphaOf, toCss, toHex} from "../assets/zyneon/scripts/skineditor";
-import SkinEditorTopbar from "../components/skineditor/SkinEditorTopbar.vue";
-import SkinEditorTabs from "../components/skineditor/SkinEditorTabs.vue";
-import SkinEditorToolOptions from "../components/skineditor/SkinEditorToolOptions.vue";
-import SkinEditorToolbar from "../components/skineditor/SkinEditorToolbar.vue";
-import SkinEditorViewport3D from "../components/skineditor/SkinEditorViewport3D.vue";
-import SkinEditorViewport2D from "../components/skineditor/SkinEditorViewport2D.vue";
-import SkinEditorParts from "../components/skineditor/SkinEditorParts.vue";
-import SkinEditorColors from "../components/skineditor/SkinEditorColors.vue";
-import SkinEditorLayers from "../components/skineditor/SkinEditorLayers.vue";
-import SkinEditorConvertDialog from "../components/skineditor/SkinEditorConvertDialog.vue";
+import {WindowControls, ZyneonSettings} from "../../assets/zyneon/scripts";
+import {colorAt, createSkinEditor, type ViewMode} from "../../assets/zyneon/scripts/skineditor";
+import {loadDraft} from "../../assets/zyneon/scripts/skineditor/draft.ts";
+import {PART_IDS} from "../../assets/zyneon/scripts/skineditor";
+import {alphaOf, toCss, toHex} from "../../assets/zyneon/scripts/skineditor";
+import SkinEditorTopbar from "./SkinEditorTopbar.vue";
+import SkinEditorTabs from "./SkinEditorTabs.vue";
+import SkinEditorToolOptions from "./SkinEditorToolOptions.vue";
+import SkinEditorToolbar from "./SkinEditorToolbar.vue";
+import SkinEditorViewport3D from "./SkinEditorViewport3D.vue";
+import SkinEditorViewport2D from "./SkinEditorViewport2D.vue";
+import SkinEditorParts from "./SkinEditorParts.vue";
+import SkinEditorColors from "./SkinEditorColors.vue";
+import SkinEditorLayers from "./SkinEditorLayers.vue";
+import SkinEditorConvertDialog from "./SkinEditorConvertDialog.vue";
+import SkinEditorAdjustDialog from "./SkinEditorAdjustDialog.vue";
+import SkinEditorAutoShadeDialog from "./SkinEditorAutoShadeDialog.vue";
+import SkinEditorPalette from "./SkinEditorPalette.vue";
+import {vDraggable} from "./draggable.ts";
 
 const {t} = useI18n();
 
@@ -24,7 +28,25 @@ const editor = createSkinEditor();
 editor.translate = (key, params) => t(key, params ?? {});
 editor.newDocument();
 
-const showConvert = ref(false);
+const viewKey = 'nexapp.skineditor.view';
+const savedView = localStorage.getItem(viewKey) as ViewMode | null;
+if (savedView === '3d' || savedView === 'split' || savedView === '2d') editor.viewMode = savedView;
+watch(() => editor.viewMode, view => localStorage.setItem(viewKey, view));
+
+const colorKey = 'nexapp.skineditor.colors';
+try {
+  const saved = JSON.parse(localStorage.getItem(colorKey) ?? 'null');
+  const valid = (value: unknown): value is number => Number.isInteger(value) && (value as number) >= 0 && (value as number) <= 0xffffffff;
+  if (valid(saved?.primary)) editor.primaryColor = saved.primary;
+  if (valid(saved?.secondary)) editor.secondaryColor = saved.secondary;
+  if (Array.isArray(saved?.recent)) editor.recentColors = saved.recent.filter(valid).slice(0, 16);
+} catch {
+  localStorage.removeItem(colorKey);
+}
+watch(() => [editor.primaryColor, editor.secondaryColor, editor.recentColors], () => {
+  localStorage.setItem(colorKey, JSON.stringify({primary: editor.primaryColor >>> 0, secondary: editor.secondaryColor >>> 0, recent: editor.recentColors.map(color => color >>> 0)}));
+});
+
 const showHelp = ref(false);
 const draftInfo = ref<{ count: number, names: string, savedAt: number } | null>(null);
 const confirmState = ref<{ message: string, confirm: string, resolve: (value: boolean) => void } | null>(null);
@@ -106,7 +128,7 @@ const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter') answerConfirm(true);
     return;
   }
-  if (isTyping(event)) return;
+  if (editor.dialog || isTyping(event)) return;
   if (event.key === ' ') {
     editor.navigationHeld = true;
     event.preventDefault();
@@ -171,6 +193,8 @@ const shortcuts: { title: string, keys: [string, string][] }[] = [
   {
     title: 'pages.skineditor.help.groups.tools', keys: [
       ['B / Shift+B', 'pages.skineditor.help.keys.brush'],
+      ['L', 'pages.skineditor.tools.lasso.name'],
+      ['W', 'pages.skineditor.tools.wand.name'],
       ['E', 'pages.skineditor.tools.eraser.name'],
       ['G / Shift+G', 'pages.skineditor.help.keys.fillGradient'],
       ['I / Alt', 'pages.skineditor.tools.picker.name'],
@@ -193,7 +217,10 @@ const shortcuts: { title: string, keys: [string, string][] }[] = [
       ['Ctrl+[ / Ctrl+]', 'pages.skineditor.help.keys.order'],
       ['Alt+[ / Alt+]', 'pages.skineditor.help.keys.selectLayer'],
       ['1 … 9 / 0', 'pages.skineditor.help.keys.opacity'],
-      ['Alt+⌫ / Ctrl+⌫', 'pages.skineditor.help.keys.fill']
+      ['Alt+⌫ / Ctrl+⌫', 'pages.skineditor.help.keys.fill'],
+      ['Ctrl+Alt+G', 'pages.skineditor.layers.clip'],
+      ['Ctrl+U / Ctrl+Shift+U', 'pages.skineditor.help.keys.hue'],
+      ['Ctrl+I', 'pages.skineditor.adjust.invert']
     ]
   },
   {
@@ -204,6 +231,8 @@ const shortcuts: { title: string, keys: [string, string][] }[] = [
       ['Ctrl+W / Ctrl+Tab', 'pages.skineditor.help.keys.tabs'],
       ['Ctrl+Z / Ctrl+Shift+Z', 'pages.skineditor.help.keys.undo'],
       ['Ctrl+A / Ctrl+D', 'pages.skineditor.help.keys.select'],
+      ['Ctrl+Shift+I', 'pages.skineditor.menu.invertSelection'],
+      ['Shift / Alt', 'pages.skineditor.help.keys.selectModes'],
       ['Ctrl+C / X / V', 'pages.skineditor.help.keys.clipboard']
     ]
   },
@@ -237,8 +266,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="skin-editor flex flex-col w-full h-full overflow-hidden" :class="{'panels-hidden': editor.panelsHidden}" @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
-    <SkinEditorTopbar :editor="editor" @new="onNew" @open="onOpen" @convert="showConvert = true" @help="showHelp = true"/>
-    <SkinEditorToolOptions v-show="!editor.panelsHidden" :editor="editor"/>
+    <SkinEditorTopbar @mousedown="WindowControls.startDrag()" :editor="editor" @new="onNew" @open="onOpen" @help="showHelp = true"/>
 
     <div v-if="draftInfo" class="skin-editor-banner flex items-center gap-3 px-3 py-1.5 text-sm">
       <i class="icon-info"></i>
@@ -247,9 +275,9 @@ onBeforeUnmount(() => {
       <button class="zyn-btn compact darker" @click="discardDraft">{{ t('pages.skineditor.draft.discard') }}</button>
     </div>
 
+    <SkinEditorToolOptions v-show="!editor.panelsHidden" :editor="editor"/>
     <div class="flex flex-1 min-h-0">
       <SkinEditorToolbar v-show="!editor.panelsHidden" :editor="editor"/>
-
       <div class="flex flex-col flex-1 min-w-0">
         <SkinEditorTabs :editor="editor" :drop-active="dropZone === 'tab'" @close="closeTab" @new="onNew"/>
         <div class="skin-editor-views flex flex-1 min-h-0" :class="['mode-' + editor.viewMode, {'drop-target': dropZone === 'layer'}]">
@@ -265,11 +293,11 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </div>
-
-      <aside v-show="!editor.panelsHidden" class="skin-editor-sidebar flex flex-col gap-2 p-2 overflow-y-auto">
+      <aside v-show="!editor.panelsHidden" class="skin-editor-sidebar flex flex-col overflow-y-auto">
         <SkinEditorParts :editor="editor"/>
         <SkinEditorColors :editor="editor"/>
-        <SkinEditorLayers :editor="editor" class="grow"/>
+        <SkinEditorPalette :editor="editor"/>
+        <SkinEditorLayers :editor="editor" class="grow borderless"/>
       </aside>
     </div>
 
@@ -294,10 +322,12 @@ onBeforeUnmount(() => {
       <div v-if="editor.message" class="skin-editor-toast" :class="editor.message.kind">{{ messageText }}</div>
     </transition>
 
-    <SkinEditorConvertDialog v-if="showConvert" :editor="editor" @close="showConvert = false"/>
+    <SkinEditorConvertDialog v-if="editor.dialog?.kind === 'convert'" :editor="editor" @close="editor.dialog = null"/>
+    <SkinEditorAdjustDialog v-if="editor.dialog?.kind === 'adjust'" :key="editor.dialog.adjustment" :editor="editor" :kind="editor.dialog.adjustment" :scope="editor.dialog.scope" :colors="editor.dialog.colors" @close="editor.dialog = null"/>
+    <SkinEditorAutoShadeDialog v-if="editor.dialog?.kind === 'autoShade'" :editor="editor" @close="editor.dialog = null"/>
 
     <div v-if="showHelp" class="skin-editor-modal-backdrop" @pointerdown.self="showHelp = false">
-      <div class="skin-editor-modal wide">
+      <div v-draggable class="skin-editor-modal wide">
         <header class="flex items-center gap-2">
           <i class="icon-info"></i>
           <strong class="text-white grow">{{ t('pages.skineditor.help.title') }}</strong>
@@ -320,7 +350,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div v-if="confirmState" class="skin-editor-modal-backdrop">
-      <div class="skin-editor-modal">
+      <div v-draggable class="skin-editor-modal">
         <p class="text-sm">{{ confirmState.message }}</p>
         <footer class="flex justify-end gap-2">
           <button class="zyn-btn compact darker" @click="answerConfirm(false)">{{ t('pages.skineditor.dialog.cancel') }}</button>

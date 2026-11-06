@@ -80,10 +80,10 @@ const routes: Array<RouteRecordRaw> = [
         component: DesktopTools
     },
     {
-        path: '/skineditor',
-        name: 'Skin Editor',
-        meta: { title: 'Skin Editor' },
-        component: () => import("../../../../pages/DesktopSkinEditor.vue")
+        path: '/skins',
+        name: 'Skins',
+        meta: { title: 'Skins' },
+        component: () => import("../../../../components/skineditor/SkinEditor.vue")
     },
     {
         path: '/notifications',
