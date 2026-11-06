@@ -3,6 +3,8 @@ declare global {
         skinEditorOpenFile?: (requestId: string) => Promise<unknown>;
         skinEditorSaveFile?: (requestId: string, fileName: string, base64: string, path: string | null, saveAs: boolean) => Promise<unknown>;
         skinEditorOpenFolder?: () => Promise<unknown>;
+        skinEditorPendingFiles?: (requestId: string) => Promise<unknown>;
+        nexSkinEditorFilesAvailable?: () => void;
         nexSkinBridgeResolve?: (requestId: string, result: BridgeResult) => void;
     }
 }
@@ -13,6 +15,21 @@ interface BridgeResult {
     path?: string;
     data?: string;
     message?: string;
+    files?: PendingFileResult[];
+}
+
+interface PendingFileResult {
+    name: string;
+    path: string;
+    data?: string;
+    error?: string;
+}
+
+export interface PendingFile {
+    name: string;
+    path: string;
+    bytes: Uint8Array | null;
+    error: string | null;
 }
 
 export interface OpenedFile {
@@ -96,6 +113,18 @@ export async function saveSkinFile(fileName: string, bytes: Uint8Array, path: st
     }
     browserDownload(fileName, bytes);
     return {name: fileName, path: null};
+}
+
+export async function takePendingFiles(): Promise<PendingFile[]> {
+    if (!window.skinEditorPendingFiles) return [];
+    const result = await request(id => window.skinEditorPendingFiles!(id));
+    if (result.status !== 'ok') return [];
+    return (result.files ?? []).map(file => ({
+        name: file.name,
+        path: file.path,
+        bytes: file.data ? base64ToBytes(file.data) : null,
+        error: file.data ? null : file.error ?? 'Unknown error'
+    }));
 }
 
 export function openSkinFolder() {

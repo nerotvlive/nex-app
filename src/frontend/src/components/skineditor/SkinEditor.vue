@@ -252,11 +252,14 @@ onMounted(async () => {
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
   window.addEventListener('blur', onBlur);
+  window.nexSkinEditorFilesAvailable = () => void editor.openPendingFiles();
   const draft = await loadDraft();
   if (draft) draftInfo.value = {count: draft.tabs.length, names: draft.tabs.map(tab => tab.name).join(', '), savedAt: draft.savedAt};
+  await editor.openPendingFiles();
 });
 
 onBeforeUnmount(() => {
+  delete window.nexSkinEditorFilesAvailable;
   window.removeEventListener('keydown', onKeyDown);
   window.removeEventListener('keyup', onKeyUp);
   window.removeEventListener('blur', onBlur);

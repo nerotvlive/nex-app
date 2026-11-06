@@ -137,6 +137,10 @@
                <i class="icon-library"></i>
                <span class="grow">{{ t('menu.library') }}</span>
              </router-link>
+             <router-link to="/skins" id="skins-button" class="zyn-btn compact transparent" active-class="active" @mousedown.stop>
+               <i class="bi bi-person-standing"></i>
+               <span class="grow">{{ t('menu.skins') }}</span>
+             </router-link>
            </div>
          </template>
          <template #bottom>

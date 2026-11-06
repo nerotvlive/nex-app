@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import DesktopDashboard from "../../../../pages/DesktopDashboard.vue";
 import DesktopDiscover from "../../../../pages/DesktopDiscover.vue";
 import DesktopDownloads from "../../../../pages/DesktopDownloads.vue";
+import DesktopSkins from "../../../../pages/DesktopSkins.vue";
 import DesktopLibrary from "../../../../pages/DesktopLibrary.vue";
 import DesktopSearch from "../../../../pages/DesktopSearch.vue";
 import DesktopSettings from "../../../../pages/DesktopSettings.vue";
@@ -17,6 +18,7 @@ import DesktopIntro from "../../../../components/shared/DesktopIntro.vue";
 import LoadingScreen from "../../../../components/shared/desktopelements/LoadingScreen.vue";
 import {ZyneonSettings} from "../settings.ts";
 import ErrorReport from "../../../../pages/errors/ErrorReport.vue";
+import SkinEditor from "../../../../components/skineditor/SkinEditor.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -83,7 +85,13 @@ const routes: Array<RouteRecordRaw> = [
         path: '/skins',
         name: 'Skins',
         meta: { title: 'Skins' },
-        component: () => import("../../../../components/skineditor/SkinEditor.vue")
+        component: DesktopSkins
+    },
+    {
+        path: '/skineditor',
+        name: 'Skin Editor',
+        meta: { title: 'Skin Editor' },
+        component: SkinEditor
     },
     {
         path: '/notifications',

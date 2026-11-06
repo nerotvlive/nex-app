@@ -32,7 +32,8 @@
     "notifications": "Benachrichtigungen",
     "downloads": "Downloads",
     "settings": "Einstellungen",
-    "setup": "Setup wiederholen"
+    "setup": "Setup wiederholen",
+    "skins": "Skins"
   },
   "pages": {
     "start": {
@@ -123,12 +124,6 @@
         "title": "Altes Fenster starten",
         "description": "Startet ein Fenster mit der alten UI. (Benötigt Internetverbindung)",
         "open": "Öffnen"
-      },
-      "skineditor": {
-        "title": "Skin-Editor (Vorschau)",
-        "description": "Ebenenbasierter Skin-Editor mit 3D-Malen, Körperteil-Auswahl und klassischem 2D-Pixelmodus.",
-        "open": "Öffnen",
-        "window": "In neuem Fenster öffnen"
       }
     },
     "settings": {

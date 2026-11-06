@@ -9,7 +9,7 @@ const route = useRoute();
 const { t } = useI18n();
 
 const withNavigation = computed(() => {
-  return (route.path !== '/skins' && route.path !== '/intro' && route.path !== '/loader');
+  return (route.path !== '/skineditor' &&route.path !== '/skins' && route.path !== '/intro' && route.path !== '/loader');
 });
 
 const withTitlebar = computed(() => {

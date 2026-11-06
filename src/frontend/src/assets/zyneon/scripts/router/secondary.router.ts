@@ -9,6 +9,8 @@ import {WindowControls} from "../windowControls.ts";
 import ErrorGame from "../../../../pages/errors/ErrorGame.vue";
 import Error404 from "../../../../pages/errors/Error404.vue";
 import Error501 from "../../../../pages/errors/Error501.vue";
+import DesktopSkins from "../../../../pages/DesktopSkins.vue";
+import SkinEditor from "../../../../components/skineditor/SkinEditor.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -37,9 +39,15 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/skins',
+        name: 'Skins',
+        meta: { title: 'Skins' },
+        component: DesktopSkins
+    },
+    {
+        path: '/skineditor',
         name: 'Skin Editor',
         meta: { title: 'Skin Editor' },
-        component: () => import("../../../../components/skineditor/SkinEditor.vue")
+        component: SkinEditor
     },
     {
         path: '/settings',

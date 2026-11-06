@@ -11,11 +11,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WebviewWindow {
 
-    private static final HashMap<String,WebviewWindow> windows = new HashMap<>();
+    private static final Map<String,WebviewWindow> windows = new ConcurrentHashMap<>();
 
     private Webview webview = null;
     private final HashMap<UUID, PageLoadEvent> loadEvents = new HashMap<>();
@@ -75,7 +77,7 @@ public class WebviewWindow {
         if(Main.getNEXApp().getStartMode().toLowerCase().equals("se")||Main.getNEXApp().getStartMode().toLowerCase().equals("skineditor")) {
             Main.getNEXApp().setStartMode("");
             windows.remove(this.id);
-            id = "/skins";
+            id = SkinEditorBridge.WINDOW_ID;
             url = Main.getBaseUrl()+id;
             secondary = true;
             windows.put(id, this);
@@ -231,17 +233,7 @@ public class WebviewWindow {
 
     private void initBindings() {
         this.webview.bind("openSecondaryFrame", (path) -> {
-            path = path.replace("[\"","").replace("\"]","");
-            if(!windows.containsKey(path)) {
-                WebviewWindow toolWindow = new WebviewWindow(path);
-                toolWindow.setSize(1024, 576);
-                toolWindow.loadUrl(Main.getBaseUrl() + path);
-                toolWindow.launchWindow();
-            } else {
-                WebviewWindow toolWindow = windows.get(path);
-                toolWindow.webview.showWindow();
-                toolWindow.unminimize();
-            }
+            openSecondary(path.replace("[\"","").replace("\"]",""));
             return null;
         });
 
@@ -314,14 +306,7 @@ public class WebviewWindow {
             });
 
             this.webview.bind("openMain", (_) -> {
-                if(!windows.containsKey("main")) {
-                    WebviewWindow mainWindow = new WebviewWindow();
-                    mainWindow.launchWindow();
-                } else {
-                    WebviewWindow toolWindow = windows.get("main");
-                    toolWindow.webview.showWindow();
-                    toolWindow.unminimize();
-                }
+                openMain();
                 return null;
             });
         }
@@ -348,6 +333,42 @@ public class WebviewWindow {
         });
 
         SkinEditorBridge.register(this.webview);
+    }
+
+    public static WebviewWindow getWindow(String id) {
+        return windows.get(id);
+    }
+
+    public static WebviewWindow openSecondary(String path) {
+        WebviewWindow window = windows.get(path);
+        if(window == null) {
+            window = new WebviewWindow(path);
+            window.setSize(1024, 576);
+            window.loadUrl(Main.getBaseUrl() + path);
+            window.launchWindow();
+        } else {
+            window.focus();
+        }
+        return window;
+    }
+
+    public static WebviewWindow openMain() {
+        WebviewWindow window = windows.get("main");
+        if(window == null) {
+            window = new WebviewWindow();
+            window.launchWindow();
+        } else {
+            window.focus();
+        }
+        return window;
+    }
+
+    public void focus() {
+        if(webview == null) {
+            return;
+        }
+        webview.showWindow();
+        unminimize();
     }
 
     @Deprecated

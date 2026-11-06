@@ -1,12 +1,17 @@
 package com.zyneonstudios.apex.nexapp;
 
+import com.zyneonstudios.apex.nexapp.main.InstanceManager;
+import com.zyneonstudios.apex.nexapp.main.LaunchRequest;
 import com.zyneonstudios.apex.nexapp.main.NEXApp;
+import com.zyneonstudios.apex.nexapp.window.SkinEditorBridge;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
+import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Locale;
 
 @SpringBootApplication
 public class Main {
@@ -24,11 +29,21 @@ public class Main {
 
     static void main(String[] args) {
         Main.args = args;
+        String[] launchArgs = args.clone();
         resolveArgs();
+        if(!InstanceManager.claim(port, launchArgs)) {
+            return;
+        }
+        LaunchRequest launchRequest = LaunchRequest.parse(launchArgs, Path.of("").toAbsolutePath());
+        if(launchRequest.skinEditor()) {
+            mode = "se";
+        }
+        SkinEditorBridge.queueFiles(launchRequest.files());
         springApp = new SpringApplication(Main.class);
         springApp.setHeadless(false);
         initNativeAppName();
         nexApp = new NEXApp();
+        InstanceManager.setHandler(nexApp::handleLaunchRequest);
         springApp.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
         springApp.run(args);
         nexApp.setStartMode(mode);
@@ -112,6 +127,19 @@ public class Main {
 
     public static int getPort() {
         return port;
+    }
+
+    public static Path getAppDirectory() {
+        String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
+        String home = System.getProperty("user.home");
+        if (os.contains("win")) {
+            String appData = System.getenv("APPDATA");
+            return Path.of(appData != null && !appData.isBlank() ? appData : home, "Zyneon Apex", "NEX App");
+        } else if (os.contains("mac")) {
+            return Path.of(home, "Library", "Application Support", "Zyneon Apex", "NEX App");
+        }
+        String dataHome = System.getenv("XDG_DATA_HOME");
+        return Path.of(dataHome != null && !dataHome.isBlank() ? dataHome : Path.of(home, ".local", "share").toString(), "zyneonapex", "nex-app");
     }
 
     private static void initNativeAppName() {

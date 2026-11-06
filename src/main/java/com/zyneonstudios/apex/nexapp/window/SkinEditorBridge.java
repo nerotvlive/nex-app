@@ -1,5 +1,6 @@
 package com.zyneonstudios.apex.nexapp.window;
 
+import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.springboot.controllers.ApiController;
 import io.avaje.webview.Webview;
 
@@ -8,9 +9,13 @@ import java.lang.foreign.MemorySegment;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SkinEditorBridge {
 
+    public static final String WINDOW_ID = "/skineditor";
+
+    private static final Queue<Path> pendingFiles = new ConcurrentLinkedQueue<>();
     private static final Set<String> EXTENSIONS = Set.of("png", "nexskin");
     private static final long MAX_FILE_SIZE = 16L * 1024 * 1024;
     private static final String OS = System.getProperty("os.name").toLowerCase(Locale.ROOT);
@@ -44,6 +49,14 @@ public class SkinEditorBridge {
             return null;
         });
 
+        webview.bind("skinEditorPendingFiles", (args) -> {
+            List<?> params = parse(args);
+            String requestId = string(params, 0);
+            if (requestId == null) return null;
+            Thread.ofPlatform().name("nex-skin-pending").start(() -> bridge.resolve(requestId, takePendingFiles()));
+            return null;
+        });
+
         webview.bind("skinEditorOpenFolder", (_) -> {
             Thread.ofPlatform().name("nex-skin-folder").start(SkinEditorBridge::openSkinsDirectory);
             return null;
@@ -51,15 +64,40 @@ public class SkinEditorBridge {
     }
 
     public static Path getSkinsDirectory() {
-        String home = System.getProperty("user.home");
-        if (OS.contains("win")) {
-            String appData = System.getenv("APPDATA");
-            return Path.of(appData != null && !appData.isBlank() ? appData : home, "Zyneon Apex", "NEX App", "skins");
-        } else if (OS.contains("mac")) {
-            return Path.of(home, "Library", "Application Support", "Zyneon Apex", "NEX App", "skins");
+        return Main.getAppDirectory().resolve("skins");
+    }
+
+    public static void queueFiles(Collection<Path> files) {
+        pendingFiles.addAll(files);
+    }
+
+    public static void notifyPendingFiles() {
+        if (pendingFiles.isEmpty()) return;
+        WebviewWindow window = WebviewWindow.getWindow(WINDOW_ID);
+        Webview webview = window == null ? null : window.getWebview();
+        if (webview == null) return;
+        webview.dispatch(() -> webview.eval("window.nexSkinEditorFilesAvailable && window.nexSkinEditorFilesAvailable();"));
+    }
+
+    private static Map<String, Object> takePendingFiles() {
+        List<Map<String, Object>> files = new ArrayList<>();
+        Path file;
+        while ((file = pendingFiles.poll()) != null) {
+            Map<String, Object> entry = new LinkedHashMap<>();
+            entry.put("name", file.getFileName().toString());
+            entry.put("path", file.toAbsolutePath().toString());
+            try {
+                if (!hasValidExtension(file.getFileName().toString())) throw new IOException("Only .png and .nexskin files are supported");
+                if (Files.size(file) > MAX_FILE_SIZE) throw new IOException("The file is too large");
+                entry.put("data", Base64.getEncoder().encodeToString(Files.readAllBytes(file)));
+            } catch (Exception e) {
+                entry.put("error", e.getMessage() == null ? "Unknown error" : e.getMessage());
+            }
+            files.add(entry);
         }
-        String dataHome = System.getenv("XDG_DATA_HOME");
-        return Path.of(dataHome != null && !dataHome.isBlank() ? dataHome : Path.of(home, ".local", "share").toString(), "zyneonapex", "nex-app", "skins");
+        Map<String, Object> result = result("ok");
+        result.put("files", files);
+        return result;
     }
 
     private Map<String, Object> openFile() {

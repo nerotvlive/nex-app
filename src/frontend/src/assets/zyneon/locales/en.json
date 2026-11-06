@@ -32,7 +32,8 @@
     "notifications": "Notifications",
     "downloads": "Downloads",
     "settings": "Settings",
-    "setup": "Rerun setup"
+    "setup": "Rerun setup",
+    "skins": "Skins"
   },
   "pages": {
     "start": {
@@ -123,12 +124,6 @@
         "title": "Launch Old Frame",
         "description": "Launches the discontinued UI. (Requires internet connection)",
         "open": "Launch"
-      },
-      "skineditor": {
-        "title": "Skin Editor (preview)",
-        "description": "Layer based skin editor with 3D painting, body part selection and a classic 2D pixel mode.",
-        "open": "Open",
-        "window": "Open in new window"
       }
     },
     "settings": {

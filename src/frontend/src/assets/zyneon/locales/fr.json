@@ -32,7 +32,8 @@
     "notifications": "Notifications",
     "downloads": "Téléchargements",
     "settings": "Paramètres",
-    "setup": "Relancer la configuration"
+    "setup": "Relancer la configuration",
+    "skins": "Skins"
   },
   "pages": {
     "start": {
@@ -123,12 +124,6 @@
         "title": "Lancer l'ancienne fenêtre",
         "description": "Lance l'ancienne interface utilisateur. (Nécessite une connexion internet)",
         "open": "Ouvrir"
-      },
-      "skineditor": {
-        "title": "Éditeur de skin (aperçu)",
-        "description": "Éditeur de skin à calques avec peinture 3D, sélection des parties du corps et mode pixel 2D classique.",
-        "open": "Ouvrir",
-        "window": "Ouvrir dans une nouvelle fenêtre"
       }
     },
     "settings": {

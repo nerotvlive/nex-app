@@ -4,6 +4,7 @@ import com.zyneonstudios.apex.nexapp.Main;
 import com.zyneonstudios.apex.nexapp.events.AppSetupEvent;
 import com.zyneonstudios.apex.nexapp.modules.ModuleLoader;
 import com.zyneonstudios.apex.nexapp.springboot.controllers.CurseforgeController;
+import com.zyneonstudios.apex.nexapp.window.SkinEditorBridge;
 import com.zyneonstudios.apex.nexapp.window.WebviewWindow;
 
 import java.io.InputStream;
@@ -92,6 +93,16 @@ public class NEXApp {
             });
 
             window.launchWindow();
+        }
+    }
+
+    public void handleLaunchRequest(LaunchRequest request) {
+        if(request.skinEditor()) {
+            SkinEditorBridge.queueFiles(request.files());
+            WebviewWindow.openSecondary(SkinEditorBridge.WINDOW_ID);
+            SkinEditorBridge.notifyPendingFiles();
+        } else {
+            WebviewWindow.openMain();
         }
     }
 

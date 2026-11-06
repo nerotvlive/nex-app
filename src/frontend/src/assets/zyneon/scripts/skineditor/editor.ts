@@ -11,7 +11,7 @@ import {autoShade, DEFAULT_SHADING, type ShadingOptions} from "./shading.ts";
 import {splitAtlasPixels, convertDocument, documentFromImage} from "./convert.ts";
 import {encodePng, decodeImage} from "./png.ts";
 import {isNexSkin, NEXSKIN_EXTENSION, readNexSkin, writeNexSkin} from "./nexskin.ts";
-import {openSkinFile, saveSkinFile} from "./bridge.ts";
+import {openSkinFile, saveSkinFile, takePendingFiles} from "./bridge.ts";
 import {clearDraft, loadDraft, saveDraft, type DraftTab} from "./draft.ts";
 
 export type ToolId = 'pencil' | 'eraser' | 'fill' | 'gradient' | 'picker' | 'shade' | 'noise' | 'dither' | 'select' | 'lasso' | 'wand' | 'move' | 'line' | 'rect' | 'replace' | 'hand';
@@ -1712,6 +1712,34 @@ export class SkinEditor {
             this.notify('pages.skineditor.messages.openFailed', 'error', {error: String((error as Error)?.message ?? error)});
             return false;
         }
+    }
+
+    async openPendingFiles() {
+        let files;
+        try {
+            files = await takePendingFiles();
+        } catch (error) {
+            console.error('[SkinEditor] pending files failed', error);
+            return;
+        }
+        for (const file of files) {
+            const open = this.tabWithPath(file.path);
+            if (open) {
+                this.switchTab(open);
+                continue;
+            }
+            try {
+                if (!file.bytes) throw new Error(file.error ?? 'Unknown error');
+                await this.openBytes(file.name, file.path, file.bytes);
+            } catch (error) {
+                this.notify('pages.skineditor.messages.openFailed', 'error', {error: file.name + ': ' + String((error as Error)?.message ?? error)});
+            }
+        }
+    }
+
+    private tabWithPath(path: string): string | null {
+        if (this.filePath === path) return this.activeTabId;
+        return this.tabs.find(tab => tab.id !== this.activeTabId && tab.filePath === path)?.id ?? null;
     }
 
     async decodeFile(name: string, bytes: Uint8Array): Promise<SkinDocument> {
