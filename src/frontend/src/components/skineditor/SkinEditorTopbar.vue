@@ -42,7 +42,7 @@ const model = computed(() => {
 
     <div v-if="ZyneonSettings.isSecondaryFrame" class="flex" @mousedown.stop>
         <button class="w-8 h-8 flex justify-center items-center zyn-br-sm hover:bg-zinc-100/20" type="button" @click="WindowControls.minimize()" id="titlebar-button-minimize"><i class="icon-minus"></i></button>
-        <button class="w-8 h-8 flex justify-center items-center zyn-br-sm hover:bg-zinc-100/20" type="button" @click="WindowControls.toggleMaximize()" id="titlebar-button-maximize"><i class="icon-square"></i></button>
+        <button class="w-8 h-8 flex justify-center items-center zyn-br-sm hover:bg-zinc-100/20" type="button" @click="WindowControls.toggleMaximize()" id="titlebar-button-maximize"><i class="icon-square scale-75"></i></button>
         <button class="w-8 h-8 flex justify-center items-center zyn-br-sm hover:bg-red-600" type="button" @click="WindowControls.close()" id="titlebar-button-close"><i class="icon-x"></i></button>
     </div>
   </div>
