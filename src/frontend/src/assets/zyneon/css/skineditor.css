@@ -37,7 +37,8 @@
 .skin-editor-topbar {
     border-bottom: 1px solid var(--se-border);
     background: var(--zyn-ov-darker-200);
-    min-height: 2.75rem;
+    min-height: 2.5rem;
+    max-height: 2.5rem;
 }
 
 .skin-editor-options {
