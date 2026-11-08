@@ -52,6 +52,8 @@ export type CameraPreset = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso';
 const FACE_SHADE: Record<string, number> = {top: 1, bottom: 0.55, front: 0.86, back: 0.86, right: 0.72, left: 0.72};
 
 const TARGET_Y = 16;
+const TURNTABLE_POLAR = Math.PI / 2 - 0.18;
+const TURNTABLE_AZIMUTH = 0.6;
 
 export class SkinRenderer3D {
 
@@ -91,6 +93,7 @@ export class SkinRenderer3D {
     private lastComposite: Uint8ClampedArray | null = null;
     private renderQueued = false;
     private disposed = false;
+    private turntable = false;
 
     constructor(container: HTMLElement) {
         this.canvas = document.createElement('canvas');
@@ -168,6 +171,35 @@ export class SkinRenderer3D {
         this.requestRender();
     }
 
+    setTurntable(enabled: boolean) {
+        this.turntable = enabled;
+        this.controls.enablePan = !enabled;
+        this.controls.enableZoom = !enabled;
+        this.controls.minPolarAngle = enabled ? TURNTABLE_POLAR : 0;
+        this.controls.maxPolarAngle = enabled ? TURNTABLE_POLAR : Math.PI;
+        if (enabled) {
+            this.controls.mouseButtons = {LEFT: MOUSE.ROTATE, MIDDLE: null, RIGHT: MOUSE.ROTATE};
+            this.camera.position.set(-Math.sin(TURNTABLE_AZIMUTH), TARGET_Y, Math.cos(TURNTABLE_AZIMUTH));
+            this.controls.target.set(0, TARGET_Y, 0);
+            this.fitTurntable();
+        } else {
+            this.setLeftMouseNavigation(false);
+            this.setCameraPreset('iso');
+        }
+    }
+
+    private fitTurntable() {
+        const halfFov = (this.camera.fov * Math.PI / 180) / 2;
+        const height = 36, width = 22;
+        const distance = Math.max(height / 2 / Math.tan(halfFov), width / 2 / (Math.tan(halfFov) * this.camera.aspect)) * 1.08;
+        const angle = Math.atan2(this.camera.position.x - this.controls.target.x, this.camera.position.z - this.controls.target.z);
+        const azimuth = Number.isFinite(angle) ? angle : 0.5;
+        this.camera.position.set(Math.sin(azimuth) * Math.sin(TURNTABLE_POLAR) * distance, TARGET_Y + Math.cos(TURNTABLE_POLAR) * distance, Math.cos(azimuth) * Math.sin(TURNTABLE_POLAR) * distance);
+        this.controls.target.set(0, TARGET_Y, 0);
+        this.controls.update();
+        this.requestRender();
+    }
+
     private resize() {
         const parent = this.canvas.parentElement;
         if (!parent || this.disposed) return;
@@ -178,6 +210,7 @@ export class SkinRenderer3D {
         this.canvas.style.height = height + 'px';
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
+        if (this.turntable) this.fitTurntable();
         this.requestRender();
     }
 
@@ -239,10 +272,10 @@ export class SkinRenderer3D {
         this.pose = pose;
         cancelAnimationFrame(this.animationFrame);
         this.animationFrame = 0;
-        if (pose === 'walk') {
+        if (pose === 'walk' || pose === 'idle') {
             this.animationStart = performance.now();
             const tick = () => {
-                if (this.disposed || this.pose !== 'walk') return;
+                if (this.disposed || this.pose !== pose) return;
                 this.applyPose((performance.now() - this.animationStart) / 1000);
                 this.renderer.render(this.scene, this.camera);
                 this.animationFrame = requestAnimationFrame(tick);
@@ -265,6 +298,12 @@ export class SkinRenderer3D {
             this.parts.leftArm.rotation.x = swing * 0.8;
             this.parts.head.rotation.y = Math.sin(time * 1.3) * 0.15;
             this.back.rotation.x = 0.2 + Math.abs(Math.sin(time * 5.5)) * 0.15;
+        } else if (this.pose === 'idle') {
+            const sway = Math.cos(time * 1.8) * 0.05 + 0.05;
+            const drift = Math.sin(time * 1.34) * 0.05;
+            this.parts.rightArm.rotation.set(drift, 0, -sway);
+            this.parts.leftArm.rotation.set(-drift, 0, sway);
+            this.parts.head.rotation.set(Math.sin(time * 0.45) * 0.05, Math.sin(time * 0.6) * 0.14, 0);
         } else if (this.pose === 'tpose') {
             this.parts.rightArm.rotation.z = -1.45;
             this.parts.leftArm.rotation.z = 1.45;

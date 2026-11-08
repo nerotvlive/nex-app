@@ -75,7 +75,7 @@ export type FillMode = 'face' | 'part' | 'global';
 export type RectMode = 'outline' | 'filled';
 export type PressureMode = 'off' | 'opacity' | 'size';
 export type WandMode = 'color' | 'face' | 'part';
-export type Pose = 'stand' | 'walk' | 'tpose';
+export type Pose = 'stand' | 'idle' | 'walk' | 'tpose';
 export type BackAccessory = 'none' | 'cape' | 'elytra';
 export type AdjustScope = 'layer' | 'image';
 

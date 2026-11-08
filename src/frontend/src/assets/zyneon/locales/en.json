@@ -106,6 +106,70 @@
         "search": "Search instances..."
       }
     },
+    "skins": {
+      "title": "Skins",
+      "menu": {
+        "inlineEditor": "Editor",
+        "openEditor": "Open Editor"
+      },
+      "viewer": {
+        "pose": {
+          "stand": "Stand still",
+          "idle": "Idle",
+          "walk": "Walk"
+        },
+        "model": {
+          "classic": "Classic",
+          "slim": "Slim"
+        },
+        "back": {
+          "cape": "Cape",
+          "elytra": "Elytra"
+        }
+      },
+      "library": {
+        "characters": "Characters",
+        "newCharacter": "New",
+        "search": "Search…",
+        "example": "Example",
+        "player": "Your skin",
+        "loose": "Unsorted",
+        "outfitCount": "{count} outfit | {count} outfits",
+        "addOutfit": "Add outfit",
+        "addOutfitHint": "Import a .png or .nexskin, it is stored as .nexskin in the skins folder",
+        "createOutfit": "Create outfit",
+        "createOutfitHint": "Copy the selected outfit as a new outfit and open it in the skin editor",
+        "createdName": "{name} (New)",
+        "edit": "Edit",
+        "editCharacterHint": "Open all own outfits of this character in the skin editor",
+        "deleteOutfit": "Delete outfit",
+        "deleteCharacter": "Delete character with all outfits",
+        "renameHint": "Double-click to rename",
+        "groups": {
+          "saved": "Saved",
+          "bundled": "Bundled"
+        },
+        "emptySaved": "No own characters yet. Create one or create an outfit for a bundled character.",
+        "emptySearch": "No results.",
+        "deleteCharacterTitle": "Delete character?",
+        "deleteCharacterText": "“{name}” and all of its outfits will be permanently deleted from your skins folder.",
+        "deleteOutfitTitle": "Delete outfit?",
+        "deleteOutfitText": "The outfit “{name}” will be permanently deleted from your skins folder.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "openFolder": "Open folder",
+        "openSkinsFolder": "Open the skins folder in your file manager",
+        "skinsFolder": "Skins folder",
+        "newOutfit": "New outfit",
+        "createEmptyOutfitHint": "Create a new blank outfit and open it in the skin editor",
+        "newCharacterName": "New character"
+      },
+      "capes": {
+        "title": "Capes",
+        "none": "No cape",
+        "current": "Current cape"
+      }
+    },
     "tools": {
       "title": "Tools & Experiments",
       "secondary": {
@@ -639,7 +703,8 @@
         "pose": {
           "stand": "Stand",
           "walk": "Walk (animated)",
-          "tpose": "T-pose"
+          "tpose": "T-pose",
+          "idle": "Idle (animated)"
         },
         "back": {
           "none": "Nothing on back",

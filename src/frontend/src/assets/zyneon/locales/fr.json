@@ -106,6 +106,70 @@
         "search": "Rechercher des instances..."
       }
     },
+    "skins": {
+      "title": "Skins",
+      "menu": {
+        "inlineEditor": "Editor",
+        "openEditor": "Ouvrir l'éditeur"
+      },
+      "viewer": {
+        "pose": {
+          "stand": "Immobile",
+          "idle": "Repos",
+          "walk": "Marche"
+        },
+        "model": {
+          "classic": "Classic",
+          "slim": "Slim"
+        },
+        "back": {
+          "cape": "Cape",
+          "elytra": "Élytres"
+        }
+      },
+      "library": {
+        "characters": "Personnages",
+        "newCharacter": "Nouveau",
+        "search": "Rechercher…",
+        "example": "Exemple",
+        "player": "Ton skin",
+        "loose": "Non classés",
+        "outfitCount": "{count} tenue | {count} tenues",
+        "addOutfit": "Ajouter une tenue",
+        "addOutfitHint": "Importer un .png ou .nexskin, il est enregistré en .nexskin dans le dossier des skins",
+        "createOutfit": "Créer une tenue",
+        "createOutfitHint": "Copier la tenue sélectionnée comme nouvelle tenue et l’ouvrir dans l’éditeur de skin",
+        "createdName": "{name} (Nouveau)",
+        "edit": "Modifier",
+        "editCharacterHint": "Ouvrir toutes les tenues personnelles de ce personnage dans l’éditeur de skin",
+        "deleteOutfit": "Supprimer la tenue",
+        "deleteCharacter": "Supprimer le personnage et toutes ses tenues",
+        "renameHint": "Double-clic pour renommer",
+        "groups": {
+          "saved": "Enregistrés",
+          "bundled": "Fournis"
+        },
+        "emptySaved": "Aucun personnage personnel pour l’instant. Crées-en un ou crée une tenue pour un personnage fourni.",
+        "emptySearch": "Aucun résultat.",
+        "deleteCharacterTitle": "Supprimer le personnage ?",
+        "deleteCharacterText": "« {name} » et toutes ses tenues seront définitivement supprimés de ton dossier de skins.",
+        "deleteOutfitTitle": "Supprimer la tenue ?",
+        "deleteOutfitText": "La tenue « {name} » sera définitivement supprimée de ton dossier de skins.",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "openFolder": "Ouvrir le dossier",
+        "openSkinsFolder": "Ouvrir le dossier des skins dans le gestionnaire de fichiers",
+        "skinsFolder": "Dossier des skins",
+        "newOutfit": "Nouvelle tenue",
+        "createEmptyOutfitHint": "Créer une nouvelle tenue vierge et l’ouvrir dans l’éditeur de skins",
+        "newCharacterName": "Nouveau personnage"
+      },
+      "capes": {
+        "title": "Capes",
+        "none": "Aucune cape",
+        "current": "Cape actuelle"
+      }
+    },
     "tools": {
       "title": "Outils & Expériences",
       "secondary": {
@@ -639,7 +703,8 @@
         "pose": {
           "stand": "Debout",
           "walk": "Marche (animée)",
-          "tpose": "Pose en T"
+          "tpose": "Pose en T",
+          "idle": "Repos (animé)"
         },
         "back": {
           "none": "Rien dans le dos",

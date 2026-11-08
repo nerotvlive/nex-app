@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import '../assets/zyneon/css/settings.css';
-import {WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
+import {openExternal, WindowControls, ZyneonSettings} from "../assets/zyneon/scripts";
 import {onMounted, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
@@ -14,7 +14,7 @@ const view = ref("general");
 const resetSettings = () => {
   localStorage.clear();
   WindowControls.reloadAll();
-  window.location.href = "/?intro=skip&skip=true";
+  window.location.href = "/?intro=skip";
 }
 
 onMounted(()=>{
@@ -55,7 +55,7 @@ onMounted(()=>{
       </template>
       <template #bottom>
         <div class="pt-2" @mousedown.stop>
-          <a class="zyn-btn compact" :class="view === 'report' ? 'active-alt' : ''" @click="view = 'report'">
+          <a class="zyn-btn compact" :class="view === 'report' ? 'active-alt' : ''" @click="openExternal('https://github.com/nerotvlive/nex-app/issues/new')">
             <i class="bi bi-bug"></i>
             <span class="grow">{{ t("pages.settings.report") }}</span>
           </a>

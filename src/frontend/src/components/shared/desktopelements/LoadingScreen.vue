@@ -41,13 +41,17 @@ const finishIntro = () => {
 };
 
 onMounted(() => {
-  window.finishIntro = finishIntro;
+  if(!localStorage.getItem("nexapp.neo.settings.setup.finished")||localStorage.getItem("nexapp.neo.settings.setup.finished")!=="true") {
+    window.location.href = "/"
+  } else {
+    window.finishIntro = finishIntro;
 
-  if(!shutdown) {
-    if (!window.setup) {
-      finishIntro();
-    } else {
-      window.setup();
+    if (!shutdown) {
+      if (!window.setup) {
+        finishIntro();
+      } else {
+        window.setup();
+      }
     }
   }
 });

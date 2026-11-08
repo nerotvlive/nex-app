@@ -5,6 +5,15 @@ declare global {
         skinEditorOpenFolder?: () => Promise<unknown>;
         skinEditorPendingFiles?: (requestId: string) => Promise<unknown>;
         nexSkinEditorFilesAvailable?: () => void;
+        skinLibraryList?: (requestId: string) => Promise<unknown>;
+        skinLibraryWrite?: (requestId: string, character: string, outfit: string, base64: string, overwrite: boolean) => Promise<unknown>;
+        skinLibraryCreateCharacter?: (requestId: string, name: string) => Promise<unknown>;
+        skinLibraryRename?: (requestId: string, path: string, name: string) => Promise<unknown>;
+        skinLibraryDelete?: (requestId: string, path: string) => Promise<unknown>;
+        skinLibraryOpenInEditor?: (...paths: string[]) => Promise<unknown>;
+        skinLibraryPlayerSkin?: (requestId: string, uuid: string) => Promise<unknown>;
+        skinLibraryPlayerCapes?: (requestId: string, uuid: string) => Promise<unknown>;
+        skinLibraryOpenFolder?: (path: string) => Promise<unknown>;
         nexSkinBridgeResolve?: (requestId: string, result: BridgeResult) => void;
     }
 }
@@ -16,6 +25,41 @@ interface BridgeResult {
     data?: string;
     message?: string;
     files?: PendingFileResult[];
+    characters?: LibraryFolder[];
+    loose?: LibraryFile[];
+    url?: string;
+    model?: 'classic' | 'slim';
+    cape?: string;
+    capes?: { id: string, alias: string | null, url: string, active: boolean, data: string }[];
+}
+
+export interface PlayerCape {
+    id: string;
+    alias: string | null;
+    url: string;
+    active: boolean;
+    bytes: Uint8Array;
+}
+
+export interface LibraryFile {
+    name: string;
+    path: string;
+    modified: number;
+    data: string | null;
+}
+
+export interface LibraryFolder {
+    name: string;
+    path: string;
+    outfits: LibraryFile[];
+}
+
+export interface PlayerSkin {
+    name: string;
+    url: string;
+    model: 'classic' | 'slim';
+    bytes: Uint8Array;
+    cape: Uint8Array | null;
 }
 
 interface PendingFileResult {
@@ -164,4 +208,60 @@ function browserDownload(fileName: string, bytes: Uint8Array) {
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export function hasSkinLibrary(): boolean {
+    return typeof window.skinLibraryList === 'function';
+}
+
+async function libraryCall(call: (requestId: string) => Promise<unknown> | undefined): Promise<BridgeResult> {
+    if (!hasSkinLibrary()) throw new Error('The skin library is only available in the app');
+    const result = await request(call);
+    if (result.status !== 'ok') throw new Error(result.message || 'Skin library request failed');
+    return result;
+}
+
+export async function listSkinLibrary(): Promise<{ characters: LibraryFolder[], loose: LibraryFile[] }> {
+    if (!hasSkinLibrary()) return {characters: [], loose: []};
+    const result = await libraryCall(id => window.skinLibraryList!(id));
+    return {characters: result.characters ?? [], loose: result.loose ?? []};
+}
+
+export async function writeLibraryOutfit(character: string, outfit: string, bytes: Uint8Array, overwrite: boolean = false): Promise<string> {
+    const result = await libraryCall(id => window.skinLibraryWrite!(id, character, outfit, bytesToBase64(bytes), overwrite));
+    return result.path!;
+}
+
+export async function createLibraryCharacter(name: string): Promise<{ name: string, path: string }> {
+    const result = await libraryCall(id => window.skinLibraryCreateCharacter!(id, name));
+    return {name: result.name!, path: result.path!};
+}
+
+export async function renameLibraryEntry(path: string, name: string): Promise<string> {
+    const result = await libraryCall(id => window.skinLibraryRename!(id, path, name));
+    return result.path!;
+}
+
+export async function deleteLibraryEntry(path: string): Promise<void> {
+    await libraryCall(id => window.skinLibraryDelete!(id, path));
+}
+
+export function openLibraryFolder(path: string) {
+    if (window.skinLibraryOpenFolder) void window.skinLibraryOpenFolder(path);
+}
+
+export function openInSkinEditor(paths: string[]) {
+    if (paths.length && window.skinLibraryOpenInEditor) void window.skinLibraryOpenInEditor(...paths);
+}
+
+export async function fetchPlayerSkin(uuid: string): Promise<PlayerSkin | null> {
+    const result = await libraryCall(id => window.skinLibraryPlayerSkin!(id, uuid));
+    if (!result.data || !result.url) return null;
+    return {name: result.name ?? '', url: result.url, model: result.model ?? 'classic', bytes: base64ToBytes(result.data), cape: result.cape ? base64ToBytes(result.cape) : null};
+}
+
+export async function fetchPlayerCapes(uuid: string): Promise<PlayerCape[]> {
+    if (!window.skinLibraryPlayerCapes) return [];
+    const result = await libraryCall(id => window.skinLibraryPlayerCapes!(id, uuid));
+    return (result.capes ?? []).map(cape => ({id: cape.id, alias: cape.alias, url: cape.url, active: cape.active, bytes: base64ToBytes(cape.data)}));
 }

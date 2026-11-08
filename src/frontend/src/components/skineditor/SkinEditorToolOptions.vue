@@ -20,6 +20,7 @@ const wandModes: WandMode[] = ['color', 'face', 'part'];
 const densities = [0.25, 0.5, 0.75];
 const poses: { id: Pose, icon: string }[] = [
   {id: 'stand', icon: 'bi bi-person-standing'},
+  {id: 'idle', icon: 'icon-wind'},
   {id: 'walk', icon: 'icon-footprints'},
   {id: 'tpose', icon: 'bi bi-person-arms-up'}
 ];

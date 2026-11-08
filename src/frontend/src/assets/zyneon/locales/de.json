@@ -106,6 +106,70 @@
         "search": "Durchsuchen..."
       }
     },
+    "skins": {
+      "title": "Skins",
+      "menu": {
+        "inlineEditor": "Editor",
+        "openEditor": "Editor öffnen"
+      },
+      "viewer": {
+        "pose": {
+          "stand": "Stillstehen",
+          "idle": "Idle",
+          "walk": "Laufen"
+        },
+        "model": {
+          "classic": "Classic",
+          "slim": "Slim"
+        },
+        "back": {
+          "cape": "Cape",
+          "elytra": "Elytren"
+        }
+      },
+      "library": {
+        "characters": "Charaktere",
+        "newCharacter": "Neu",
+        "search": "Suchen…",
+        "example": "Beispiel",
+        "player": "Dein Skin",
+        "loose": "Unsortiert",
+        "outfitCount": "{count} Outfit | {count} Outfits",
+        "addOutfit": "Outfit hinzufügen",
+        "addOutfitHint": "Eine .png oder .nexskin importieren, sie wird als .nexskin im Skin-Ordner gespeichert",
+        "createOutfit": "Outfit erstellen",
+        "createOutfitHint": "Das ausgewählte Outfit als neues Outfit kopieren und im Skin-Editor öffnen",
+        "createdName": "{name} (Neu)",
+        "edit": "Bearbeiten",
+        "editCharacterHint": "Alle eigenen Outfits dieses Charakters im Skin-Editor öffnen",
+        "deleteOutfit": "Outfit löschen",
+        "deleteCharacter": "Charakter mit allen Outfits löschen",
+        "renameHint": "Doppelklick zum Umbenennen",
+        "groups": {
+          "saved": "Gespeichert",
+          "bundled": "Mitgeliefert"
+        },
+        "emptySaved": "Noch keine eigenen Charaktere. Lege einen an oder erstelle ein Outfit bei einem mitgelieferten Charakter.",
+        "emptySearch": "Keine Treffer.",
+        "deleteCharacterTitle": "Charakter löschen?",
+        "deleteCharacterText": "„{name}“ und alle seine Outfits werden endgültig aus deinem Skin-Ordner gelöscht.",
+        "deleteOutfitTitle": "Outfit löschen?",
+        "deleteOutfitText": "Das Outfit „{name}“ wird endgültig aus deinem Skin-Ordner gelöscht.",
+        "cancel": "Abbrechen",
+        "delete": "Löschen",
+        "openFolder": "Ordner öffnen",
+        "openSkinsFolder": "Skin-Ordner im Dateimanager öffnen",
+        "skinsFolder": "Skin-Ordner",
+        "newOutfit": "Neues Outfit",
+        "createEmptyOutfitHint": "Ein neues, leeres Outfit anlegen und im Skin-Editor öffnen",
+        "newCharacterName": "Neuer Charakter"
+      },
+      "capes": {
+        "title": "Capes",
+        "none": "Kein Cape",
+        "current": "Aktuelles Cape"
+      }
+    },
     "tools": {
       "title": "Werkzeuge & Experimente",
       "secondary": {
@@ -639,7 +703,8 @@
         "pose": {
           "stand": "Stehen",
           "walk": "Gehen (Animation)",
-          "tpose": "T-Pose"
+          "tpose": "T-Pose",
+          "idle": "Idle (Animation)"
         },
         "back": {
           "none": "Kein Rücken",

@@ -41,6 +41,8 @@ onMounted(()=>{
               <option class="bg-black text-white" value="/library">{{ t('menu.library') }}</option>
               <option class="bg-black text-white" value="/downloads">{{ t('menu.downloads') }}</option>
               <option class="bg-black text-white" value="/settings">{{ t('menu.settings') }}</option>
+              <option class="bg-black text-white" value="/skins">{{ t('menu.skins') }}</option>
+              <option class="bg-black text-white" value="/skineditor">Skin Editor</option>
             </select>
             <a @click="launchSecondary" class="zyn-btn compact">
               <i class="bi bi-play"/>
