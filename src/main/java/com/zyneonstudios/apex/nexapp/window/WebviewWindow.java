@@ -275,7 +275,7 @@ public class WebviewWindow {
                 toolWindow.unminimize();
             } else {
                 WebviewWindow oldWindow = new WebviewWindow("old");
-                oldWindow.setUrl("https://cnad.pages.dev");
+                oldWindow.loadUrl("https://cnad.pages.dev");
                 oldWindow.launchWindow();
             }
             return null;
@@ -369,11 +369,6 @@ public class WebviewWindow {
         }
         webview.showWindow();
         unminimize();
-    }
-
-    @Deprecated
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public void loadUrl(String url) {

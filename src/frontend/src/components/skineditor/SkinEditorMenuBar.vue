@@ -111,7 +111,7 @@ const menus = computed<{ id: string, entries: MenuEntry[] }[]>(() => {
         {label: 'pages.skineditor.layers.delete', icon: 'icon-trash-2', disabled: !node, action: () => node && editor.deleteNode(node.id)},
         'separator',
         {label: 'pages.skineditor.layers.clip', icon: 'icon-corner-down-right', kbd: 'Ctrl+Alt+G', disabled: !layer, checked: !!layer?.clip, action: () => editor.toggleClip()},
-        {label: node?.kind === 'group' ? 'pages.skineditor.layers.mergeGroup' : 'pages.skineditor.layers.mergeDown', icon: 'icon-merge', kbd: 'Ctrl+E', disabled: !node, action: () => node && editor.mergeDown(node.id)},
+        {label: editor.selectedNodes.length > 1 ? 'pages.skineditor.layers.mergeSelected' : node?.kind === 'group' ? 'pages.skineditor.layers.mergeGroup' : 'pages.skineditor.layers.mergeDown', icon: 'icon-merge', kbd: 'Ctrl+E', disabled: !node, action: () => node && editor.mergeDown(node.id)},
         {label: 'pages.skineditor.layers.mergeVisible', icon: 'icon-layers', kbd: 'Ctrl+Shift+E', action: () => editor.mergeVisible()},
         {label: 'pages.skineditor.layers.split', icon: 'icon-layers-2', disabled: layer?.target !== 'atlas', action: () => layer && editor.splitAtlasLayer(layer.id)},
         {label: 'pages.skineditor.layers.clear', icon: 'icon-eraser', disabled: !node, action: () => node && editor.clearLayer(node.id)},

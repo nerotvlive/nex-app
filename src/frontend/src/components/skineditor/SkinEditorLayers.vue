@@ -43,6 +43,15 @@ const active = computed(() => {
 
 const activeLayer = computed(() => active.value && active.value.kind === 'layer' ? active.value : null);
 const formatSupportsOverlay = computed(() => props.editor.doc.format === 'modern');
+const selectedCount = computed(() => {
+  void props.editor.version;
+  return props.editor.selectedNodes.length;
+});
+const isSelected = (id: string) => {
+  void props.editor.version;
+  return props.editor.isNodeSelected(id);
+};
+const mergeLabel = computed(() => selectedCount.value > 1 ? 'pages.skineditor.layers.mergeSelected' : active.value?.kind === 'group' ? 'pages.skineditor.layers.mergeGroup' : 'pages.skineditor.layers.mergeDown');
 
 const renamingId = ref<string | null>(null);
 const renameValue = ref('');
@@ -69,7 +78,8 @@ const menu = ref<{ x: number, y: number, node: LayerNode } | null>(null);
 const menuElement = ref<HTMLElement | null>(null);
 
 const openMenu = async (event: MouseEvent, node: LayerNode) => {
-  props.editor.selectNode(node.id);
+  if (!props.editor.isNodeSelected(node.id)) props.editor.selectNode(node.id);
+  else props.editor.activeLayerId = node.id;
   menu.value = {x: event.clientX, y: event.clientY, node};
   await nextTick();
   const element = menuElement.value;
@@ -91,13 +101,22 @@ const menuAction = (action: () => void) => {
   closeMenu();
 };
 
-const drag = ref<{ id: string, startY: number, active: boolean } | null>(null);
+const drag = ref<{ id: string, startY: number, active: boolean, keep: boolean } | null>(null);
 const drop = ref<{ id: string, position: 'before' | 'after' | 'inside' } | null>(null);
 
 const onRowPointerDown = (event: PointerEvent, node: LayerNode) => {
   if (event.button !== 0 || renamingId.value) return;
-  props.editor.selectNode(node.id);
-  drag.value = {id: node.id, startY: event.clientY, active: false};
+  if (event.ctrlKey || event.metaKey) {
+    props.editor.toggleNodeSelection(node.id);
+    return;
+  }
+  if (event.shiftKey) {
+    props.editor.selectNodeRange(node.id, rows.value.map(row => row.node.id));
+    return;
+  }
+  const keep = selectedCount.value > 1 && props.editor.isNodeSelected(node.id);
+  if (!keep) props.editor.selectNode(node.id);
+  drag.value = {id: node.id, startY: event.clientY, active: false, keep};
   window.addEventListener('pointermove', onDragMove);
   window.addEventListener('pointerup', onDragEnd, {once: true});
 };
@@ -122,12 +141,16 @@ const onDragMove = (event: PointerEvent) => {
 const onDragEnd = () => {
   window.removeEventListener('pointermove', onDragMove);
   if (drag.value?.active && drop.value) props.editor.moveNode(drag.value.id, drop.value.id, drop.value.position);
+  else if (drag.value?.keep) props.editor.selectNode(drag.value.id);
   drag.value = null;
   drop.value = null;
 };
 
 const onDocumentPointerDown = (event: PointerEvent) => {
-  if (menu.value && !(event.target as HTMLElement)?.closest('.skin-editor-menu')) closeMenu();
+  if (!(event.target as HTMLElement)?.closest('.skin-editor-menu')) {
+    if (menu.value) closeMenu();
+    targetMenu.value = null;
+  }
 };
 
 onMounted(() => window.addEventListener('pointerdown', onDocumentPointerDown, true));
@@ -140,14 +163,37 @@ const opacityPercent = computed(() => Math.round((active.value?.opacity ?? 1) * 
 
 const setOpacity = (event: Event) => {
   if (!active.value) return;
-  const value = Number((event.target as HTMLInputElement).value) / 100;
-  props.editor.setNodeProperty(active.value.id, 'opacity', value, true);
+  props.editor.setSelectedProperty('opacity', Number((event.target as HTMLInputElement).value) / 100, true);
 };
 
 const setBlend = (event: Event) => {
   if (!activeLayer.value) return;
-  props.editor.setNodeProperty(activeLayer.value.id, 'blend', (event.target as HTMLSelectElement).value);
+  props.editor.setSelectedProperty('blend', (event.target as HTMLSelectElement).value);
 };
+
+const targetMenu = ref<{ x: number, y: number, id: string } | null>(null);
+
+const targetMenuElement = ref<HTMLElement | null>(null);
+
+const openTargetMenu = async (event: MouseEvent, node: LayerNode) => {
+  const anchor = (event.currentTarget as HTMLElement).getBoundingClientRect();
+  targetMenu.value = {x: anchor.left, y: anchor.bottom + 4, id: node.id};
+  await nextTick();
+  const rect = targetMenuElement.value?.getBoundingClientRect();
+  if (!rect || !targetMenu.value) return;
+  targetMenu.value = {
+    ...targetMenu.value,
+    x: Math.max(4, Math.min(anchor.left, window.innerWidth - rect.width - 4)),
+    y: anchor.bottom + 4 + rect.height > window.innerHeight ? Math.max(4, anchor.top - rect.height - 4) : anchor.bottom + 4
+  };
+};
+
+const chooseTarget = (target: LayerTarget) => {
+  if (targetMenu.value) props.editor.setLayerTarget(targetMenu.value.id, target);
+  targetMenu.value = null;
+};
+
+const legacyOverlay = (node: LayerNode) => node.kind === 'layer' && node.target === 'overlay' && !formatSupportsOverlay.value;
 </script>
 
 <template>
@@ -158,16 +204,29 @@ const setBlend = (event: Event) => {
         <button class="skin-editor-icon-btn" :title="t('pages.skineditor.layers.add') + ' (Ctrl+Shift+N)'" @click="editor.addLayer()"><i class="icon-layers-plus"></i></button>
         <button class="skin-editor-icon-btn" :title="t('pages.skineditor.layers.addGroup') + ' (Ctrl+G)'" @click="editor.addGroup()"><i class="icon-folder-plus"></i></button>
         <button class="skin-editor-icon-btn" :disabled="!active" :title="t('pages.skineditor.layers.duplicate') + ' (Ctrl+J)'" @click="active && editor.duplicateNode(active.id)"><i class="icon-copy"></i></button>
-        <button class="skin-editor-icon-btn" :disabled="!active" :title="t(active?.kind === 'group' ? 'pages.skineditor.layers.mergeGroup' : 'pages.skineditor.layers.mergeDown') + ' (Ctrl+E)'" @click="active && editor.mergeDown(active.id)"><i class="icon-merge"></i></button>
+        <button class="skin-editor-icon-btn" :disabled="!active" :title="t(mergeLabel) + ' (Ctrl+E)'" @click="active && editor.mergeDown(active.id)"><i class="icon-merge"></i></button>
         <button class="skin-editor-icon-btn hover-danger" :disabled="!active" :title="t('pages.skineditor.layers.delete')" @click="active && editor.deleteNode(active.id)"><i class="icon-trash-2"></i></button>
       </div>
     </header>
+
+    <div v-if="active" class="skin-editor-layer-bar">
+      <select class="skin-editor-input" :disabled="!activeLayer" :value="activeLayer?.blend ?? 'normal'" :title="t('pages.skineditor.layers.blend')" @change="setBlend">
+        <option v-for="mode in BLEND_MODES" :key="mode" :value="mode" class="bg-black text-white">{{ t('pages.skineditor.layers.blendModes.' + mode) }}</option>
+      </select>
+      <label class="skin-editor-layer-opacity" :title="t('pages.skineditor.layers.opacity')">
+        <input type="range" min="0" max="100" :value="opacityPercent" class="skin-editor-range" @input="setOpacity">
+        <span>{{ opacityPercent }}%</span>
+      </label>
+      <button class="skin-editor-icon-btn" :class="{'active': activeLayer?.clip}" :disabled="!activeLayer" :title="t('pages.skineditor.layers.clip') + ' (Ctrl+Alt+G): ' + t('pages.skineditor.layers.clipHint')" @click="editor.toggleClip()"><i class="icon-corner-down-right"></i></button>
+    </div>
+    <div v-if="selectedCount > 1" class="skin-editor-layer-multi">{{ t('pages.skineditor.layers.selectedCount', {count: selectedCount}) }}</div>
 
     <div class="skin-editor-layer-list flex flex-col overflow-y-auto">
       <div v-for="row in rows" :key="row.node.id"
            class="skin-editor-layer-row"
            :class="{
              'active': editor.activeLayerId === row.node.id,
+             'selected': selectedCount > 1 && isSelected(row.node.id),
              'dimmed': !row.node.visible || row.hiddenByParent,
              'drop-before': drop?.id === row.node.id && drop.position === 'before',
              'drop-after': drop?.id === row.node.id && drop.position === 'after',
@@ -192,9 +251,9 @@ const setBlend = (event: Event) => {
         <input v-if="renamingId === row.node.id" ref="renameInput" v-model="renameValue" class="skin-editor-input grow min-w-0 text-sm" @pointerdown.stop @keydown.enter="commitRename" @keydown.escape="renamingId = null" @blur="commitRename">
         <span v-else class="grow min-w-0 truncate text-sm" @dblclick="startRename(row.node)">{{ row.node.name }}</span>
 
-        <span v-if="row.node.kind === 'layer'" class="skin-editor-target-badge" :class="row.node.target" :title="t('pages.skineditor.layers.target.' + row.node.target)">
+        <button v-if="row.node.kind === 'layer'" class="skin-editor-target-badge" :class="[row.node.target, {'warning': legacyOverlay(row.node)}]" :title="t('pages.skineditor.layers.renderTarget') + ': ' + t('pages.skineditor.layers.target.' + row.node.target) + (legacyOverlay(row.node) ? ' · ' + t('pages.skineditor.layers.legacyOverlay') : '')" @pointerdown.stop @click="openTargetMenu($event, row.node)">
           {{ targetShort(row.node) }}
-        </span>
+        </button>
         <button class="skin-editor-icon-btn small" :class="{'muted': !row.node.locked}" @pointerdown.stop :title="t('pages.skineditor.layers.lock')" @click="editor.setNodeProperty(row.node.id, 'locked', !row.node.locked)">
           <i :class="row.node.locked ? 'icon-lock' : 'icon-lock-open'"></i>
         </button>
@@ -202,42 +261,20 @@ const setBlend = (event: Event) => {
       <div v-if="!rows.length" class="p-3 text-sm opacity-60 text-center">{{ t('pages.skineditor.layers.empty') }}</div>
     </div>
 
-    <div v-if="active" class="skin-editor-layer-props flex flex-col gap-2 p-2">
-      <div v-if="activeLayer" class="flex flex-col gap-1">
-        <span class="skin-editor-subtitle">{{ t('pages.skineditor.layers.renderTarget') }}</span>
-        <div class="skin-editor-segmented">
-          <button v-for="target in targets" :key="target.id" class="grow" :class="{'active': activeLayer.target === target.id}" :title="t('pages.skineditor.layers.target.' + target.id + 'Hint')" @click="editor.setLayerTarget(activeLayer.id, target.id)">
-            {{ t('pages.skineditor.layers.target.' + target.id) }}
-          </button>
-        </div>
-        <span v-if="activeLayer.target === 'overlay' && !formatSupportsOverlay" class="text-xs zyn-text-warning">
-          {{ t('pages.skineditor.layers.legacyOverlay') }}
-        </span>
-      </div>
-      <label class="flex items-center gap-2 text-sm">
-        <span class="opacity-75 w-20 shrink-0">{{ t('pages.skineditor.layers.opacity') }}</span>
-        <input type="range" min="0" max="100" :value="opacityPercent" class="skin-editor-range grow" @input="setOpacity">
-        <span class="w-9 text-right">{{ opacityPercent }}%</span>
-      </label>
-      <label v-if="activeLayer" class="flex items-center gap-2 text-sm">
-        <span class="opacity-75 w-20 shrink-0">{{ t('pages.skineditor.layers.blend') }}</span>
-        <select class="skin-editor-input grow" :value="activeLayer.blend" @change="setBlend">
-          <option v-for="mode in BLEND_MODES" :key="mode" :value="mode" class="bg-black text-white">{{ t('pages.skineditor.layers.blendModes.' + mode) }}</option>
-        </select>
-      </label>
-      <label v-if="activeLayer" class="flex items-center gap-2 text-sm cursor-pointer" :title="t('pages.skineditor.layers.clipHint')">
-        <input type="checkbox" :checked="activeLayer.clip" class="accent-[var(--zyn-accent)]" @change="editor.toggleClip(activeLayer.id)">
-        <span>{{ t('pages.skineditor.layers.clip') }}</span>
-      </label>
-    </div>
-
     <Teleport to="body">
+      <div v-if="targetMenu" ref="targetMenuElement" class="skin-editor-menu" :style="{left: targetMenu.x + 'px', top: targetMenu.y + 'px'}">
+        <span class="skin-editor-menu-label">{{ t('pages.skineditor.layers.renderTarget') }}</span>
+        <button v-for="target in targets" :key="target.id" :class="{'checked': editor.doc.findLayer(targetMenu.id)?.target === target.id}" :title="t('pages.skineditor.layers.target.' + target.id + 'Hint')" @click="chooseTarget(target.id)">
+          <span class="skin-editor-target-badge" :class="target.id">{{ target.short }}</span>{{ t('pages.skineditor.layers.target.' + target.id) }}
+        </button>
+      </div>
       <div v-if="menu" ref="menuElement" class="skin-editor-menu" :style="{left: menu.x + 'px', top: menu.y + 'px'}">
-        <button @click="menuAction(() => startRename(menu!.node))"><i class="icon-pencil"></i>{{ t('pages.skineditor.layers.rename') }}</button>
+        <span v-if="selectedCount > 1" class="skin-editor-menu-label">{{ t('pages.skineditor.layers.selectedCount', {count: selectedCount}) }}</span>
+        <button v-if="selectedCount < 2" @click="menuAction(() => startRename(menu!.node))"><i class="icon-pencil"></i>{{ t('pages.skineditor.layers.rename') }}</button>
         <button @click="menuAction(() => editor.duplicateNode(menu!.node.id))"><i class="icon-copy"></i>{{ t('pages.skineditor.layers.duplicate') }}<kbd>Ctrl+J</kbd></button>
-        <button @click="menuAction(() => editor.mergeDown(menu!.node.id))"><i class="icon-merge"></i>{{ t(menu.node.kind === 'group' ? 'pages.skineditor.layers.mergeGroup' : 'pages.skineditor.layers.mergeDown') }}<kbd>Ctrl+E</kbd></button>
+        <button @click="menuAction(() => editor.mergeDown(menu!.node.id))"><i class="icon-merge"></i>{{ t(mergeLabel) }}<kbd>Ctrl+E</kbd></button>
         <button @click="menuAction(() => editor.clearLayer(menu!.node.id))"><i class="icon-eraser"></i>{{ t('pages.skineditor.layers.clear') }}</button>
-        <template v-if="menu.node.kind === 'layer'">
+        <template v-if="menu.node.kind === 'layer' && selectedCount < 2">
           <button @click="menuAction(() => editor.toggleClip(menu!.node.id))"><i class="icon-corner-down-right"></i>{{ t(menu.node.clip ? 'pages.skineditor.layers.unclip' : 'pages.skineditor.layers.makeClip') }}<kbd>Ctrl+Alt+G</kbd></button>
           <button v-if="menu.node.target === 'atlas'" @click="menuAction(() => editor.splitAtlasLayer(menu!.node.id))"><i class="icon-layers-2"></i>{{ t('pages.skineditor.layers.split') }}</button>
         </template>

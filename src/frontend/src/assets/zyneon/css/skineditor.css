@@ -394,6 +394,11 @@
     background: var(--zyn-ov-darker-100);
 }
 
+.skin-editor-sidebar > .skin-editor-panel.grow {
+    flex: 1 1 0;
+    min-height: 14rem;
+}
+
 .skin-editor-panel {
     border-bottom: 1px solid #ffffff10;
     background: var(--se-panel);
@@ -595,8 +600,8 @@
 }
 
 .skin-editor-layer-list {
+    flex: 1 1 0;
     min-height: 8rem;
-    max-height: 22rem;
     padding: 0.25rem;
 }
 
@@ -612,6 +617,11 @@
 
     &:hover {
         background: var(--zyn-ov-brighter-100);
+    }
+
+    &.selected {
+        background: color-mix(in srgb, var(--zyn-accent) 16%, transparent);
+        border-color: color-mix(in srgb, var(--zyn-accent) 35%, transparent);
     }
 
     &.active {
@@ -660,6 +670,7 @@
 }
 
 .skin-editor-target-badge {
+    cursor: pointer;
     font-size: 0.6rem;
     font-weight: 700;
     width: 1.1rem;
@@ -684,10 +695,56 @@
         background: #8a8a9466;
         color: #ececf2;
     }
+
+    &.warning {
+        outline: 1px solid var(--zyn-warning, #f0b232);
+    }
 }
 
-.skin-editor-layer-props {
-    border-top: 1px solid var(--se-border);
+.skin-editor-menu .skin-editor-target-badge {
+    margin-right: 0.15rem;
+}
+
+.skin-editor-layer-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid var(--se-border);
+    font-size: 0.8rem;
+
+    select {
+        min-width: 0;
+        flex: 1 1 0;
+        height: 1.6rem;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.skin-editor-layer-opacity {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex: 1 1 0;
+    min-width: 0;
+
+    input {
+        min-width: 0;
+        flex: 1 1 0;
+    }
+
+    span {
+        width: 2.4rem;
+        text-align: right;
+        flex-shrink: 0;
+    }
+}
+
+.skin-editor-layer-multi {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    opacity: 0.7;
 }
 
 .skin-editor-menu {

@@ -438,7 +438,9 @@
         "clipHint": "The layer is only visible where the layer below has pixels",
         "makeClip": "Create clipping mask",
         "unclip": "Release clipping mask",
-        "mergeGroup": "Merge group"
+        "mergeGroup": "Merge group",
+        "selectedCount": "{count} layers selected",
+        "mergeSelected": "Merge selected"
       },
       "convert": {
         "open": "Convert format or model",
@@ -499,7 +501,8 @@
           "parts": "Select a body part (Shift adds) / all parts",
           "fillGradient": "Fill, gradient",
           "hue": "Hue / Saturation, desaturate",
-          "selectModes": "Add to / subtract from selection (both: intersect)"
+          "selectModes": "Add to / subtract from selection (both: intersect)",
+          "multiSelect": "Select multiple layers (Ctrl: single, Shift: range)"
         },
         "groups": {
           "tools": "Tools",
@@ -553,7 +556,8 @@
           "posterize": "Posterize",
           "replace": "Replace colors"
         },
-        "mergeGroup": "Merge group"
+        "mergeGroup": "Merge group",
+        "mergeSelected": "Merge selected"
       },
       "messages": {
         "noLayer": "Select a layer first.",

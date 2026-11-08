@@ -438,7 +438,9 @@
         "clipHint": "Le calque n’est visible que là où le calque inférieur a des pixels",
         "makeClip": "Créer un masque d’écrêtage",
         "unclip": "Annuler le masque d’écrêtage",
-        "mergeGroup": "Fusionner le groupe"
+        "mergeGroup": "Fusionner le groupe",
+        "selectedCount": "{count} calques sélectionnés",
+        "mergeSelected": "Fusionner la sélection"
       },
       "convert": {
         "open": "Convertir le format ou le modèle",
@@ -499,7 +501,8 @@
           "parts": "Choisir une partie du corps (Maj ajoute) / tout",
           "fillGradient": "Remplissage, dégradé",
           "hue": "Teinte / Saturation, désaturer",
-          "selectModes": "Ajouter à / soustraire de la sélection (les deux : intersection)"
+          "selectModes": "Ajouter à / soustraire de la sélection (les deux : intersection)",
+          "multiSelect": "Sélectionner plusieurs calques (Ctrl : un par un, Maj : plage)"
         },
         "groups": {
           "tools": "Outils",
@@ -553,7 +556,8 @@
           "posterize": "Postériser",
           "replace": "Remplacer les couleurs"
         },
-        "mergeGroup": "Fusionner le groupe"
+        "mergeGroup": "Fusionner le groupe",
+        "mergeSelected": "Fusionner la sélection"
       },
       "messages": {
         "noLayer": "Sélectionne d'abord un calque.",

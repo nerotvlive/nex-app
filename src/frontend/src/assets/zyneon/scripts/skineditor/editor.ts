@@ -187,6 +187,8 @@ export class SkinEditor {
     grid = true;
     guides = true;
     activeLayerId: string | null = null;
+    selectedNodeIds: string[] = [];
+    private selectionAnchorId: string | null = null;
     hover: PointerHit | null = null;
     message: EditorMessage | null = null;
     navigationHeld = false;
@@ -318,6 +320,7 @@ export class SkinEditor {
         this.fileName = tab.fileName;
         this.dirty = tab.dirty;
         this.activeLayerId = tab.activeLayerId;
+        this.selectedNodeIds = tab.activeLayerId ? [tab.activeLayerId] : [];
         this.selection = tab.selection;
         this.selectionMask = tab.selectionMask;
         this.lastPropertyEdit = null;
@@ -495,7 +498,72 @@ export class SkinEditor {
     }
 
     selectNode(id: string) {
-        if (this.doc.find(id)) this.activeLayerId = id;
+        if (!this.doc.find(id)) return;
+        this.activeLayerId = id;
+        this.selectedNodeIds = [id];
+        this.selectionAnchorId = id;
+    }
+
+    toggleNodeSelection(id: string) {
+        if (!this.doc.find(id)) return;
+        const current = this.multiSelectedIds ?? (this.activeLayerId ? [this.activeLayerId] : []);
+        if (current.includes(id)) {
+            const rest = current.filter(entry => entry !== id);
+            if (!rest.length) return;
+            this.selectedNodeIds = rest;
+            if (this.activeLayerId === id) this.activeLayerId = rest[rest.length - 1]!;
+        } else {
+            this.selectedNodeIds = [...current, id];
+            this.activeLayerId = id;
+        }
+        this.selectionAnchorId = id;
+    }
+
+    selectNodeRange(id: string, order: string[]) {
+        const anchor = this.selectionAnchorId && order.includes(this.selectionAnchorId) ? this.selectionAnchorId : this.activeLayerId;
+        const from = order.indexOf(anchor ?? id), to = order.indexOf(id);
+        if (from < 0 || to < 0) {
+            this.selectNode(id);
+            return;
+        }
+        this.selectedNodeIds = order.slice(Math.min(from, to), Math.max(from, to) + 1);
+        this.activeLayerId = id;
+    }
+
+    isNodeSelected(id: string): boolean {
+        const ids = this.multiSelectedIds;
+        return ids ? ids.includes(id) : this.activeLayerId === id;
+    }
+
+    get multiSelectedIds(): string[] | null {
+        const ids = this.selectedNodeIds;
+        if (ids.length < 2 || !this.activeLayerId || !ids.includes(this.activeLayerId)) return null;
+        const existing = ids.filter(id => this.doc.find(id));
+        return existing.length > 1 ? existing : null;
+    }
+
+    get selectedNodes(): LayerNode[] {
+        const ids = this.multiSelectedIds;
+        if (!ids) return this.activeNode ? [this.activeNode] : [];
+        const set = new Set(ids);
+        const out: LayerNode[] = [];
+        const walk = (nodes: LayerNode[], covered: boolean) => {
+            for (const node of nodes) {
+                const selected = set.has(node.id);
+                if (selected && !covered) out.push(node);
+                if (node.kind === 'group') walk(node.children, covered || selected);
+            }
+        };
+        walk(this.doc.layers, false);
+        return out;
+    }
+
+    private targetLayers(): PixelLayer[] {
+        const out: PixelLayer[] = [];
+        for (const node of this.selectedNodes) {
+            for (const layer of this.groupLayers(node)) if (!out.includes(layer)) out.push(layer);
+        }
+        return out;
     }
 
     private nextLayerName(): string {
@@ -526,9 +594,40 @@ export class SkinEditor {
         });
     }
 
+    private deleteSelectedNodes() {
+        const ids = this.selectedNodes.map(node => node.id);
+        this.structural('pages.skineditor.history.delete', () => {
+            const first = this.doc.find(ids[0]!)!;
+            const siblings = first.siblings;
+            for (const id of ids) {
+                const location = this.doc.find(id);
+                if (location) location.siblings.splice(location.index, 1);
+            }
+            const next = siblings[first.index] ?? siblings[first.index - 1] ?? first.parent;
+            this.activeLayerId = next && this.doc.find(next.id) ? next.id : this.doc.allLayers()[0]?.id ?? null;
+            this.selectedNodeIds = this.activeLayerId ? [this.activeLayerId] : [];
+        });
+    }
+
     duplicateNode(id: string) {
         const location = this.doc.find(id);
         if (!location) return;
+        if (this.multiSelectedIds && this.isNodeSelected(id)) {
+            const ids = this.selectedNodes.map(node => node.id);
+            this.structural('pages.skineditor.history.duplicate', () => {
+                const copies: string[] = [];
+                for (const nodeId of ids) {
+                    const current = this.doc.find(nodeId)!;
+                    const copy = cloneNode(current.node, false);
+                    copy.name = this.translate('pages.skineditor.layers.copyName', {name: current.node.name});
+                    current.siblings.splice(current.index, 0, copy);
+                    copies.push(copy.id);
+                }
+                this.selectedNodeIds = copies;
+                this.activeLayerId = copies[copies.length - 1]!;
+            });
+            return;
+        }
         this.structural('pages.skineditor.history.duplicate', () => {
             const copy = cloneNode(location.node, false);
             copy.name = this.translate('pages.skineditor.layers.copyName', {name: location.node.name});
@@ -540,6 +639,10 @@ export class SkinEditor {
     deleteNode(id: string) {
         const location = this.doc.find(id);
         if (!location) return;
+        if (this.multiSelectedIds && this.isNodeSelected(id)) {
+            this.deleteSelectedNodes();
+            return;
+        }
         this.structural('pages.skineditor.history.delete', () => {
             location.siblings.splice(location.index, 1);
             const next = location.siblings[location.index] ?? location.siblings[location.index - 1] ?? location.parent;
@@ -606,6 +709,38 @@ export class SkinEditor {
 
     private lastPropertyEdit: { id: string, key: string, before: unknown, after: unknown, time: number } | null = null;
 
+    setSelectedProperty<K extends 'visible' | 'locked' | 'opacity' | 'blend' | 'clip'>(key: K, value: unknown, merge: boolean = false) {
+        const nodes = this.selectedNodes.filter(node => key in node);
+        if (nodes.length <= 1) {
+            if (nodes[0]) this.setNodeProperty(nodes[0].id, key, value, merge);
+            return;
+        }
+        const records = nodes as unknown as Record<string, unknown>[];
+        const ids = nodes.map(node => node.id);
+        const before = records.map(node => node[key]);
+        if (before.every(entry => entry === value)) return;
+        records.forEach(node => node[key] = value);
+        const apply = (values: unknown[]) => {
+            ids.forEach((id, index) => {
+                const current = this.doc.find(id)?.node as unknown as Record<string, unknown> | undefined;
+                if (current) current[key] = values[index];
+            });
+            this.afterHistory();
+        };
+        const after = ids.map(() => value);
+        const editId = ids.join(',');
+        const last = this.lastPropertyEdit;
+        if (merge && last && last.id === editId && last.key === key && Date.now() - last.time < 1500 && this.history.canUndo) {
+            last.after = after;
+            last.time = Date.now();
+        } else {
+            const edit = {id: editId, key: key as string, before: before as unknown, after: after as unknown, time: Date.now()};
+            this.lastPropertyEdit = edit;
+            this.pushHistory({label: 'pages.skineditor.history.property', undo: () => apply(edit.before as unknown[]), redo: () => apply(edit.after as unknown[])});
+        }
+        this.touch();
+    }
+
     setLayerTarget(id: string, target: LayerTarget) {
         const layer = this.doc.findLayer(id);
         if (!layer || layer.target === target) return;
@@ -668,7 +803,36 @@ export class SkinEditor {
         });
     }
 
+    mergeSelected() {
+        const nodes = this.selectedNodes;
+        if (nodes.length < 2) {
+            this.notify('pages.skineditor.messages.mergeImpossible', 'warning');
+            return;
+        }
+        if (nodes.some(node => this.doc.isEffectivelyLocked(node.id))) {
+            this.notify('pages.skineditor.messages.layerLocked', 'warning');
+            return;
+        }
+        const ids = nodes.map(node => node.id);
+        const pixels = new Uint8ClampedArray(this.nodeComposite().buffer.slice(0));
+        this.structural('pages.skineditor.history.mergeSelected', () => {
+            const top = this.doc.find(ids[0]!)!;
+            const merged = createPixelLayer(top.node.name, 'atlas', this.doc.width, this.doc.height, pixels);
+            top.siblings.splice(top.index, 0, merged);
+            for (const id of ids) {
+                const current = this.doc.find(id);
+                if (current) current.siblings.splice(current.index, 1);
+            }
+            this.activeLayerId = merged.id;
+            this.selectedNodeIds = [merged.id];
+        });
+    }
+
     mergeDown(id: string) {
+        if (this.multiSelectedIds && this.isNodeSelected(id)) {
+            this.mergeSelected();
+            return;
+        }
         const location = this.doc.find(id);
         if (location?.node.kind === 'group') {
             this.mergeGroup(id);
@@ -717,7 +881,7 @@ export class SkinEditor {
     clearLayer(id: string) {
         const node = this.doc.find(id)?.node;
         if (!node) return;
-        const layers = this.groupLayers(node).filter(layer => !this.doc.isEffectivelyLocked(layer.id));
+        const layers = (this.isNodeSelected(id) ? this.targetLayers() : this.groupLayers(node)).filter(layer => !this.doc.isEffectivelyLocked(layer.id));
         if (!layers.length) return;
         this.structural('pages.skineditor.history.clear', () => {
             for (const layer of layers) this.doc.findLayer(layer.id)?.pixels.fill(0);
@@ -762,7 +926,7 @@ export class SkinEditor {
         const layout = this.layout;
         const count = layout.width * layout.height;
         const mask = new Uint8Array(count);
-        const layers = this.groupLayers();
+        const layers = this.targetLayers();
         if (!layers.length) return mask;
         const parts = this.selectedMask;
         for (let i = 0; i < count; i++) {
@@ -834,7 +998,7 @@ export class SkinEditor {
         return atlasToStorage(layout, layer.target, index);
     }
 
-    private groupLayers(node: LayerNode | null = this.activeNode): PixelLayer[] {
+    private groupLayers(node: LayerNode | null): PixelLayer[] {
         if (!node) return [];
         if (node.kind === 'layer') return [node];
         const out: PixelLayer[] = [];
@@ -849,20 +1013,20 @@ export class SkinEditor {
     }
 
     private editTargets(): PixelLayer[] | null {
-        const node = this.activeNode;
-        if (!node || node.kind === 'layer') {
+        const nodes = this.selectedNodes;
+        if (nodes.length <= 1 && (!nodes[0] || nodes[0].kind === 'layer')) {
             const layer = this.canStartStroke();
             return layer ? [layer] : null;
         }
-        if (this.doc.isEffectivelyLocked(node.id)) {
+        if (nodes.every(node => this.doc.isEffectivelyLocked(node.id))) {
             this.notify('pages.skineditor.messages.layerLocked', 'warning');
             return null;
         }
-        if (!this.doc.isEffectivelyVisible(node.id)) {
+        if (nodes.every(node => !this.doc.isEffectivelyVisible(node.id))) {
             this.notify('pages.skineditor.messages.layerHidden', 'warning');
             return null;
         }
-        const layers = this.groupLayers(node).filter(layer => !this.doc.isEffectivelyLocked(layer.id) && this.doc.isEffectivelyVisible(layer.id));
+        const layers = this.targetLayers().filter(layer => !this.doc.isEffectivelyLocked(layer.id) && this.doc.isEffectivelyVisible(layer.id));
         if (!layers.length) {
             this.notify('pages.skineditor.messages.groupEmpty', 'warning');
             return null;
@@ -882,8 +1046,15 @@ export class SkinEditor {
         return this.stroke ? [this.stroke, ...this.extraStrokes] : [];
     }
 
-    private nodeComposite(node: LayerNode | null = this.activeNode): Uint32Array {
+    private nodeComposite(target?: LayerNode | null): Uint32Array {
         const count = this.layout.width * this.layout.height;
+        const nodes = target === undefined ? this.selectedNodes : target ? [target] : [];
+        if (nodes.length > 1) {
+            const temp = new SkinDocument('selection', this.doc.format, this.doc.model, nodes);
+            const composite = compositeDocument(temp, this.layout);
+            return new Uint32Array(composite.buffer, composite.byteOffset, count);
+        }
+        const node = nodes[0];
         if (!node) return new Uint32Array(count);
         if (node.kind === 'layer') {
             const out = new Uint32Array(count);
@@ -1947,7 +2118,7 @@ export class SkinEditor {
         const layout = this.layout;
         const count = layout.width * layout.height;
         const filter = colors ? new Set(colors) : null;
-        const layers = scope === 'image' ? this.doc.allLayers() : this.groupLayers();
+        const layers = scope === 'image' ? this.doc.allLayers() : this.targetLayers();
         for (const layer of layers) {
             if (this.doc.isEffectivelyLocked(layer.id)) continue;
             const dest = destTable(layout, layer.target);
@@ -2043,7 +2214,8 @@ export class SkinEditor {
     toggleClip(id: string | null = this.activeLayerId) {
         const layer = this.doc.findLayer(id);
         if (!layer) return;
-        this.setNodeProperty(layer.id, 'clip', !layer.clip);
+        if (this.multiSelectedIds && this.isNodeSelected(layer.id)) this.setSelectedProperty('clip', !layer.clip);
+        else this.setNodeProperty(layer.id, 'clip', !layer.clip);
     }
 
     computeProblemMask(): Uint8Array {
@@ -2103,6 +2275,21 @@ export class SkinEditor {
     groupActive() {
         const location = this.doc.find(this.activeLayerId);
         if (!location) return;
+        if (this.multiSelectedIds) {
+            const ids = this.selectedNodes.map(node => node.id);
+            this.structural('pages.skineditor.history.group', () => {
+                const top = this.doc.find(ids[0]!)!;
+                const group = createGroup(this.translate('pages.skineditor.layers.defaultGroup'));
+                top.siblings.splice(top.index, 0, group);
+                for (const id of ids) {
+                    const current = this.doc.find(id)!;
+                    group.children.push(current.siblings.splice(current.index, 1)[0]!);
+                }
+                this.activeLayerId = group.id;
+                this.selectedNodeIds = [group.id];
+            });
+            return;
+        }
         this.structural('pages.skineditor.history.group', () => {
             const group = createGroup(this.translate('pages.skineditor.layers.defaultGroup'), [location.node]);
             location.siblings.splice(location.index, 1, group);
@@ -2129,17 +2316,18 @@ export class SkinEditor {
             if (!cut) this.duplicateNode(node.id);
             return;
         }
-        if (cut && this.doc.isEffectivelyLocked(node.id)) {
+        if (cut && this.selectedNodes.every(entry => this.doc.isEffectivelyLocked(entry.id))) {
             this.notify('pages.skineditor.messages.layerLocked', 'warning');
             return;
         }
         const rect = this.selection;
-        const merged = node.kind === 'group' ? this.nodeComposite(node) : null;
+        const multi = this.selectedNodes.length > 1;
+        const merged = multi || node.kind === 'group' ? this.nodeComposite() : null;
         this.structural(cut ? 'pages.skineditor.history.layerViaCut' : 'pages.skineditor.history.layerViaCopy', () => {
             const count = this.layout.width * this.layout.height;
-            const copy = createPixelLayer(this.nextLayerName(), node.kind === 'layer' ? node.target : 'atlas', this.doc.width, this.doc.height);
+            const copy = createPixelLayer(this.nextLayerName(), !multi && node.kind === 'layer' ? node.target : 'atlas', this.doc.width, this.doc.height);
             const target = new Uint32Array(copy.pixels.buffer);
-            const sources = this.groupLayers(node).filter(layer => !this.doc.isEffectivelyLocked(layer.id));
+            const sources = this.targetLayers().filter(layer => !this.doc.isEffectivelyLocked(layer.id));
             for (let y = rect.y; y < rect.y + rect.h; y++) {
                 for (let x = rect.x; x < rect.x + rect.w; x++) {
                     const atlas = y * this.layout.width + x;
@@ -2154,8 +2342,9 @@ export class SkinEditor {
                     }
                 }
             }
-            if (node.kind === 'layer') copy.blend = node.blend;
-            location.siblings.splice(location.index, 0, copy);
+            if (!multi && node.kind === 'layer') copy.blend = node.blend;
+            const top = multi ? this.doc.find(this.selectedNodes[0]!.id)! : location;
+            top.siblings.splice(top.index, 0, copy);
             this.activeLayerId = copy.id;
         });
     }

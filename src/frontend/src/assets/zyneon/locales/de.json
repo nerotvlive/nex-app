@@ -438,7 +438,9 @@
         "clipHint": "Die Ebene ist nur dort sichtbar, wo die Ebene darunter Pixel hat",
         "makeClip": "Schnittmaske erstellen",
         "unclip": "Schnittmaske lösen",
-        "mergeGroup": "Gruppe zusammenführen"
+        "mergeGroup": "Gruppe zusammenführen",
+        "selectedCount": "{count} Ebenen ausgewählt",
+        "mergeSelected": "Ausgewählte zusammenführen"
       },
       "convert": {
         "open": "Format oder Modell konvertieren",
@@ -499,7 +501,8 @@
           "parts": "Körperteil wählen (Shift fügt hinzu) / alle",
           "fillGradient": "Füllen, Verlauf",
           "hue": "Farbton / Sättigung, Entsättigen",
-          "selectModes": "Auswahl hinzufügen / abziehen (beides: Schnittmenge)"
+          "selectModes": "Auswahl hinzufügen / abziehen (beides: Schnittmenge)",
+          "multiSelect": "Mehrere Ebenen auswählen (Strg: einzeln, Shift: Bereich)"
         },
         "groups": {
           "tools": "Werkzeuge",
@@ -553,7 +556,8 @@
           "posterize": "Tontrennung",
           "replace": "Farben ersetzen"
         },
-        "mergeGroup": "Gruppe zusammenführen"
+        "mergeGroup": "Gruppe zusammenführen",
+        "mergeSelected": "Ausgewählte zusammenführen"
       },
       "messages": {
         "noLayer": "Wähle zuerst eine Ebene aus.",

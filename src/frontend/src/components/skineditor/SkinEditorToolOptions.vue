@@ -19,9 +19,9 @@ const pressureModes: PressureMode[] = ['off', 'opacity', 'size'];
 const wandModes: WandMode[] = ['color', 'face', 'part'];
 const densities = [0.25, 0.5, 0.75];
 const poses: { id: Pose, icon: string }[] = [
-  {id: 'stand', icon: 'icon-person-standing'},
+  {id: 'stand', icon: 'bi bi-person-standing'},
   {id: 'walk', icon: 'icon-footprints'},
-  {id: 'tpose', icon: 'icon-user-round'}
+  {id: 'tpose', icon: 'bi bi-person-arms-up'}
 ];
 const backs: BackAccessory[] = ['none', 'cape', 'elytra'];
 
@@ -155,12 +155,18 @@ const scrollOptions = (event: WheelEvent) => {
       </label>
 
       <div v-if="editor.viewMode !== '2d'" class="flex items-center gap-1 absolute right-2">
-        <button v-for="pose in poses" :key="pose.id" class="zyn-btn compact transparent" :class="{'active-alt': editor.pose === pose.id}" :title="t('pages.skineditor.preview.pose.' + pose.id)" @click="editor.pose = pose.id"><i :class="pose.icon"></i></button>
+        <button v-for="pose in poses" :key="pose.id" class="zyn-btn compact transparent" :class="{'active-alt': editor.pose === pose.id}" :title="t('pages.skineditor.preview.pose.' + pose.id)" @click="editor.pose = pose.id">
+          <i class="mt-px" :class="pose.icon"></i>
+        </button>
         <select class="skin-editor-input text-xs" v-model="editor.backAccessory" :title="t('pages.skineditor.preview.backHint')">
           <option v-for="back in backs" :key="back" :value="back" class="bg-black text-white">{{ t('pages.skineditor.preview.back.' + back) }}</option>
         </select>
-        <button v-if="editor.backAccessory !== 'none'" class="zyn-btn compact transparent" :title="t('pages.skineditor.preview.loadCape')" @click="editor.loadCape()"><i class="icon-folder-open"></i></button>
-        <button class="zyn-btn compact transparent" :class="{'active-alt': editor.voxelOverlay}" :title="t('pages.skineditor.preview.voxel')" @click="editor.voxelOverlay = !editor.voxelOverlay"><i class="icon-boxes"></i></button>
+        <button v-if="editor.backAccessory !== 'none'" class="zyn-btn compact transparent" :title="t('pages.skineditor.preview.loadCape')" @click="editor.loadCape()">
+          <i class="icon-folder-open"></i>
+        </button>
+        <button class="zyn-btn compact transparent" :class="{'active-alt': editor.voxelOverlay}" :title="t('pages.skineditor.preview.voxel')" @click="editor.voxelOverlay = !editor.voxelOverlay">
+          <i class="icon-boxes"></i>
+        </button>
       </div>
     </div>
   </div>

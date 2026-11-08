@@ -210,6 +210,7 @@ const shortcuts: { title: string, keys: [string, string][] }[] = [
   },
   {
     title: 'pages.skineditor.help.groups.layers', keys: [
+      ['Ctrl+Click / Shift+Click', 'pages.skineditor.help.keys.multiSelect'],
       ['Ctrl+Shift+N', 'pages.skineditor.layers.add'],
       ['Ctrl+J / Ctrl+Shift+J', 'pages.skineditor.help.keys.layerVia'],
       ['Ctrl+E / Ctrl+Shift+E', 'pages.skineditor.help.keys.merge'],
