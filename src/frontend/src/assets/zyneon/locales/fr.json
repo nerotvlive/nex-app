@@ -162,7 +162,10 @@
         "skinsFolder": "Dossier des skins",
         "newOutfit": "Nouvelle tenue",
         "createEmptyOutfitHint": "Créer une nouvelle tenue vierge et l’ouvrir dans l’éditeur de skins",
-        "newCharacterName": "Nouveau personnage"
+        "newCharacterName": "Nouveau personnage",
+        "currentSkin": "Skin actuel",
+        "current": "Actuel",
+        "saveCurrentHint": "Enregistrer le skin actuel dans la bibliothèque"
       },
       "capes": {
         "title": "Capes",

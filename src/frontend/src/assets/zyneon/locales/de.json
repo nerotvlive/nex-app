@@ -162,7 +162,10 @@
         "skinsFolder": "Skin-Ordner",
         "newOutfit": "Neues Outfit",
         "createEmptyOutfitHint": "Ein neues, leeres Outfit anlegen und im Skin-Editor öffnen",
-        "newCharacterName": "Neuer Charakter"
+        "newCharacterName": "Neuer Charakter",
+        "currentSkin": "Aktueller Skin",
+        "current": "Aktuell",
+        "saveCurrentHint": "Aktuellen Skin in der Library speichern"
       },
       "capes": {
         "title": "Capes",

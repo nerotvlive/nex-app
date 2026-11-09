@@ -7,8 +7,7 @@ import {base64ToBytes, createLibraryCharacter, deleteLibraryEntry, fetchPlayerSk
 
 const BUNDLED_PREFIX = 'bundled:';
 const LOOSE_ID = 'loose';
-const LEGACY_PLAYER_OUTFIT = 'Minecraft';
-const PLAYER_TEXTURE_KEY = 'nexapp.skins.playerTexture.';
+const LIVE_PREFIX = 'live:';
 
 export interface SkinOutfit {
     id: string;
@@ -16,6 +15,7 @@ export interface SkinOutfit {
     source: string;
     path: string | null;
     bundled: boolean;
+    live: boolean;
 }
 
 export interface SkinCharacter {
@@ -80,7 +80,7 @@ function fileOutfit(file: LibraryFile): SkinOutfit {
     const bytes = file.data ? base64ToBytes(file.data) : null;
     if (bytes) fileBytes.set(id, bytes);
     const title = bytes ? documentName(bytes) : null;
-    return {id, name: title ? outfitNameOf(title) : file.name, source: id, path: file.path, bundled: false};
+    return {id, name: title ? outfitNameOf(title) : file.name, source: id, path: file.path, bundled: false, live: false};
 }
 
 export function groupBundledSkins(sources: string[]): SkinCharacter[] {
@@ -96,7 +96,7 @@ export function groupBundledSkins(sources: string[]): SkinCharacter[] {
             character = {id, name: characterName, path: null, bundled: true, loose: false, uuid: null, outfits: []};
             characters.set(id, character);
         }
-        character.outfits.push({id: source, name: outfitName, source, path: null, bundled: true});
+        character.outfits.push({id: source, name: outfitName, source, path: null, bundled: true, live: false});
     }
     return [...characters.values()];
 }
@@ -191,67 +191,72 @@ export function editOutfits(outfits: SkinOutfit[]) {
     openInSkinEditor(outfits.filter(outfit => !outfit.bundled && outfit.path).map(outfit => outfit.path!));
 }
 
-export interface PlayerSync {
+export interface PlayerSkinState {
     name: string;
     uuid: string;
     texture: string;
-    cape: Uint8Array | null;
-    changed: boolean;
+    bytes: Uint8Array;
 }
 
 function textureId(url: string): string {
     return (url.split('/').pop() ?? '').replace(/[^0-9a-zA-Z]/g, '') || 'skin';
 }
 
-function storedTexture(key: string): string | null {
-    try {
-        return localStorage.getItem(PLAYER_TEXTURE_KEY + key);
-    } catch {
-        return null;
-    }
-}
-
-export function playerTexture(uuid: string): string | null {
-    const key = uuidKey(uuid);
-    const url = key ? storedTexture(key) : null;
-    return url ? textureId(url) : null;
-}
-
-async function removeLegacyPlayerFiles(name: string, characters: SkinCharacter[]): Promise<boolean> {
-    const character = characters.find(entry => !entry.uuid && !entry.loose && entry.path && characterKey(entry.name) === characterKey(name));
-    if (!character) return false;
-    const own = character.outfits.filter(outfit => !outfit.bundled && outfit.path);
-    const legacy = own.filter(outfit => [characterKey(name), characterKey(LEGACY_PLAYER_OUTFIT)].includes(characterKey(fileName(outfit.path!))));
-    if (!legacy.length) return false;
-    if (!character.bundled && legacy.length === own.length) await deleteLibraryEntry(character.path!);
-    else for (const outfit of legacy) await deleteLibraryEntry(outfit.path!);
-    return true;
-}
-
-export async function syncPlayerSkin(username: string, uuid: string, characters: SkinCharacter[]): Promise<PlayerSync | null> {
+export async function loadPlayerSkin(username: string, uuid: string): Promise<PlayerSkinState | null> {
     const key = uuidKey(uuid);
     if (!hasSkinLibrary() || !key) return null;
     const skin = await fetchPlayerSkin(uuid);
     if (!skin) return null;
     const name = skin.name || username;
-    const texture = textureId(skin.url);
-    const migrated = await removeLegacyPlayerFiles(name, characters);
-    const result: PlayerSync = {name, uuid: key, texture, cape: skin.cape, changed: migrated};
-    const character = characters.find(entry => entry.uuid === key) ?? null;
-    const outfits = character?.outfits ?? [];
-    if (outfits.some(outfit => outfit.path && fileName(outfit.path) === texture)) return result;
-    if (character && !migrated && storedTexture(key) === skin.url) return result;
-    const used = new Set(outfits.map(outfit => outfit.name.toLowerCase()));
-    let outfitName = name;
-    for (let i = 2; used.has(outfitName.toLowerCase()); i++) outfitName = `${name} ${i}`;
-    const title = skinTitle(name, outfitName);
-    await writeLibraryOutfit(uuidFolder(key), texture, withTitle(await toNexSkin(skin.bytes, title, skin.model), title), true);
-    try {
-        localStorage.setItem(PLAYER_TEXTURE_KEY + key, skin.url);
-    } catch {
-        console.warn('[Skins] Could not remember the player skin');
+    return {name, uuid: key, texture: textureId(skin.url), bytes: await toNexSkin(skin.bytes, name, skin.model)};
+}
+
+const fingerprints = new Map<string, Promise<string>>();
+
+async function fingerprint(source: SkinSource): Promise<string> {
+    const {composite, layout, model} = await loadSkinPreview(source);
+    let hash = 0x811c9dc5;
+    for (let i = 0; i < composite.length; i += 4) {
+        const visible = composite[i + 3]! > 0;
+        for (let channel = 0; channel < 4; channel++) hash = Math.imul(hash ^ (visible ? composite[i + channel]! : 0), 0x01000193);
     }
-    return {...result, changed: true};
+    return `${layout.format}:${model}:${(hash >>> 0).toString(16)}`;
+}
+
+function outfitFingerprint(outfit: SkinOutfit): Promise<string> {
+    let value = fingerprints.get(outfit.id);
+    if (!value) {
+        value = outfitSource(outfit).then(fingerprint);
+        value.catch(() => fingerprints.delete(outfit.id));
+        fingerprints.set(outfit.id, value);
+    }
+    return value;
+}
+
+export async function applyPlayerSkin(characters: SkinCharacter[], skin: PlayerSkinState, liveName: string): Promise<string> {
+    const target = await fingerprint(skin.bytes);
+    for (const character of characters) {
+        for (const outfit of character.outfits) {
+            if (outfit.live) continue;
+            if (await outfitFingerprint(outfit).catch(() => null) === target) return outfit.id;
+        }
+    }
+    const id = LIVE_PREFIX + skin.uuid + ':' + skin.texture;
+    fileBytes.set(id, skin.bytes);
+    const live: SkinOutfit = {id, name: liveName, source: id, path: null, bundled: false, live: true};
+    const character = characters.find(entry => entry.uuid === skin.uuid);
+    if (character) character.outfits.unshift(live);
+    else characters.unshift({id: LIVE_PREFIX + skin.uuid, name: skin.name, path: null, bundled: false, loose: false, uuid: skin.uuid, outfits: [live]});
+    return id;
+}
+
+export async function savePlayerSkin(characters: SkinCharacter[], skin: PlayerSkinState): Promise<string> {
+    const outfits = characters.find(entry => entry.uuid === skin.uuid)?.outfits.filter(outfit => !outfit.live) ?? [];
+    const used = new Set(outfits.map(outfit => outfit.name.toLowerCase()));
+    let outfitName = skin.name;
+    for (let i = 2; used.has(outfitName.toLowerCase()); i++) outfitName = `${skin.name} ${i}`;
+    const title = skinTitle(skin.name, outfitName);
+    return writeLibraryOutfit(uuidFolder(skin.uuid), skin.texture, withTitle(skin.bytes, title), false);
 }
 
 const FRONT_LAYOUT: Record<PartId, [number, number]> = {

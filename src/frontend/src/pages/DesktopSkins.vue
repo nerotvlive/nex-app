@@ -3,7 +3,7 @@ import SkinEditor from "../components/skineditor/SkinEditor.vue";
 import SkinViewer3D from "../components/skineditor/SkinViewer3D.vue";
 import SkinThumbnail from "../components/skineditor/SkinThumbnail.vue";
 import type {SkinCharacter, SkinOutfit, SkinSource} from "../assets/zyneon/scripts/skineditor";
-import {capeThumbnail, canUseLibraryFiles, fetchPlayerCapes, type PlayerCape, createCharacter, createOutfitFrom, deleteEntry, editOutfits, importOutfit, loadLibrary, openLibraryFolder, openSkinFile, openSkinFolder, outfitNameOf, outfitSource, playerTexture, renameEntry, renameOutfit, syncPlayerSkin, uuidKey} from "../assets/zyneon/scripts/skineditor";
+import {applyPlayerSkin, capeThumbnail, canUseLibraryFiles, fetchPlayerCapes, type PlayerCape, type PlayerSkinState, createCharacter, createOutfitFrom, deleteEntry, editOutfits, importOutfit, loadLibrary, loadPlayerSkin, openLibraryFolder, openSkinFile, openSkinFolder, outfitNameOf, outfitSource, renameEntry, renameOutfit, savePlayerSkin, uuidKey} from "../assets/zyneon/scripts/skineditor";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import DesktopSideMenu from "../components/shared/DesktopSideMenu.vue";
 import {useI18n} from "vue-i18n";
@@ -16,16 +16,16 @@ const { t } = useI18n();
 const view = ref("library");
 const skinSource = ref<SkinSource | null>(null);
 const bundledSkins: string[] = [
-  "/assets/zyneon/img/skins/Alex (Classic).nexskin",
   "/assets/zyneon/img/skins/Alex (Slim).nexskin",
-  "/assets/zyneon/img/skins/Ari (Classic).nexskin",
+  "/assets/zyneon/img/skins/Alex (Classic).nexskin",
   "/assets/zyneon/img/skins/Ari (Slim).nexskin",
-  "/assets/zyneon/img/skins/Efe (Classic).nexskin",
+  "/assets/zyneon/img/skins/Ari (Classic).nexskin",
   "/assets/zyneon/img/skins/Efe (Slim).nexskin",
+  "/assets/zyneon/img/skins/Efe (Classic).nexskin",
   "/assets/zyneon/img/skins/Kai (Classic).nexskin",
   "/assets/zyneon/img/skins/Kai (Slim).nexskin",
-  "/assets/zyneon/img/skins/Makena (Classic).nexskin",
   "/assets/zyneon/img/skins/Makena (Slim).nexskin",
+  "/assets/zyneon/img/skins/Makena (Classic).nexskin",
   "/assets/zyneon/img/skins/Mark Mann (Classic).nexskin",
   "/assets/zyneon/img/skins/Mark Mann (Slim).nexskin",
   "/assets/zyneon/img/skins/Noor (Classic).nexskin",
@@ -34,6 +34,8 @@ const bundledSkins: string[] = [
   "/assets/zyneon/img/skins/Steve (Slim).nexskin",
   "/assets/zyneon/img/skins/Sunny (Classic).nexskin",
   "/assets/zyneon/img/skins/Sunny (Slim).nexskin",
+  "/assets/zyneon/img/skins/Wilma Woman (Slim).nexskin",
+  "/assets/zyneon/img/skins/Wilma Woman (Classic).nexskin",
   "/assets/zyneon/img/skins/Zuri (Classic).nexskin",
   "/assets/zyneon/img/skins/Zuri (Slim).nexskin"
 ];
@@ -49,6 +51,8 @@ const renaming = ref<{ path: string, value: string } | null>(null);
 const confirmDelete = ref<{ path: string, name: string, character: boolean } | null>(null);
 const playerName = ref(username);
 const playerKey = uuidKey(uuid);
+const playerSkin = ref<PlayerSkinState | null>(null);
+const currentOutfitId = ref<string | null>(null);
 const capes = ref<PlayerCape[]>([]);
 const capeImages = ref<Record<string, string>>({});
 const selectedCapeId = ref<string | null>(null);
@@ -76,7 +80,9 @@ const report = (cause: unknown) => {
 
 const reload = async (characterId: string | null = selectedCharacterId.value, outfitPath: string | null = null) => {
   const previousOutfit = selectedOutfit.value;
-  characters.value = await loadLibrary(bundledSkins, libraryNames());
+  const library = await loadLibrary(bundledSkins, libraryNames());
+  currentOutfitId.value = playerSkin.value ? await applyPlayerSkin(library, playerSkin.value, t("pages.skins.library.currentSkin")) : null;
+  characters.value = library;
   const fallback = characters.value.find(entry => entry.outfits.some(outfit => outfit.source === defaultSkin));
   const character = characters.value.find(entry => entry.id === characterId || (!!outfitPath && entry.outfits.some(outfit => outfit.path === outfitPath))) ?? fallback ?? characters.value[0] ?? null;
   const outfit = character?.outfits.find(entry => (outfitPath && entry.path === outfitPath) || (!outfitPath && previousOutfit && (entry.id === previousOutfit.id || (!!previousOutfit.path && entry.path === previousOutfit.path))))
@@ -179,20 +185,23 @@ const onConfirmKey = (event: KeyboardEvent) => {
   event.preventDefault();
 };
 
-const selectPlayer = (texture: string | null) => {
-  const character = characters.value.find(entry => isPlayer(entry));
-  if (!character) return;
-  const outfit = texture ? character.outfits.find(entry => !!entry.path && /[\\/]([^\\/]+)\.nexskin$/i.exec(entry.path)?.[1] === texture) ?? null : null;
-  selectCharacter(character, outfit);
+const selectCurrent = () => {
+  const character = characters.value.find(entry => entry.outfits.some(outfit => outfit.id === currentOutfitId.value));
+  if (character) selectCharacter(character, character.outfits.find(outfit => outfit.id === currentOutfitId.value) ?? null);
 };
 
-const syncPlayer = () => run(async () => {
-  const result = await syncPlayerSkin(username, uuid, characters.value);
-  if (!result) return;
-  const renamed = playerName.value !== result.name;
-  playerName.value = result.name;
-  if (result.changed || renamed) characters.value = await loadLibrary(bundledSkins, libraryNames());
-  selectPlayer(result.texture);
+const loadPlayer = () => run(async () => {
+  const skin = await loadPlayerSkin(username, uuid);
+  if (!skin) return;
+  playerSkin.value = skin;
+  playerName.value = skin.name;
+  await reload();
+  selectCurrent();
+});
+
+const savePlayer = () => run(async () => {
+  if (!playerSkin.value) return;
+  await reload(null, await savePlayerSkin(characters.value, playerSkin.value));
 });
 
 const selectCape = (id: string | null) => {
@@ -223,8 +232,7 @@ onMounted(async () => {
   window.addEventListener('focus', onFocus);
   window.addEventListener('keydown', onConfirmKey);
   await run(() => reload());
-  selectPlayer(playerTexture(uuid));
-  await Promise.all([syncPlayer(), loadCapes()]);
+  await Promise.all([loadPlayer(), loadCapes()]);
 });
 
 onBeforeUnmount(() => {
@@ -286,17 +294,21 @@ onBeforeUnmount(() => {
           <span v-if="isPlayer(selectedCharacter)" class="skins-badge">{{ t("pages.skins.library.player") }}</span>
           <div class="grow"></div>
           <template v-if="!selectedCharacter.bundled">
-            <button class="zyn-btn compact darker" :title="t('pages.skins.library.editCharacterHint')" @click="editOutfits(selectedCharacter.outfits)"><i class="bi bi-pencil"></i><span>{{ t("pages.skins.library.edit") }}</span></button>
+            <button v-if="selectedCharacter.outfits.some(outfit => outfit.path)" class="zyn-btn compact darker" :title="t('pages.skins.library.editCharacterHint')" @click="editOutfits(selectedCharacter.outfits)"><i class="bi bi-pencil"></i><span>{{ t("pages.skins.library.edit") }}</span></button>
             <button v-if="libraryFiles && (selectedCharacter.path || selectedCharacter.loose)" class="zyn-btn compact darker" :title="t('pages.skins.library.openFolder')" @click="selectedCharacter.path ? openLibraryFolder(selectedCharacter.path) : openSkinFolder()"><i class="bi bi-folder2-open"></i></button>
-            <button v-if="!selectedCharacter.loose" class="zyn-btn compact darker" :title="t('pages.skins.library.deleteCharacter')" @click="askDelete(selectedCharacter.path, selectedCharacter.name, true)"><i class="bi bi-trash"></i></button>
+            <button v-if="!selectedCharacter.loose && selectedCharacter.path" class="zyn-btn compact darker" :title="t('pages.skins.library.deleteCharacter')" @click="askDelete(selectedCharacter.path, selectedCharacter.name, true)"><i class="bi bi-trash"></i></button>
           </template>
         </header>
         <div class="skins-outfits">
-          <div v-for="outfit in selectedCharacter.outfits" :key="outfit.id" class="skins-outfit" :class="{'active': outfit.id === selectedOutfitId}" @click="selectOutfit(outfit)">
+          <div v-for="outfit in selectedCharacter.outfits" :key="outfit.id" class="skins-outfit" :class="{'active': outfit.id === selectedOutfitId, 'live': outfit.live}" @click="selectOutfit(outfit)">
             <SkinThumbnail :outfit="outfit"/>
+            <span v-if="outfit.id === currentOutfitId && !outfit.live" class="skins-badge skins-outfit-current">{{ t("pages.skins.library.current") }}</span>
             <input v-if="renaming && renaming.path === outfit.path" v-model="renaming.value" class="skins-rename" spellcheck="false" @click.stop @keydown.enter="commitRename" @keydown.escape="renaming = null" @blur="commitRename">
-            <span v-else class="skins-outfit-name" :title="outfit.bundled ? outfit.name : t('pages.skins.library.renameHint')" @dblclick.stop="!outfit.bundled && startRename(outfit.path, outfit.name)">{{ outfit.name }}</span>
-            <div v-if="!outfit.bundled" class="skins-outfit-actions">
+            <span v-else class="skins-outfit-name" :title="outfit.bundled || outfit.live ? outfit.name : t('pages.skins.library.renameHint')" @dblclick.stop="!outfit.bundled && !outfit.live && startRename(outfit.path, outfit.name)">{{ outfit.name }}</span>
+            <div v-if="outfit.live && libraryFiles" class="skins-outfit-actions">
+              <button :title="t('pages.skins.library.saveCurrentHint')" @click.stop="savePlayer"><i class="bi bi-floppy"></i></button>
+            </div>
+            <div v-else-if="!outfit.bundled && !outfit.live" class="skins-outfit-actions">
               <button :title="t('pages.skins.library.edit')" @click.stop="editOutfits([outfit])"><i class="bi bi-pencil"></i></button>
               <button :title="t('pages.skins.library.deleteOutfit')" @click.stop="askDelete(outfit.path, outfit.name, false)"><i class="bi bi-trash"></i></button>
             </div>
@@ -583,6 +595,16 @@ onBeforeUnmount(() => {
   &:hover .skins-outfit-actions {
     opacity: 1;
   }
+}
+
+.skins-outfit.live .skins-outfit-actions {
+  opacity: 1;
+}
+
+.skins-outfit-current {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
 }
 
 .skins-outfit-name {
