@@ -2,7 +2,7 @@
   "name": "zyneon-desktop",
   "private": true,
   "version": "27.0.13",
-  "license": "MIT",
+  "license": "GPLv3",
   "type": "module",
   "scripts": {
     "dev": "vite",
