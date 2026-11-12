@@ -10,6 +10,7 @@ import {
     LineLoop,
     Mesh,
     MeshBasicMaterial,
+    type MeshBasicMaterialParameters,
     MOUSE,
     NearestFilter,
     PerspectiveCamera,
@@ -235,11 +236,11 @@ export class SkinRenderer3D {
         this.texture.needsUpdate = true;
 
         for (const material of [this.baseMaterial, this.overlayMaterial, this.ghostMaterial, this.lockedMaterial, this.lockedOverlayMaterial]) material?.dispose();
-        this.baseMaterial = new MeshBasicMaterial({map: this.texture, vertexColors: true, side: FrontSide});
-        this.overlayMaterial = new MeshBasicMaterial({map: this.texture, vertexColors: true, side: DoubleSide, transparent: true, alphaTest: 0.004});
-        this.ghostMaterial = new MeshBasicMaterial({map: this.texture, vertexColors: true, side: FrontSide, transparent: true, opacity: 0.16, depthWrite: false});
-        this.lockedMaterial = new MeshBasicMaterial({map: this.texture, vertexColors: true, side: FrontSide, color: 0x5c5c66});
-        this.lockedOverlayMaterial = new MeshBasicMaterial({map: this.texture, vertexColors: true, side: DoubleSide, transparent: true, alphaTest: 0.004, color: 0x5c5c66});
+        this.baseMaterial = faceMaterial({map: this.texture, vertexColors: true, side: FrontSide});
+        this.overlayMaterial = faceMaterial({map: this.texture, vertexColors: true, side: DoubleSide, transparent: true, alphaTest: 0.004});
+        this.ghostMaterial = faceMaterial({map: this.texture, vertexColors: true, side: FrontSide, transparent: true, opacity: 0.16, depthWrite: false});
+        this.lockedMaterial = faceMaterial({map: this.texture, vertexColors: true, side: FrontSide, color: 0x5c5c66});
+        this.lockedOverlayMaterial = faceMaterial({map: this.texture, vertexColors: true, side: DoubleSide, transparent: true, alphaTest: 0.004, color: 0x5c5c66});
     }
 
     private buildMeshes() {
@@ -336,7 +337,7 @@ export class SkinRenderer3D {
         this.backTexture.flipY = false;
         this.backTexture.colorSpace = SRGBColorSpace;
         this.backTexture.needsUpdate = true;
-        this.backMaterial = new MeshBasicMaterial({map: this.backTexture, vertexColors: true, side: DoubleSide, alphaTest: 0.5});
+        this.backMaterial = faceMaterial({map: this.backTexture, vertexColors: true, side: DoubleSide, alphaTest: 0.5});
         const add = (u: number, v: number, size: Vec3, min: Vec3, mirrored: boolean, rotation: Vec3, position: Vec3) => {
             const box: BoxDef = {id: -1, part: 'body', kind: 'base', min, size, inflate: 0, faces: buildFaces(u, v, size, min, mirrored)};
             const geometry = buildBoxGeometry(box, 64 * width / Math.max(64, width), 64 * height / Math.max(64, width), this.shading);
@@ -655,9 +656,24 @@ function pivotOf(part: PartId, layout: SkinLayout): Vec3 {
     }
 }
 
+function faceMaterial(parameters: MeshBasicMaterialParameters): MeshBasicMaterial {
+    const material = new MeshBasicMaterial(parameters);
+    material.onBeforeCompile = shader => {
+        shader.vertexShader = shader.vertexShader
+            .replace('void main() {', 'attribute vec4 uvBounds;\nvarying vec4 vUvBounds;\nvoid main() {')
+            .replace('#include <uv_vertex>', '#include <uv_vertex>\n\tvUvBounds = uvBounds;');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('void main() {', 'varying vec4 vUvBounds;\nvoid main() {')
+            .replace('#include <map_fragment>', '#ifdef USE_MAP\n\tdiffuseColor *= texture2D( map, clamp( vMapUv, vUvBounds.xy, vUvBounds.zw ) );\n#endif');
+    };
+    material.customProgramCacheKey = () => 'skin-face-clamp';
+    return material;
+}
+
 function buildBoxGeometry(box: BoxDef, textureWidth: number, textureHeight: number, shading: boolean): BufferGeometry {
     const positions = new Float32Array(6 * 4 * 3);
     const uvs = new Float32Array(6 * 4 * 2);
+    const bounds = new Float32Array(6 * 4 * 4);
     const colors = new Float32Array(6 * 4 * 3);
     const indices: number[] = [];
     box.faces.forEach((face, faceIndex) => {
@@ -669,6 +685,7 @@ function buildBoxGeometry(box: BoxDef, textureWidth: number, textureHeight: numb
             positions.set(p, vertex * 3);
             uvs[vertex * 2] = (face.rect.x + s) / textureWidth;
             uvs[vertex * 2 + 1] = (face.rect.y + t) / textureHeight;
+            bounds.set([(face.rect.x + 0.5) / textureWidth, (face.rect.y + 0.5) / textureHeight, (face.rect.x + Math.max(0.5, w - 0.5)) / textureWidth, (face.rect.y + Math.max(0.5, h - 0.5)) / textureHeight], vertex * 4);
             const value = shading ? FACE_SHADE[face.dir] ?? 1 : 1;
             colors.set([value, value, value], vertex * 3);
         });
@@ -684,6 +701,7 @@ function buildBoxGeometry(box: BoxDef, textureWidth: number, textureHeight: numb
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new BufferAttribute(positions, 3));
     geometry.setAttribute('uv', new BufferAttribute(uvs, 2));
+    geometry.setAttribute('uvBounds', new BufferAttribute(bounds, 4));
     geometry.setAttribute('color', new BufferAttribute(colors, 3));
     geometry.setIndex(indices);
     geometry.computeBoundingSphere();
