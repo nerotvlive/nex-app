@@ -1,4 +1,7 @@
 import {WindowControls} from "./windowControls.ts";
+import { ref } from 'vue';
+
+const authenticated = ref(false);
 
 export class settings {
 
@@ -197,6 +200,14 @@ export class settings {
             }
         }
     }
+
+    public isAuthenticated = (): boolean => {
+        return authenticated.value;
+    };
+
+    public setAuthenticated = (value: boolean): void => {
+        authenticated.value = value;
+    };
 
     public toggleMenuExpanded() {
         this.setMenuExpanded(!this.isMenuExpanded);

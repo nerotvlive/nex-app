@@ -18,6 +18,8 @@ onMounted(()=>{
   if (secondarySelect.value) {
     secondarySelect.value.value = "/settings";
   }
+  window.isAuthenticated = ZyneonSettings.isAuthenticated;
+  window.setAuthenticated = ZyneonSettings.setAuthenticated;
 })
 </script>
 
@@ -87,6 +89,79 @@ onMounted(()=>{
             <a @click="WindowControls.openOld" class="zyn-btn compact">
               <i class="bi bi-play"/>
               {{ t('pages.tools.old.open') }}
+            </a>
+          </div>
+        </template>
+      </CardStructured>
+      <CardStructured v-if="!ZyneonSettings.isAuthenticated()" background="var(--zyn-ov-brighter-100)" border="1px solid var(--zyn-ov-brighter-200)">
+        <template #header>
+          <strong class="text-white">{{ t('pages.tools.authentication.title') }}</strong>
+        </template>
+        <template #content>
+          <span v-if="!ZyneonSettings.isAuthenticated()">{{ t('pages.tools.authentication.description') }}<br></span>
+        </template>
+        <template #footer>
+          <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
+            <a v-if="!ZyneonSettings.isAuthenticated()" class="zyn-btn compact">
+              <i class="bi bi-microsoft"/>
+              {{ t('pages.tools.authentication.login') }}
+            </a>
+          </div>
+        </template>
+      </CardStructured>
+      <CardStructured v-if="ZyneonSettings.isAuthenticated()" background="var(--zyn-ov-brighter-100)" border="1px solid var(--zyn-ov-brighter-200)">
+        <template #header>
+          <strong class="text-white">{{ t('pages.tools.minecraft.title') }}</strong>
+        </template>
+        <template #content>
+          <span v-if="ZyneonSettings.isAuthenticated()">{{ t('pages.tools.authentication.loggedIn') }}<br></span>
+          {{ t('pages.tools.minecraft.description') }}<br>
+          <div class="flex items-center gap-1">
+            <strong>{{ t('pages.tools.minecraft.version') }}</strong>
+            <select ref="minecraftVersionSelect" class="zyn-btn compact mt-2">
+              <option value="latest">{{ t('pages.tools.minecraft.latest') }}</option>
+            </select>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex items-center gap-1">
+              <strong>{{ t('pages.tools.minecraft.modloader') }}</strong>
+              <select ref="minecraftModloaderSelect" class="zyn-btn compact mt-2">
+                <option value="vanilla">{{ t('pages.tools.minecraft.noModloader') }}</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-1">
+              <strong>{{ t('pages.tools.minecraft.modloaderVersion') }}</strong>
+              <select ref="minecraftModloaderVersionSelect" class="zyn-btn compact mt-2">
+                <option value="latest">{{ t('pages.tools.minecraft.latest') }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <strong>{{ t('pages.tools.minecraft.directory') }}</strong>
+            <input type="text" ref="minecraftPath" class="zyn-btn compact mt-2 w-full">
+          </div>
+          <div class="flex items-center gap-1">
+            <strong  class="text-nowrap">{{ t('pages.tools.minecraft.jvmArgs') }}</strong>
+            <input type="text" ref="minecraftJvmArgs" class="zyn-btn compact mt-2 w-full">
+          </div>
+          <div class="flex items-center gap-1">
+            <strong class="text-nowrap">{{ t('pages.tools.minecraft.envArgs') }}</strong>
+            <input type="text" ref="minecraftEnvArgs" class="zyn-btn compact mt-2 w-full">
+          </div>
+          <div class="flex items-center gap-1">
+            <strong class="text-nowrap">{{ t('pages.tools.minecraft.java') }}</strong>
+            <input type="text" ref="minecraftJavaCommand" class="zyn-btn compact mt-2 w-full">
+          </div>
+        </template>
+        <template #footer>
+          <div class="flex flex-wrap gap-2 mb-1 h-full flex-1 items-end">
+            <a class="zyn-btn compact">
+              <i class="bi bi-play"/>
+              {{ t('pages.tools.minecraft.launch') }}
+            </a>
+            <a v-if="ZyneonSettings.isAuthenticated()" class="zyn-btn compact">
+              <i class="bi bi-door-open"/>
+              {{ t('pages.tools.authentication.logout') }}
             </a>
           </div>
         </template>

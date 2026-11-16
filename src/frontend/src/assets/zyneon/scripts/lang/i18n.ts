@@ -12,7 +12,7 @@ export const i18n = createI18n<[MessageSchema], 'en' | 'de' | 'fr'>({
     fallbackLocale: 'en',
     messages: {
         en,
-        de,
-        fr
+        de: de as MessageSchema,
+        fr: fr as MessageSchema
     }
 })

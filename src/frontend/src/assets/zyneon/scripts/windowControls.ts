@@ -28,6 +28,8 @@ declare global {
         showFriends?: () => void;
         hideFriends?: () => void;
         toggleFriends?: () => void;
+        isAuthenticated?: () => boolean;
+        setAuthenticated?: (authenticated: boolean) => void;
     }
 }
 

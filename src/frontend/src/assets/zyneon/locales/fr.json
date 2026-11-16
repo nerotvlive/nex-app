@@ -186,11 +186,6 @@
         "reload": "Recharger",
         "restart": "Redémarrer",
         "native": "Basculer la fenêtre native"
-      },
-      "old": {
-        "title": "Lancer l'ancienne fenêtre",
-        "description": "Lance l'ancienne interface utilisateur. (Nécessite une connexion internet)",
-        "open": "Ouvrir"
       }
     },
     "settings": {

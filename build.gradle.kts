@@ -120,19 +120,26 @@ val jpackagePath = javaToolchains.compilerFor {
     languageVersion = JavaLanguageVersion.of(25)
 }.map { it.metadata.installationPath.file("bin/jpackage").asFile.absolutePath }
 
+val prepareJpackageJar = tasks.register<Copy>("prepareJpackageJar") {
+    dependsOn("bootJar")
+    from(tasks.bootJar.get().archiveFile)
+    into(layout.buildDirectory.dir("jpackage-input"))
+    rename { _ -> "nexapp.jar" }
+}
+
 tasks.register<Exec>("buildWindowsBinary") {
     description = "Builds a native Windows binary using jpackage"
-    dependsOn("build")
+    dependsOn(prepareJpackageJar)
     group = "distribution"
     executable = jpackagePath.get()
     args(
         "--type", "app-image",
-        "--input", layout.buildDirectory.dir("libs").get().asFile.absolutePath,
+        "--input", layout.buildDirectory.dir("jpackage-input").get().asFile.absolutePath,
         "--dest", layout.buildDirectory.dir("windows").get().asFile.absolutePath,
         "--name", "NEX App",
         "--app-version", project.version.toString(),
         "--vendor", apexVendor,
-        "--main-jar", tasks.bootJar.get().archiveFileName.get(),
+        "--main-jar", "nexapp.jar",
         "--main-class", "org.springframework.boot.loader.launch.JarLauncher",
         "--icon", file("src/main/resources/icon.ico").absolutePath,
         "--java-options", "--enable-native-access=ALL-UNNAMED",

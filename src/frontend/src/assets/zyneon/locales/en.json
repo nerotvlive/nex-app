@@ -191,6 +191,27 @@
         "title": "Launch Old Frame",
         "description": "Launches the discontinued UI. (Requires internet connection)",
         "open": "Launch"
+      },
+      "authentication": {
+        "title": "Minecraft",
+        "loggedIn": "Logged in as: ",
+        "description": "You have to be logged with a Minecraft- or Game Pass-owning Microsoft account in order to play the game.",
+        "login": "Login with Microsoft",
+        "logout": "Logout"
+      },
+      "minecraft": {
+        "title": "Minecraft",
+        "description": "Tests the Minecraft launching integration (Requires internet to install)",
+        "launch": "Launch",
+        "modloader": "Modloader: ",
+        "noModloader": "None (Vanilla)",
+        "version": "Version: ",
+        "latest": "Latest",
+        "modloaderVersion": "Modloader version: ",
+        "directory": "Directory/Path: ",
+        "envArgs": "Env args: ",
+        "jvmArgs": "JVM args: ",
+        "java": "Java command: "
       }
     },
     "settings": {
